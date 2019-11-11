@@ -1,0 +1,24 @@
+// Assumes polyglot.jar is in classpath
+include "polyglot/ext/jl7/parse/jl7.ppg"
+
+package gallifreyc.parse;
+
+import gallifreyc.types.GallifreyTypeSystem;
+import gallifreyc.ast.GallifreyNodeFactory;
+import polyglot.parse.Name;
+import polyglot.parse.VarDeclarator;
+
+parser Grm extends polyglot.parse.Grm {:
+    public final GallifreyTypeSystem ts;
+    public final GallifreyNodeFactory nf;
+
+    public Grm(Lexer l, TypeSystem t, NodeFactory n, ErrorQueue q) {
+        super(l, t, n, q);
+        ts = (GallifreyTypeSystem) t;
+        nf = (GallifreyNodeFactory) n;
+    }
+:};
+
+start with goal;
+
+// TODO: modify the default Java grammar using PPG operations
