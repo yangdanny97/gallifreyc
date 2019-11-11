@@ -1,5 +1,10 @@
-/* Java 1.4 scanner for JFlex.
- * Based on JLS, 2ed, Chapter 3.
+/*
+ * Java 7 scanner for JFlex. 
+ *
+ * This file is part of the Polyglot extensible compiler framework.
+ *
+ * Copyright (c) 2000-2013 Polyglot project group, Cornell University
+ * 
  */
 
 package gallifreyc.parse;
@@ -29,8 +34,11 @@ import java.util.Set;
 
 %line
 %column
+%char
 
-%state STRING, CHARACTER, TRADITIONAL_COMMENT, END_OF_LINE_COMMENT
+%buffer 1048576
+
+%state STRING, CHARACTER, TRADITIONAL_COMMENT, END_OF_LINE_COMMENT, JAVADOC_COMMENT
 
 %{
     StringBuffer sb = new StringBuffer();
@@ -59,55 +67,56 @@ import java.util.Set;
     }
 
     protected void init_keywords() {
-        keywords.put("abstract",      new Integer(sym.ABSTRACT));
-        keywords.put("assert",        new Integer(sym.ASSERT));
-        keywords.put("boolean",       new Integer(sym.BOOLEAN));
-        keywords.put("break",         new Integer(sym.BREAK));
-        keywords.put("byte",          new Integer(sym.BYTE));
-        keywords.put("case",          new Integer(sym.CASE));
-        keywords.put("catch",         new Integer(sym.CATCH));
-        keywords.put("char",          new Integer(sym.CHAR));
-        keywords.put("class",         new Integer(sym.CLASS));
-        keywords.put("const",         new Integer(sym.CONST));
-        keywords.put("continue",      new Integer(sym.CONTINUE));
-        keywords.put("default",       new Integer(sym.DEFAULT));
-        keywords.put("do",            new Integer(sym.DO));
-        keywords.put("double",        new Integer(sym.DOUBLE));
-        keywords.put("else",          new Integer(sym.ELSE));
-        keywords.put("extends",       new Integer(sym.EXTENDS));
-        keywords.put("final",         new Integer(sym.FINAL));
-        keywords.put("finally",       new Integer(sym.FINALLY));
-        keywords.put("float",         new Integer(sym.FLOAT));
-        keywords.put("for",           new Integer(sym.FOR));
-        keywords.put("goto",          new Integer(sym.GOTO));
-        keywords.put("if",            new Integer(sym.IF));
-        keywords.put("implements",    new Integer(sym.IMPLEMENTS));
-        keywords.put("import",        new Integer(sym.IMPORT));
-        keywords.put("instanceof",    new Integer(sym.INSTANCEOF));
-        keywords.put("int",           new Integer(sym.INT));
-        keywords.put("interface",     new Integer(sym.INTERFACE));
-        keywords.put("long",          new Integer(sym.LONG));
-        keywords.put("native",        new Integer(sym.NATIVE));
-        keywords.put("new",           new Integer(sym.NEW));
-        keywords.put("package",       new Integer(sym.PACKAGE));
-        keywords.put("private",       new Integer(sym.PRIVATE));
-        keywords.put("protected",     new Integer(sym.PROTECTED));
-        keywords.put("public",        new Integer(sym.PUBLIC));
-        keywords.put("return",        new Integer(sym.RETURN));
-        keywords.put("short",         new Integer(sym.SHORT));
-        keywords.put("static",        new Integer(sym.STATIC));
-        keywords.put("strictfp",      new Integer(sym.STRICTFP));
-        keywords.put("super",         new Integer(sym.SUPER));
-        keywords.put("switch",        new Integer(sym.SWITCH));
-        keywords.put("synchronized",  new Integer(sym.SYNCHRONIZED));
-        keywords.put("this",          new Integer(sym.THIS));
-        keywords.put("throw",         new Integer(sym.THROW));
-        keywords.put("throws",        new Integer(sym.THROWS));
-        keywords.put("transient",     new Integer(sym.TRANSIENT));
-        keywords.put("try",           new Integer(sym.TRY));
-        keywords.put("void",          new Integer(sym.VOID));
-        keywords.put("volatile",      new Integer(sym.VOLATILE));
-        keywords.put("while",         new Integer(sym.WHILE));
+        keywords.put("abstract",      sym.ABSTRACT);
+        keywords.put("assert",        sym.ASSERT);
+        keywords.put("boolean",       sym.BOOLEAN);
+        keywords.put("break",         sym.BREAK);
+        keywords.put("byte",          sym.BYTE);
+        keywords.put("case",          sym.CASE);
+        keywords.put("catch",         sym.CATCH);
+        keywords.put("char",          sym.CHAR);
+        keywords.put("class",         sym.CLASS);
+        keywords.put("const",         sym.CONST);
+        keywords.put("continue",      sym.CONTINUE);
+        keywords.put("default",       sym.DEFAULT);
+        keywords.put("do",            sym.DO);
+        keywords.put("double",        sym.DOUBLE);
+        keywords.put("else",          sym.ELSE);
+        keywords.put("enum",          sym.ENUM);
+        keywords.put("extends",       sym.EXTENDS);
+        keywords.put("final",         sym.FINAL);
+        keywords.put("finally",       sym.FINALLY);
+        keywords.put("float",         sym.FLOAT);
+        keywords.put("for",           sym.FOR);
+        keywords.put("goto",          sym.GOTO);
+        keywords.put("if",            sym.IF);
+        keywords.put("implements",    sym.IMPLEMENTS);
+        keywords.put("import",        sym.IMPORT);
+        keywords.put("instanceof",    sym.INSTANCEOF);
+        keywords.put("int",           sym.INT);
+        keywords.put("interface",     sym.INTERFACE);
+        keywords.put("long",          sym.LONG);
+        keywords.put("native",        sym.NATIVE);
+        keywords.put("new",           sym.NEW);
+        keywords.put("package",       sym.PACKAGE);
+        keywords.put("private",       sym.PRIVATE);
+        keywords.put("protected",     sym.PROTECTED);
+        keywords.put("public",        sym.PUBLIC);
+        keywords.put("return",        sym.RETURN);
+        keywords.put("short",         sym.SHORT);
+        keywords.put("static",        sym.STATIC);
+        keywords.put("strictfp",      sym.STRICTFP);
+        keywords.put("super",         sym.SUPER);
+        keywords.put("switch",        sym.SWITCH);
+        keywords.put("synchronized",  sym.SYNCHRONIZED);
+        keywords.put("this",          sym.THIS);
+        keywords.put("throw",         sym.THROW);
+        keywords.put("throws",        sym.THROWS);
+        keywords.put("transient",     sym.TRANSIENT);
+        keywords.put("try",           sym.TRY);
+        keywords.put("void",          sym.VOID);
+        keywords.put("volatile",      sym.VOLATILE);
+        keywords.put("while",         sym.WHILE);
     }
 
     @Override
@@ -143,7 +152,12 @@ import java.util.Set;
         return new Identifier(pos(), yytext(), sym.IDENTIFIER);
     }
 
+    private String removeUnderscores(String s) {
+        return s.replaceAll("_", "");
+    }
+    
     private Token int_lit(String s, int radix) {
+        s = removeUnderscores(s);
         BigInteger x = new BigInteger(s, radix);
         boolean boundary = (radix == 10 && s.equals("2147483648"));
         int bits = radix == 10 ? 31 : 32;
@@ -156,34 +170,36 @@ import java.util.Set;
     }
 
     private Token long_lit(String s, int radix) {
+        s = removeUnderscores(s);
         BigInteger x = new BigInteger(s, radix);
         boolean boundary = (radix == 10 && s.equals("9223372036854775808"));
         int bits = radix == 10 ? 63 : 64;
         if (x.bitLength() > bits && ! boundary) {
             eq.enqueue(ErrorInfo.LEXICAL_ERROR, "Long literal \"" +
                         yytext() + "\" out of range.", pos());
-        }
+            }
         return new LongLiteral(pos(), x.longValue(),
                 boundary ? sym.LONG_LITERAL_BD : sym.LONG_LITERAL);
-    }
+            }
 
     private Token float_lit(String s) {
         try {
+            s = removeUnderscores(s);
             Float x = Float.valueOf(s);
-	    boolean zero = true;
-	    for (int i = 0; i < s.length(); i++) {
-		if ('1' <= s.charAt(i) && s.charAt(i) <= '9') {
-		    zero = false;
-		    break;
-		}
+            boolean zero = true;
+            for (int i = 0; i < s.length(); i++) {
+                if ('1' <= s.charAt(i) && s.charAt(i) <= '9') {
+                    zero = false;
+                    break;
+                }
                 if (s.charAt(i) == 'e' || s.charAt(i) == 'E') {
                     break; // 0e19 is still 0
                 }
-	    }
-	    if (x.isInfinite() || x.isNaN() || (x.floatValue() == 0 && ! zero)) {
-		eq.enqueue(ErrorInfo.LEXICAL_ERROR,
-			   "Illegal float literal \"" + yytext() + "\"", pos());
-	    }
+            }
+            if (x.isInfinite() || x.isNaN() || (x.floatValue() == 0 && ! zero)) {
+                eq.enqueue(ErrorInfo.LEXICAL_ERROR,
+                           "Illegal float literal \"" + yytext() + "\"", pos());
+            }
             return new FloatLiteral(pos(), x.floatValue(), sym.FLOAT_LITERAL);
         }
         catch (NumberFormatException e) {
@@ -195,21 +211,22 @@ import java.util.Set;
 
     private Token double_lit(String s) {
         try {
+            s = removeUnderscores(s);
             Double x = Double.valueOf(s);
-	    boolean zero = true;
-	    for (int i = 0; i < s.length(); i++) {
-		if ('1' <= s.charAt(i) && s.charAt(i) <= '9') {
-		    zero = false;
-		    break;
-		}
+            boolean zero = true;
+            for (int i = 0; i < s.length(); i++) {
+                if ('1' <= s.charAt(i) && s.charAt(i) <= '9') {
+                    zero = false;
+                    break;
+                }
                 if (s.charAt(i) == 'e' || s.charAt(i) == 'E') {
                     break; // 0e19 is still 0
                 }
-	    }
-	    if (x.isInfinite() || x.isNaN() || (x.doubleValue() == 0 && ! zero)) {
-		eq.enqueue(ErrorInfo.LEXICAL_ERROR,
-			   "Illegal double literal \"" + yytext() + "\"", pos());
-	    }
+            }
+            if (x.isInfinite() || x.isNaN() || (x.doubleValue() == 0 && ! zero)) {
+                eq.enqueue(ErrorInfo.LEXICAL_ERROR,
+                           "Illegal double literal \"" + yytext() + "\"", pos());
+            }
             return new DoubleLiteral(pos(), x.doubleValue(), sym.DOUBLE_LITERAL);
         }
         catch (NumberFormatException e) {
@@ -242,6 +259,10 @@ import java.util.Set;
     private Token string_lit() {
         return new StringLiteral(pos(sb.length()), sb.toString(),
                                  sym.STRING_LITERAL);
+    }
+    
+    private Token javadoc_token() {
+		return new JavadocToken(pos(sb.length()), sb.toString(), sym.JAVADOC);
     }
 
     private String chop(int i, int j) {
@@ -285,17 +306,48 @@ WhiteSpace = [ \t\f] | {LineTerminator}
 Identifier = [:jletter:] [:jletterdigit:]*
 
 /* 3.10.1 Integer Literals */
-DecimalNumeral = 0 | [1-9][0-9]*
-HexNumeral = 0 [xX] [0-9a-fA-F]+
-OctalNumeral = 0 [0-7]+
+DecimalNumeral = 0 | [1-9] {Digits}? | [1-9] [_]+ {Digits}
+Digits = {Digit} | {Digit} {DigitAndUnderscore}* {Digit}
+Digit = [0-9]
+DigitAndUnderscore = {Digit} | "_"
+
+HexNumeral = 0 [xX] {HexDigits}
+HexDigits = {HexDigit} | {HexDigit} {HexDigitAndUnderscore}* {HexDigit}
+HexDigit = [0-9a-fA-F]
+HexDigitAndUnderscore = {HexDigit} | "_"
+
+OctalNumeral = 0 [_]* {OctalDigits}
+OctalDigits = {OctalDigit} | {OctalDigit} {OctalDigitAndUnderscore}* {OctalDigit}
+OctalDigit = [0-7]
+OctalDigitAndUnderscore = {OctalDigit} | "_"
+
+
+BinaryNumeral = 0 [bB] {BinaryDigits}
+BinaryDigits = {BinaryDigit} | {BinaryDigit} {BinaryDigitAndUnderscore}* {BinaryDigit}
+BinaryDigit = [01]
+BinaryDigitAndUnderscore = {BinaryDigit} | "_"
+
 
 /* 3.10.2 Floating-Point Literals */
-FloatingPointLiteral = [0-9]+ "." [0-9]* {ExponentPart}?
-                     | "." [0-9]+ {ExponentPart}?
-                     | [0-9]+ {ExponentPart}
+FloatingPointLiteral = {DecimalFloatingPointLiteral} | {HexadecimalFloatingPointLiteral}
 
+DecimalFloatingPointLiteral = {Digits} "." {Digits}? {ExponentPart}? {FloatTypeSuffix}?
+                     | "." {Digits} {ExponentPart}? {FloatTypeSuffix}?
+                     | {Digits} {ExponentPart} {FloatTypeSuffix}?
+                     | {Digits} {ExponentPart}? {FloatTypeSuffix}
+                     
 ExponentPart = [eE] {SignedInteger}
-SignedInteger = [-+]? [0-9]+
+SignedInteger = [-+]? {Digits}
+
+HexadecimalFloatingPointLiteral = {HexSignificand} {BinaryExponent} {FloatTypeSuffix}?
+                     
+HexSignificand = {HexNumeral} 
+               | {HexNumeral} "." 
+               | 0 [xX] {HexDigits}? "." {HexDigits}  
+
+BinaryExponent = [pP] {SignedInteger}
+FloatTypeSuffix = [fFdD]
+
 
 /* 3.10.4 Character Literals */
 OctalEscape = \\ [0-7]
@@ -306,9 +358,13 @@ OctalEscape = \\ [0-7]
 
 <YYINITIAL> {
     /* 3.7 Comments */
-    "/*"    { yybegin(TRADITIONAL_COMMENT);
-              commentBegin = pos(); }
-    "//"    { yybegin(END_OF_LINE_COMMENT); }
+    "/*"        { yybegin(TRADITIONAL_COMMENT);
+                  commentBegin = pos(); }
+    "//"        { yybegin(END_OF_LINE_COMMENT); }
+    "/**[^/]"   { yybegin(JAVADOC_COMMENT);
+                  sb.setLength(0);
+                  sb.append(yytext());
+                  commentBegin = pos(); }
 
     /* 3.10.4 Character Literals */
     \'      { yybegin(CHARACTER); sb.setLength(0); }
@@ -378,13 +434,17 @@ OctalEscape = \\ [0-7]
     "<<="  { return op(sym.LSHIFTEQ);   }
     ">>="  { return op(sym.RSHIFTEQ);   }
     ">>>=" { return op(sym.URSHIFTEQ);  }
+    "@"    { return op(sym.AT);         }
+    "..."    { return op(sym.ELLIPSIS);         }
 
     /* 3.10.1 Integer Literals */
     {OctalNumeral} [lL]          { return long_lit(chop(), 8); }
     {HexNumeral} [lL]            { return long_lit(chop(2,1), 16); }
+    {BinaryNumeral} [lL]        { return long_lit(chop(2,1), 2); }
     {DecimalNumeral} [lL]        { return long_lit(chop(), 10); }
     {OctalNumeral}               { return int_lit(yytext(), 8); }
     {HexNumeral}                 { return int_lit(chop(2,0), 16); }
+    {BinaryNumeral}              { return int_lit(chop(2,0), 2); }
     {DecimalNumeral}             { return int_lit(yytext(), 10); }
 
     /* 3.10.2 Floating-Point Literals */
@@ -410,6 +470,18 @@ OctalEscape = \\ [0-7]
 <END_OF_LINE_COMMENT> {
     {LineTerminator}             { yybegin(YYINITIAL); }
     .                            { /* ignore */ }
+}
+
+<JAVADOC_COMMENT> {
+    "*/"                         { yybegin(YYINITIAL);
+    							   sb.append(yytext()); 
+    							   return javadoc_token(); }
+
+    <<EOF>>                      { yybegin(YYINITIAL);
+                                   eq.enqueue(ErrorInfo.LEXICAL_ERROR,
+                                                  "Unclosed Javadoc comment",
+                                                  commentBegin); }
+    [^]                          { sb.append(yytext()); }
 }
 
 <CHARACTER> {

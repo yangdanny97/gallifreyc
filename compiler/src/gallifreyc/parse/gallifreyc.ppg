@@ -8,7 +8,7 @@ import gallifreyc.ast.GallifreyNodeFactory;
 import polyglot.parse.Name;
 import polyglot.parse.VarDeclarator;
 
-parser Grm extends polyglot.parse.Grm {:
+parser Grm extends polyglot.ext.jl7.parse.Grm {:
     public final GallifreyTypeSystem ts;
     public final GallifreyNodeFactory nf;
 
