@@ -1,9 +1,10 @@
 package gallifreyc.ast;
 
 import polyglot.ast.*;
+import polyglot.ext.jl7.ast.J7Lang_c;
 import polyglot.util.InternalCompilerError;
 
-public class GallifreyLang_c extends JLang_c implements GallifreyLang {
+public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
     public static final GallifreyLang_c instance = new GallifreyLang_c();
 
     public static GallifreyLang lang(NodeOps n) {
