@@ -1,0 +1,76 @@
+# pth test script
+#
+# This file is a test script for pth (Polyglot Test Harness). It
+# conforms to the following grammar.
+#
+#      ScriptFile   ::= CompilerTest+
+#      CompilerTest ::= ExtClassName ["CmdLineArgs"] { FileTest [; FileTest]* }
+#                    |  javac ["CmdLineArgs"] { FileTestNoFailure [; FileTestNoFailure]* }
+#      FileTest     ::= Filenames [Description] [FailureSet]
+#      FileTestNoFailure ::= Filenames [Description]
+#      Filenames    ::= Filename [Filename]*
+#      Description  ::= LitString
+#      FailureSet   ::= Failure [, Failure]*
+#      Failure      ::= ( ErrorKind )
+#                    |  ( ErrorKind, "RegExp" )
+#                    |  ( "RegExp" )
+#                    |  ( )
+#      ErrorKind    :   one of, or a unique prefix of one of the following 
+#                       strings: "Warning", "Internal Error", "I/O Error", 
+#                       "Lexical Error", "Syntax Error", "Semantic Error"
+#                       or "Post-compiler Error".
+#      Filename     :   the name of a file. Is interpreted from the 
+#                       directory where pth is run.
+#      LitString    :   a literal string, enclosed in quotes.
+#      RegExp       :   a regular expression, as in java.util.regex; 
+#                       is always enclosed in quotes.
+#      CmdLineArgs  :   additional command line args for the Polyglot 
+#                       compiler; is always enclosed in quotes.
+
+# Compile some java classes first
+#javac "-d java-out -cp ." {
+#}
+ 
+#polyglot.ext.jl7.JL7ExtensionInfo "-d out -classpath java-out -assert -noserial -postopts \"-source 1.7 -Xlint\\:-options\" -morepermissiveinference" {
+gallifreyc.ExtensionInfo "-d out -classpath java-out -assert -noserial -postopts \"-source 1.7 -Xlint\\:-options\" -morepermissiveinference" {
+	Diamond01.gal;
+	Diamond02.gal (Semantic, "type arguments cannot be used");
+	Diamond03.gal (Semantic, "anonymous class");
+	Diamond04.gal (Semantic, "not generic");
+	Diamond05.gal (Semantic, "not generic");
+	Diamond06.gal;
+	Diamond07.gal;
+	Diamond08.gal;
+	Diamond09.gal;
+	Diamond10.gal;
+	FloatLit01.gal;
+	IntLit01.gal;
+	IntLit02.gal (Syntax), (Syntax),(Syntax),(Syntax);
+	IntLit02a.gal (Syntax);
+	IntLit02b.gal ("Could not find") , ("Could not find"); // 2 errors
+	IntLit02c.gal (Syntax);
+	IntLit03.gal;
+	IntLit04.gal ("out of range"),("unexpected .* literal"), 
+	             ("out of range"),("unexpected .* literal"), 
+	             ("out of range"),("out of range"),("out of range"),
+	             ("out of range"),("unexpected .* literal"), 
+	             ("out of range"),("unexpected .* literal"); // 11 errors
+	MultiCatch01.gal;
+	MultiCatch02.gal (Semantic);
+	MultiCatch03.gal (Semantic);
+	MultiCatch04.gal (Semantic);
+	MultiCatch05.gal;
+	Rethrow01.gal;
+	Rethrow02.gal;
+	Rethrow03.gal (Semantic);
+	Switch01.gal;
+	Switch02.gal;
+	TryWithResources01.gal;
+	TryWithResources02.gal (Semantic, "multiply defined");
+	TryWithResources03.gal (Semantic, "AutoCloseable");
+	TryWithResources04.gal;
+	TryWithResources05.gal;
+	TryWithResources06.gal (Semantic, "exception .* caught or declared");
+	TryWithResources07.gal (Semantic, "exception .* caught or declared");
+	TryWithResources08.gal;
+}
