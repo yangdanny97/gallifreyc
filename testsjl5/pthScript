@@ -1,0 +1,918 @@
+# pth test script
+#
+# This file is a test script for pth (Polyglot Test Harness). It
+# conforms to the following grammar.
+#
+#      ScriptFile   ::= CompilerTest+
+#      CompilerTest ::= ExtClassName ["CmdLineArgs"] { FileTest [; FileTest]* }
+#                    |  javac ["CmdLineArgs"] { FileTestNoFailure [; FileTestNoFailure]* }
+#      FileTest     ::= Filenames [Description] [FailureSet]
+#      FileTestNoFailure ::= Filenames [Description]
+#      Filenames    ::= Filename [Filename]*
+#      Description  ::= LitString
+#      FailureSet   ::= Failure [, Failure]*
+#      Failure      ::= ( ErrorKind )
+#                    |  ( ErrorKind, "RegExp" )
+#                    |  ( "RegExp" )
+#                    |  ( )
+#      ErrorKind    :   one of, or a unique prefix of one of the following 
+#                       strings: "Warning", "Internal Error", "I/O Error", 
+#                       "Lexical Error", "Syntax Error", "Semantic Error"
+#                       or "Post-compiler Error".
+#      Filename     :   the name of a file. Is interpreted from the 
+#                       directory where pth is run.
+#      LitString    :   a literal string, enclosed in quotes.
+#      RegExp       :   a regular expression, as in java.util.regex; 
+#                       is always enclosed in quotes.
+#      CmdLineArgs  :   additional command line args for the Polyglot 
+#                       compiler; is always enclosed in quotes.
+
+# Compile some java classes first
+javac "-d java-out -cp ." {
+        java-src/MyList.java;
+        java-src/MyMap.java;
+        java-src/MyMethodThrowing.java;
+        java-src/MyEnum.java;
+	java-src/MyNested01.java;
+	java-src/TestEnum.java;
+	java-src/Call02A.java;
+	java-src/Call02B.java;
+	java-src/Call02D.java;
+}
+ 
+#polyglot.ext.jl5.JL5ExtensionInfo "-d out -classpath java-out -assert -noserial -postopts \"-source 1.5 -Xlint\\:-options\" -morepermissiveinference" {
+#gallifreyc.ExtensionInfo "-d out -classpath ../compiler/classes" {
+#gallifreyc.ExtensionInfo "-d out" {
+gallifreyc.ExtensionInfo "-d out -classpath java-out -assert -noserial -postopts \"-source 1.5 -Xlint\\:-options\" -morepermissiveinference" {
+        Access01.gal;
+        Access02.gal;
+        Access03A.gal  Access03B.gal;
+        Access04A.gal  Access04B.gal;
+        Access05.gal (Semantic, "field .* not visible");
+        Access06.gal (Semantic, "Method .* inaccessible");
+        Annotations01.gal;
+        Annotations02.gal;
+        Annotations03.gal (Semantic, "does not override");
+        Annotations04.gal;
+        Annotations05.gal;
+        Annotations06.gal (Semantic, "not applicable");
+        Annotations07.gal (Semantic, "can apply only to method");
+        Annotations08.gal;
+        Annotations09.gal (Semantic);
+        Annotations10.gal;
+        Annotations11.gal (Semantic);
+        Annotations12.gal (Semantic);
+        Annotations13.gal (Semantic);
+        Annotations14A.gal Annotations14B.gal;
+        Annotations15.gal;
+        Annotations16.gal;
+        Annotations17.gal;
+        Annotations18.gal;
+        Annotations19.gal;
+        Annotations20.gal;
+        Annotations21.gal;
+        Annotations22.gal  (Semantic, "not applicable");
+        Anonymous01.gal (Post, "Xlint");
+        Anonymous02.gal;
+        Anonymous03.gal;
+        Array.gal;
+        Array2.gal (Semantic, "Name clash"), (Semantic, "should be declared abstract");
+        Array03.gal;
+        Array04.gal;
+        Array05.gal;
+        Array06.gal (Post, "Xlint");
+        Array07.gal (Semantic, "reifiable");
+        Array08.gal;
+        ArrayInit01.gal;
+        ArrayInit02.gal;
+        ArrayInit03.gal;
+        Assert01.gal;
+        Binary01.gal;
+        Binary02.gal (Semantic);
+        Boxing01.gal;
+        Boxing02.gal;
+        Boxing03.gal;
+        Boxing04.gal;
+        Boxing05.gal;
+        C.gal;
+        Call01.gal (Post, "Xlint");
+        Call02.gal;
+        CaptureConversion01.gal;
+        Cast01.gal (Post, "Xlint");
+        Cast02.gal;
+        Cast03.gal;
+        Cast04.gal (Post);
+        Cast05.gal (Post);
+        ClassLoad01.gal;
+        ClassLoad02.gal (Post, "Xlint");
+        Conditional01.gal;
+        Conditional02.gal;
+        Conditional03.gal;
+        Conditional04.gal;
+        Conditional05.gal;
+        Conditional06.gal;
+        Conditional07.gal (Semantic, "does not match");
+        Conditional08.gal;
+        Conditional09.gal (Semantic, "does not match");
+        Conditional10.gal (Semantic, "does not match");
+        Conditional11.gal;
+        Conditional12.gal;
+        Constant01.gal;
+        ConstructorCall01.gal;
+        CovariantRet01.gal;
+        CovariantRet02.gal;
+        CovariantRet03.gal;
+        CovariantRet04.gal;
+        CovariantRet05.gal;
+        dotclass.gal;
+        enum1.gal;
+        enum2.gal;
+        EnumTest1.gal;
+        EnumTest2.gal;
+        EnumTest3.gal;
+        EnumTest4.gal;
+        EnumTest5.gal;
+        EnumTest6.gal;
+        EnumTest7.gal;
+        EnumTest8.gal;
+        EnumTest9.gal;
+        EnumTest11.gal;
+        EnumTest12.gal;
+        EnumTest13.gal;
+        EnumTest14.gal;
+        EnumTest15.gal;
+        EnumTest16.gal;
+        EnumTest17.gal;
+        EnumTest18.gal;
+        EnumTest19.gal;
+        error1.gal (Semantic, "should be declared abstract");
+        error3.gal (Semantic, "Name clash");
+        error3b.gal;
+        error3c.gal (Semantic, "Name clash"), (Semantic, "should be declared abstract");
+        error3d.gal;
+        error3e.gal (Semantic, "type .* does not match");
+        error3f.gal (Post, "Xlint");
+        error3g.gal;
+        error3h.gal (Post, "Xlint");
+        error4.gal (Semantic, "type .* does not match");
+        error5.gal (Semantic, "type .* does not match");
+        error6.gal (Semantic, "Name clash"), (Semantic, "should be declared abstract");
+        error7.gal (Semantic, "not a subtype");
+        exn1.gal;
+        exn2.gal;
+        ExtFor01.gal;
+        ExtFor02.gal;
+        FBoundSub.gal;
+        FBoundSub2.gal;
+        FBoundSub3.gal;
+        FBoundSub4.gal (Semantic, "cannot be called with arguments");
+        FinalInit01.gal;
+        forloop1.gal (Semantic, "Incompatible"), (Semantic, "Incompatible");
+        forloop1a.gal;
+        forloop1b.gal (Semantic, "Incompatible");
+        forloop1c.gal (Semantic, "Incompatible");
+        forwardref1.gal (Semantic, "Circular");
+        forwardref1a.gal;
+        forwardref1b.gal (Semantic);
+        forwardref2.gal (Semantic, "Circular");
+        forwardref3.gal (Semantic, "Circular");
+        Generic.gal;
+        GenericConstructor01.gal (Semantic, "cannot be invoked");
+        GenericConstructor02.gal (Semantic, "Duplicate constructor");
+        GenericMethod1.gal;
+        GenericMethod1a.gal (Semantic);
+        GenericMethod2.gal (Semantic);
+        GenericMethod3.gal;
+        GenericMethod4.gal;
+        GenericMethod5.gal;
+        GenericMethod5a.gal (Semantic);
+        GenericMethod06.gal;
+        GenericMethod7.gal;
+        GenericMethod7a.gal;
+        GenericMethod8.gal;
+        GenericMethod8a.gal;
+        GenericMethod8b.gal;
+        GenericMethod9.gal;
+        GenericMethod9a.gal (Semantic);
+        GenericMethod9b.gal;
+        GenericMethod10.gal;
+        GenericMethod11.gal;
+        GenericMethod12.gal (Semantic), (Semantic);
+        GenericMethod13.gal;
+        GenericMethod14.gal;
+        GenericMethod15.gal;
+        GenericMethod16.gal;
+        GenericMethod17.gal;
+        GenericMethod18.gal (Semantic, "Duplicate type variable");
+        GenericMethod19.gal (Semantic, "incompatible parameter types");
+        GenericMethod20.gal (Semantic, "Name clash.* same erasure");
+        GenericMethod21.gal (Semantic, "Duplicate method");
+        Generics01.gal;
+        Generics02.gal;
+        Generics03.gal;
+        Generics04.gal;
+        Generics05.gal;
+        Generics06.gal;
+        Generics07.gal;
+        Generics08.gal (Post, "Xlint");
+        Generics09.gal (Post, "Xlint");
+        Generics10.gal (Post, "Xlint");
+        Generics11.gal;
+        Generics12.gal;
+        Generics13.gal;
+        Generics14.gal;
+        Generics15.gal;
+        Generics16.gal;
+        Generics17.gal;
+        Generics18.gal (Post, "Xlint");
+        Generics19.gal;
+        Generics20.gal (Semantic);
+        Generics21.gal (Semantic); 
+        Generics22.gal (Semantic);
+        Generics23.gal (Semantic);
+        Generics24.gal (Semantic, "Wrong number of type parameters"),
+                       (Semantic, "Wrong number of type parameters"),
+                       (Semantic, "Cannot instantiate .* because it has no formals");
+        Generics25.gal (Semantic);
+        Generics26.gal (Post, "Xlint");
+        Generics27.gal;        
+        Generics28.gal (Post, "Xlint");
+        Generics29.gal (Post, "Xlint");
+        Generics30.gal (Semantic);
+        Generics31.gal (Post, "Xlint");
+        Generics32.gal;
+        Generics33.gal (Semantic);
+        Generics34.gal;
+        Generics35.gal (Semantic); 
+        Generics36.gal;
+        Generics37.gal;
+        Generics38.gal;
+        Generics39.gal;
+        Generics40.gal;
+        Generics41.gal;
+        Generics42.gal;
+        Generics43.gal (Post, "Xlint");
+        Generics44.gal (Post, "Xlint");
+        Generics45A.gal Generics45B.gal ;
+        Generics46.gal (Post, "Xlint");
+        Generics47.gal (Post, "Xlint");
+        Generics48.gal;
+        Generics49.gal;
+        Generics50.gal;
+        Generics51.gal;
+        Generics52.gal;
+        Generics53.gal;
+        Generics54.gal (Semantic, "Cannot extend non-class");
+        Generics55.gal (Semantic, "inherited with different arguments"),
+                       (Semantic, "inherited with different arguments");
+        genmethod1.gal (Semantic);
+        HexFloatingPoint.gal;
+        ImplicitCast01.gal;
+        Import01.gal;
+        Import02.gal;
+        Import03.gal (Semantic);
+        Import04.gal;
+        Import05.gal (Semantic, "Cannot find static member");
+        Import06.gal;
+        Import07A.gal Import07B.gal;
+        Import08A.gal Import08B.gal;
+        InfiniteLoop.gal;
+        Inherit01.gal (Semantic, "Name clash");
+        Inherit02.gal (Semantic, "Name clash");
+        Inherit03.gal (Semantic, "Name clash"), (Semantic, "Name clash");
+        InnerClass01.gal;
+        InnerClass02.gal (Post, "Xlint");
+        InnerClass03.gal;
+        InnerClass04.gal;
+        InnerClass05.gal (Semantic);
+        InnerClass06.gal;
+        InnerClass07.gal;
+        InnerClass08.gal;
+        InnerClass09.gal;
+        InnerClass10.gal;
+        InnerClass11.gal;
+        InnerClass12.gal;
+        InnerClass13.gal;
+        InnerClass14.gal;
+        InnerClass16.gal;
+        Instanceof01.gal (Semantic, "not reifiable");
+        Instanceof02.gal;
+        Interface01.gal;
+        Interface02.gal;
+        Interface03.gal;
+        Interface04.gal;
+        Interface05.gal (Post, "Xlint");
+        Interface06.gal (Post, "Xlint");
+        Interface07.gal (Semantic, "Name clash.* same erasure");
+        Intersect01.gal;
+        Intersect02.gal;
+        Intersect03.gal (Semantic, "additional bound");
+        Intersect04.gal (Post, "Xlint");
+        intersection.gal (Semantic, "inaccessible"), (Semantic, "inaccessible");
+        Iterator01.gal;
+        JLS8.1.2.gal;
+        Lists1.gal;
+        Lists2.gal (Post, "Xlint");
+        Lists3.gal (Post, "Xlint");
+        Lists4.gal (Post, "Xlint");
+        Lists5.gal;
+        Lists6.gal;
+        Lists7.gal (Semantic);
+        Lists8.gal (Semantic);
+        Lists9.gal (Semantic);
+        lookup.gal;
+        Map01.gal;
+        Method01.gal;
+        Method02.gal;
+        Method03.gal;
+        Method04.gal;
+        Method05.gal (Post, "Xlint");
+        Method06.gal;
+        Negate01.gal;
+        Nested01.gal;
+        Nested02.gal;
+        Nongeneric.gal;
+        NullWrapper.gal;
+        NumericConversion01.gal (Semantic, "does not match");
+        Override01.gal (Semantic);
+        PermissiveCasts01.gal (Semantic, "does not match"),(Semantic, "does not match"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast");
+        PermissiveCasts02.gal (Semantic, "does not match");
+        PermissiveCasts03.gal (Semantic, "Cannot cast");
+        Prim.gal;
+        raw1.gal (Semantic, "should be declared abstract");
+        raw2.gal;
+        raw3.gal (Semantic, "should be declared abstract");
+        raw4.gal;
+        raw5.gal (Semantic, "should be declared abstract");
+        raw6.gal  (Semantic, "should be declared abstract");
+        raw7.gal;
+        raw8.gal (Post, "Xlint");
+        raw9.gal;
+        RawReturn01.gal;
+        RawReturn02.gal;
+        RawReturn03.gal (Semantic);
+        RawReturn04.gal (Semantic);
+        RawReturn05.gal (Post, "Xlint");
+        RawReturn06.gal (Post, "Xlint");
+        RawType01.gal (Post, "Xlint");
+        RawType02.gal (Post, "Xlint");
+        RawType03.gal (Semantic);
+        RawType04.gal (Semantic);
+        RawType05.gal;
+        RawType06.gal (Semantic);
+        RawType07.gal (Semantic);
+        Simple.gal;
+        simpleFBoundError.gal (Semantic);
+        SimpleFBoundSub.gal;
+        StaticInit01.gal;
+        StringTest.gal;
+        StringTest01.gal;
+        Switch01.gal;
+        Switch02.gal (Semantic, "Case label");
+        Switch03.gal (Semantic, "Case label");
+        TC12.gal;
+        TC195.gal;
+        test1.gal;
+        test2.gal;
+        test3.gal;
+        test4.gal;
+        test5.gal;
+        test6.gal;
+        test7.gal;
+        test8.gal;
+        test9.gal;
+        test11.gal;
+        test12.gal;
+        test13.gal;
+        test14.gal;
+        test16.gal;
+        test16b.gal;
+        test16c.gal;
+        test17.gal;
+        Throw01.gal;
+        Throw02.gal;
+        UnboxBooleans.gal;
+        Unboxing01.gal;
+        VarArgs01.gal;
+        VarArgs02.gal;
+        VarArgs03.gal;
+        VarArgs04.gal;
+        VarArgs05.gal;
+        VarArgs06.gal;
+        VarArgs07.gal;
+        VarArgs08.gal (Post, "Xlint");
+        VarArgs09.gal;
+        VarArgs10.gal;
+        VarArgs11.gal (Semantic, "Method .* cannot be called");
+        VerySimple.gal;
+        WildCard01.gal;
+        WildCard02.gal (Semantic, "does not match");
+        WildCard03.gal (Post, "Xlint");
+        WildCard04.gal;
+        WildCard05.gal;
+        WildCard06.gal; # TODO
+        Wildcard1.gal;
+        wildcard2.gal (Semantic), (Semantic), (Semantic);
+        wildcard2a.gal;
+        wildcard3.gal;
+        wildcard4.gal (Semantic, "cannot be called"), (Semantic, "cannot be called"), (Semantic, "does not match");
+        wildcard4a.gal;
+        wildcard5.gal (Semantic, "cannot be called"), (Semantic, "cannot be called") , (Semantic, "does not match");
+        wildcard5a.gal;
+        wildcard6.gal (Semantic, "does not match");
+        wildcard6a.gal;
+        wildcard7.gal (Semantic), (Semantic), (Semantic);
+        wildcard7a.gal;
+        wildcard8.gal (Semantic);
+        wildcard9.gal; # TODO
+        wildcard10.gal (Semantic, "capture"), (Semantic, "capture"), (Semantic, "does not match"); 
+        wildcard11.gal (Semantic, "capture"), (Semantic, "capture"), (Semantic, "does not match"), (Semantic, "does not match"), (Semantic, "does not match"); 
+        wildcard12a.gal(Semantic); 
+        wildcard12b.gal(Semantic); 
+        wildcard12c.gal(Semantic); 
+        wildcard12d.gal(Semantic); 
+        wildcard12e.gal; 
+        wildcard13a.gal (Semantic); 
+        wildcard13b.gal (Semantic); 
+        wildcard13c.gal (Semantic); 
+        wildcard13d.gal; 
+        wildcard14a.gal (Semantic); 
+        wildcard14b.gal (Semantic); 
+        wildcard14c.gal (Semantic); 
+        wildcard14d.gal ; 
+        wildcard15.gal (Semantic),(Semantic); 
+        wildcard16.gal (Semantic, "Cannot assign long to");
+        wildcard17.gal (Semantic),(Semantic),(Semantic); 
+        wildcard18.gal (Semantic);
+        wildcard19.gal (Semantic, "not a subtype .* bound") , (Semantic);
+        wildcard20.gal (Semantic, "cannot be called");
+        wildcard21.gal (Semantic, "Unexpected type bound");
+        wildcard22.gal;
+        wildcard23.gal;
+        wildcard24.gal;
+}
+
+# Now run the tests again removing the Java 5-isms.
+# This one uses 1.4 to suppress the warning about raw classes.
+#polyglot.ext.jl5.JL5ExtensionInfo "-d out -classpath java-out -removeJava5isms -enumImplClass MyEnum -assert -noserial -postopts \"-Xlint\\:-options -source 1.4 -target 1.4\" -morepermissiveinference" {
+gallifreyc.ExtensionInfo "-d out -classpath java-out -removeJava5isms -enumImplClass MyEnum -assert -noserial -postopts \"-Xlint\\:-options -source 1.4 -target 1.4\" -morepermissiveinference" {
+        Access01.gal;
+        Access02.gal;
+        Access03A.gal  Access03B.gal;
+        Access04A.gal  Access04B.gal;
+        Access05.gal (Semantic, "field .* not visible");
+        Access06.gal (Semantic, "Method .* inaccessible");
+        Annotations01.gal;
+        Annotations02.gal;
+        Annotations03.gal (Semantic, "does not override");
+        Annotations04.gal;
+        Annotations05.gal;
+        Annotations06.gal (Semantic, "not applicable");
+        Annotations07.gal (Semantic, "can apply only to method");
+        Annotations08.gal;
+        Annotations09.gal (Semantic);
+        Annotations10.gal;
+        Annotations11.gal (Semantic);
+        Annotations12.gal (Semantic);
+        Annotations13.gal (Semantic);
+        Annotations14A.gal Annotations14B.gal;
+        Annotations15.gal;
+        Annotations16.gal;
+        Annotations17.gal;
+        Annotations18.gal;
+        Annotations19.gal;
+        Annotations20.gal;
+        Annotations21.gal;
+        Annotations22.gal  (Semantic, "not applicable");
+        Anonymous01.gal;
+        Anonymous02.gal;
+        Anonymous03.gal;
+        Array.gal;
+        Array2.gal (Semantic, "Name clash"), (Semantic, "should be declared abstract");
+        Array03.gal;
+        Array04.gal;
+        Array05.gal;
+        Array06.gal;
+        Array07.gal (Semantic, "reifiable");
+        Array08.gal;
+        ArrayInit01.gal;
+        ArrayInit02.gal;
+        ArrayInit03.gal;
+        Assert01.gal;
+        Binary01.gal;
+        Binary02.gal (Semantic);
+        Boxing01.gal;
+        Boxing02.gal;
+        Boxing03.gal;
+        Boxing04.gal;
+        Boxing05.gal;
+        C.gal;
+        Call01.gal;
+        Call02.gal;
+        CaptureConversion01.gal;
+        Cast01.gal;
+        Cast02.gal;
+        Cast03.gal;
+        Cast04.gal;
+        Cast05.gal;
+        ClassLoad01.gal;
+        ClassLoad02.gal;
+        Conditional01.gal;
+        Conditional02.gal;
+        Conditional03.gal;
+        Conditional04.gal;
+        Conditional05.gal;
+        Conditional06.gal;
+        Conditional07.gal (Semantic, "does not match");
+        Conditional08.gal;
+        Conditional09.gal (Semantic, "does not match");
+        Conditional10.gal (Semantic, "does not match");
+        Conditional11.gal;
+        Conditional12.gal;
+        Constant01.gal;
+        ConstructorCall01.gal;
+        CovariantRet01.gal;
+        CovariantRet02.gal;
+        CovariantRet03.gal; #Known bug!
+        CovariantRet04.gal; #Known bug!
+        CovariantRet05.gal (Semantic, "incompatible return");
+        dotclass.gal;
+        enum1.gal;
+        enum2.gal;
+        EnumTest1.gal;
+        EnumTest2.gal;
+        EnumTest3.gal;
+        EnumTest4.gal;
+        EnumTest5.gal;
+        EnumTest6.gal;
+        EnumTest7.gal;
+        EnumTest8.gal;
+        EnumTest9.gal;
+        EnumTest11.gal;
+        EnumTest12.gal;
+        EnumTest13.gal;
+        EnumTest14.gal;
+        EnumTest15.gal;
+        EnumTest16.gal;
+        EnumTest17.gal;
+        EnumTest18.gal;
+        error1.gal (Semantic, "should be declared abstract");
+        error3.gal (Semantic, "Name clash");
+        error3b.gal;
+        error3c.gal (Semantic, "Name clash"), (Semantic, "should be declared abstract");
+        error3d.gal;
+        error3e.gal (Semantic, "type .* does not match");
+        error3f.gal;
+        error3g.gal;
+        error3h.gal;
+        error4.gal (Semantic, "type .* does not match");
+        error5.gal (Semantic, "type .* does not match");
+        error6.gal (Semantic, "Name clash"), (Semantic, "should be declared abstract");
+        error7.gal (Semantic, "not a subtype");
+        exn1.gal;
+        exn2.gal;
+        ExtFor01.gal;
+        ExtFor02.gal;
+        FBoundSub.gal;
+        FBoundSub2.gal;
+        FBoundSub3.gal;
+        FBoundSub4.gal (Semantic, "cannot be called with arguments");
+        FinalInit01.gal;
+        forloop1.gal (Semantic, "Incompatible"), (Semantic, "Incompatible");
+        forloop1a.gal;
+        forloop1b.gal (Semantic, "Incompatible");
+        forloop1c.gal (Semantic, "Incompatible");
+        forwardref1.gal (Semantic, "Circular");
+        forwardref1a.gal;
+        forwardref1b.gal (Semantic);
+        forwardref2.gal (Semantic, "Circular");
+        forwardref3.gal (Semantic, "Circular");
+        Generic.gal;
+        GenericConstructor01.gal (Semantic, "cannot be invoked");
+        GenericConstructor02.gal (Semantic, "Duplicate constructor");
+        GenericMethod1.gal;
+        GenericMethod1a.gal (Semantic);
+        GenericMethod2.gal (Semantic);
+        GenericMethod3.gal;
+        GenericMethod4.gal;
+        GenericMethod5.gal;
+        GenericMethod5a.gal (Semantic);
+        GenericMethod06.gal;
+        GenericMethod7.gal;
+        GenericMethod7a.gal;
+        GenericMethod8.gal;
+        GenericMethod8a.gal;
+        GenericMethod8b.gal;
+        GenericMethod9.gal;
+        GenericMethod9a.gal (Semantic);
+        GenericMethod9b.gal;
+        GenericMethod10.gal;
+        GenericMethod11.gal;
+        GenericMethod12.gal (Semantic), (Semantic);
+        GenericMethod13.gal;
+        GenericMethod14.gal;
+        GenericMethod15.gal;
+        GenericMethod16.gal;
+        GenericMethod17.gal;
+        GenericMethod18.gal (Semantic, "Duplicate type variable");
+        GenericMethod19.gal (Semantic, "incompatible parameter types");
+        GenericMethod20.gal (Semantic, "Name clash.* same erasure");
+        GenericMethod21.gal (Semantic, "Duplicate method");
+        Generics01.gal;
+        Generics02.gal;
+        Generics03.gal;
+        Generics04.gal;
+        Generics05.gal;
+        Generics06.gal;
+        Generics07.gal;
+        Generics08.gal;
+        Generics09.gal;
+        Generics10.gal;
+        Generics11.gal;
+        Generics12.gal;
+        Generics13.gal;
+        Generics14.gal;
+        Generics15.gal;
+        Generics16.gal;
+        Generics17.gal;
+        Generics18.gal;
+        Generics19.gal;
+        Generics20.gal (Semantic);
+        Generics21.gal (Semantic); 
+        Generics22.gal (Semantic);
+        Generics23.gal (Semantic);
+        Generics24.gal (Semantic, "Wrong number of type parameters"),
+                       (Semantic, "Wrong number of type parameters"),
+                       (Semantic, "Cannot instantiate .* because it has no formals");
+        Generics25.gal (Semantic);
+        Generics26.gal;
+        Generics27.gal; 
+        Generics28.gal;
+        Generics29.gal;
+        Generics30.gal (Semantic);
+        Generics31.gal;
+        Generics32.gal;
+        Generics33.gal (Semantic);
+        Generics34.gal;
+        Generics35.gal (Semantic);
+        Generics36.gal;
+        Generics37.gal;
+        Generics38.gal;
+        Generics39.gal;
+        Generics40.gal;
+        Generics41.gal;
+        Generics42.gal;
+        Generics43.gal;
+        Generics44.gal;
+        Generics45A.gal Generics45B.gal ;
+        Generics46.gal ;
+        Generics47.gal ;
+        Generics48.gal;
+        Generics49.gal;
+        Generics50.gal;
+        Generics51.gal;
+        Generics52.gal;
+        Generics53.gal;
+        Generics54.gal (Semantic, "Cannot extend non-class");
+        Generics55.gal (Semantic, "inherited with different arguments"),
+                       (Semantic, "inherited with different arguments");
+        Generics59.gal (Semantic, "Type argument .* is not a subtype of its declared bound .*");
+        genmethod1.gal (Semantic);
+        HexFloatingPoint.gal;
+        ImplicitCast01.gal;
+        Import01.gal;
+        Import02.gal;
+        Import03.gal (Semantic);
+        Import04.gal;
+        Import05.gal (Semantic, "Cannot find static member");
+        Import06.gal;
+        Import07A.gal Import07B.gal;
+        Import08A.gal Import08B.gal;
+        InfiniteLoop.gal;
+        Inherit01.gal (Semantic, "Name clash");
+        Inherit02.gal (Semantic, "Name clash");
+        Inherit03.gal (Semantic, "Name clash"), (Semantic, "Name clash");
+        InnerClass01.gal; 
+        InnerClass02.gal;
+        InnerClass03.gal;
+        InnerClass04.gal;
+        InnerClass05.gal (Semantic);
+        InnerClass06.gal;
+        InnerClass07.gal;
+        InnerClass08.gal;
+        InnerClass09.gal;
+        InnerClass10.gal;
+        InnerClass11.gal;
+        InnerClass12.gal;
+        InnerClass13.gal;
+        InnerClass14.gal;
+        InnerClass16.gal;
+        Instanceof01.gal (Semantic, "not reifiable");
+        Instanceof02.gal;
+        Interface01.gal;
+        Interface02.gal;
+        Interface03.gal;
+        Interface04.gal;
+        Interface05.gal;
+        Interface06.gal;
+        Interface07.gal (Semantic, "Name clash.* same erasure");
+        Intersect01.gal;
+        Intersect02.gal;
+        Intersect03.gal (Semantic, "additional bound");
+        Intersect04.gal;
+        intersection.gal (Semantic, "inaccessible"), (Semantic, "inaccessible");
+        Iterator01.gal;
+        JLS8.1.2.gal;
+        Lists1.gal;
+        Lists2.gal;
+        Lists3.gal;
+        Lists4.gal;
+        Lists5.gal;
+        Lists6.gal;
+        Lists7.gal (Semantic);
+        Lists8.gal (Semantic);
+        Lists9.gal (Semantic);
+        lookup.gal;
+        Map01.gal;
+        Method01.gal;
+        Method02.gal;
+        Method03.gal;
+        Method04.gal;
+        Method05.gal;
+        Method06.gal;
+        Negate01.gal;
+        Nested01.gal;
+        Nested02.gal;
+        Nongeneric.gal;
+        NullWrapper.gal;
+        NumericConversion01.gal (Semantic, "does not match");
+        Override01.gal (Semantic);
+        PermissiveCasts01.gal (Semantic, "does not match"),(Semantic, "does not match"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast"),
+                              (Semantic, "Cannot cast"),(Semantic, "Cannot cast");
+        PermissiveCasts02.gal (Semantic, "does not match");
+        PermissiveCasts03.gal (Semantic, "Cannot cast");
+        Prim.gal;
+        raw1.gal (Semantic, "should be declared abstract");
+        raw2.gal;
+        raw3.gal (Semantic, "should be declared abstract");
+        raw4.gal;
+        raw5.gal (Semantic, "should be declared abstract");
+        raw6.gal  (Semantic, "should be declared abstract");
+        raw7.gal;
+        raw8.gal;
+        raw9.gal;
+        RawReturn01.gal;
+        RawReturn02.gal;
+        RawReturn03.gal (Semantic);
+        RawReturn04.gal (Semantic);
+        RawReturn05.gal;
+        RawReturn06.gal;
+        RawType01.gal;
+        RawType02.gal;
+        RawType03.gal (Semantic);
+        RawType04.gal (Semantic);
+        RawType05.gal;
+        RawType06.gal (Semantic);
+        RawType07.gal (Semantic);
+        Simple.gal;
+        simpleFBoundError.gal (Semantic);
+        SimpleFBoundSub.gal;
+        StaticInit01.gal;
+        StringTest.gal;
+        StringTest01.gal;
+        Switch01.gal;
+        Switch02.gal (Semantic, "Case label");
+        Switch03.gal (Semantic, "Case label");
+        TC12.gal;
+        TC195.gal;
+        test1.gal;
+        test2.gal;
+        test3.gal;
+        test4.gal;
+        test5.gal;
+        test6.gal;
+        test7.gal;
+        test8.gal;
+        test9.gal;
+        test11.gal;
+        test12.gal;
+        test13.gal;
+        test14.gal;
+        test16.gal;
+        test16b.gal;
+        test16c.gal;
+        test17.gal;
+        Throw01.gal;
+        Throw02.gal;
+        UnboxBooleans.gal;
+        Unboxing01.gal;
+        VarArgs01.gal;
+        VarArgs02.gal;
+        VarArgs03.gal;
+        VarArgs04.gal;
+        VarArgs05.gal;
+        VarArgs06.gal;
+        VarArgs07.gal;
+        VarArgs08.gal;
+        VarArgs09.gal;
+        VarArgs10.gal;
+        VarArgs11.gal (Semantic, "Method .* cannot be called");
+        VerySimple.gal;
+        WildCard01.gal;
+        WildCard02.gal (Semantic, "does not match"); 
+        WildCard03.gal;
+        WildCard04.gal;
+        WildCard05.gal;
+        WildCard06.gal; # TODO
+        Wildcard1.gal;
+        wildcard2.gal (Semantic), (Semantic), (Semantic);
+        wildcard2a.gal;
+        wildcard3.gal;
+        wildcard4.gal (Semantic, "cannot be called"), (Semantic, "cannot be called"), (Semantic, "does not match");
+        wildcard4a.gal;
+        wildcard5.gal (Semantic, "cannot be called"), (Semantic, "cannot be called") , (Semantic, "does not match");
+        wildcard5a.gal;
+        wildcard6.gal (Semantic, "does not match");
+        wildcard6a.gal;
+        wildcard7.gal (Semantic), (Semantic), (Semantic);
+        wildcard7a.gal;
+        wildcard8.gal (Semantic);
+        wildcard9.gal; # TODO
+        wildcard10.gal (Semantic, "capture"), (Semantic, "capture"), (Semantic, "does not match"); 
+        wildcard11.gal (Semantic, "capture"), (Semantic, "capture"), (Semantic, "does not match"), (Semantic, "does not match"), (Semantic, "does not match"); 
+        wildcard12a.gal(Semantic); 
+        wildcard12b.gal(Semantic); 
+        wildcard12c.gal(Semantic); 
+        wildcard12d.gal(Semantic); 
+        wildcard12e.gal;
+        wildcard13a.gal (Semantic); 
+        wildcard13b.gal (Semantic); 
+        wildcard13c.gal (Semantic); 
+        wildcard13d.gal; 
+        wildcard14a.gal (Semantic); 
+        wildcard14b.gal (Semantic); 
+        wildcard14c.gal (Semantic); 
+        wildcard14d.gal ; 
+        wildcard15.gal (Semantic),(Semantic); 
+        wildcard16.gal (Semantic, "Cannot assign long to");
+        wildcard17.gal (Semantic),(Semantic),(Semantic); 
+        wildcard18.gal (Semantic);
+        wildcard19.gal (Semantic, "not a subtype .* bound") , (Semantic);
+        wildcard20.gal (Semantic, "cannot be called");
+        wildcard21.gal (Semantic, "Unexpected type bound");
+        wildcard22.gal;
+        wildcard23.gal;
+        wildcard24.gal;
+}
+
+#polyglot.ext.jl5.JL5ExtensionInfo "-d out -classpath java-out -assert -noserial -postopts \"-Xlint\\:-options -source 1.5\" -morepermissivecasts" {
+gallifreyc.ExtensionInfo "-d out -classpath java-out -assert -noserial -postopts \"-Xlint\\:-options -source 1.5\" -morepermissivecasts" {
+        NumericConversion01.gal;
+        PermissiveCasts01.gal;
+        PermissiveCasts02.gal (Semantic, "does not match");
+        PermissiveCasts03.gal (Semantic, "Cannot cast");
+}
+
+#polyglot.ext.jl5.JL5ExtensionInfo "-d out -classpath java-out -removeJava5isms -enumImplClass MyEnum -assert -noserial -postopts \"-Xlint\\:-options -source 1.4\" -morepermissivecasts" {
+gallifreyc.ExtensionInfo "-d out -classpath java-out -removeJava5isms -enumImplClass MyEnum -assert -noserial -postopts \"-Xlint\\:-options -source 1.4\" -morepermissivecasts" {
+        NumericConversion01.gal;
+        PermissiveCasts01.gal;
+        PermissiveCasts02.gal (Semantic, "does not match");
+        PermissiveCasts03.gal (Semantic, "Cannot cast");
+}
+
+# Use source/target 1.5 since we're expecting CovariantReturn to be allowed
+#polyglot.ext.jl5.JL5ExtensionInfo "-d out -classpath java-out -removeJava5isms -leaveCovariantReturns -enumImplClass MyEnum -assert -noserial -postopts \"-Xlint\\:-options -source 1.5 -target 1.5\" -morepermissiveinference" {
+gallifreyc.ExtensionInfo "-d out -classpath java-out -removeJava5isms -leaveCovariantReturns -enumImplClass MyEnum -assert -noserial -postopts \"-Xlint\\:-options -source 1.5 -target 1.5\" -morepermissiveinference" {
+
+        CovariantRet01.gal;
+        CovariantRet02.gal;
+        CovariantRet03.gal;
+        CovariantRet04.gal;
+        CovariantRet05.gal;
+}

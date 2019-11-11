@@ -1,0 +1,12 @@
+class C {
+  void m() { }
+}
+
+class D extends C {
+  @Override // correct
+  void m() { }
+  @Deprecated // correct
+  void foobar() { }
+  @Deprecated // correct
+  D() { }
+}

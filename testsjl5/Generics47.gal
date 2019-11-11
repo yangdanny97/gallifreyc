@@ -1,0 +1,9 @@
+public class Generics47 {
+	void m(V v) {
+		java.util.Iterator<ClassX> it = v.iterator();
+	}
+}
+class V<T> {
+	java.util.Iterator<ClassX> iterator() { return null; }
+}
+class ClassX { }

@@ -1,0 +1,13 @@
+class Method04<E> extends C<E> {
+	static void foo() {
+	}
+
+	static void f() {
+		Method04.foo();
+	}
+}
+
+class C<E> {
+	static void foo() {
+	}
+}

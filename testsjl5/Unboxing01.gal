@@ -1,0 +1,5 @@
+class Foo {
+	<X extends Integer> void f(X x) {
+		int i = x;
+	}
+}
