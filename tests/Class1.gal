@@ -1,0 +1,4 @@
+class RemoveCollectionLost {
+	local String collection ;
+	RemoveCollectionLost ( unique String col ) { collection = col ; }
+}

@@ -5,6 +5,7 @@ package gallifreyc.parse;
 
 import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.ast.GallifreyNodeFactory;
+import gallifreyc.ast.*;
 import polyglot.parse.Name;
 import polyglot.parse.VarDeclarator;
 
@@ -19,6 +20,50 @@ parser Grm extends polyglot.ext.jl7.parse.Grm {:
     }
 :};
 
+terminal Token ALLOWS;
+terminal Token BRANCH;
+terminal Token CONTINGENT;
+terminal Token DELETE;
+terminal Token ENSURES;
+terminal Token LOCAL;
+terminal Token MATCH_RESTRICTION;
+terminal Token MERGE;
+terminal Token REQUIRES;
+terminal Token RESTRICTION;
+terminal Token SHARED;
+terminal Token TEST;
+terminal Token THREAD;
+terminal Token TRANSITION;
+terminal Token UNIQUE;
+terminal Token WHEN;
+terminal Token WHERE;
+terminal Token WITH;
+
+non terminal PreCondition pre_condition_opt;
+non terminal PostCondition post_condition_opt;
+
+
 start with goal;
+
+override abstract_method_declaration ::=
+    // MethodDecl
+    method_header:a pre_condition_opt:b post_condition_opt:c SEMICOLON
+{: RESULT = parser.nf.MethodDecl(a.position(), a, b, c); :}
+;
+
+pre_condition_opt ::=
+    // PreCondition
+    {: RESULT = null; :}
+    | REQUIRES:a expression:b
+    {: RESULT = parser.nf.PreCondition(parser.pos(a, b), b); :}
+;
+
+post_condition_opt ::=
+    // PostCondition
+    {: RESULT = null; :}
+    | ENSURES:a expression:b
+    {: RESULT = parser.nf.PostCondition(parser.pos(a, b), b); :}
+;
+
 
 // TODO: modify the default Java grammar using PPG operations

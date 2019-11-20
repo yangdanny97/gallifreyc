@@ -117,6 +117,26 @@ import java.util.Set;
         keywords.put("void",          sym.VOID);
         keywords.put("volatile",      sym.VOLATILE);
         keywords.put("while",         sym.WHILE);
+        
+        // Gallifrey specific keywords
+        keywords.put("allows",            new Integer(sym.ALLOWS));
+        keywords.put("branch",            new Integer(sym.BRANCH));
+        keywords.put("contingent",        new Integer(sym.CONTINGENT));
+        keywords.put("delete",            new Integer(sym.DELETE));
+        keywords.put("ensures",           new Integer(sym.ENSURES));
+        keywords.put("local",             new Integer(sym.LOCAL));
+        keywords.put("match_restriction", new Integer(sym.MATCH_RESTRICTION));
+        keywords.put("merge",             new Integer(sym.MERGE));
+        keywords.put("requires",          new Integer(sym.REQUIRES));
+        keywords.put("restriction",       new Integer(sym.RESTRICTION));
+        keywords.put("shared",            new Integer(sym.SHARED));
+        keywords.put("test",              new Integer(sym.TEST));
+        keywords.put("thread",            new Integer(sym.THREAD));
+        keywords.put("transition",        new Integer(sym.TRANSITION));
+        keywords.put("unique",            new Integer(sym.UNIQUE));
+        keywords.put("when",              new Integer(sym.WHEN));
+        keywords.put("where",             new Integer(sym.WHERE));
+        keywords.put("with",              new Integer(sym.WITH));
     }
 
     @Override

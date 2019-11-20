@@ -1,0 +1,11 @@
+import java.util.Set;
+
+interface Library {
+	int numItems ();
+
+	unique Set getItems ( unique String col )
+	requires collection ( col );
+
+	void addCollection ( unique String col )
+	ensures collection ( col );
+}

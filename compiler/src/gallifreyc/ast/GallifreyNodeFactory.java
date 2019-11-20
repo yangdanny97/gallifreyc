@@ -15,4 +15,9 @@ import java.util.*;
  */
 public interface GallifreyNodeFactory extends JL7NodeFactory {
     // TODO: Declare any factory methods for new AST nodes.
+    PreCondition PreCondition(Position pos, Expr e);
+    PostCondition PostCondition(Position pos, Expr e);
+//    ConditionedMethodDecl ConditionedMethodDecl(Position pos, MethodDecl method, PreCondition pre, PostCondition post);
+    MethodDecl MethodDecl(Position pos, MethodDecl method, PreCondition pre, PostCondition post);
+
 }

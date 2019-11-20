@@ -20,4 +20,9 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
 
     // TODO: Override factory methods for new extension nodes in the current
     // extension.
+    @Override
+    protected Ext extMethodDeclImpl() {
+        return new GallifreyMethodDeclExt();
+    }
+
 }

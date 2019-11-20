@@ -10,6 +10,7 @@ public class sym {
   /* terminals */
   public static final int PACKAGE = 23;
   public static final int LT = 70;
+  public static final int TRANSITION = 125;
   public static final int WHILE = 49;
   public static final int LONG_LITERAL_BD = 97;
   public static final int MOD = 66;
@@ -36,7 +37,9 @@ public class sym {
   public static final int GOTO = 106;
   public static final int EQ = 19;
   public static final int EQEQ = 75;
+  public static final int SHARED = 122;
   public static final int RBRACK = 11;
+  public static final int UNIQUE = 126;
   public static final int RBRACE = 18;
   public static final int OROR = 81;
   public static final int STATIC = 28;
@@ -54,17 +57,23 @@ public class sym {
   public static final int NULL_LITERAL = 103;
   public static final int INT = 5;
   public static final int SEMICOLON = 14;
+  public static final int DELETE = 115;
+  public static final int ALLOWS = 112;
+  public static final int LOCAL = 117;
   public static final int MULT = 15;
   public static final int ASSERT = 108;
   public static final int TRY = 55;
   public static final int URSHIFTEQ = 90;
+  public static final int CONTINGENT = 114;
   public static final int INTEGER_LITERAL = 94;
   public static final int OR = 79;
+  public static final int TEST = 123;
   public static final int ANDEQ = 91;
   public static final int GT = 71;
   public static final int CATCH = 56;
   public static final int THROW = 54;
   public static final int MINUSEQ = 87;
+  public static final int WHERE = 128;
   public static final int PROTECTED = 26;
   public static final int CLASS = 35;
   public static final int LBRACK = 10;
@@ -81,6 +90,7 @@ public class sym {
   public static final int IF = 43;
   public static final int ANDAND = 80;
   public static final int AT = 111;
+  public static final int ENSURES = 116;
   public static final int SYNCHRONIZED = 32;
   public static final int BOOLEAN = 2;
   public static final int IMPLEMENTS = 37;
@@ -94,10 +104,14 @@ public class sym {
   public static final int MODEQ = 85;
   public static final int DOT = 13;
   public static final int RSHIFT = 68;
+  public static final int WITH = 129;
+  public static final int THREAD = 124;
   public static final int BYTE = 3;
+  public static final int MATCH_RESTRICTION = 118;
   public static final int XOR = 78;
   public static final int JAVADOC = 104;
   public static final int VOLATILE = 34;
+  public static final int MERGE = 119;
   public static final int DEFAULT = 47;
   public static final int SHORT = 4;
   public static final int INSTANCEOF = 74;
@@ -105,15 +119,19 @@ public class sym {
   public static final int MINUS = 62;
   public static final int GTEQ = 73;
   public static final int LONG_LITERAL = 96;
+  public static final int RESTRICTION = 121;
   public static final int BOOLEAN_LITERAL = 100;
   public static final int FLOAT_LITERAL = 99;
   public static final int COLON = 22;
   public static final int NOTEQ = 76;
   public static final int error = 1;
+  public static final int REQUIRES = 120;
   public static final int ENUM = 110;
   public static final int QUESTION = 82;
   public static final int FINALLY = 57;
+  public static final int WHEN = 127;
   public static final int LSHIFTEQ = 88;
+  public static final int BRANCH = 113;
   public static final int URSHIFT = 69;
   public static final int INTERFACE = 42;
   public static final int DIV = 65;
@@ -232,7 +250,25 @@ public class sym {
   "ASSERT",
   "ELLIPSIS",
   "ENUM",
-  "AT"
+  "AT",
+  "ALLOWS",
+  "BRANCH",
+  "CONTINGENT",
+  "DELETE",
+  "ENSURES",
+  "LOCAL",
+  "MATCH_RESTRICTION",
+  "MERGE",
+  "REQUIRES",
+  "RESTRICTION",
+  "SHARED",
+  "TEST",
+  "THREAD",
+  "TRANSITION",
+  "UNIQUE",
+  "WHEN",
+  "WHERE",
+  "WITH"
   };
 }
 

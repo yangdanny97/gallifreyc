@@ -1,0 +1,3 @@
+restriction AddOnly for Library {
+	allows addItem;
+}

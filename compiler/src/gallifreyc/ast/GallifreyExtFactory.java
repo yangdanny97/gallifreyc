@@ -9,4 +9,7 @@ import polyglot.ext.jl7.ast.JL7ExtFactory;
  */
 public interface GallifreyExtFactory extends JL7ExtFactory {
     // TODO: Declare any factory methods for new extension nodes.
+    Ext extPreCondition();
+    Ext extPostCondition();
+    Ext extConditionedMethodDecl();
 }
