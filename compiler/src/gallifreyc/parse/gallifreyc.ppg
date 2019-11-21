@@ -41,10 +41,35 @@ terminal Token WITH;
 
 non terminal PreCondition pre_condition_opt;
 non terminal PostCondition post_condition_opt;
-
+non terminal RefQualification ref_qualification;
 
 start with goal;
 
+// Reference Qualifications (local, unique, shared)
+// TODO: Add example, fix result types
+override type ::=
+    // TypeNode
+    primitive_type:a
+{: RESULT = a; :}
+|   ref_qualification:r reference_type:a
+{:
+ //RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(r, a), r, a);
+ RESULT = a;
+ :}
+;
+
+ref_qualification ::=
+    // RefQualification
+    LOCAL:a
+{: RESULT = parser.nf.LocalRef(parser.pos(a)); :}
+| UNIQUE:a
+{: RESULT = parser.nf.UniqueRef(parser.pos(a)); :}
+| SHARED:a LBRACK IDENTIFIER:b RBRACK:c
+{: RESULT = parser.nf.SharedRef(parser.pos(a,c),
+                                parser.nf.Id(parser.pos(b), b.getIdentifier())); :}
+;
+
+// Pre/post conditions on method declarations in interfaces
 override abstract_method_declaration ::=
     // MethodDecl
     method_header:a pre_condition_opt:b post_condition_opt:c SEMICOLON

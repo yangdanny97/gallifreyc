@@ -43,20 +43,26 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
         return method;
     }
     
-//    public ConditionedMethodDecl ConditionedMethodDecl(Position pos, MethodDecl method, PreCondition pre, PostCondition post) {
-//        ConditionedMethodDecl c = new ConditionedMethodDecl_c(pos, method, pre, post);
-//        
-//        JL5MethodDeclExt old_ext = (JL5MethodDeclExt) JL5Ext.ext(method);
-//        
-//        MethodDecl n = (MethodDecl) c;
-//        // GallifreyMethodDeclExt should extend JL5MethodDeclExt and have pre/post-condition fields
-//        GallifreyMethodDeclExt new_ext = (GallifreyMethodDeclExt) GallifreyExt.ext(n);
-//        new_ext.typeParams = old_ext.typeParams();
-//        new_ext.annotationElems = old_ext.annotationElems();
-//        
-//        c = ext(c, extFactory().extConditionedMethodDecl());
-//        return c;
-//    }
+    @Override
+    public LocalRef LocalRef(Position pos) {
+        LocalRef l = new LocalRef_c(pos);
+        l = ext(l, extFactory().extLocalRef());
+        return l;
+    }
+
+    @Override
+    public UniqueRef UniqueRef(Position pos) {
+        UniqueRef u = new UniqueRef_c(pos);
+        u = ext(u, extFactory().extUniqueRef());
+        return u;
+    }
+
+    @Override
+    public SharedRef SharedRef(Position pos, Id restriction) {
+        SharedRef s = new SharedRef_c(pos, restriction);
+        s = ext(s, extFactory().extSharedRef());
+        return s;
+    }
 
     // TODO:  Override factory methods for overridden AST nodes.
     // TODO:  Override factory methods for AST nodes with new extension nodes.

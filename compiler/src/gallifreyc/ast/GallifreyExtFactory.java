@@ -11,5 +11,8 @@ public interface GallifreyExtFactory extends JL7ExtFactory {
     // TODO: Declare any factory methods for new extension nodes.
     Ext extPreCondition();
     Ext extPostCondition();
-    Ext extConditionedMethodDecl();
+    Ext extLocalRef();
+    Ext extUniqueRef();
+    Ext extSharedRef();
+    Ext extRefQualification();
 }

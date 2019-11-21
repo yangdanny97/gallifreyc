@@ -19,5 +19,7 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     PostCondition PostCondition(Position pos, Expr e);
 //    ConditionedMethodDecl ConditionedMethodDecl(Position pos, MethodDecl method, PreCondition pre, PostCondition post);
     MethodDecl MethodDecl(Position pos, MethodDecl method, PreCondition pre, PostCondition post);
-
+    LocalRef LocalRef(Position pos);
+    UniqueRef UniqueRef(Position pos);
+    SharedRef SharedRef(Position pos, Id restriction);
 }

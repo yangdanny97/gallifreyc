@@ -49,19 +49,64 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         return postExtPostCondition(e);
     }
     
-    public final Ext extConditionedMethodDecl() {
-        Ext e = extConditionedMethodDeclImpl();
+    public final Ext extLocalRef() {
+        Ext e = extLocalRefImpl();
 
         ExtFactory nextEF = nextExtFactory();
         Ext e2;
         if (nextEF instanceof GallifreyExtFactory) {
-            e2 = ((GallifreyExtFactory) nextEF).extConditionedMethodDecl();
+            e2 = ((GallifreyExtFactory) nextEF).extLocalRef();
         } else {
-            e2 = nextEF.extMethodDecl();
+            e2 = nextEF.extNode();
         }
 
         e = composeExts(e, e2);
-        return postExtConditionedMethodDecl(e);
+        return postExtLocalRef(e);
+    }
+
+    public final Ext extUniqueRef() {
+        Ext e = extUniqueRefImpl();
+
+        ExtFactory nextEF = nextExtFactory();
+        Ext e2;
+        if (nextEF instanceof GallifreyExtFactory) {
+            e2 = ((GallifreyExtFactory) nextEF).extUniqueRef();
+        } else {
+            e2 = nextEF.extNode();
+        }
+
+        e = composeExts(e, e2);
+        return postExtUniqueRef(e);
+    }
+
+    public final Ext extSharedRef() {
+        Ext e = extSharedRefImpl();
+
+        ExtFactory nextEF = nextExtFactory();
+        Ext e2;
+        if (nextEF instanceof GallifreyExtFactory) {
+            e2 = ((GallifreyExtFactory) nextEF).extSharedRef();
+        } else {
+            e2 = nextEF.extNode();
+        }
+
+        e = composeExts(e, e2);
+        return postExtSharedRef(e);
+    }
+    
+    public final Ext extRefQualification() {
+        Ext e = extRefQualificationImpl();
+
+        ExtFactory nextEF = nextExtFactory();
+        Ext e2;
+        if (nextEF instanceof GallifreyExtFactory) {
+            e2 = ((GallifreyExtFactory) nextEF).extRefQualification();
+        } else {
+            e2 = nextEF.extNode();
+        }
+
+        e = composeExts(e, e2);
+        return postExtRefQualification(e);
     }
 
 
@@ -71,8 +116,17 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     protected Ext extPostConditionImpl() {
         return extNode();
     }
-    protected Ext extConditionedMethodDeclImpl() {
-        return extMethodDecl();
+    protected Ext extLocalRefImpl() {
+        return extRefQualification();
+    }
+    protected Ext extUniqueRefImpl() {
+        return extRefQualification();
+    }
+    protected Ext extSharedRefImpl() {
+        return extRefQualification();
+    }
+    protected Ext extRefQualificationImpl() {
+        return extNode();
     }
 
 
@@ -82,7 +136,16 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     protected Ext postExtPostCondition(Ext e) {
         return postExtNode(e);
     }
-    protected Ext postExtConditionedMethodDecl(Ext e) {
-        return postExtMethodDecl(e);
+    protected Ext postExtLocalRef(Ext e) {
+        return postExtRefQualification(e);
+    }
+    protected Ext postExtUniqueRef(Ext e) {
+        return postExtRefQualification(e);
+    }
+    protected Ext postExtSharedRef(Ext e) {
+        return postExtRefQualification(e);
+    }
+    protected Ext postExtRefQualification(Ext e) {
+        return postExtNode(e);
     }
 }

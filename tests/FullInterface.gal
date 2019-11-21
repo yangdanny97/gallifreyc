@@ -1,3 +1,7 @@
+import java.util.Set;
+
+interface Item {};
+
 interface Library {
 	int numItems ();
 
