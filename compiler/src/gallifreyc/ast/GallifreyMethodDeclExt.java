@@ -7,6 +7,8 @@ public class GallifreyMethodDeclExt extends GallifreyExt {
     
     protected PreCondition pre;
     protected PostCondition post;
+    // Is this MethodDecl a "test"?
+    protected boolean isTest;
 
     PreCondition pre() {
         return pre;
@@ -14,5 +16,9 @@ public class GallifreyMethodDeclExt extends GallifreyExt {
     
     PostCondition post() {
         return post;
+    }
+    
+    boolean isTest() {
+        return isTest;
     }
 }

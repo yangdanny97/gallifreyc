@@ -108,6 +108,66 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         e = composeExts(e, e2);
         return postExtRefQualification(e);
     }
+    
+    public final Ext extRestrictionDecl() {
+        Ext e = extRestrictionDeclImpl();
+
+        ExtFactory nextEF = nextExtFactory();
+        Ext e2;
+        if (nextEF instanceof GallifreyExtFactory) {
+            e2 = ((GallifreyExtFactory) nextEF).extRestrictionDecl();
+        } else {
+            e2 = nextEF.extNode();
+        }
+
+        e = composeExts(e, e2);
+        return postExtRestrictionDecl(e);
+    }
+
+    public final Ext extRestrictionBody() {
+        Ext e = extRestrictionBodyImpl();
+
+        ExtFactory nextEF = nextExtFactory();
+        Ext e2;
+        if (nextEF instanceof GallifreyExtFactory) {
+            e2 = ((GallifreyExtFactory) nextEF).extRestrictionBody();
+        } else {
+            e2 = nextEF.extNode();
+        }
+
+        e = composeExts(e, e2);
+        return postExtRestrictionBody(e);
+    }
+
+    public final Ext extRestrictionMember() {
+        Ext e = extRestrictionMemberImpl();
+
+        ExtFactory nextEF = nextExtFactory();
+        Ext e2;
+        if (nextEF instanceof GallifreyExtFactory) {
+            e2 = ((GallifreyExtFactory) nextEF).extRestrictionMember();
+        } else {
+            e2 = nextEF.extNode();
+        }
+
+        e = composeExts(e, e2);
+        return postExtRestrictionMember(e);
+    }
+
+    public final Ext extAllowsStmt() {
+        Ext e = extAllowsStmtImpl();
+
+        ExtFactory nextEF = nextExtFactory();
+        Ext e2;
+        if (nextEF instanceof GallifreyExtFactory) {
+            e2 = ((GallifreyExtFactory) nextEF).extAllowsStmt();
+        } else {
+            e2 = nextEF.extNode();
+        }
+
+        e = composeExts(e, e2);
+        return postExtAllowsStmt(e);
+    }
 
 
     protected Ext extPreConditionImpl() {
@@ -128,6 +188,18 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     protected Ext extRefQualificationImpl() {
         return extNode();
     }
+    protected Ext extRestrictionDeclImpl() {
+        return extNode();
+    }
+    protected Ext extRestrictionBodyImpl() {
+        return extNode();
+    }
+    protected Ext extRestrictionMemberImpl() {
+        return extNode();
+    }
+    protected Ext extAllowsStmtImpl() {
+        return extRestrictionMember();
+    }
 
 
     protected Ext postExtPreCondition(Ext e) {
@@ -147,5 +219,17 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     }
     protected Ext postExtRefQualification(Ext e) {
         return postExtNode(e);
+    }
+    protected Ext postExtRestrictionDecl(Ext e) {
+        return postExtNode(e);
+    }
+    protected Ext postExtRestrictionBody(Ext e) {
+        return postExtNode(e);
+    }
+    protected Ext postExtRestrictionMember(Ext e) {
+        return postExtNode(e);
+    }
+    protected Ext postExtAllowsStmt(Ext e) {
+        return postExtRestrictionMember(e);
     }
 }

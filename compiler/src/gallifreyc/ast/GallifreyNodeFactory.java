@@ -1,6 +1,7 @@
 package gallifreyc.ast;
 
 import polyglot.ast.*;
+import polyglot.ext.jl5.parse.FlagAnnotations;
 import polyglot.ext.jl7.ast.JL7NodeFactory;
 import polyglot.types.Flags;
 import polyglot.types.Package;
@@ -22,4 +23,14 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     LocalRef LocalRef(Position pos);
     UniqueRef UniqueRef(Position pos);
     SharedRef SharedRef(Position pos, Id restriction);
+    
+    // Restrictions
+    // Restrictions
+    RestrictionDecl RestrictionDecl(Position pos, Id id, Id for_id, RestrictionBody body);
+    RestrictionBody RestrictionBody(Position Pos, List<Node> members);
+    AllowsStmt AllowsStmt(Position pos, Id id);
+    AllowsStmt AllowsStmt(Position pos, Id id, Id contingent_id);
+    MethodDecl MethodDecl(Position pos, FlagAnnotations flags, TypeNode returnType,
+                          Id name, List<Formal> formals, List<TypeNode> throwTypes,
+                          Block body, boolean isTest);
 }
