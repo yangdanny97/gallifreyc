@@ -100,6 +100,12 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
         ext.isTest = isTest;
         return n;
     }
+    
+    public RefQualifiedTypeNode RefQualifiedTypeNode(Position pos, RefQualification refQualification, TypeNode t) {
+        RefQualifiedTypeNode n = new RefQualifiedTypeNode_c(pos, refQualification, t);
+        n = ext(n, extFactory().extRefQualifiedTypeNode());
+        return n;
+    }
 
 
     // TODO:  Override factory methods for overridden AST nodes.

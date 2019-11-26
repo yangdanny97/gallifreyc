@@ -66,8 +66,8 @@ override type ::=
 {: RESULT = a; :}
 |   ref_qualification:r reference_type:a
 {:
- //RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(r, a), r, a);
- RESULT = a;
+ RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(r, a), r, a);
+ //RESULT = a;
  :}
 ;
 
