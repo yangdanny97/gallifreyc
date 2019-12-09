@@ -61,5 +61,10 @@ public class ExtensionInfo extends JL7ExtensionInfo {
     protected TypeSystem createTypeSystem() {
         return new GallifreyTypeSystem_c();
     }
+    
+    @Override
+    public Scheduler createScheduler() {
+        return new GallifreyScheduler(this);
+    }
 
 }

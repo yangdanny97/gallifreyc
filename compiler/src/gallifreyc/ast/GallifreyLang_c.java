@@ -1,5 +1,6 @@
 package gallifreyc.ast;
 
+import gallifreyc.visit.RefQualificationAdder;
 import polyglot.ast.*;
 import polyglot.ext.jl7.ast.J7Lang_c;
 import polyglot.util.InternalCompilerError;
@@ -28,6 +29,20 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
     @Override
     protected NodeOps NodeOps(Node n) {
         return gallifreycExt(n);
+    }
+    
+    protected GallifreyOps GallifreyOps(Node n) {
+        return gallifreycExt(n);
+    }
+
+    @Override
+    public final RefQualificationAdder addRefQualificationEnter(Node n, RefQualificationAdder v) {
+        return GallifreyOps(n).addRefQualificationEnter(v);
+    }
+
+    @Override
+    public final Node addRefQualification(Node n, RefQualificationAdder v) {
+        return GallifreyOps(n).addRefQualification(v);
     }
 
     // TODO:  Implement dispatch methods for new AST operations.

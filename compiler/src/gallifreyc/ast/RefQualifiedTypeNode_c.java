@@ -1,6 +1,8 @@
 package gallifreyc.ast;
 
 import gallifreyc.types.GallifreyTypeSystem;
+import gallifreyc.visit.RefQualificationAdder;
+import polyglot.ast.MethodDecl;
 import polyglot.ast.Node;
 import polyglot.ast.NodeFactory;
 import polyglot.ast.TypeNode;
@@ -36,23 +38,11 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
     public TypeNode base() {
         return base;
     }
-
-    @Override
-    public RefQualifiedTypeNode base(TypeNode base) {
-        return base(this, base);
-    }
-
-    protected <N extends RefQualifiedTypeNode_c> N base(N n, TypeNode base) {
-        if (n.base == base) return n;
-        n = copyIfNeeded(n);
-        n.base = base;
-        return n;
-    }
-
-    protected <N extends RefQualifiedTypeNode_c> N reconstruct(N n, TypeNode base) {
-        n = base(n, base);
-        return n;
-    }
+    
+//    @Override
+//    public Type type() {
+//        return base.type();
+//    }
 
     @Override
     public Node visitChildren(NodeVisitor v) {
@@ -88,10 +78,10 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
 //            return this;
 //        }
 
-//        return nf.CanonicalTypeNode(position(),
-//                                    ts.refQualifiedTypeOf(position(), baseType, this.refQualification));
         return nf.CanonicalTypeNode(position(),
-                                    this.base.type());
+                                    ts.refQualifiedTypeOf(position(), baseType, this.refQualification));
+//      return nf.CanonicalTypeNode(position(),
+//                                  this.base.type());
     }
 
     @Override

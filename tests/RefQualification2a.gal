@@ -1,0 +1,6 @@
+public class Hello {
+    public static void main(local String[] args) {
+        local String phrase = "";
+        System.out.println(phrase);
+    }
+}

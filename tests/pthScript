@@ -29,9 +29,12 @@
 gallifreyc.ExtensionInfo "-d out" {
     # Hello.gal;
     RefQualification1.gal;
-    RefQualification2.gal;
+    RefQualification2a.gal;
+    RefQualification2b.gal;
     RefQualification3.gal;
     RefQualification4.gal;
+    RefQualification5.gal;
+    RefQualification6.gal;
     Interface1.gal;
     Interface2.gal;
     Interface3.gal;
@@ -42,4 +45,5 @@ gallifreyc.ExtensionInfo "-d out" {
     Restriction2.gal;
     Restriction3.gal;
     InterfaceWithoutRefQualifiedTypes.gal;
+    Shared1.gal;
 }
