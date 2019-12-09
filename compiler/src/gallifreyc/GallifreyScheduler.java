@@ -1,6 +1,7 @@
 package gallifreyc;
 
 import gallifreyc.visit.RefQualificationAdder;
+import gallifreyc.visit.SharedTypeWrapper;
 import polyglot.ast.NodeFactory;
 import polyglot.ext.jl7.JL7Scheduler;
 import polyglot.frontend.CyclicDependencyException;
@@ -23,7 +24,6 @@ public class GallifreyScheduler extends JL7Scheduler {
         super(extInfo);
     }
 
-    // TODO: Add the rewriting pass.
     public Goal AddRefQualification(Job job) {
         ExtensionInfo extInfo = job.extensionInfo();
         TypeSystem ts = extInfo.typeSystem();
@@ -43,11 +43,24 @@ public class GallifreyScheduler extends JL7Scheduler {
         NodeFactory nf = extInfo.nodeFactory();
         Goal g = TypeChecked.create(this, job, ts, nf);
         try {
-            // Make sure we have type information before we translate things.
             g.addPrerequisiteGoal(AddRefQualification(job), this);
+            g.addPrerequisiteGoal(WrapSharedType(job), this);
         } catch (CyclicDependencyException e) {
             throw new InternalCompilerError(e);
           }     
         return g;
+    }
+    
+    public Goal WrapSharedType(Job job) {
+        ExtensionInfo extInfo = job.extensionInfo();
+        TypeSystem ts = extInfo.typeSystem();
+        NodeFactory nf = extInfo.nodeFactory();
+        Goal g = new VisitorGoal(job, new SharedTypeWrapper(job, ts, nf));
+        try {
+            g.addPrerequisiteGoal(Disambiguated(job), this);
+        } catch (CyclicDependencyException e) {
+            throw new InternalCompilerError(e);
+        }
+        return internGoal(g);
     }
 }

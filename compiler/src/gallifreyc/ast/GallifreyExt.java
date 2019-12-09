@@ -1,6 +1,7 @@
 package gallifreyc.ast;
 
 import gallifreyc.visit.RefQualificationAdder;
+import gallifreyc.visit.SharedTypeWrapper;
 import polyglot.ast.*;
 import polyglot.util.InternalCompilerError;
 import polyglot.util.SerialVersionUID;
@@ -33,6 +34,17 @@ public class GallifreyExt extends Ext_c implements GallifreyOps {
     @Override
     public Node addRefQualification(RefQualificationAdder v) {
 //        System.out.printf("Calling addRefQualificationEnter on this='%s' whose class is %s\n", node(), node().getClass().getName());
+        return node();
+    }
+
+    @Override
+    public SharedTypeWrapper wrapSharedTypeEnter(SharedTypeWrapper v) {
+        return v;
+    }
+
+    @Override
+    public Node wrapSharedType(SharedTypeWrapper v) {
+//        System.out.printf("Calling wrapSharedType on this='%s' whose class is '%s'\n", node(), node().getClass().getName());
         return node();
     }
 

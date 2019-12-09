@@ -34,10 +34,4 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
     protected Ext extCanonicalTypeNodeImpl() {
         return new GallifreyCanonicalTypeNodeExt();
     }
-    
-    @Override
-    protected Ext extRefQualifiedTypeNodeImpl() {
-        System.out.println("Returning a GallifreyRefQualifiedTypeNodeExt");
-        return new GallifreyRefQualifiedTypeNodeExt();
-    }
 }
