@@ -34,4 +34,9 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
     protected Ext extCanonicalTypeNodeImpl() {
         return new GallifreyCanonicalTypeNodeExt();
     }
+    
+    @Override
+    protected Ext extSourceFileImpl() {
+        return new GallifreySourceFileExt();
+    }
 }

@@ -11,6 +11,7 @@ import polyglot.frontend.JLScheduler;
 import polyglot.frontend.Job;
 import polyglot.frontend.goals.Goal;
 import polyglot.frontend.goals.TypeChecked;
+import polyglot.frontend.goals.Disambiguated;
 import polyglot.frontend.goals.VisitorGoal;
 import polyglot.types.TypeSystem;
 import polyglot.util.InternalCompilerError;
@@ -30,11 +31,25 @@ public class GallifreyScheduler extends JL7Scheduler {
         NodeFactory nf = extInfo.nodeFactory();
         Goal g = new VisitorGoal(job, new RefQualificationAdder(job, ts, nf));
         try {
-            g.addPrerequisiteGoal(Disambiguated(job), this);
+            g.addPrerequisiteGoal(WrapSharedType(job), this);
         } catch (CyclicDependencyException e) {
             throw new InternalCompilerError(e);
         }
         return internGoal(g);
+    }
+    
+    @Override
+    public Goal Disambiguated(Job job) {
+        TypeSystem ts = extInfo.typeSystem();
+        NodeFactory nf = extInfo.nodeFactory();
+        Goal g = Disambiguated.create(this, job, ts, nf);
+        try {
+            g.addPrerequisiteGoal(WrapSharedType(job), this);
+            g.addPrerequisiteGoal(AddRefQualification(job), this);
+        } catch (CyclicDependencyException e) {
+            throw new InternalCompilerError(e);
+        }
+        return g;
     }
     
     @Override
@@ -56,11 +71,12 @@ public class GallifreyScheduler extends JL7Scheduler {
         TypeSystem ts = extInfo.typeSystem();
         NodeFactory nf = extInfo.nodeFactory();
         Goal g = new VisitorGoal(job, new SharedTypeWrapper(job, ts, nf));
-        try {
-            g.addPrerequisiteGoal(Disambiguated(job), this);
-        } catch (CyclicDependencyException e) {
-            throw new InternalCompilerError(e);
-        }
+//        try {
+//            g.addPrerequisiteGoal(Disambiguated(job), this);
+//        } catch (CyclicDependencyException e) {
+//            throw new InternalCompilerError(e);
+//        }
+//        g.addCorequisiteGoal(Disambiguated(job), this);
         return internGoal(g);
     }
 }

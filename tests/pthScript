@@ -35,6 +35,8 @@ gallifreyc.ExtensionInfo "-d out" {
     RefQualification4.gal;
     RefQualification5.gal;
     RefQualification6.gal;
+    RefQualification7.gal;
+    RefQualification8.gal;
     Interface1.gal;
     Interface2.gal;
     Interface3.gal;
