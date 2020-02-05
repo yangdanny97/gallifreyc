@@ -1,22 +1,23 @@
-package gallifreyc.ast;
+package gallifreyc.ast.nodes;
 
-import polyglot.ast.*;
+import polyglot.ast.Expr;
+import polyglot.ast.Node_c;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
-public class PostCondition_c extends Node_c implements PostCondition {
+public class PreCondition_c extends Node_c implements PreCondition {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
     protected Expr cond;
 
-    public PostCondition_c(Position pos, Expr e) {
+    public PreCondition_c(Position pos, Expr e) {
         super(pos);
         this.cond = e;
     }
 
     @Override
     public String toString() {
-        return "ensures " + cond.toString();
+        return "requires " + cond.toString();
     }
 
     @Override

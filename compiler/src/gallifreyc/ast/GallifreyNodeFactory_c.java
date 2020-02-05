@@ -11,6 +11,26 @@ import polyglot.util.*;
 
 import java.util.*;
 
+import gallifreyc.ast.nodes.AllowsStmt;
+import gallifreyc.ast.nodes.AllowsStmt_c;
+import gallifreyc.ast.nodes.LocalRef;
+import gallifreyc.ast.nodes.LocalRef_c;
+import gallifreyc.ast.nodes.PostCondition;
+import gallifreyc.ast.nodes.PostCondition_c;
+import gallifreyc.ast.nodes.PreCondition;
+import gallifreyc.ast.nodes.PreCondition_c;
+import gallifreyc.ast.nodes.RefQualification;
+import gallifreyc.ast.nodes.RefQualifiedTypeNode;
+import gallifreyc.ast.nodes.RefQualifiedTypeNode_c;
+import gallifreyc.ast.nodes.RestrictionBody;
+import gallifreyc.ast.nodes.RestrictionBody_c;
+import gallifreyc.ast.nodes.RestrictionDecl;
+import gallifreyc.ast.nodes.RestrictionDecl_c;
+import gallifreyc.ast.nodes.SharedRef;
+import gallifreyc.ast.nodes.SharedRef_c;
+import gallifreyc.ast.nodes.UniqueRef;
+import gallifreyc.ast.nodes.UniqueRef_c;
+
 /**
  * NodeFactory for gallifreyc extension.
  */

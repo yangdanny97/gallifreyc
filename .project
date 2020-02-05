@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>polyglot</name>
+			<type>2</type>
+			<location>/Users/dannyyang/Documents/GitHub/polyglot</location>
+		</link>
+	</linkedResources>
 </projectDescription>

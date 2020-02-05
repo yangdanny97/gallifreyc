@@ -11,6 +11,17 @@ import polyglot.util.*;
 
 import java.util.*;
 
+import gallifreyc.ast.nodes.AllowsStmt;
+import gallifreyc.ast.nodes.LocalRef;
+import gallifreyc.ast.nodes.PostCondition;
+import gallifreyc.ast.nodes.PreCondition;
+import gallifreyc.ast.nodes.RefQualification;
+import gallifreyc.ast.nodes.RefQualifiedTypeNode;
+import gallifreyc.ast.nodes.RestrictionBody;
+import gallifreyc.ast.nodes.RestrictionDecl;
+import gallifreyc.ast.nodes.SharedRef;
+import gallifreyc.ast.nodes.UniqueRef;
+
 /**
  * NodeFactory for gallifreyc extension.
  */
@@ -25,7 +36,6 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     SharedRef SharedRef(Position pos, Id restriction);
     RefQualifiedTypeNode RefQualifiedTypeNode(Position pos, RefQualification refQualification, TypeNode t);
     
-    // Restrictions
     // Restrictions
     RestrictionDecl RestrictionDecl(Position pos, Id id, Id for_id, RestrictionBody body);
     RestrictionBody RestrictionBody(Position Pos, List<Node> members);

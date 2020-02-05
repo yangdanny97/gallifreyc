@@ -1,4 +1,4 @@
-package gallifreyc.ast;
+package gallifreyc.ast.nodes;
 
 import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.visit.RefQualificationAdder;

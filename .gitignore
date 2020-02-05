@@ -1,3 +1,8 @@
 /bin_
+/bin
 compiler/classes/gallifreyc
-tests/out
+tests/out/*
+tests/*.results
+.DS_Store
+*.DS_Store
+*/.DS_Store

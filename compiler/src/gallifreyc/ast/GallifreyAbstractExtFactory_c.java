@@ -188,68 +188,87 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     protected Ext extPreConditionImpl() {
         return extNode();
     }
+    
     protected Ext extPostConditionImpl() {
         return extNode();
     }
+    
     protected Ext extLocalRefImpl() {
         return extRefQualification();
     }
+    
     protected Ext extUniqueRefImpl() {
         return extRefQualification();
     }
+    
     protected Ext extSharedRefImpl() {
         return extRefQualification();
     }
+    
     protected Ext extRefQualificationImpl() {
         return extNode();
     }
+    
     protected Ext extRefQualifiedTypeNodeImpl() {
         return extTypeNode();
     }
+    
     protected Ext extRestrictionDeclImpl() {
         return extNode();
     }
+    
     protected Ext extRestrictionBodyImpl() {
         return extNode();
     }
+    
     protected Ext extRestrictionMemberImpl() {
         return extNode();
     }
+    
     protected Ext extAllowsStmtImpl() {
         return extRestrictionMember();
     }
 
-
     protected Ext postExtPreCondition(Ext e) {
         return postExtNode(e);
     }
+    
     protected Ext postExtPostCondition(Ext e) {
         return postExtNode(e);
     }
+    
     protected Ext postExtLocalRef(Ext e) {
         return postExtRefQualification(e);
     }
+    
     protected Ext postExtUniqueRef(Ext e) {
         return postExtRefQualification(e);
     }
+    
     protected Ext postExtSharedRef(Ext e) {
         return postExtRefQualification(e);
     }
+    
     protected Ext postExtRefQualification(Ext e) {
         return postExtNode(e);
     }
+    
     protected Ext postExtRefQualifiedTypeNode(Ext e) {
         return postExtTypeNode(e);
     }
+    
     protected Ext postExtRestrictionDecl(Ext e) {
         return postExtNode(e);
     }
+    
     protected Ext postExtRestrictionBody(Ext e) {
         return postExtNode(e);
     }
+    
     protected Ext postExtRestrictionMember(Ext e) {
         return postExtNode(e);
     }
+    
     protected Ext postExtAllowsStmt(Ext e) {
         return postExtRestrictionMember(e);
     }
