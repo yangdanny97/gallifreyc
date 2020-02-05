@@ -3,6 +3,7 @@ package gallifreyc.ast;
 import java.util.LinkedList;
 import java.util.List;
 
+import gallifreyc.ast.nodes.SharedRef;
 import gallifreyc.types.RefQualifiedType;
 import gallifreyc.types.RefQualifiedType_c;
 import gallifreyc.visit.RefQualificationAdder;

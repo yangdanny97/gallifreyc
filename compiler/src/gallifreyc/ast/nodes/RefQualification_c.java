@@ -1,4 +1,4 @@
-package gallifreyc.ast;
+package gallifreyc.ast.nodes;
 
 import polyglot.ast.Node_c;
 import polyglot.util.Position;

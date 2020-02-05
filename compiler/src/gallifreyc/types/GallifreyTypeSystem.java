@@ -1,6 +1,6 @@
 package gallifreyc.types;
 
-import gallifreyc.ast.RefQualification;
+import gallifreyc.ast.nodes.RefQualification;
 import polyglot.ext.jl7.types.JL7TypeSystem;
 import polyglot.types.*;
 import polyglot.util.Position;

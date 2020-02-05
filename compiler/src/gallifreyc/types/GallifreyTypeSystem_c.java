@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import gallifreyc.ast.LocalRef;
-import gallifreyc.ast.LocalRef_c;
-import gallifreyc.ast.RefQualification;
+import gallifreyc.ast.nodes.LocalRef;
+import gallifreyc.ast.nodes.LocalRef_c;
+import gallifreyc.ast.nodes.RefQualification;
 import polyglot.ext.jl7.types.JL7TypeSystem_c;
 import polyglot.types.*;
 import polyglot.util.InternalCompilerError;
