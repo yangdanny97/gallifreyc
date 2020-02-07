@@ -46,7 +46,7 @@ non terminal RefQualification ref_qualification;
 
 // Restrictions
 non terminal TopLevelDecl type_declaration;
-non terminal RestrictionDecl restriction_declaration;
+non terminal TopLevelDecl restriction_declaration;
 non terminal List<Id> restriction_union;
 non terminal RestrictionBody restriction_body;
 non terminal List<Node> restriction_body_declarations_opt;
@@ -124,8 +124,12 @@ restriction_declaration ::=
 	                                          parser.nf.Id(parser.pos(b), b.getIdentifier()),
 	                                          parser.nf.Id(parser.pos(c), c.getIdentifier()),
 	                                          d); :}
+	//Restriction Union Decl
    	| RESTRICTION:a IDENTIFIER:b EQ restriction_union:u 
-   		{: RESULT = //TODO :}
+   		{: RESULT = parser.nf.RestrictionUnionDecl(
+   				parser.pos(a, u), parser.nf.Id(parser.pos(b), b.getIdentifier()), u
+   			);
+   		 :}
 ;
 
 restriction_union ::=
@@ -192,11 +196,11 @@ allows_stmt ::=
     ALLOWS:a IDENTIFIER:b
     {: RESULT = parser.nf.AllowsStmt(parser.pos(a, b),
                                      parser.nf.Id(parser.pos(b), b.getIdentifier())); :}
-| ALLOWS:a IDENTIFIER:b CONTINGENT IDENTIFIER:c
-{: RESULT = parser.nf.AllowsStmt(parser.pos(a, b),
-                                 parser.nf.Id(parser.pos(b), b.getIdentifier()),
-                                 parser.nf.Id(parser.pos(c), c.getIdentifier())); :}
-;
+	| ALLOWS:a IDENTIFIER:b CONTINGENT IDENTIFIER:c
+	{: RESULT = parser.nf.AllowsStmt(parser.pos(a, b),
+	                                 parser.nf.Id(parser.pos(b), b.getIdentifier()),
+	                                 parser.nf.Id(parser.pos(c), c.getIdentifier())); :}
+	;
 
 // tests for restrictions
 /*
