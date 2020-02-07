@@ -45,8 +45,9 @@ non terminal PostCondition post_condition_opt;
 non terminal RefQualification ref_qualification;
 
 // Restrictions
-non terminal RestrictionDecl restriction_declaration_opt;
+non terminal TopLevelDecl type_declaration;
 non terminal RestrictionDecl restriction_declaration;
+non terminal List<Id> restriction_union;
 non terminal RestrictionBody restriction_body;
 non terminal List<Node> restriction_body_declarations_opt;
 non terminal List<Node> restriction_body_declarations;
@@ -63,30 +64,31 @@ start with goal;
 override type ::=
     // TypeNode
     primitive_type:a
-{: RESULT = a; :}
+		{: RESULT = a; :}
 |   ref_qualification:r reference_type:a
-{:
- RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(r, a), r, a);
- //RESULT = a;
- :}
+		{:
+		 RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(r, a), r, a);
+		 //RESULT = a;
+		 :}
 ;
 
 ref_qualification ::=
     // RefQualification
     LOCAL:a
-{: RESULT = parser.nf.LocalRef(parser.pos(a)); :}
-| UNIQUE:a
-{: RESULT = parser.nf.UniqueRef(parser.pos(a)); :}
-| SHARED:a LBRACK IDENTIFIER:b RBRACK:c
-{: RESULT = parser.nf.SharedRef(parser.pos(a,c),
-                                parser.nf.Id(parser.pos(b), b.getIdentifier())); :}
+		{: RESULT = parser.nf.LocalRef(parser.pos(a)); :}
+	| UNIQUE:a
+		{: RESULT = parser.nf.UniqueRef(parser.pos(a)); :}
+	| SHARED:a LBRACK IDENTIFIER:b RBRACK:c
+		{: RESULT = parser.nf.SharedRef(parser.pos(a,c),
+	                                parser.nf.Id(parser.pos(b), 
+	                                b.getIdentifier())); :}
 ;
 
 // Pre/post conditions on method declarations in interfaces
 override abstract_method_declaration ::=
     // MethodDecl
     method_header:a pre_condition_opt:b post_condition_opt:c SEMICOLON
-{: RESULT = parser.nf.MethodDecl(a.position(), a, b, c); :}
+		{: RESULT = parser.nf.MethodDecl(a.position(), a, b, c); :}
 ;
 
 pre_condition_opt ::=
@@ -103,84 +105,87 @@ post_condition_opt ::=
     {: RESULT = parser.nf.PostCondition(parser.pos(a, b), b); :}
 ;
 
-// Restrictions
-// Add 'restriction's to the language
-// TODO: Do something with restriction_declaration
-override compilation_unit ::=
-    // SourceFile
-    package_declaration_opt:a
-    import_declarations_opt:b
-    type_declarations_opt:c
-    restriction_declaration_opt:d
-    {: RESULT = parser.nf.SourceFile(new Position(parser.lexer.path(), parser.lexer.file()),
-                                     a, b, c);
-     :}
-|   error
-    type_declarations_opt:c
-    {: RESULT = parser.nf.SourceFile(new Position(parser.lexer.path(), parser.lexer.file()),
-                                     null, Collections.<Import> emptyList(), c);
-     :}
-;
-
-restriction_declaration_opt ::=
-    {: RESULT = null; :}
-    | restriction_declaration:a
-    {: RESULT = a; :}
-;
+// Add Restrictions
+override type_declaration ::=
+        class_declaration:a
+            {: RESULT = a; :}
+    |   interface_declaration:a
+            {: RESULT = a; :}
+    |	restriction_declaration:a
+    		{: RESULT = a; :}
+    |   SEMICOLON
+            {: :}
+    ;
 
 restriction_declaration ::=
     // RestrictionDecl
     RESTRICTION:a IDENTIFIER:b FOR IDENTIFIER:c restriction_body:d
-    {: RESULT = parser.nf.RestrictionDecl(parser.pos(a, d),
-                                          parser.nf.Id(parser.pos(b), b.getIdentifier()),
-                                          parser.nf.Id(parser.pos(c), c.getIdentifier()),
-                                          d); :}
+	    {: RESULT = parser.nf.RestrictionDecl(parser.pos(a, d),
+	                                          parser.nf.Id(parser.pos(b), b.getIdentifier()),
+	                                          parser.nf.Id(parser.pos(c), c.getIdentifier()),
+	                                          d); :}
+   	| RESTRICTION:a IDENTIFIER:b EQ restriction_union:u 
+   		{: RESULT = //TODO :}
 ;
+
+restriction_union ::=
+	IDENTIFIER:a OR IDENTIFIER:b
+		{: 
+			List<Id> l = new ArrayList<>();
+			l.add(parser.nf.Id(parser.pos(a), a.getIdentifier()));
+			l.add(parser.nf.Id(parser.pos(b), b.getIdentifier()));
+			RESULT = l; 
+		:}
+	restriction_union:a OR IDENTIFIER:b
+		{:
+			a.add(parser.nf.Id(parser.pos(b), b.getIdentifier()));
+			RESULT = a; 
+		:}
 
 restriction_body ::=
     // RestrictionBody
     LBRACE:a restriction_body_declarations_opt:b RBRACE:c
-    {: RESULT = parser.nf.RestrictionBody(parser.pos(a, c), b); :}
+    	{: RESULT = parser.nf.RestrictionBody(parser.pos(a, c), b); :}
 ;
 
 restriction_body_declarations_opt ::=
     // List of RestrictionMember
-    {: RESULT = new LinkedList<>(); :}
+    	{: RESULT = new LinkedList<>(); :}
     | restriction_body_declarations:a
-    {: RESULT = a; :}
+    	{: RESULT = a; :}
 ;
 
 restriction_body_declarations ::=
     // List of RestrictionMember
     restriction_body_declaration:a
-    {: RESULT = a; :}
-| restriction_body_declarations:a restriction_body_declaration:b
-{:
- RESULT = a;
- a.addAll(b);
- :}
+	    {: RESULT = a; :}
+	| restriction_body_declarations:a restriction_body_declaration:b
+		{:
+		 RESULT = a;
+		 a.addAll(b);
+		 :}
 ;
 
 restriction_body_declaration ::=
     // List of RestrictionMember
     SEMICOLON
-{:
- List<Node> l = new LinkedList<>();
- RESULT = l;
- :}
+		{:
+		 List<Node> l = new LinkedList<>();
+		 RESULT = l;
+		 :}
     | allows_stmt:a SEMICOLON
-    {:
-     List<Node> l = new LinkedList<>();
-     l.add(a);
-     RESULT = l;
-     :}
-| test_declaration:a
-{:
- List<Node> l = new LinkedList<>();
- l.add(a);
- RESULT = l;
- :}
-;
+	    {:
+	     List<Node> l = new LinkedList<>();
+	     l.add(a);
+	     RESULT = l;
+	     :}
+	| test_declaration:a
+		{:
+		 List<Node> l = new LinkedList<>();
+		 l.add(a);
+		 RESULT = l;
+		 :}
+	;
 
 allows_stmt ::=
     // Node
@@ -213,10 +218,12 @@ test_header ::=
     // MethodDecl
     modifiers_or_annotations_opt:a TEST:b IDENTIFIER:c LPAREN
     formal_parameter_list_opt:d RPAREN:g throws_opt:f
-    {: RESULT = parser.nf.MethodDecl(parser.pos(b, g, c), a,
+    {: 
+    	RESULT = parser.nf.MethodDecl(parser.pos(b, g, c), a,
                                      parser.nf.CanonicalTypeNode(parser.pos(b),
                                                                  parser.ts.Boolean()),
                                      parser.nf.Id(parser.pos(c), c.getIdentifier()),
-                                     d, f, null, true); :}
+                                     d, f, null, true); 
+    :}
 ;
 
