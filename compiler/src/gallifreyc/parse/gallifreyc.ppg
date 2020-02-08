@@ -56,6 +56,8 @@ non terminal RestrictionMember allows_stmt;
 non terminal MethodDecl test_declaration;
 non terminal MethodDecl test_header;
 
+// missing: where, merge, match, collection/next, thread, when
+// TODO: transition
 
 start with goal;
 
@@ -153,14 +155,12 @@ restriction_body ::=
 ;
 
 restriction_body_declarations_opt ::=
-    // List of RestrictionMember
     	{: RESULT = new LinkedList<>(); :}
     | restriction_body_declarations:a
     	{: RESULT = a; :}
 ;
 
 restriction_body_declarations ::=
-    // List of RestrictionMember
     restriction_body_declaration:a
 	    {: RESULT = a; :}
 	| restriction_body_declarations:a restriction_body_declaration:b
@@ -171,7 +171,6 @@ restriction_body_declarations ::=
 ;
 
 restriction_body_declaration ::=
-    // List of RestrictionMember
     SEMICOLON
 		{:
 		 List<Node> l = new LinkedList<>();
@@ -202,20 +201,12 @@ allows_stmt ::=
 	                                 parser.nf.Id(parser.pos(c), c.getIdentifier())); :}
 	;
 
-// tests for restrictions
-/*
-  method_declaration ::=
-  // MethodDecl
-  method_header:a method_body:b
-  {: RESULT = (MethodDecl) a.body(b); :}
-
-  probably change/add onto method_header
- */
+// tests in restrictions
 
 test_declaration ::=
     // MethodDecl
     test_header:a method_body:b
-{: RESULT = (MethodDecl) a.body(b); :}
+	{: RESULT = (MethodDecl) a.body(b); :}
 ;
 
 test_header ::=
