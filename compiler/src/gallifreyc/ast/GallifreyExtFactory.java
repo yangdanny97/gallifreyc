@@ -16,6 +16,7 @@ public interface GallifreyExtFactory extends JL7ExtFactory {
     Ext extSharedRef();
     Ext extRefQualification();
     Ext extRefQualifiedTypeNode();
+    Ext extRestrictionId();
     // Restrictions
     Ext extRestrictionDecl();
     Ext extRestrictionBody();

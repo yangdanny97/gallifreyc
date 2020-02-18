@@ -30,6 +30,8 @@ import gallifreyc.ast.nodes.SharedRef;
 import gallifreyc.ast.nodes.SharedRef_c;
 import gallifreyc.ast.nodes.UniqueRef;
 import gallifreyc.ast.nodes.UniqueRef_c;
+import gallifreyc.ast.nodes.RestrictionId;
+import gallifreyc.ast.nodes.RestrictionId_c;
 
 /**
  * NodeFactory for gallifreyc extension.
@@ -79,10 +81,16 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
         return u;
     }
 
-    public SharedRef SharedRef(Position pos, Id restriction) {
+    public SharedRef SharedRef(Position pos, RestrictionId restriction) {
         SharedRef s = new SharedRef_c(pos, restriction);
         s = ext(s, extFactory().extSharedRef());
         return s;
+    }
+    
+    public RestrictionId RestrictionId(Position pos, Id rv, Id restriction, boolean wildcard) {
+    	RestrictionId i = new RestrictionId_c(pos, rv, restriction, wildcard);
+    	i = ext(i, extFactory().extRestrictionId());
+    	return i;
     }
     
     public RestrictionDecl RestrictionDecl(Position pos, Id id, Id for_id, RestrictionBody body) {
