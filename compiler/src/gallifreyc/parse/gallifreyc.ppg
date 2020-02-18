@@ -47,7 +47,7 @@ non terminal RefQualification ref_qualification;
 // Restrictions
 non terminal TopLevelDecl type_declaration;
 non terminal TopLevelDecl restriction_declaration;
-non terminal List<Id> restriction_union;
+non terminal List<Id> restriction_variant;
 non terminal RestrictionBody restriction_body;
 non terminal List<Node> restriction_body_declarations_opt;
 non terminal List<Node> restriction_body_declarations;
@@ -55,8 +55,9 @@ non terminal List<Node> restriction_body_declaration;
 non terminal RestrictionMember allows_stmt;
 non terminal MethodDecl test_declaration;
 non terminal MethodDecl test_header;
+non terminal RestrictionId restriction_id;
 
-// missing: where, merge, match, collection/next, thread, when
+// missing: where, merge, match, collection/next, thread, when, branch, peek, abort, commit
 // TODO: transition
 
 start with goal;
@@ -74,16 +75,32 @@ override type ::=
 		 :}
 ;
 
+restriction_id ::=
+	IDENTIFIER:a {: 
+		RESULT = parser.nf.RestrictionId(
+			null,
+			parser.nf.Id(parser.pos(a), a.getIdentifier()),
+			false); :}
+	| MULT COLON COLON IDENTIFIER:a {: 
+		RESULT = parser.nf.RestrictionId(
+			null,
+			parser.nf.Id(parser.pos(a), a.getIdentifier()),
+			true); :}
+	| IDENTIFIER:a COLON COLON IDENTIFIER:b {: 
+		RESULT = parser.nf.RestrictionId(
+			parser.nf.Id(parser.pos(a), a.getIdentifier()),
+			parser.nf.Id(parser.pos(b), b.getIdentifier()),
+			false); :}
+;
+
 ref_qualification ::=
     // RefQualification
     LOCAL:a
 		{: RESULT = parser.nf.LocalRef(parser.pos(a)); :}
 	| UNIQUE:a
 		{: RESULT = parser.nf.UniqueRef(parser.pos(a)); :}
-	| SHARED:a LBRACK IDENTIFIER:b RBRACK:c
-		{: RESULT = parser.nf.SharedRef(parser.pos(a,c),
-	                                parser.nf.Id(parser.pos(b), 
-	                                b.getIdentifier())); :}
+	| SHARED:a LBRACK restriction_id:b RBRACK:c
+		{: RESULT = parser.nf.SharedRef(parser.pos(a,c), b); :}
 ;
 
 // Pre/post conditions on method declarations in interfaces
@@ -127,14 +144,14 @@ restriction_declaration ::=
 	                                          parser.nf.Id(parser.pos(c), c.getIdentifier()),
 	                                          d); :}
 	//Restriction Union Decl
-   	| RESTRICTION:a IDENTIFIER:b EQ restriction_union:u 
+   	| RESTRICTION:a IDENTIFIER:b EQ restriction_variant:u 
    		{: RESULT = parser.nf.RestrictionUnionDecl(
    				parser.pos(a, u), parser.nf.Id(parser.pos(b), b.getIdentifier()), u
    			);
    		 :}
 ;
 
-restriction_union ::=
+restriction_variant ::=
 	IDENTIFIER:a OR IDENTIFIER:b
 		{: 
 			List<Id> l = new ArrayList<>();
@@ -142,7 +159,7 @@ restriction_union ::=
 			l.add(parser.nf.Id(parser.pos(b), b.getIdentifier()));
 			RESULT = l; 
 		:}
-	restriction_union:a OR IDENTIFIER:b
+	restriction_variant:a OR IDENTIFIER:b
 		{:
 			a.add(parser.nf.Id(parser.pos(b), b.getIdentifier()));
 			RESULT = a; 

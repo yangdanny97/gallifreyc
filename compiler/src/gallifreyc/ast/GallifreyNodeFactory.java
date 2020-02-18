@@ -21,6 +21,8 @@ import gallifreyc.ast.nodes.RestrictionBody;
 import gallifreyc.ast.nodes.RestrictionDecl;
 import gallifreyc.ast.nodes.SharedRef;
 import gallifreyc.ast.nodes.UniqueRef;
+import gallifreyc.ast.nodes.RestrictionId;
+
 
 /**
  * NodeFactory for gallifreyc extension.
@@ -33,8 +35,9 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     MethodDecl MethodDecl(Position pos, MethodDecl method, PreCondition pre, PostCondition post);
     LocalRef LocalRef(Position pos);
     UniqueRef UniqueRef(Position pos);
-    SharedRef SharedRef(Position pos, Id restriction);
+    SharedRef SharedRef(Position pos, RestrictionId restriction);
     RefQualifiedTypeNode RefQualifiedTypeNode(Position pos, RefQualification refQualification, TypeNode t);
+    RestrictionId RestrictionId(Position pos, Id rv, Id restriction, boolean wildcard);
     
     // Restrictions
     RestrictionDecl RestrictionDecl(Position pos, Id id, Id for_id, RestrictionBody body);

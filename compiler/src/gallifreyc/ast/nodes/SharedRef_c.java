@@ -7,9 +7,9 @@ import polyglot.util.SerialVersionUID;
 public class SharedRef_c extends RefQualification_c implements SharedRef {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
-    protected Id restriction;
+    protected RestrictionId restriction;
 
-    public SharedRef_c(Position pos, Id restriction) {
+    public SharedRef_c(Position pos, RestrictionId restriction) {
         super(pos);
         this.restriction = restriction;
     }
@@ -20,7 +20,7 @@ public class SharedRef_c extends RefQualification_c implements SharedRef {
     }
 
     @Override
-    public Id restriction() {
+    public RestrictionId restriction() {
         return restriction;
     }
 }
