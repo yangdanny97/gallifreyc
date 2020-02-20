@@ -56,6 +56,8 @@ non terminal RestrictionMember allows_stmt;
 non terminal MethodDecl test_declaration;
 non terminal MethodDecl test_header;
 non terminal RestrictionId restriction_id;
+non terminal MatchBranch match_branch;
+non terminal List<MatchBranch> match_branch_list;
 
 // missing: where, merge, match, collection/next, thread, when, branch, peek, abort, commit
 // TODO: transition
@@ -236,7 +238,28 @@ test_header ::=
     :}
 ;
 
+match_branch ::=
+	OR type:a variable_declarator_id:b ARROW statement:c {:
+		LocalDecl ld = parser.nf.LocalDecl(parser.pos(a,b), Flags.NONE, a, b.name()); 
+		RESULT = parser.nf.MatchBranch(parser.pos(a, c), ld, c); 
+	:}
+	
+match_branch_list ::=
+	match_branch:a OR match_branch:b {:
+		List<MatchBranch> br = new ArrayList<>();
+		br.add(a);
+		br.add(b);
+		RESULT = br;
+	:}
+|   match_branch_list:a match_branch:b {:
+		a.add(b)
+		RESULT = b;
+	:}
+
 extend statement ::=
 	TRANSITION LPAREN expression:a COMMA restriction_id:b RPAREN
 	{: RESULT = parser.nf.Transition(parser.pos(a), a, b); :}
+|   MATCH_RESTRICTION expression:a WITH match_branch_list:b 
+	{: RESULT = parser.nf.MatchRestriction(parser.pos(a,b), a, b); :}
+	
 

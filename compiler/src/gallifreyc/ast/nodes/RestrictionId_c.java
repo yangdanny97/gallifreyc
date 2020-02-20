@@ -11,6 +11,7 @@ public class RestrictionId_c extends Node_c implements RestrictionId {
     
     public RestrictionId_c(Position pos, Id rv, Id restriction, boolean wildcard) {
         super(pos);
+        assert restriction != null;
         this.restriction = restriction;
         this.rv = rv;
         this.wildcard = wildcard;

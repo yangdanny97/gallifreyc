@@ -11,17 +11,7 @@ import polyglot.util.*;
 
 import java.util.*;
 
-import gallifreyc.ast.nodes.AllowsStmt;
-import gallifreyc.ast.nodes.LocalRef;
-import gallifreyc.ast.nodes.PostCondition;
-import gallifreyc.ast.nodes.PreCondition;
-import gallifreyc.ast.nodes.RefQualification;
-import gallifreyc.ast.nodes.RefQualifiedTypeNode;
-import gallifreyc.ast.nodes.RestrictionBody;
-import gallifreyc.ast.nodes.RestrictionDecl;
-import gallifreyc.ast.nodes.SharedRef;
-import gallifreyc.ast.nodes.UniqueRef;
-import gallifreyc.ast.nodes.RestrictionId;
+import gallifreyc.ast.nodes.*;
 
 
 /**
@@ -38,6 +28,10 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     SharedRef SharedRef(Position pos, RestrictionId restriction);
     RefQualifiedTypeNode RefQualifiedTypeNode(Position pos, RefQualification refQualification, TypeNode t);
     RestrictionId RestrictionId(Position pos, Id rv, Id restriction, boolean wildcard);
+    Transition Transition(Position pos, Expr expr, RestrictionId newRestriction);
+    MatchRestriction MatchRestriction(Position pos, Expr expr, List<MatchBranch> branches);
+    MatchBranch MatchBranch(Position pos, LocalDecl pattern, Stmt stmt);
+    
     
     // Restrictions
     RestrictionDecl RestrictionDecl(Position pos, Id id, Id for_id, RestrictionBody body);
@@ -47,4 +41,5 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     MethodDecl MethodDecl(Position pos, FlagAnnotations flags, TypeNode returnType,
                           Id name, List<Formal> formals, List<TypeNode> throwTypes,
                           Block body, boolean isTest);
+    RestrictionUnionDecl RestrictionUnionDecl(Position pos, Id name, List<Id> restrictions);
 }
