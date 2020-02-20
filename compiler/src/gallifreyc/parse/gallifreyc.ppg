@@ -191,21 +191,18 @@ restriction_body_declaration ::=
     SEMICOLON
 		{:
 		 List<Node> l = new LinkedList<>();
-		 RESULT = l;
-		 :}
+		 RESULT = l; :}
     | allows_stmt:a SEMICOLON
 	    {:
 	     List<Node> l = new LinkedList<>();
 	     l.add(a);
-	     RESULT = l;
-	     :}
+	     RESULT = l; :}
 	| test_declaration:a
 		{:
 		 List<Node> l = new LinkedList<>();
 		 l.add(a);
-		 RESULT = l;
-		 :}
-	;
+		 RESULT = l; :}
+;
 
 allows_stmt ::=
     // Node
@@ -216,7 +213,7 @@ allows_stmt ::=
 	{: RESULT = parser.nf.AllowsStmt(parser.pos(a, b),
 	                                 parser.nf.Id(parser.pos(b), b.getIdentifier()),
 	                                 parser.nf.Id(parser.pos(c), c.getIdentifier())); :}
-	;
+;
 
 // tests in restrictions
 
@@ -238,4 +235,8 @@ test_header ::=
                                      d, f, null, true); 
     :}
 ;
+
+extend statement ::=
+	TRANSITION LPAREN expression:a COMMA restriction_id:b RPAREN
+	{: RESULT = parser.nf.Transition(parser.pos(a), a, b); :}
 
