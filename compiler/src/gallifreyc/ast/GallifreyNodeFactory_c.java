@@ -11,28 +11,7 @@ import polyglot.util.*;
 
 import java.util.*;
 
-import gallifreyc.ast.nodes.AllowsStmt;
-import gallifreyc.ast.nodes.AllowsStmt_c;
-import gallifreyc.ast.nodes.LocalRef;
-import gallifreyc.ast.nodes.LocalRef_c;
-import gallifreyc.ast.nodes.PostCondition;
-import gallifreyc.ast.nodes.PostCondition_c;
-import gallifreyc.ast.nodes.PreCondition;
-import gallifreyc.ast.nodes.PreCondition_c;
-import gallifreyc.ast.nodes.RefQualification;
-import gallifreyc.ast.nodes.RefQualifiedTypeNode;
-import gallifreyc.ast.nodes.RefQualifiedTypeNode_c;
-import gallifreyc.ast.nodes.RestrictionBody;
-import gallifreyc.ast.nodes.RestrictionBody_c;
-import gallifreyc.ast.nodes.RestrictionDecl;
-import gallifreyc.ast.nodes.RestrictionDecl_c;
-import gallifreyc.ast.nodes.SharedRef;
-import gallifreyc.ast.nodes.SharedRef_c;
-import gallifreyc.ast.nodes.UniqueRef;
-import gallifreyc.ast.nodes.UniqueRef_c;
-import gallifreyc.ast.nodes.RestrictionId;
-import gallifreyc.ast.nodes.RestrictionId_c;
-
+import gallifreyc.ast.nodes.*;
 /**
  * NodeFactory for gallifreyc extension.
  */
@@ -133,6 +112,30 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
         RefQualifiedTypeNode n = new RefQualifiedTypeNode_c(pos, refQualification, t);
         n = ext(n, extFactory().extRefQualifiedTypeNode());
         return n;
+    }
+    
+    public RestrictionUnionDecl RestrictionUnionDecl(Position pos, Id name, List<Id> restrictions) {
+    	RestrictionUnionDecl d = new RestrictionUnionDecl_c(pos, name, restrictions);
+    	d = ext(d, extFactory().extRestrictionUnionDecl());
+    	return d;
+    }
+    
+    public Transition Transition(Position pos, Expr expr, RestrictionId newRestriction) {
+    	Transition t = new Transition_c(pos, expr, newRestriction);
+    	t = ext(t, extFactory().extTransition());
+    	return t;
+    }
+    
+    public MatchRestriction MatchRestriction(Position pos, Expr expr, List<MatchBranch> branches) {
+    	MatchRestriction m = new MatchRestriction_c(pos, expr, branches);
+    	m = ext(m, extFactory().extMatchRestriction());
+    	return m;
+    }
+    
+    public MatchBranch MatchBranch(Position pos, LocalDecl pattern, Stmt stmt) {
+    	MatchBranch b = new MatchBranch_c(pos, pattern, stmt);
+    	b = ext(b, extFactory().extMatchBranch());
+    	return b;
     }
 
 

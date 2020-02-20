@@ -5,6 +5,8 @@ import polyglot.ast.Ext;
 import polyglot.ast.ExtFactory;
 import polyglot.ext.jl7.ast.JL7AbstractExtFactory_c;
 
+// TODO: figure out what the heck this file is for
+
 public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactory_c
         implements GallifreyExtFactory {
 
@@ -153,6 +155,21 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         e = composeExts(e, e2);
         return postExtRestrictionDecl(e);
     }
+    
+    public final Ext extRestrictionUnionDecl() {
+        Ext e = extRestrictionUnionDeclImpl();
+
+        ExtFactory nextEF = nextExtFactory();
+        Ext e2;
+        if (nextEF instanceof GallifreyExtFactory) {
+            e2 = ((GallifreyExtFactory) nextEF).extRestrictionUnionDecl();
+        } else {
+            e2 = nextEF.extNode();
+        }
+
+        e = composeExts(e, e2);
+        return postExtRestrictionUnionDecl(e);
+    }
 
     public final Ext extRestrictionBody() {
         Ext e = extRestrictionBodyImpl();
@@ -198,6 +215,55 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         e = composeExts(e, e2);
         return postExtAllowsStmt(e);
     }
+    
+    public final Ext extTransition() {
+        Ext e = extTransitionImpl();
+
+        ExtFactory nextEF = nextExtFactory();
+        Ext e2;
+        if (nextEF instanceof GallifreyExtFactory) {
+            e2 = ((GallifreyExtFactory) nextEF).extTransition();
+        } else {
+            e2 = nextEF.extNode();
+        }
+
+        e = composeExts(e, e2);
+        return postExtTransition(e);
+    }
+    
+    public final Ext extMatchBranch() {
+        Ext e = extMatchBranchImpl();
+
+        ExtFactory nextEF = nextExtFactory();
+        Ext e2;
+        if (nextEF instanceof GallifreyExtFactory) {
+            e2 = ((GallifreyExtFactory) nextEF).extMatchBranch();
+        } else {
+            e2 = nextEF.extNode();
+        }
+
+        e = composeExts(e, e2);
+        return postExtMatchBranch(e);
+    }
+    
+    public final Ext extMatchRestriction() {
+        Ext e = extMatchRestrictionImpl();
+
+        ExtFactory nextEF = nextExtFactory();
+        Ext e2;
+        if (nextEF instanceof GallifreyExtFactory) {
+            e2 = ((GallifreyExtFactory) nextEF).extMatchRestriction();
+        } else {
+            e2 = nextEF.extNode();
+        }
+
+        e = composeExts(e, e2);
+        return postExtMatchRestriction(e);
+    }
+    
+    
+    
+    // IMPL
 
 
     protected Ext extPreConditionImpl() {
@@ -236,6 +302,10 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         return extNode();
     }
     
+    protected Ext extRestrictionUnionDeclImpl() {
+        return extNode();
+    }
+    
     protected Ext extRestrictionBodyImpl() {
         return extNode();
     }
@@ -245,8 +315,22 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     }
     
     protected Ext extAllowsStmtImpl() {
-        return extRestrictionMember();
+        return extNode();
     }
+    
+    protected Ext extTransitionImpl() {
+        return extNode();
+    }
+    
+    protected Ext extMatchBranchImpl() {
+        return extNode();
+    }
+    
+    protected Ext extMatchRestrictionImpl() {
+        return extNode();
+    }
+    
+    // POST
 
     protected Ext postExtPreCondition(Ext e) {
         return postExtNode(e);
@@ -284,6 +368,10 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         return postExtNode(e);
     }
     
+    protected Ext postExtRestrictionUnionDecl(Ext e) {
+        return postExtNode(e);
+    }
+    
     protected Ext postExtRestrictionBody(Ext e) {
         return postExtNode(e);
     }
@@ -294,5 +382,17 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     
     protected Ext postExtAllowsStmt(Ext e) {
         return postExtRestrictionMember(e);
+    }
+    
+    protected Ext postExtTransition(Ext e) {
+        return postExtNode(e);
+    }
+    
+    protected Ext postExtMatchBranch(Ext e) {
+        return postExtNode(e);
+    }
+    
+    protected Ext postExtMatchRestriction(Ext e) {
+        return postExtNode(e);
     }
 }
