@@ -18,8 +18,11 @@ public class AllowsStmt_c extends RestrictionMember_c implements AllowsStmt {
 
     @Override
     public String toString() {
-        // TODO: Implement this
-        return "";
+        String s = "allows " + id.toString();
+        if (contingent_id != null) {
+        	s = s + " contingent " + contingent_id.toString(); 
+        }
+        return s;
     }
 
     public Id id() {

@@ -5,6 +5,7 @@ import polyglot.ast.Node_c;
 import polyglot.util.Position;
 
 public class RestrictionId_c extends Node_c implements RestrictionId {
+	// rv::restriction OR wildcard::restriction OR restriction
     private Id rv;
     private Id restriction;
     private boolean wildcard;
@@ -12,6 +13,7 @@ public class RestrictionId_c extends Node_c implements RestrictionId {
     public RestrictionId_c(Position pos, Id rv, Id restriction, boolean wildcard) {
         super(pos);
         assert restriction != null;
+        assert (wildcard && rv == null) || (!wildcard);
         this.restriction = restriction;
         this.rv = rv;
         this.wildcard = wildcard;
@@ -30,5 +32,18 @@ public class RestrictionId_c extends Node_c implements RestrictionId {
 	}
 	public boolean isRvQualified() {
 		return wildcard || rv != null;
+	}
+	
+	@Override
+	public String toString() {
+		String s = "";
+		if (rv != null) {
+			s = rv.toString();
+		} else if (wildcard) {
+			s = "*";
+		}
+		s = (isRvQualified()) ? s + "::" : s;
+		s = s + restriction.toString();
+		return s;
 	}
 }
