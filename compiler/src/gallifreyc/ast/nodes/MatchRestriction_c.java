@@ -2,12 +2,23 @@ package gallifreyc.ast.nodes;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 
 import polyglot.ast.Expr;
+import polyglot.ast.Node;
+import polyglot.ast.NodeFactory;
 import polyglot.ast.Stmt_c;
 import polyglot.ast.Term;
+import polyglot.types.SemanticException;
+import polyglot.types.Type;
+import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.visit.CFGBuilder;
+import polyglot.visit.FlowGraph;
+import polyglot.visit.NodeVisitor;
+import polyglot.visit.PrettyPrinter;
+import polyglot.visit.Translator;
+import polyglot.visit.TypeChecker;
 
 public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
 	private Expr expr;
@@ -37,16 +48,38 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
     
     @Override
     public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
-        if (expr != null) {
-            v.visitCFG(expr, this, EXIT);
-        }
-
-        //TODO v.visitMatchRestriction(this);
-        return Collections.<T> emptyList();
+    	List<Term> t_branches = new ArrayList<>();
+    	List<Integer> entry = new ArrayList<>();
+    	for (MatchBranch b : branches()) {
+    		t_branches.add(b);
+    		entry.add(new Integer(ENTRY));
+    	}
+    	t_branches.add(this);
+    	entry.add(EXIT);
+        v.visitCFG(expr, FlowGraph.EDGE_KEY_OTHER, t_branches, entry);
+        v.push(this).visitCFGList(branches, this, EXIT);
+        return succs;
     }
     
-    //TODO visitChildren
-    //TODO typeCheck
-    //TODO reconstruct and associated fns
-    //TODO copy
+    @Override
+    public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
+        //TODO
+    }
+
+    @Override
+    public void translate(CodeWriter w, Translator tr) {
+        //TODO
+    }
+    
+    @Override
+    public Node visitChildren(NodeVisitor v) {
+    	//TODO
+        return null;
+    }
+
+    @Override
+    public Node typeCheck(TypeChecker tc) throws SemanticException {
+        //TODO 
+    	return null;
+    }
 }

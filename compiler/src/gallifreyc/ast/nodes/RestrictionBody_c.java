@@ -17,8 +17,7 @@ public class RestrictionBody_c extends Node_c implements RestrictionBody {
 
     @Override
     public String toString() {
-        // TODO: Implement this
-        return "";
+        return "{...}";
     }
 
 
