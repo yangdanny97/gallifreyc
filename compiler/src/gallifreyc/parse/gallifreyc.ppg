@@ -6,6 +6,7 @@ package gallifreyc.parse;
 import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.*;
+import gallifreyc.ast.nodes.*;
 import polyglot.parse.Name;
 import polyglot.parse.VarDeclarator;
 
@@ -38,6 +39,7 @@ terminal Token UNIQUE;
 terminal Token WHEN;
 terminal Token WHERE;
 terminal Token WITH;
+terminal Token ARROW;
 
 // Reference Qualifications (local, unique, shared)
 non terminal PreCondition pre_condition_opt;
@@ -45,7 +47,6 @@ non terminal PostCondition post_condition_opt;
 non terminal RefQualification ref_qualification;
 
 // Restrictions
-non terminal TopLevelDecl type_declaration;
 non terminal TopLevelDecl restriction_declaration;
 non terminal List<Id> restriction_variant;
 non terminal RestrictionBody restriction_body;
@@ -80,16 +81,19 @@ override type ::=
 restriction_id ::=
 	IDENTIFIER:a {: 
 		RESULT = parser.nf.RestrictionId(
+			parser.pos(a),
 			null,
 			parser.nf.Id(parser.pos(a), a.getIdentifier()),
 			false); :}
 	| MULT COLON COLON IDENTIFIER:a {: 
 		RESULT = parser.nf.RestrictionId(
+			parser.pos(a),
 			null,
 			parser.nf.Id(parser.pos(a), a.getIdentifier()),
 			true); :}
 	| IDENTIFIER:a COLON COLON IDENTIFIER:b {: 
 		RESULT = parser.nf.RestrictionId(
+			parser.pos(a),
 			parser.nf.Id(parser.pos(a), a.getIdentifier()),
 			parser.nf.Id(parser.pos(b), b.getIdentifier()),
 			false); :}
@@ -127,16 +131,22 @@ post_condition_opt ::=
 ;
 
 // Add Restrictions
-override type_declaration ::=
-        class_declaration:a
-            {: RESULT = a; :}
-    |   interface_declaration:a
-            {: RESULT = a; :}
-    |	restriction_declaration:a
-    		{: RESULT = a; :}
-    |   SEMICOLON
-            {: :}
-    ;
+override type_declarations ::=
+    type_declaration:a {:
+       List<TopLevelDecl> l = new LinkedList<>();
+       if (a != null) l.add(a);
+       RESULT = l; :}
+ | restriction_declaration:a {:
+       List<TopLevelDecl> l = new LinkedList<>();
+       if (a != null) l.add(a);
+       RESULT = l; :}
+ |  type_declarations:a type_declaration:b {:
+      RESULT = a;
+      if (b != null) a.add(b); :}
+ |  type_declarations:a restriction_declaration:b {:
+      RESULT = a;
+      if (b != null) a.add(b); :}
+;
 
 restriction_declaration ::=
     // RestrictionDecl
@@ -161,11 +171,12 @@ restriction_variant ::=
 			l.add(parser.nf.Id(parser.pos(b), b.getIdentifier()));
 			RESULT = l; 
 		:}
-	restriction_variant:a OR IDENTIFIER:b
+| restriction_variant:a OR IDENTIFIER:b
 		{:
 			a.add(parser.nf.Id(parser.pos(b), b.getIdentifier()));
 			RESULT = a; 
 		:}
+;
 
 restriction_body ::=
     // RestrictionBody
@@ -174,9 +185,9 @@ restriction_body ::=
 ;
 
 restriction_body_declarations_opt ::=
-    	{: RESULT = new LinkedList<>(); :}
+   	{: RESULT = new LinkedList<>(); :}
     | restriction_body_declarations:a
-    	{: RESULT = a; :}
+    {: RESULT = a; :}
 ;
 
 restriction_body_declarations ::=
@@ -239,27 +250,30 @@ test_header ::=
 ;
 
 match_branch ::=
-	OR type:a variable_declarator_id:b ARROW statement:c {:
+	OR type:a variable_declarator_id:b ARROW LBRACE statement:c RBRACE {:
 		LocalDecl ld = parser.nf.LocalDecl(parser.pos(a,b), Flags.NONE, a, b.name()); 
 		RESULT = parser.nf.MatchBranch(parser.pos(a, c), ld, c); 
 	:}
-	
+;
+
 match_branch_list ::=
-	match_branch:a OR match_branch:b {:
+	match_branch:a match_branch:b {:
 		List<MatchBranch> br = new ArrayList<>();
 		br.add(a);
 		br.add(b);
 		RESULT = br;
 	:}
 |   match_branch_list:a match_branch:b {:
-		a.add(b)
-		RESULT = b;
+		a.add(b);
+		RESULT = a;
 	:}
+;
 
 extend statement ::=
 	TRANSITION LPAREN expression:a COMMA restriction_id:b RPAREN
 	{: RESULT = parser.nf.Transition(parser.pos(a), a, b); :}
 |   MATCH_RESTRICTION expression:a WITH match_branch_list:b 
-	{: RESULT = parser.nf.MatchRestriction(parser.pos(a,b), a, b); :}
-	
+	{: RESULT = parser.nf.MatchRestriction(parser.pos(a,b), a, b);:}
+;
+
 

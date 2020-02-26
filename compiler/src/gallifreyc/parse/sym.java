@@ -52,6 +52,7 @@ public class sym {
   public static final int PLUSPLUS = 59;
   public static final int IMPORT = 24;
   public static final int DELETE = 115;
+  public static final int ARROW = 130;
   public static final int CATCH = 56;
   public static final int DOUBLE = 9;
   public static final int PROTECTED = 26;
@@ -268,7 +269,8 @@ public class sym {
   "UNIQUE",
   "WHEN",
   "WHERE",
-  "WITH"
+  "WITH",
+  "ARROW"
   };
 }
 
