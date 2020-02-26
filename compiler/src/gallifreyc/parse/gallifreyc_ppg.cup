@@ -16,6 +16,7 @@ import polyglot.ext.jl7.types.*;
 import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.*;
+import gallifreyc.ast.nodes.*;
 import polyglot.parse.Name;
 import polyglot.parse.VarDeclarator;
 
@@ -296,11 +297,12 @@ terminal Token UNIQUE;
 terminal Token WHEN;
 terminal Token WHERE;
 terminal Token WITH;
+terminal Token ARROW;
 non terminal PreCondition pre_condition_opt;
 non terminal PostCondition post_condition_opt;
 non terminal RefQualification ref_qualification;
-non terminal RestrictionDecl restriction_declaration_opt;
-non terminal RestrictionDecl restriction_declaration;
+non terminal TopLevelDecl restriction_declaration;
+non terminal List<Id> restriction_variant;
 non terminal RestrictionBody restriction_body;
 non terminal List<Node> restriction_body_declarations_opt;
 non terminal List<Node> restriction_body_declarations;
@@ -308,6 +310,9 @@ non terminal List<Node> restriction_body_declaration;
 non terminal RestrictionMember allows_stmt;
 non terminal MethodDecl test_declaration;
 non terminal MethodDecl test_header;
+non terminal RestrictionId restriction_id;
+non terminal MatchBranch match_branch;
+non terminal List<MatchBranch> match_branch_list;
 
 
 start with goal;
@@ -359,9 +364,9 @@ type ::=
     primitive_type:a {:  RESULT = a;  :}
  |  ref_qualification:r reference_type:a {:
                                         
- RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(r, a), r, a);
- //RESULT = a;
- 
+		 RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(r, a), r, a);
+		 //RESULT = a;
+		 
                                          :};
 
 primitive_type ::=
@@ -445,15 +450,15 @@ qualified_name ::=
                             :};
 
 compilation_unit ::=
-    package_declaration_opt:a import_declarations_opt:b type_declarations_opt:c restriction_declaration_opt:d {:
-                                                                                                              RESULT = parser.nf.SourceFile(new Position(parser.lexer.path(), parser.lexer.file()),
-                                     a, b, c);
-     
-                                                                                                              :}
+    package_declaration_opt:a import_declarations_opt:b type_declarations_opt:c {:
+                                                                                RESULT = parser.nf.SourceFile(new Position(parser.lexer.path(), parser.lexer.file()),
+					     a, b, c);
+	    
+                                                                                :}
  |  error type_declarations_opt:c {:
                                   RESULT = parser.nf.SourceFile(new Position(parser.lexer.path(), parser.lexer.file()),
-                                     null, Collections.<Import> emptyList(), c);
-     
+					     null, Collections.<Import> emptyList(), c);
+	    
                                   :};
 
 package_declaration_opt ::=
@@ -481,16 +486,27 @@ import_declarations ::=
 
 type_declarations ::=
     type_declaration:a {:
-                       List<TopLevelDecl> l = new LinkedList<>();
-               if (a != null)
-                   l.add(a);
-               RESULT = l; 
+                      
+       List<TopLevelDecl> l = new LinkedList<>();
+       if (a != null) l.add(a);
+       RESULT = l; 
                        :}
+ |  restriction_declaration:a {:
+                             
+       List<TopLevelDecl> l = new LinkedList<>();
+       if (a != null) l.add(a);
+       RESULT = l; 
+                              :}
  |  type_declarations:a type_declaration:b {:
-                                           RESULT = a;
-               if (b != null)
-                   a.add(b); 
-                                           :};
+                                          
+      RESULT = a;
+      if (b != null) a.add(b); 
+                                           :}
+ |  type_declarations:a restriction_declaration:b {:
+                                                 
+      RESULT = a;
+      if (b != null) a.add(b); 
+                                                  :};
 
 package_declaration ::=
     PACKAGE name:b SEMICOLON {:  RESULT = b.toPackage();  :};
@@ -975,7 +991,13 @@ statement ::=
  |  while_statement:a {:  RESULT = a;  :}
  |  for_statement:a {:  RESULT = a;  :}
  |  error SEMICOLON:a {:  RESULT = parser.nf.Empty(parser.pos(a));  :}
- |  foreach_statement:a {:  RESULT = a;  :};
+ |  foreach_statement:a {:  RESULT = a;  :}
+ |  TRANSITION LPAREN expression:a COMMA restriction_id:b RPAREN {:
+                                                                 RESULT = parser.nf.Transition(parser.pos(a), a, b); 
+                                                                 :}
+ |  MATCH_RESTRICTION expression:a WITH match_branch_list:b {:
+                                                            RESULT = parser.nf.MatchRestriction(parser.pos(a,b), a, b);
+                                                            :};
 
 statement_no_short_if ::=
     statement_without_trailing_substatement:a {:  RESULT = a;  :}
@@ -2404,13 +2426,38 @@ catch_type ::=
 		RESULT = as;
 	 :};
 
+restriction_id ::=
+    IDENTIFIER:a {:
+                 
+		RESULT = parser.nf.RestrictionId(
+			parser.pos(a),
+			null,
+			parser.nf.Id(parser.pos(a), a.getIdentifier()),
+			false); 
+                 :}
+ |  MULT COLON COLON IDENTIFIER:a {:
+                                  
+		RESULT = parser.nf.RestrictionId(
+			parser.pos(a),
+			null,
+			parser.nf.Id(parser.pos(a), a.getIdentifier()),
+			true); 
+                                  :}
+ |  IDENTIFIER:a COLON COLON IDENTIFIER:b {:
+                                          
+		RESULT = parser.nf.RestrictionId(
+			parser.pos(a),
+			parser.nf.Id(parser.pos(a), a.getIdentifier()),
+			parser.nf.Id(parser.pos(b), b.getIdentifier()),
+			false); 
+                                          :};
+
 ref_qualification ::=
     LOCAL:a {:  RESULT = parser.nf.LocalRef(parser.pos(a));  :}
  |  UNIQUE:a {:  RESULT = parser.nf.UniqueRef(parser.pos(a));  :}
- |  SHARED:a LBRACK IDENTIFIER:b RBRACK:c {:
-                                          RESULT = parser.nf.SharedRef(parser.pos(a,c),
-                                parser.nf.Id(parser.pos(b), b.getIdentifier())); 
-                                          :};
+ |  SHARED:a LBRACK restriction_id:b RBRACK:c {:
+                                              RESULT = parser.nf.SharedRef(parser.pos(a,c), b); 
+                                              :};
 
 pre_condition_opt ::=
     {:  RESULT = null;  :}
@@ -2424,17 +2471,35 @@ post_condition_opt ::=
                            RESULT = parser.nf.PostCondition(parser.pos(a, b), b); 
                            :};
 
-restriction_declaration_opt ::=
-    {:  RESULT = null;  :}
- |  restriction_declaration:a {:  RESULT = a;  :};
-
 restriction_declaration ::=
     RESTRICTION:a IDENTIFIER:b FOR IDENTIFIER:c restriction_body:d {:
                                                                    RESULT = parser.nf.RestrictionDecl(parser.pos(a, d),
-                                          parser.nf.Id(parser.pos(b), b.getIdentifier()),
-                                          parser.nf.Id(parser.pos(c), c.getIdentifier()),
-                                          d); 
-                                                                   :};
+	                                          parser.nf.Id(parser.pos(b), b.getIdentifier()),
+	                                          parser.nf.Id(parser.pos(c), c.getIdentifier()),
+	                                          d); 
+                                                                   :}
+ |  RESTRICTION:a IDENTIFIER:b EQ restriction_variant:u {:
+                                                        RESULT = parser.nf.RestrictionUnionDecl(
+   				parser.pos(a, u), parser.nf.Id(parser.pos(b), b.getIdentifier()), u
+   			);
+   		 
+                                                        :};
+
+restriction_variant ::=
+    IDENTIFIER:a OR IDENTIFIER:b {:
+                                 
+			List<Id> l = new ArrayList<>();
+			l.add(parser.nf.Id(parser.pos(a), a.getIdentifier()));
+			l.add(parser.nf.Id(parser.pos(b), b.getIdentifier()));
+			RESULT = l; 
+		
+                                 :}
+ |  restriction_variant:a OR IDENTIFIER:b {:
+                                         
+			a.add(parser.nf.Id(parser.pos(b), b.getIdentifier()));
+			RESULT = a; 
+		
+                                          :};
 
 restriction_body ::=
     LBRACE:a restriction_body_declarations_opt:b RBRACE:c {:
@@ -2449,29 +2514,26 @@ restriction_body_declarations ::=
     restriction_body_declaration:a {:  RESULT = a;  :}
  |  restriction_body_declarations:a restriction_body_declaration:b {:
                                                                   
- RESULT = a;
- a.addAll(b);
- 
+		 RESULT = a;
+		 a.addAll(b);
+		 
                                                                    :};
 
 restriction_body_declaration ::=
     SEMICOLON {: 
- List<Node> l = new LinkedList<>();
- RESULT = l;
-  :}
+		 List<Node> l = new LinkedList<>();
+		 RESULT = l;  :}
  |  allows_stmt:a SEMICOLON {:
                            
-     List<Node> l = new LinkedList<>();
-     l.add(a);
-     RESULT = l;
-     
+	     List<Node> l = new LinkedList<>();
+	     l.add(a);
+	     RESULT = l; 
                             :}
  |  test_declaration:a {:
                       
- List<Node> l = new LinkedList<>();
- l.add(a);
- RESULT = l;
- 
+		 List<Node> l = new LinkedList<>();
+		 l.add(a);
+		 RESULT = l; 
                        :};
 
 allows_stmt ::=
@@ -2481,8 +2543,8 @@ allows_stmt ::=
                           :}
  |  ALLOWS:a IDENTIFIER:b CONTINGENT IDENTIFIER:c {:
                                                   RESULT = parser.nf.AllowsStmt(parser.pos(a, b),
-                                 parser.nf.Id(parser.pos(b), b.getIdentifier()),
-                                 parser.nf.Id(parser.pos(c), c.getIdentifier())); 
+	                                 parser.nf.Id(parser.pos(b), b.getIdentifier()),
+	                                 parser.nf.Id(parser.pos(c), c.getIdentifier())); 
                                                   :};
 
 test_declaration ::=
@@ -2490,11 +2552,35 @@ test_declaration ::=
 
 test_header ::=
     modifiers_or_annotations_opt:a TEST:b IDENTIFIER:c LPAREN formal_parameter_list_opt:d RPAREN:g throws_opt:f {:
-                                                                                                                RESULT = parser.nf.MethodDecl(parser.pos(b, g, c), a,
+                                                                                                                
+    	RESULT = parser.nf.MethodDecl(parser.pos(b, g, c), a,
                                      parser.nf.CanonicalTypeNode(parser.pos(b),
                                                                  parser.ts.Boolean()),
                                      parser.nf.Id(parser.pos(c), c.getIdentifier()),
                                      d, f, null, true); 
+    
                                                                                                                 :};
+
+match_branch ::=
+    OR type:a variable_declarator_id:b ARROW LBRACE statement:c RBRACE {:
+                                                                      
+		LocalDecl ld = parser.nf.LocalDecl(parser.pos(a,b), Flags.NONE, a, b.name()); 
+		RESULT = parser.nf.MatchBranch(parser.pos(a, c), ld, c); 
+	
+                                                                       :};
+
+match_branch_list ::=
+    match_branch:a match_branch:b {:
+                                 
+		List<MatchBranch> br = new ArrayList<>();
+		br.add(a);
+		br.add(b);
+		RESULT = br;
+	
+                                  :}
+ |  match_branch_list:a match_branch:b {: 
+		a.add(b);
+		RESULT = a;
+	 :};
 
 
