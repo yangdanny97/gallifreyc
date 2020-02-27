@@ -44,8 +44,6 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     
     @Override
     public MethodDecl MethodDecl(Position pos, MethodDecl method, PreCondition pre, PostCondition post) {
-//        GallifreyExt ext = GallifreyExt.ext(method);
-//        GallifreyMethodDeclExt ext = (GallifreyMethodDeclExt) GallifreyExt.ext(method);
         GallifreyMethodDeclExt ext = (GallifreyMethodDeclExt) GallifreyExt.ext(method);
         ext.pre = pre;
         ext.post = post;

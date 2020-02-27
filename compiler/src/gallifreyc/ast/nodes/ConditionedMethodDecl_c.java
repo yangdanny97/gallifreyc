@@ -8,11 +8,19 @@ import polyglot.ast.Formal;
 import polyglot.ast.Id;
 import polyglot.ast.MethodDecl;
 import polyglot.ast.MethodDecl_c;
+import polyglot.ast.Node;
 import polyglot.ast.TypeNode;
 import polyglot.types.Flags;
+import polyglot.types.SemanticException;
+import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
+import polyglot.visit.NodeVisitor;
+import polyglot.visit.PrettyPrinter;
+import polyglot.visit.Translator;
+import polyglot.visit.TypeChecker;
 
+// I think this is currently unused
 public class ConditionedMethodDecl_c extends MethodDecl_c implements ConditionedMethodDecl {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
@@ -39,5 +47,27 @@ public class ConditionedMethodDecl_c extends MethodDecl_c implements Conditioned
     @Override
     public PostCondition post() {
         return post;
+    }
+    
+    @Override
+    public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
+        //TODO
+    }
+
+    @Override
+    public void translate(CodeWriter w, Translator tr) {
+        //TODO
+    }
+    
+    @Override
+    public Node visitChildren(NodeVisitor v) {
+    	//TODO
+        return null;
+    }
+
+    @Override
+    public Node typeCheck(TypeChecker tc) throws SemanticException {
+        //TODO 
+    	return null;
     }
 }

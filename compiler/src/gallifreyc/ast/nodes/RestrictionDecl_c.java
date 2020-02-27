@@ -2,8 +2,14 @@ package gallifreyc.ast.nodes;
 
 import polyglot.ast.*;
 import polyglot.types.Flags;
+import polyglot.types.SemanticException;
+import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
+import polyglot.visit.NodeVisitor;
+import polyglot.visit.PrettyPrinter;
+import polyglot.visit.Translator;
+import polyglot.visit.TypeChecker;
 
 public class RestrictionDecl_c extends Node_c implements RestrictionDecl {
     private static final long serialVersionUID = SerialVersionUID.generate();
@@ -52,5 +58,27 @@ public class RestrictionDecl_c extends Node_c implements RestrictionDecl {
 
     public Javadoc javadoc() {
     	return null; //TODO
+    }
+    
+    @Override
+    public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
+        //TODO
+    }
+
+    @Override
+    public void translate(CodeWriter w, Translator tr) {
+        //TODO
+    }
+    
+    @Override
+    public Node visitChildren(NodeVisitor v) {
+    	//TODO
+        return null;
+    }
+
+    @Override
+    public Node typeCheck(TypeChecker tc) throws SemanticException {
+        //TODO 
+    	return null;
     }
 }
