@@ -33,7 +33,11 @@ public class RefQualifiedType_c extends Type_c implements RefQualifiedType {
     
     @Override
     public boolean equalsImpl(TypeObject t) {
-        return this.base.equalsImpl(t);
+    	if (t instanceof RefQualifiedType) {
+    		RefQualifiedType rt = (RefQualifiedType) t;
+    		return this.base.equalsImpl(rt.base()) && refQualification.equals(rt.refQualification());
+    	}
+    	return false;
     }
     
     public RefQualifiedType_c(TypeSystem ts, Position pos, Type base, RefQualification q) {
@@ -44,6 +48,7 @@ public class RefQualifiedType_c extends Type_c implements RefQualifiedType {
     
     @Override
     public String translate(Resolver c) {
+    	//TODO 
         return this.base.translate(c);
     }
     
@@ -225,8 +230,11 @@ public class RefQualifiedType_c extends Type_c implements RefQualifiedType {
 
     @Override
     public boolean isImplicitCastValidImpl(Type toType) {
-        System.out.printf("Checking if %s isImplicitCastValidImpl to %s\n", this.base.toString(), toType.toString());
-        return this.base.isImplicitCastValidImpl(toType);
+    	//TODO check this again
+    	return false;
+//    	
+//        System.out.printf("Checking if %s isImplicitCastValidImpl to %s\n", this.base.toString(), toType.toString());
+//        return this.base.isImplicitCastValidImpl(toType);
     }
 
     @Override
@@ -246,11 +254,7 @@ public class RefQualifiedType_c extends Type_c implements RefQualifiedType {
     
     @Override
     public void print(CodeWriter w) {
-//        print(refQualification, w, tr);
-//        w.write(" ");
-//        print(base, w, tr);
-        w.write("<RefQualification> ");
-        base.print(w);
+    	w.write(refQualification.toString() + " " + base.toString());
     }
 
 }

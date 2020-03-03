@@ -17,6 +17,8 @@ import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeBuilder;
 
+
+//TODO
 public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTypeNode {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
@@ -38,14 +40,10 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
     public TypeNode base() {
         return base;
     }
-    
-//    @Override
-//    public Type type() {
-//        return base.type();
-//    }
 
     @Override
     public Node visitChildren(NodeVisitor v) {
+    	// TODO
         TypeNode base = visitChild(this.base, v);
 //        return reconstruct(this, base);
         this.base = base;
@@ -55,33 +53,20 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tb.typeSystem();
-//        return type(ts.refQualifiedTypeOf(position(), base.type(), this.refQualification));
-        return type(this.base.type());
+        return type(ts.refQualifiedTypeOf(position(), base.type(), this.refQualification));
     }
 
     @Override
     public Node disambiguate(AmbiguityRemover ar) throws SemanticException {
         GallifreyTypeSystem ts = (GallifreyTypeSystem) ar.typeSystem();
         NodeFactory nf = ar.nodeFactory();
-
-        if (!base.isDisambiguated()) {
-            return this;
-        }
-
         Type baseType = base.type();
 
         if (!baseType.isCanonical()) {
             return this;
         }
-        
-//        if (!this.refQualification.isDisambiguated()) {
-//            return this;
-//        }
-
         return nf.CanonicalTypeNode(position(),
                                     ts.refQualifiedTypeOf(position(), baseType, this.refQualification));
-//      return nf.CanonicalTypeNode(position(),
-//                                  this.base.type());
     }
 
     @Override

@@ -8,6 +8,8 @@ import polyglot.types.TypeSystem;
 import polyglot.visit.ContextVisitor;
 import polyglot.visit.NodeVisitor;
 
+
+// TODO I _think_ this can be deleted
 public class RefQualificationAdder extends ContextVisitor {
     // TODO: Implement this class.
     public RefQualificationAdder(Job job, TypeSystem ts, NodeFactory nf) {

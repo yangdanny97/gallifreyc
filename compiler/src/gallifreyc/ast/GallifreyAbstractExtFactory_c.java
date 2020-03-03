@@ -261,10 +261,9 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         return postExtMatchRestriction(e);
     }
     
-    
+    // TODO
     
     // IMPL
-
 
     protected Ext extPreConditionImpl() {
         return extNode();

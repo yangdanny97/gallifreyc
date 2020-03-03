@@ -12,6 +12,8 @@ import polyglot.types.MethodInstance;
 import polyglot.types.Type;
 import polyglot.util.SerialVersionUID;
 
+// TODO I _think_ this can be deleted
+// this is the "change all method signatures from A -> B to local A -> B
 public class GallifreyMethodDeclExt extends GallifreyExt {
     private static final long serialVersionUID = SerialVersionUID.generate();
     

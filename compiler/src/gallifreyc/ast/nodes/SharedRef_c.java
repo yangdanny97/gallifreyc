@@ -23,4 +23,12 @@ public class SharedRef_c extends RefQualification_c implements SharedRef {
     public RestrictionId restriction() {
         return restriction;
     }
+    
+    @Override
+    public boolean equals(Object other) {
+    	if (other instanceof SharedRef) {
+    		return restriction.equals(((SharedRef) other).restriction());
+    	}
+    	return false;
+    }
 }
