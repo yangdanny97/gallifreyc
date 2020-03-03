@@ -225,16 +225,17 @@ public class RefQualifiedType_c extends Type_c implements RefQualifiedType {
 
     @Override
     public boolean isCastValidImpl(Type toType) {
+    	// TODO
         return this.base.isCastValidImpl(toType);
     }
 
     @Override
     public boolean isImplicitCastValidImpl(Type toType) {
-    	//TODO check this again
-    	return false;
-//    	
-//        System.out.printf("Checking if %s isImplicitCastValidImpl to %s\n", this.base.toString(), toType.toString());
-//        return this.base.isImplicitCastValidImpl(toType);
+    	if (toType instanceof RefQualifiedType) {
+    		return equalsImpl(toType);
+    	} else {
+    		return this.base.isImplicitCastValidImpl(toType);
+    	}
     }
 
     @Override
