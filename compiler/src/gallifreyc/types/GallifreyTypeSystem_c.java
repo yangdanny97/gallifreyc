@@ -34,10 +34,9 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     // Override JL5 Type system things
     @Override
     public boolean isImplicitCastValid(Type fromType, Type toType) {
-        if (fromType instanceof RefQualifiedType) {
+        if (fromType instanceof RefQualifiedType && !(toType instanceof RefQualifiedType)) {
             RefQualifiedType refFromType = (RefQualifiedType) fromType;
-            return (refFromType.refQualification() instanceof LocalRef)
-                    && super.isImplicitCastValid(refFromType.base(), toType);
+            return super.isImplicitCastValid(refFromType.base(), toType);
         } else {
             return super.isImplicitCastValid(fromType, toType);
         }
