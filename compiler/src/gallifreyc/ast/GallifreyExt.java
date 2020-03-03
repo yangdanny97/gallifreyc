@@ -7,6 +7,7 @@ import polyglot.util.Copy;
 import polyglot.util.InternalCompilerError;
 import polyglot.util.SerialVersionUID;
 
+// TODO what the
 public class GallifreyExt extends Ext_c implements GallifreyOps {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
@@ -75,6 +76,4 @@ public class GallifreyExt extends Ext_c implements GallifreyOps {
         
         return node();
     }
-
-    // TODO:  Override operation methods for overridden AST operations.
 }

@@ -14,4 +14,9 @@ public class UniqueRef_c extends RefQualification_c implements UniqueRef {
     public String toString() {
         return "unique";
     }
+    
+    @Override
+    public boolean equals(Object other) {
+    	return other instanceof UniqueRef;
+    }
 }

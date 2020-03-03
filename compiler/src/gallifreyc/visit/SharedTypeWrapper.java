@@ -31,7 +31,6 @@ public class SharedTypeWrapper extends ContextVisitor {
     }
     
     public SharedTypeWrapper sourceFile(SourceFile source_file) {
-//        SharedTypeWrapper v = Copy.Util.copy(this);
         this.source_file = source_file;
         return this;
     }

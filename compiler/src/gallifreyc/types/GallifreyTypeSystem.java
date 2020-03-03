@@ -6,6 +6,5 @@ import polyglot.types.*;
 import polyglot.util.Position;
 
 public interface GallifreyTypeSystem extends JL7TypeSystem {
-    // TODO: declare any new methods needed
     RefQualifiedType refQualifiedTypeOf(Position pos, Type base, RefQualification q);
 }

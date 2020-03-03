@@ -9,6 +9,8 @@ import polyglot.ast.NodeOps;
  * Define a collection of operations that any Gallifrey node must
  * implement.  This interface allows extensions both to override and reuse
  * functionality in GallifreyExt (i think).
+ * 
+ * TODO: neither of these seems to be necessary, revisit when I add TC passes
  */
 public interface GallifreyOps extends NodeOps {
     RefQualificationAdder addRefQualificationEnter(RefQualificationAdder v);

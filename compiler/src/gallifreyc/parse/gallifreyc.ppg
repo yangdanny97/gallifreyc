@@ -61,7 +61,6 @@ non terminal MatchBranch match_branch;
 non terminal List<MatchBranch> match_branch_list;
 
 // missing: where, merge, match, collection/next, thread, when, branch, peek, abort, commit
-// TODO: transition
 
 start with goal;
 
@@ -71,11 +70,21 @@ override type ::=
     // TypeNode
     primitive_type:a
 		{: RESULT = a; :}
-|   ref_qualification:r reference_type:a
-		{:
-		 RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(r, a), r, a);
-		 //RESULT = a;
-		 :}
+    | LOCAL:a reference_type:t
+		{: 
+			// I _think_ that this is probably cleaner, no method relabeling
+			RESULT = t;
+		:}
+	| UNIQUE:a reference_type:t
+		{: 
+			RefQualification r = parser.nf.UniqueRef(parser.pos(a)); 
+			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(r, a), r, a);
+		:}
+	| SHARED:a LBRACK restriction_id:b RBRACK:c reference_type:t
+		{: 
+			RefQualification r = parser.nf.SharedRef(parser.pos(a,c), b); 
+			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(r, a), r, a);
+		:}
 ;
 
 restriction_id ::=
@@ -101,12 +110,7 @@ restriction_id ::=
 
 ref_qualification ::=
     // RefQualification
-    LOCAL:a
-		{: RESULT = parser.nf.LocalRef(parser.pos(a)); :}
-	| UNIQUE:a
-		{: RESULT = parser.nf.UniqueRef(parser.pos(a)); :}
-	| SHARED:a LBRACK restriction_id:b RBRACK:c
-		{: RESULT = parser.nf.SharedRef(parser.pos(a,c), b); :}
+
 ;
 
 // Pre/post conditions on method declarations in interfaces
