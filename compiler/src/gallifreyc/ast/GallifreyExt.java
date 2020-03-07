@@ -28,22 +28,22 @@ public class GallifreyExt extends Ext_c implements GallifreyOps {
         return GallifreyLang_c.instance;
     }
 
-    @Override
-    public RefQualificationAdder addRefQualificationEnter(RefQualificationAdder v) {
-        return v;
-    }
+//    @Override
+//    public RefQualificationAdder addRefQualificationEnter(RefQualificationAdder v) {
+//        return v;
+//    }
 
-    @Override
-    public Node addRefQualification(RefQualificationAdder v) {
-//        System.out.printf("Calling addRefQualificationEnter on this='%s' whose class is %s\n", node(), node().getClass().getName());
-//        if (node() instanceof SourceFile) {
-//            System.out.printf("(addRefQualification) hashcode = %d\n", node().hashCode());
-//            for (TopLevelDecl d : ((SourceFile) node()).decls()) {
-//                System.out.printf("Found decl %s\n", d);
-//            }
-//        }
-        return node();
-    }
+//    @Override
+//    public Node addRefQualification(RefQualificationAdder v) {
+////        System.out.printf("Calling addRefQualificationEnter on this='%s' whose class is %s\n", node(), node().getClass().getName());
+////        if (node() instanceof SourceFile) {
+////            System.out.printf("(addRefQualification) hashcode = %d\n", node().hashCode());
+////            for (TopLevelDecl d : ((SourceFile) node()).decls()) {
+////                System.out.printf("Found decl %s\n", d);
+////            }
+////        }
+//        return node();
+//    }
 
     @Override
     public SharedTypeWrapper wrapSharedTypeEnter(SharedTypeWrapper v) {

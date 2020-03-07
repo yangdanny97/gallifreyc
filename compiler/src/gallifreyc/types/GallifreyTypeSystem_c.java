@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import gallifreyc.ast.nodes.LocalRef;
+import gallifreyc.ast.nodes.UniqueRef;
 import gallifreyc.ast.nodes.LocalRef_c;
 import gallifreyc.ast.nodes.RefQualification;
 import polyglot.ext.jl7.types.JL7TypeSystem_c;
@@ -22,7 +23,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     @Override
     public boolean typeEquals(Type type1, Type type2) {
         if (type1 instanceof RefQualifiedType && type2 instanceof RefQualifiedType) {
-            return type1.typeEqualsImpl(type2) || type2.typeEqualsImpl(type1);
+            return type1.typeEqualsImpl(type2) && type2.typeEqualsImpl(type1);
         } else if (type1 instanceof RefQualifiedType || type2 instanceof RefQualifiedType) {
         	return false;
         }
@@ -34,9 +35,13 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     // Override JL5 Type system things
     @Override
     public boolean isImplicitCastValid(Type fromType, Type toType) {
-        if (fromType instanceof RefQualifiedType && !(toType instanceof RefQualifiedType)) {
+        if (fromType instanceof RefQualifiedType && toType instanceof RefQualifiedType) {
             RefQualifiedType refFromType = (RefQualifiedType) fromType;
-            return super.isImplicitCastValid(refFromType.base(), toType);
+            RefQualifiedType refToType = (RefQualifiedType) toType;
+            if (refFromType.refQualification() instanceof UniqueRef) {
+            	return super.isImplicitCastValid(refFromType.base(), refToType.base());
+            }
+            return typeEquals(fromType, toType);
         } else {
             return super.isImplicitCastValid(fromType, toType);
         }

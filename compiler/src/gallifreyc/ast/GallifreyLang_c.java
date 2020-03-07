@@ -36,15 +36,15 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
         return gallifreycExt(n);
     }
 
-    @Override
-    public final RefQualificationAdder addRefQualificationEnter(Node n, RefQualificationAdder v) {
-        return GallifreyOps(n).addRefQualificationEnter(v);
-    }
-
-    @Override
-    public final Node addRefQualification(Node n, RefQualificationAdder v) {
-        return GallifreyOps(n).addRefQualification(v);
-    }
+//    @Override
+//    public final RefQualificationAdder addRefQualificationEnter(Node n, RefQualificationAdder v) {
+//        return GallifreyOps(n).addRefQualificationEnter(v);
+//    }
+//
+//    @Override
+//    public final Node addRefQualification(Node n, RefQualificationAdder v) {
+//        return GallifreyOps(n).addRefQualification(v);
+//    }
 
     @Override
     public SharedTypeWrapper wrapSharedTypeEnter(Node n, SharedTypeWrapper v) {

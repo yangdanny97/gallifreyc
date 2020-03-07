@@ -1,6 +1,7 @@
 package gallifreyc.types;
 
 import gallifreyc.ast.nodes.RefQualification;
+import gallifreyc.ast.nodes.UniqueRef;
 import polyglot.types.ArrayType;
 import polyglot.types.ClassType;
 import polyglot.types.NullType;
@@ -225,16 +226,31 @@ public class RefQualifiedType_c extends Type_c implements RefQualifiedType {
 
     @Override
     public boolean isCastValidImpl(Type toType) {
-    	// TODO
-        return this.base.isCastValidImpl(toType);
+    	if (toType instanceof RefQualifiedType) {
+    		if (this.refQualification instanceof UniqueRef) {
+    			return this.base.isCastValidImpl(toType);
+    		}
+    		return equalsImpl(toType);
+    	} else {
+    		if (this.refQualification instanceof UniqueRef) {
+    			return this.base.isCastValidImpl(toType);
+    		}
+    		return false;
+    	}
     }
 
     @Override
     public boolean isImplicitCastValidImpl(Type toType) {
     	if (toType instanceof RefQualifiedType) {
+    		if (this.refQualification instanceof UniqueRef) {
+    			return this.base.isImplicitCastValidImpl(toType);
+    		}
     		return equalsImpl(toType);
     	} else {
-    		return this.base.isImplicitCastValidImpl(toType);
+    		if (this.refQualification instanceof UniqueRef) {
+    			return this.base.isImplicitCastValidImpl(toType);
+    		}
+    		return false;
     	}
     }
 
