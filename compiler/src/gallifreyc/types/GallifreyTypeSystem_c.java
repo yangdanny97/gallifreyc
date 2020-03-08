@@ -38,6 +38,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         if (fromType instanceof RefQualifiedType && toType instanceof RefQualifiedType) {
             RefQualifiedType refFromType = (RefQualifiedType) fromType;
             RefQualifiedType refToType = (RefQualifiedType) toType;
+            // unique -> local/shared
             if (refFromType.refQualification() instanceof UniqueRef) {
             	return super.isImplicitCastValid(refFromType.base(), refToType.base());
             }
@@ -46,11 +47,5 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
             return super.isImplicitCastValid(fromType, toType);
         }
     }
-
-    // TODO(chrisroman): I have a suspicion that a lot of other type system methods
-    // must be overridden to handle cases when we have a RefQualifiedType, because it
-    // is basically a wrapper around the actual type we'd like to do things with. 
-    // Not exactly sure how to deal with this; seems like a lot of overhead and
-    // potentially the wrong way to do it.
     
 }
