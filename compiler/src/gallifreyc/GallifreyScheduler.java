@@ -1,6 +1,5 @@
 package gallifreyc;
 
-import gallifreyc.visit.RefQualificationAdder;
 import gallifreyc.visit.SharedTypeWrapper;
 import polyglot.ast.NodeFactory;
 import polyglot.ext.jl7.JL7Scheduler;
@@ -24,19 +23,6 @@ public class GallifreyScheduler extends JL7Scheduler {
     public GallifreyScheduler(JLExtensionInfo extInfo) {
         super(extInfo);
     }
-
-    public Goal AddRefQualification(Job job) {
-        ExtensionInfo extInfo = job.extensionInfo();
-        TypeSystem ts = extInfo.typeSystem();
-        NodeFactory nf = extInfo.nodeFactory();
-        Goal g = new VisitorGoal(job, new RefQualificationAdder(job, ts, nf));
-        try {
-            g.addPrerequisiteGoal(WrapSharedType(job), this);
-        } catch (CyclicDependencyException e) {
-            throw new InternalCompilerError(e);
-        }
-        return internGoal(g);
-    }
     
     @Override
     public Goal Disambiguated(Job job) {
@@ -45,7 +31,6 @@ public class GallifreyScheduler extends JL7Scheduler {
         Goal g = Disambiguated.create(this, job, ts, nf);
         try {
             g.addPrerequisiteGoal(WrapSharedType(job), this);
-            g.addPrerequisiteGoal(AddRefQualification(job), this);
         } catch (CyclicDependencyException e) {
             throw new InternalCompilerError(e);
         }
@@ -58,7 +43,6 @@ public class GallifreyScheduler extends JL7Scheduler {
         NodeFactory nf = extInfo.nodeFactory();
         Goal g = TypeChecked.create(this, job, ts, nf);
         try {
-            g.addPrerequisiteGoal(AddRefQualification(job), this);
             g.addPrerequisiteGoal(WrapSharedType(job), this);
         } catch (CyclicDependencyException e) {
             throw new InternalCompilerError(e);

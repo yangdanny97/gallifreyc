@@ -6,7 +6,6 @@ import java.util.List;
 import gallifreyc.ast.nodes.SharedRef;
 import gallifreyc.types.RefQualifiedType;
 import gallifreyc.types.RefQualifiedType_c;
-import gallifreyc.visit.RefQualificationAdder;
 import gallifreyc.visit.SharedTypeWrapper;
 import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.ClassBody;

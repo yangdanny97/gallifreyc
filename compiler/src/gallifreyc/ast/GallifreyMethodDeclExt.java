@@ -5,7 +5,6 @@ import java.util.List;
 
 import gallifreyc.ast.nodes.PostCondition;
 import gallifreyc.ast.nodes.PreCondition;
-import gallifreyc.visit.RefQualificationAdder;
 import polyglot.ast.MethodDecl;
 import polyglot.ast.Node;
 import polyglot.types.MethodInstance;

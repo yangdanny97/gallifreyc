@@ -1,7 +1,6 @@
 package gallifreyc.ast.nodes;
 
 import gallifreyc.types.GallifreyTypeSystem;
-import gallifreyc.visit.RefQualificationAdder;
 import polyglot.ast.MethodDecl;
 import polyglot.ast.Node;
 import polyglot.ast.NodeFactory;
@@ -18,7 +17,6 @@ import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeBuilder;
 
 
-//TODO
 public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTypeNode {
     private static final long serialVersionUID = SerialVersionUID.generate();
 

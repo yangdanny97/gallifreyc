@@ -242,11 +242,13 @@ public class RefQualifiedType_c extends Type_c implements RefQualifiedType {
     @Override
     public boolean isImplicitCastValidImpl(Type toType) {
     	if (toType instanceof RefQualifiedType) {
+    		// unique -> shared || unique -> unique
     		if (this.refQualification instanceof UniqueRef) {
     			return this.base.isImplicitCastValidImpl(toType);
     		}
     		return equalsImpl(toType);
     	} else {
+    		// unique -> local
     		if (this.refQualification instanceof UniqueRef) {
     			return this.base.isImplicitCastValidImpl(toType);
     		}
