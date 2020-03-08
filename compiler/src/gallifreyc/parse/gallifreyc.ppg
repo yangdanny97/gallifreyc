@@ -78,12 +78,12 @@ override type ::=
 	| UNIQUE:a reference_type:t
 		{: 
 			RefQualification r = parser.nf.UniqueRef(parser.pos(a)); 
-			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(r, a), r, a);
+			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
 		:}
 	| SHARED:a LBRACK restriction_id:b RBRACK:c reference_type:t
 		{: 
-			RefQualification r = parser.nf.SharedRef(parser.pos(a,c), b); 
-			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(r, a), r, a);
+			RefQualification r = parser.nf.SharedRef(parser.pos(a, c), b); 
+			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
 		:}
 ;
 

@@ -362,12 +362,24 @@ boundary_literal ::=
 
 type ::=
     primitive_type:a {:  RESULT = a;  :}
- |  ref_qualification:r reference_type:a {:
-                                        
-		 RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(r, a), r, a);
-		 //RESULT = a;
-		 
-                                         :};
+ |  LOCAL:a reference_type:t {:
+                             
+			// I _think_ that this is probably cleaner, no method relabeling
+			RESULT = t;
+		
+                             :}
+ |  UNIQUE:a reference_type:t {:
+                              
+			RefQualification r = parser.nf.UniqueRef(parser.pos(a)); 
+			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
+		
+                              :}
+ |  SHARED:a LBRACK restriction_id:b RBRACK:c reference_type:t {:
+                                                               
+			RefQualification r = parser.nf.SharedRef(parser.pos(a, c), b); 
+			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
+		
+                                                               :};
 
 primitive_type ::=
     numeric_type:a {:  RESULT = a;  :}
@@ -2453,11 +2465,7 @@ restriction_id ::=
                                           :};
 
 ref_qualification ::=
-    LOCAL:a {:  RESULT = parser.nf.LocalRef(parser.pos(a));  :}
- |  UNIQUE:a {:  RESULT = parser.nf.UniqueRef(parser.pos(a));  :}
- |  SHARED:a LBRACK restriction_id:b RBRACK:c {:
-                                              RESULT = parser.nf.SharedRef(parser.pos(a,c), b); 
-                                              :};
+   ;
 
 pre_condition_opt ::=
     {:  RESULT = null;  :}

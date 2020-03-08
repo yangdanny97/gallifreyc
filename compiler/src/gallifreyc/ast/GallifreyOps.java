@@ -1,6 +1,5 @@
 package gallifreyc.ast;
 
-import gallifreyc.visit.RefQualificationAdder;
 import gallifreyc.visit.SharedTypeWrapper;
 import polyglot.ast.Node;
 import polyglot.ast.NodeOps;
@@ -13,9 +12,6 @@ import polyglot.ast.NodeOps;
  * TODO: neither of these seems to be necessary, revisit when I add TC passes
  */
 public interface GallifreyOps extends NodeOps {
-//    RefQualificationAdder addRefQualificationEnter(RefQualificationAdder v);
-//    Node addRefQualification(RefQualificationAdder v);
-    
     SharedTypeWrapper wrapSharedTypeEnter(SharedTypeWrapper v);
     Node wrapSharedType(SharedTypeWrapper v);
 }
