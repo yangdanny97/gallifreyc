@@ -1,0 +1,9 @@
+class C {
+	public C() {}
+	
+	public test() {
+		unique Integer a = 5;
+		local Integer b = a;
+	}
+	
+}
