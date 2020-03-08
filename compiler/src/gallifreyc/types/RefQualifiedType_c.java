@@ -1,7 +1,7 @@
 package gallifreyc.types;
 
-import gallifreyc.ast.nodes.RefQualification;
-import gallifreyc.ast.nodes.UniqueRef;
+import gallifreyc.ast.RefQualification;
+import gallifreyc.ast.UniqueRef;
 import polyglot.types.ArrayType;
 import polyglot.types.ClassType;
 import polyglot.types.NullType;

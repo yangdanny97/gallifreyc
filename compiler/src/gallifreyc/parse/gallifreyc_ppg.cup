@@ -16,7 +16,6 @@ import polyglot.ext.jl7.types.*;
 import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.*;
-import gallifreyc.ast.nodes.*;
 import polyglot.parse.Name;
 import polyglot.parse.VarDeclarator;
 

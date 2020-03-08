@@ -2,18 +2,15 @@ package gallifreyc.ast;
 
 import polyglot.ext.jl5.ast.ParamTypeNode;
 import polyglot.ast.*;
-import gallifreyc.ast.nodes.PreCondition;
-import gallifreyc.ast.nodes.PostCondition;
+import gallifreyc.extension.*;
 import polyglot.ext.jl5.ast.JL5Ext;
 import polyglot.ext.jl5.ast.JL5MethodDeclExt;
 import polyglot.ext.jl5.parse.FlagAnnotations;
 import polyglot.ext.jl7.ast.JL7NodeFactory_c;
 import polyglot.types.Flags;
 import polyglot.util.*;
-
 import java.util.*;
 
-import gallifreyc.ast.nodes.*;
 /**
  * NodeFactory for gallifreyc extension.
  */

@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import gallifreyc.ast.GallifreyLang;
+import gallifreyc.extension.GallifreyLang;
 import polyglot.ast.Node;
 import polyglot.ast.NodeFactory;
 import polyglot.ast.SourceFile;

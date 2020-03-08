@@ -4,6 +4,8 @@ import polyglot.lex.Lexer;
 import gallifreyc.parse.Lexer_c;
 import gallifreyc.parse.Grm;
 import gallifreyc.ast.*;
+import gallifreyc.extension.GallifreyExtFactory_c;
+import gallifreyc.extension.GallifreyLang_c;
 import gallifreyc.types.*;
 import polyglot.ast.*;
 import polyglot.ext.jl5.ast.JL5ExtFactory_c;
