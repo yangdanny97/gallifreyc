@@ -1,9 +1,6 @@
 package gallifreyc.ast;
 
 import polyglot.ast.*;
-
-import gallifreyc.ast.nodes.PreCondition;
-import gallifreyc.ast.nodes.PostCondition;
 import polyglot.ext.jl5.parse.FlagAnnotations;
 import polyglot.ext.jl7.ast.JL7NodeFactory;
 import polyglot.types.Flags;
@@ -11,10 +8,7 @@ import polyglot.types.Package;
 import polyglot.types.Type;
 import polyglot.types.Qualifier;
 import polyglot.util.*;
-
 import java.util.*;
-
-import gallifreyc.ast.nodes.*;
 
 
 /**
