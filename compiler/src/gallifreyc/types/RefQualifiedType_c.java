@@ -1,17 +1,7 @@
 package gallifreyc.types;
 
-import gallifreyc.ast.RefQualification;
-import gallifreyc.ast.UniqueRef;
-import polyglot.types.ArrayType;
-import polyglot.types.ClassType;
-import polyglot.types.NullType;
-import polyglot.types.PrimitiveType;
-import polyglot.types.ReferenceType;
-import polyglot.types.Resolver;
-import polyglot.types.Type;
-import polyglot.types.TypeObject;
-import polyglot.types.TypeSystem;
-import polyglot.types.Type_c;
+import gallifreyc.ast.*;
+import polyglot.types.*;
 import polyglot.util.CodeWriter;
 import polyglot.util.InternalCompilerError;
 import polyglot.util.Position;
@@ -242,14 +232,15 @@ public class RefQualifiedType_c extends Type_c implements RefQualifiedType {
     @Override
     public boolean isImplicitCastValidImpl(Type toType) {
     	if (toType instanceof RefQualifiedType) {
-    		// unique -> shared || unique -> unique
-    		if (this.refQualification instanceof UniqueRef) {
-    			return this.base.isImplicitCastValidImpl(toType);
+    		RefQualifiedType refToType = (RefQualifiedType) toType;
+    		// move -> shared || move -> unique
+    		if (this.refQualification instanceof MoveRef) {
+    			return this.base.isImplicitCastValidImpl(refToType.base());
     		}
     		return equalsImpl(toType);
     	} else {
-    		// unique -> local
-    		if (this.refQualification instanceof UniqueRef) {
+    		// move -> local
+    		if (this.refQualification instanceof MoveRef) {
     			return this.base.isImplicitCastValidImpl(toType);
     		}
     		return false;

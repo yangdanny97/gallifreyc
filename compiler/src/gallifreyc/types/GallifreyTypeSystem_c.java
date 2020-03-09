@@ -4,10 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import gallifreyc.ast.LocalRef;
-import gallifreyc.ast.LocalRef_c;
-import gallifreyc.ast.RefQualification;
-import gallifreyc.ast.UniqueRef;
+import gallifreyc.ast.*;
 import polyglot.ext.jl7.types.JL7TypeSystem_c;
 import polyglot.types.*;
 import polyglot.util.InternalCompilerError;
@@ -38,14 +35,21 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         if (fromType instanceof RefQualifiedType && toType instanceof RefQualifiedType) {
             RefQualifiedType refFromType = (RefQualifiedType) fromType;
             RefQualifiedType refToType = (RefQualifiedType) toType;
-            // unique -> local/shared
-            if (refFromType.refQualification() instanceof UniqueRef) {
+            // move -> shared/unique
+            if (refFromType.refQualification() instanceof MoveRef) {
             	return super.isImplicitCastValid(refFromType.base(), refToType.base());
             }
             return typeEquals(fromType, toType);
-        } else {
-            return super.isImplicitCastValid(fromType, toType);
         }
+        if (fromType instanceof RefQualifiedType) {
+            RefQualifiedType refFromType = (RefQualifiedType) fromType;
+            // move -> local
+            if (refFromType.refQualification() instanceof MoveRef) {
+            	return super.isImplicitCastValid(refFromType.base(), toType);
+            }
+            return typeEquals(fromType, toType);
+        }
+        return super.isImplicitCastValid(fromType, toType);
     }
     
 }
