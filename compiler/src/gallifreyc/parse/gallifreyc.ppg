@@ -279,4 +279,9 @@ extend statement ::=
 	{: RESULT = parser.nf.MatchRestriction(parser.pos(a,b), a, b);:}
 ;
 
+extend expression ::= 
+	MOVE LPAREN expression:a RPAREN
+	{: RESULT = parser.nf.Move(parser.pos(a), a); :}
+;
+
 

@@ -61,6 +61,14 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
         u = ext(u, extFactory().extUniqueRef());
         return u;
     }
+    
+    @Override
+    public MoveRef MoveRef(Position pos) {
+        MoveRef m = new MoveRef_c(pos);
+        m = ext(m, extFactory().extUniqueRef());
+        return m;
+    }
+
 
     @Override
     public SharedRef SharedRef(Position pos, RestrictionId restriction) {
@@ -151,5 +159,12 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     	MatchBranch b = new MatchBranch_c(pos, pattern, stmt);
     	b = ext(b, extFactory().extMatchBranch());
     	return b;
+    }
+    
+    @Override
+    public Move Move(Position pos, Expr expr) {
+    	Move m = new Move_c(pos, expr);
+    	m = ext(m, extFactory().extMove());
+    	return m;
     }
 }
