@@ -13,6 +13,7 @@ public interface GallifreyExtFactory extends JL7ExtFactory {
     Ext extPostCondition();
     Ext extLocalRef();
     Ext extUniqueRef();
+    Ext extMoveRef();
     Ext extSharedRef();
     Ext extRefQualification();
     Ext extRefQualifiedTypeNode();
@@ -20,6 +21,7 @@ public interface GallifreyExtFactory extends JL7ExtFactory {
     Ext extMatchBranch();
     Ext extMatchRestriction();
     Ext extTransition();
+    Ext extMove();
     // Restrictions
     Ext extRestrictionDecl();
     Ext extRestrictionBody();

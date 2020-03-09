@@ -22,10 +22,12 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     MethodDecl MethodDecl(Position pos, MethodDecl method, PreCondition pre, PostCondition post);
     LocalRef LocalRef(Position pos);
     UniqueRef UniqueRef(Position pos);
+    MoveRef MoveRef(Position pos);
     SharedRef SharedRef(Position pos, RestrictionId restriction);
     RefQualifiedTypeNode RefQualifiedTypeNode(Position pos, RefQualification refQualification, TypeNode t);
     RestrictionId RestrictionId(Position pos, Id rv, Id restriction, boolean wildcard);
     Transition Transition(Position pos, Expr expr, RestrictionId newRestriction);
+    Move Move(Position pos, Expr expr);
     MatchRestriction MatchRestriction(Position pos, Expr expr, List<MatchBranch> branches);
     MatchBranch MatchBranch(Position pos, LocalDecl pattern, Stmt stmt);
     

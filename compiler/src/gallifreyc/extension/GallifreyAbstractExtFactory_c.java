@@ -80,6 +80,21 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         e = composeExts(e, e2);
         return postExtUniqueRef(e);
     }
+    
+    public final Ext extMoveRef() {
+        Ext e = extMoveRefImpl();
+
+        ExtFactory nextEF = nextExtFactory();
+        Ext e2;
+        if (nextEF instanceof GallifreyExtFactory) {
+            e2 = ((GallifreyExtFactory) nextEF).extMoveRef();
+        } else {
+            e2 = nextEF.extNode();
+        }
+
+        e = composeExts(e, e2);
+        return postExtMoveRef(e);
+    }
 
     public final Ext extSharedRef() {
         Ext e = extSharedRefImpl();
@@ -231,6 +246,21 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         return postExtTransition(e);
     }
     
+    public final Ext extMove() {
+        Ext e = extMoveImpl();
+
+        ExtFactory nextEF = nextExtFactory();
+        Ext e2;
+        if (nextEF instanceof GallifreyExtFactory) {
+            e2 = ((GallifreyExtFactory) nextEF).extMove();
+        } else {
+            e2 = nextEF.extNode();
+        }
+
+        e = composeExts(e, e2);
+        return postExtMove(e);
+    }
+    
     public final Ext extMatchBranch() {
         Ext e = extMatchBranchImpl();
 
@@ -281,6 +311,10 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         return extRefQualification();
     }
     
+    protected Ext extMoveRefImpl() {
+        return extRefQualification();
+    }
+    
     protected Ext extSharedRefImpl() {
         return extRefQualification();
     }
@@ -321,6 +355,10 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         return extNode();
     }
     
+    protected Ext extMoveImpl() {
+        return extNode();
+    }
+    
     protected Ext extMatchBranchImpl() {
         return extNode();
     }
@@ -348,6 +386,10 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     }
     
     protected Ext postExtSharedRef(Ext e) {
+        return postExtRefQualification(e);
+    }
+    
+    protected Ext postExtMoveRef(Ext e) {
         return postExtRefQualification(e);
     }
     
@@ -384,6 +426,10 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     }
     
     protected Ext postExtTransition(Ext e) {
+        return postExtNode(e);
+    }
+    
+    protected Ext postExtMove(Ext e) {
         return postExtNode(e);
     }
     
