@@ -77,7 +77,7 @@ public class GallifreyExt extends Ext_c implements GallifreyOps {
     		Stmt stmt1 = rw.qq().parseStmt("%T %s = %E;", oType, fresh, o);
     		return nf.Block(node.position(), stmt1);
     	}
-		return nf.Block(node.position(), new ArrayList<>());
+		return nf.Block(node.position(), new ArrayList<Stmt>());
     }
     
  // when ArrayAccess appears on RHS, this makes it safe to null out
@@ -97,8 +97,12 @@ public class GallifreyExt extends Ext_c implements GallifreyOps {
     public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
         AssignmentRewriter crw = (AssignmentRewriter) rw;
         NodeFactory nf = rw.nodeFactory();
-
         Node n = node();
+        if (n instanceof Move) {
+        	Move m = (Move) n;
+        	Expr e = m.expr();
+        	return e;
+        }
 //        if (n instanceof ArrayAccessAssign) {
 //        	ArrayAccessAssign an = (ArrayAccessAssign) n;
 //        	ArrayAccess left = an.left();
@@ -180,7 +184,6 @@ public class GallifreyExt extends Ext_c implements GallifreyOps {
 //        		}
 //        	}
 //        }
-        //TODO how to handle field decls?
         return super.extRewrite(rw);
     }
 }

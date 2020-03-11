@@ -44,13 +44,15 @@ public class PreCondition_c extends Node_c implements PreCondition {
     
     @Override
     public Node visitChildren(NodeVisitor v) {
-    	//TODO
-        return null;
+        Expr expr = visitChild(this.cond, v);
+        PreCondition_c n = copyIfNeeded(this);
+        n.cond = expr;
+        return n;
     }
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         //TODO 
-    	return null;
+    	return this;
     }
 }

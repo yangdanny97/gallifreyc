@@ -41,11 +41,10 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
 
     @Override
     public Node visitChildren(NodeVisitor v) {
-    	// TODO
         TypeNode base = visitChild(this.base, v);
-//        return reconstruct(this, base);
-        this.base = base;
-        return this;
+        RefQualifiedTypeNode_c n = copyIfNeeded(this);
+        n.base = base;
+        return n;
     }
     
     @Override

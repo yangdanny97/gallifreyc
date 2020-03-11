@@ -585,6 +585,7 @@ public class Lexer_c implements Lexer {
         keywords.put("when",              new Integer(sym.WHEN));
         keywords.put("where",             new Integer(sym.WHERE));
         keywords.put("with",              new Integer(sym.WITH));
+        keywords.put("move",              new Integer(sym.MOVE));
     }
 
     @Override

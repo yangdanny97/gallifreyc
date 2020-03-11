@@ -62,12 +62,12 @@ public class ConditionedMethodDecl_c extends MethodDecl_c implements Conditioned
     @Override
     public Node visitChildren(NodeVisitor v) {
     	//TODO
-        return null;
+        return this;
     }
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         //TODO 
-    	return null;
+    	return this;
     }
 }

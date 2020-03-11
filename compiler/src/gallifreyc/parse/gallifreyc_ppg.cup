@@ -297,6 +297,7 @@ terminal Token WHEN;
 terminal Token WHERE;
 terminal Token WITH;
 terminal Token ARROW;
+terminal Token MOVE;
 non terminal PreCondition pre_condition_opt;
 non terminal PostCondition post_condition_opt;
 non terminal RefQualification ref_qualification;
@@ -1689,7 +1690,10 @@ expression_opt ::=
  |  expression:a {:  RESULT = a;  :};
 
 expression ::=
-    assignment_expression:a {:  RESULT = a;  :};
+    assignment_expression:a {:  RESULT = a;  :}
+ |  MOVE LPAREN expression:a RPAREN {:
+                                    RESULT = parser.nf.Move(parser.pos(a), a); 
+                                    :};
 
 constant_expression ::=
     expression:a {:  RESULT = a;  :};
