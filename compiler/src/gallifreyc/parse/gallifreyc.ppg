@@ -39,6 +39,7 @@ terminal Token WHEN;
 terminal Token WHERE;
 terminal Token WITH;
 terminal Token ARROW;
+terminal Token MOVE;
 
 // Reference Qualifications (local, unique, shared)
 non terminal PreCondition pre_condition_opt;

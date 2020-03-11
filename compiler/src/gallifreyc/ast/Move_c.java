@@ -2,11 +2,8 @@ package gallifreyc.ast;
 
 import java.util.List;
 
-import polyglot.ast.Expr;
-import polyglot.ast.Expr_c;
-import polyglot.ast.Node;
-import polyglot.ast.Term;
-import polyglot.types.SemanticException;
+import polyglot.ast.*;
+import polyglot.types.*;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.visit.CFGBuilder;
@@ -14,6 +11,7 @@ import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.Translator;
 import polyglot.visit.TypeChecker;
+import gallifreyc.types.*;
 
 public class Move_c extends Expr_c implements Move {
 	Expr expr;
@@ -46,7 +44,7 @@ public class Move_c extends Expr_c implements Move {
     
     @Override
     public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-        //TODO
+        w.write(this.toString());
     }
 
     @Override
@@ -56,13 +54,32 @@ public class Move_c extends Expr_c implements Move {
     
     @Override
     public Node visitChildren(NodeVisitor v) {
-    	//TODO
-        return null;
+        Expr expr = visitChild(this.expr, v);
+        Move_c n = copyIfNeeded(this);
+        n.expr = expr;
+        return n;
+    }
+    
+    @Override
+    public Node copy(NodeFactory nf) {
+    	return ((GallifreyNodeFactory) nf).Move(this.position, (Expr) this.expr.copy(nf));
     }
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        //TODO 
-    	return null;
+        Type t = this.expr.type();
+        GallifreyNodeFactory nf = (GallifreyNodeFactory) tc.nodeFactory();
+        assert t != null;
+        if (t instanceof RefQualifiedType) {
+        	RefQualifiedType rt = (RefQualifiedType) t;
+        	RefQualification q = rt.refQualification();
+        	if (q instanceof UniqueRef) {
+        		q = nf.MoveRef(q.position());
+                RefQualifiedType new_type = (RefQualifiedType) t.copy();
+                new_type.refQualification(q);
+                return type(new_type);
+        	}
+        }
+        throw new SemanticException("cannot move non-unique!");
     }
 }

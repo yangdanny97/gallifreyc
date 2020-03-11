@@ -1,6 +1,6 @@
 package gallifreyc;
 
-import gallifreyc.visit.SharedTypeWrapper;
+import gallifreyc.visit.*;
 import gallifreyc.translate.*;
 import polyglot.ast.NodeFactory;
 import polyglot.ext.jl7.JL7Scheduler;
@@ -8,50 +8,38 @@ import polyglot.frontend.*;
 import polyglot.frontend.goals.*;
 import polyglot.types.TypeSystem;
 import polyglot.util.InternalCompilerError;
+import polyglot.visit.TypeChecker;
 
 /**
- * {@code CArraySchedule} extends the base scheduler to handle translations of
- * CArray programs to Java.
+ * {@code GallifreyScheduler} extends the base scheduler to handle translations of
+ * Gallifrey programs to Java.
  */
 public class GallifreyScheduler extends JL7Scheduler {
-    public GallifreyScheduler(JLExtensionInfo extInfo) {
+    public GallifreyScheduler(GallifreyExtensionInfo extInfo) {
         super(extInfo);
     }
     
-//    @Override
-//    public Goal Disambiguated(Job job) {
-//        TypeSystem ts = extInfo.typeSystem();
-//        NodeFactory nf = extInfo.nodeFactory();
-//        Goal g = Disambiguated.create(this, job, ts, nf);
-//        try {
-//            g.addPrerequisiteGoal(WrapSharedType(job), this);
-//        } catch (CyclicDependencyException e) {
-//            throw new InternalCompilerError(e);
-//        }
-//        return g;
-//    }
-//    
-//    @Override
-//    public Goal TypeChecked(Job job) {
-//        TypeSystem ts = extInfo.typeSystem();
-//        NodeFactory nf = extInfo.nodeFactory();
-//        Goal g = TypeChecked.create(this, job, ts, nf);
-//        try {
-//            g.addPrerequisiteGoal(WrapSharedType(job), this);
-//        } catch (CyclicDependencyException e) {
-//            throw new InternalCompilerError(e);
-//          }     
-//        return g;
-//    }
-    
     public Goal RewriteAssignment(Job job) {
-        Goal g =
-                new VisitorGoal(job,
-                                new AssignmentRewriter(job,
-                                                   extInfo,
-                                                   extInfo.outputExtensionInfo()));
+    	AssignmentRewriter rw = new AssignmentRewriter(job, extInfo, extInfo);
+        Goal g = new VisitorGoal(job, rw);
         try {
             g.addPrerequisiteGoal(Serialized(job), this);
+        }
+        catch (CyclicDependencyException e) {
+            throw new InternalCompilerError(e);
+        }
+        return internGoal(g);
+    }
+    
+    
+    @Override
+    public Goal TypeChecked(Job job) {
+        TypeSystem ts = extInfo.typeSystem();
+        NodeFactory nf = extInfo.nodeFactory();
+        Goal g = new VisitorGoal(job, new GallifreyTypeChecker(job, ts, nf));
+        try {
+            g.addPrerequisiteGoal(Disambiguated(job), this);
+            g.addPrerequisiteGoal(MembersFiltered(job), this);
         }
         catch (CyclicDependencyException e) {
             throw new InternalCompilerError(e);

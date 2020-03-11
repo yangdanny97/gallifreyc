@@ -70,5 +70,4 @@ public class OwnershipInference  extends ContextVisitor{
     public OwnershipInference(Job job, TypeSystem ts, NodeFactory nf) {
         super(job, ts, nf);
     }
-    
 }

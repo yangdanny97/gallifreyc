@@ -134,6 +134,7 @@ public class sym {
   public static final int RSHIFT = 68;
   public static final int LSHIFT = 67;
   public static final int FLOAT_LITERAL = 99;
+  public static final int MOVE = 131;
   public static final int ANDAND = 80;
   public static final int URSHIFT = 69;
   public static final int WHILE = 49;
@@ -270,7 +271,8 @@ public class sym {
   "WHEN",
   "WHERE",
   "WITH",
-  "ARROW"
+  "ARROW",
+  "MOVE"
   };
 }
 

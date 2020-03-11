@@ -62,8 +62,10 @@ public class Transition_c extends Stmt_c implements Transition {
     
     @Override
     public Node visitChildren(NodeVisitor v) {
-    	//TODO
-        return null;
+    	Expr e = visitChild(this.expr, v);
+        Transition_c n = copyIfNeeded(this);
+        n.expr = e;
+        return n;
     }
 
     @Override

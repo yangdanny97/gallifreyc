@@ -6,4 +6,5 @@ import polyglot.types.Type;
 public interface RefQualifiedType extends Type {
     Type base();
     RefQualification refQualification();
+    RefQualifiedType refQualification(RefQualification q);
 }

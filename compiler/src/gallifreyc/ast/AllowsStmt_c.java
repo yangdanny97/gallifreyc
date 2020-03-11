@@ -52,12 +52,12 @@ public class AllowsStmt_c extends RestrictionMember_c implements AllowsStmt {
     @Override
     public Node visitChildren(NodeVisitor v) {
     	//TODO
-        return null;
+        return this;
     }
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         //TODO 
-    	return null;
+    	return this;
     }
 }

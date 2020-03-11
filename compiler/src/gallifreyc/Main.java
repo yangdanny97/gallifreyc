@@ -11,7 +11,7 @@ public class Main
       polyglot.main.Main polyglotMain = new polyglot.main.Main();
 
       try {
-          polyglotMain.start(args, new gallifreyc.ExtensionInfo());
+          polyglotMain.start(args, new gallifreyc.GallifreyExtensionInfo());
       }
       catch (polyglot.main.Main.TerminationException e) {
           System.err.println(e.getMessage());

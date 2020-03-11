@@ -22,7 +22,7 @@ import java.util.Set;
 /**
  * Extension information for gallifreyc extension.
  */
-public class ExtensionInfo extends JL7ExtensionInfo {
+public class GallifreyExtensionInfo extends JL7ExtensionInfo {
     static {
         // force Topics to load
         @SuppressWarnings("unused")

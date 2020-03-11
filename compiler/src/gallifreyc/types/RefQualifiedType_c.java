@@ -36,11 +36,17 @@ public class RefQualifiedType_c extends Type_c implements RefQualifiedType {
         this.base = base;
         this.refQualification = q;
     }
-    
-    @Override
+
+	@Override
     public String translate(Resolver c) {
     	//TODO 
         return this.base.translate(c);
+    }
+    
+    @Override
+    public RefQualifiedType refQualification(RefQualification q) {
+    	this.refQualification = q;
+    	return this;
     }
     
     @Override

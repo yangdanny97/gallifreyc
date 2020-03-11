@@ -42,13 +42,15 @@ public class PostCondition_c extends Node_c implements PostCondition {
     
     @Override
     public Node visitChildren(NodeVisitor v) {
-    	//TODO
-        return null;
+        Expr expr = visitChild(this.cond, v);
+        PostCondition_c n = copyIfNeeded(this);
+        n.cond = expr;
+        return n;
     }
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         //TODO 
-    	return null;
+    	return this;
     }
 }
