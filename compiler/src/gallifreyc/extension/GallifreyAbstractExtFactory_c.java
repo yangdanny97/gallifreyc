@@ -239,7 +239,7 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         if (nextEF instanceof GallifreyExtFactory) {
             e2 = ((GallifreyExtFactory) nextEF).extTransition();
         } else {
-            e2 = nextEF.extNode();
+            e2 = nextEF.extStmt();
         }
 
         e = composeExts(e, e2);
@@ -254,7 +254,7 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         if (nextEF instanceof GallifreyExtFactory) {
             e2 = ((GallifreyExtFactory) nextEF).extMove();
         } else {
-            e2 = nextEF.extNode();
+            e2 = nextEF.extExpr();
         }
 
         e = composeExts(e, e2);
@@ -284,7 +284,7 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         if (nextEF instanceof GallifreyExtFactory) {
             e2 = ((GallifreyExtFactory) nextEF).extMatchRestriction();
         } else {
-            e2 = nextEF.extNode();
+            e2 = nextEF.extStmt();
         }
 
         e = composeExts(e, e2);
@@ -352,11 +352,11 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     }
     
     protected Ext extTransitionImpl() {
-        return extNode();
+        return extStmt();
     }
     
     protected Ext extMoveImpl() {
-        return extNode();
+        return extExpr();
     }
     
     protected Ext extMatchBranchImpl() {
@@ -364,7 +364,7 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     }
     
     protected Ext extMatchRestrictionImpl() {
-        return extNode();
+        return extStmt();
     }
     
     // POST
@@ -426,11 +426,11 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     }
     
     protected Ext postExtTransition(Ext e) {
-        return postExtNode(e);
+        return postExtStmt(e);
     }
     
     protected Ext postExtMove(Ext e) {
-        return postExtNode(e);
+        return postExtExpr(e);
     }
     
     protected Ext postExtMatchBranch(Ext e) {
@@ -438,6 +438,6 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     }
     
     protected Ext postExtMatchRestriction(Ext e) {
-        return postExtNode(e);
+        return postExtStmt(e);
     }
 }

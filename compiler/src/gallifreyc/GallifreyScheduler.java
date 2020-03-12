@@ -19,6 +19,11 @@ public class GallifreyScheduler extends JL7Scheduler {
         super(extInfo);
     }
     
+    public Goal AddUniqueClassDefn(Job job) {
+    	//TODO
+    	return null;
+    }
+    
     public Goal RewriteAssignment(Job job) {
     	AssignmentRewriter rw = new AssignmentRewriter(job, extInfo, extInfo);
         Goal g = new VisitorGoal(job, rw);
