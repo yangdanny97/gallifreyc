@@ -1,9 +1,9 @@
 class C {
 	public C() {}
 	
-	public test() {
+	public void testFun() {
 		unique Integer a = 5;
-		local Integer b = a;
+		unique Integer b = move(a);
 	}
 	
 }
