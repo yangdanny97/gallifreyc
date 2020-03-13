@@ -5,10 +5,11 @@ import polyglot.ast.*;
 import polyglot.util.Copy;
 import polyglot.util.InternalCompilerError;
 import polyglot.util.SerialVersionUID;
+import polyglot.visit.NodeVisitor;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.translate.ExtensionRewriter;
-import gallifreyc.translate.AssignmentRewriter;
+import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.*;
 import gallifreyc.ast.UniqueRef;
 import gallifreyc.ast.*;
@@ -95,95 +96,13 @@ public class GallifreyExt extends Ext_c implements GallifreyOps {
     
     @Override 
     public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
-        AssignmentRewriter crw = (AssignmentRewriter) rw;
-        NodeFactory nf = rw.nodeFactory();
-        Node n = node();
-        if (n instanceof Move) {
-        	Move m = (Move) n;
-        	Expr e = m.expr();
-        	return e;
-        }
-//        if (n instanceof ArrayAccessAssign) {
-//        	ArrayAccessAssign an = (ArrayAccessAssign) n;
-//        	ArrayAccess left = an.left();
-//        	String fresh1 = lang().freshVar();
-//        	String fresh2 = lang().freshVar();
-//        	Stmt rewrittenAccessStmt = rewriteArrayAccess(fresh1, fresh2, left, rw);
-//        	left = (ArrayAccess) rw.qq().parseExpr("%s[%s]", fresh1, fresh2);
-//        	
-//        	Expr right = an.right();
-//        	Type lType = left.type();
-//        	Type rType = right.type();
-//        	
-//        	TypeNode lTypetn = crw.typeToJava(lType, lType.position());
-//        	TypeNode rTypetn = crw.typeToJava(rType, rType.position());
-//        	
-//        	if (rType instanceof RefQualifiedType) {
-//        		RefQualifiedType refRType = (RefQualifiedType) rType;
-//        		if (refRType.refQualification() instanceof UniqueRef) {
-//        			String fresh = lang().freshVar();
-//        			Stmt stmt1 = rw.qq().parseStmt("%T %s = %E;", rTypetn, fresh, right);
-//        			Stmt stmt2 = rw.qq().parseStmt("%E = %s;", left, fresh);
-//        			Stmt stmt3;
-//        			return nf.Block(node.position(), stmt1, stmt2, stmt3);
-//        		}
-//        	}
-//        else if (n instanceof Assign) {
-//        	Assign an = (Assign) n;
-//        	Expr left = an.left();
-//        	Expr right = an.right();
-//        	Type lType = left.type();
-//        	Type rType = right.type();
-//        	
-//        	TypeNode lTypetn = rw.typeToJava(lType, lType.position());
-//        	TypeNode rTypetn = rw.typeToJava(rType, rType.position());
-//        	
-//        	if (rType instanceof RefQualifiedType) {
-//        		RefQualifiedType refRType = (RefQualifiedType) rType;
-//				/**
-//				 * Nulling out references:
-//				 * let local/shared x and unique y
-//				 * From: x = y;
-//				 * To: temp = y; x = temp; y = null;
-//				 */
-//        		if (refRType.refQualification() instanceof UniqueRef) {
-//        			String fresh = lang().freshVar();
-//        			Stmt stmt1 = rw.qq().parseStmt("%T %s = %E;", rTypetn, fresh, right);
-//        			Stmt stmt2 = rw.qq().parseStmt("%E = %s;", left, fresh);
-//        			Stmt stmt3;
-//        			if (right instanceof ArrayAccess || right instanceof Variable || right instanceof Field) {
-//        				stmt3 = rw.qq().parseStmt("%E = %E", right, nf.NullLit(right.position()));
-//        			}
-//        			return nf.Block(node.position(), stmt1, stmt2, stmt3);
-//        		}
-//        	}
-//        } else if (n instanceof LocalDecl) {
-//        	LocalDecl ldn = (LocalDecl) n;
-//        	Id lName = ldn.id();
-//        	
-//        	Expr right = ldn.init();
-//        	Type rType = right.type();
-//        	
-//        	TypeNode lTypetn = ldn.type();
-//        	TypeNode rTypetn = rw.typeToJava(rType, rType.position());
-//        	
-//        	if (rType instanceof RefQualifiedType) {
-//        		RefQualifiedType refRType = (RefQualifiedType) rType;
-//				/**
-//				 * Nulling out references:
-//				 * let local/shared x and unique y
-//				 * From: x = y;
-//				 * To: temp = y; x = temp; y = null;
-//				 */
-//        		if (refRType.refQualification() instanceof UniqueRef) {
-//        			String fresh = lang().freshVar();
-//        			Stmt stmt1 = rw.qq().parseStmt("%T %s = %E;", rTypetn, fresh, right);
-//        			Stmt stmt2 = rw.qq().parseStmt("%T %s = %s;", , fresh);
-//        			Stmt stmt3 = rw.qq().parseStmt("%E = %E", right, nf.NullLit(right.position()));
-//        			return nf.Block(node.position(), stmt1, stmt2, stmt3);
-//        		}
-//        	}
-//        }
-        return super.extRewrite(rw);
+        GallifreyRewriter crw = (GallifreyRewriter) rw;
+        return crw.rewrite(node);
+    }
+    
+    @Override 
+    public NodeVisitor extRewriteEnter(ExtensionRewriter rw) throws SemanticException {
+        GallifreyRewriter crw = (GallifreyRewriter) rw;
+        return crw.rewriteEnter(node);
     }
 }

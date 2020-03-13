@@ -1,9 +1,0 @@
-class C {
-	public C() {}
-	
-	public void testFun() {
-		unique Integer a = 5;
-		unique Integer b = move(a);
-	}
-	
-}

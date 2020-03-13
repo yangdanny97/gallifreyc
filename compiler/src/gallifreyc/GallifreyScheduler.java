@@ -18,14 +18,10 @@ public class GallifreyScheduler extends JL7Scheduler {
     public GallifreyScheduler(GallifreyExtensionInfo extInfo) {
         super(extInfo);
     }
+   
     
-    public Goal AddUniqueClassDefn(Job job) {
-    	//TODO
-    	return null;
-    }
-    
-    public Goal RewriteAssignment(Job job) {
-    	AssignmentRewriter rw = new AssignmentRewriter(job, extInfo, extInfo);
+    public Goal Rewrite(Job job) {
+    	GallifreyRewriter rw = new GallifreyRewriter(job, extInfo, extInfo);
         Goal g = new VisitorGoal(job, rw);
         try {
             g.addPrerequisiteGoal(Serialized(job), this);
@@ -70,7 +66,7 @@ public class GallifreyScheduler extends JL7Scheduler {
     public Goal CodeGenerated(Job job) {
         Goal g = super.CodeGenerated(job);
         try {
-            g.addPrerequisiteGoal(RewriteAssignment(job), this);
+            g.addPrerequisiteGoal(Rewrite(job), this);
         }
         catch (CyclicDependencyException e) {
             throw new InternalCompilerError(e);
