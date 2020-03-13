@@ -49,6 +49,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
             }
             return typeEquals(fromType, toType);
         }
+        //TODO make consts treated like Moves
         return true; //super.isImplicitCastValid(fromType, toType);
     }
     
