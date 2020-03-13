@@ -4,6 +4,7 @@ import polyglot.ast.*;
 import polyglot.frontend.ExtensionInfo;
 import polyglot.frontend.Job;
 import polyglot.translate.ExtensionRewriter;
+import polyglot.types.Flags;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.util.Position;
@@ -14,23 +15,49 @@ import java.util.*;
 
 public class GallifreyRewriter extends ExtensionRewriter {
 	
-	private static String uniqueDecl = "class Unique<T> {\n" + 
-			"	public T value;\n" + 
-			"	public Unique(T value) {\n" + 
-			"		this.value = value;\n" + 
-			"	}\n" + 
-			"}\n";
+	private static String uniqueDecl = "class Unique<T> { " + 
+			"public T value; " + 
+			"public Unique(T value) { " + 
+			"this.value = value; " + 
+			"} " + 
+			"}";
 	
-	private static String sharedDecl = "class Shared<T> {\n" + 
-			"	public T value;\n" + 
-			"	public String restriction;\n" + 
-			"	public Shared(T value, String restriction) {\n" + 
-			"		this.value = value;\n" + 
-			"		this.restriction = restriction;\n" + 
-			"	}\n" + 
-			"}\n";
-	
+	private static String sharedDecl = "class Shared<T> { " + 
+			"public T value; " + 
+			"public String restriction; " + 
+			"public Shared(T value, String restriction) { " + 
+			"this.value = value; " + 
+			"this.restriction = restriction; " + 
+			"} " + 
+			"}";
 
+    // when Field appears on RHS, this makes it safe to null out
+    public Block rewriteField(String fresh, Field f, ExtensionRewriter rw) {
+    	// only rewrite if enclosing object is an expression (not a type)
+        NodeFactory nf = rw.nodeFactory();
+    	Receiver r = f.target();
+    	if (r instanceof Expr) {
+        	Expr o = (Expr) r;
+        	Type oType = o.type();
+    		Stmt stmt1 = rw.qq().parseStmt("%T %s = %E;", oType, fresh, o);
+    		return nf.Block(f.position(), stmt1);
+    	}
+		return nf.Block(f.position(), new ArrayList<Stmt>());
+    }
+    
+ // when ArrayAccess appears on RHS, this makes it safe to null out
+    public Block rewriteArrayAccess(String fresh1, String fresh2, ArrayAccess a, ExtensionRewriter rw) {
+        NodeFactory nf = rw.nodeFactory();
+    	Expr array = a.array();
+    	Expr index = a.index();
+    	Type aType = array.type();
+    	Type iType = index.type();
+		Stmt stmt1 = rw.qq().parseStmt("%T %s = %E;", aType, fresh1, array);
+		Stmt stmt2 = rw.qq().parseStmt("%T %s = %E;", iType, fresh2, index);
+		return nf.Block(a.position(), stmt1, stmt2);
+    }
+
+	
 	public GallifreyRewriter(Job job, ExtensionInfo from_ext, ExtensionInfo to_ext) {
 		super(job, from_ext, to_ext);
 		// TODO Auto-generated constructor stub
@@ -43,6 +70,68 @@ public class GallifreyRewriter extends ExtensionRewriter {
 			return nf.CanonicalTypeNode(pos, ((RefQualifiedType) t).base());
 		}
 		return super.typeToJava(t, pos);
+	}
+	
+	public ClassDecl makeUniqueDecl(SourceFile sf) {
+		NodeFactory nf = nodeFactory();
+		Position p = sf.position();
+		TypeNode t = nf.TypeNodeFromQualifiedName(p, "T");
+		
+    	List<ClassMember> uniqueMembers = new ArrayList<>(); 
+    	FieldDecl f1 = nf.FieldDecl(p, Flags.PUBLIC, t, "value");
+    	
+    	List<Formal> constructorFormals = new ArrayList<>();
+    	constructorFormals.add(nf.Formal(p, Flags.NONE, (TypeNode) t.copy(), "v"));
+    	
+    	List<Stmt> constructorStmts = new ArrayList<>();
+    	constructorStmts.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, "value")), 
+    			Assign.ASSIGN, nf.AmbExpr(p, "v"))));
+    	
+    	ConstructorDecl c = nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, "Unique"), 
+    			constructorFormals,
+    			new ArrayList<TypeNode>(),
+    			nf.Block(p, constructorStmts));
+    	
+    	uniqueMembers.add(f1);
+    	uniqueMembers.add(c);
+    	
+    	ClassBody uniqueBody = nf.ClassBody(p, uniqueMembers);
+    	ClassDecl uniqueDecl = nf.ClassDecl(p, Flags.NONE, nf.Id(p, "Unique<T>"), null, new ArrayList<TypeNode>(), uniqueBody);
+    	return uniqueDecl;
+	}
+	
+	public ClassDecl makeSharedDecl(SourceFile sf) {
+		NodeFactory nf = nodeFactory();
+		Position p = sf.position();
+		TypeNode t = nf.TypeNodeFromQualifiedName(p, "T");
+		TypeNode str = nf.TypeNodeFromQualifiedName(p, "String");
+		
+    	List<ClassMember> sharedMembers = new ArrayList<>(); 
+    	FieldDecl f1 = nf.FieldDecl(p, Flags.PUBLIC, t, "value");
+    	FieldDecl f2 = nf.FieldDecl(p, Flags.PUBLIC, str, "restriction");
+    	
+    	List<Formal> constructorFormals = new ArrayList<>();
+    	constructorFormals.add(nf.Formal(p, Flags.NONE, (TypeNode) t.copy(), "v"));
+    	constructorFormals.add(nf.Formal(p, Flags.NONE, (TypeNode) str.copy(), "r"));
+    	
+    	List<Stmt> constructorStmts = new ArrayList<>();
+    	constructorStmts.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, "value")), 
+    			Assign.ASSIGN, nf.AmbExpr(p, "v"))));
+    	constructorStmts.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, "restriction")), 
+    			Assign.ASSIGN, nf.AmbExpr(p, "r"))));
+    	
+    	ConstructorDecl c = nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, "Shared"), 
+    			constructorFormals,
+    			new ArrayList<TypeNode>(),
+    			nf.Block(p, constructorStmts));
+    	
+    	sharedMembers.add(f1);
+    	sharedMembers.add(f2);
+    	sharedMembers.add(c);
+    	
+    	ClassBody sharedBody = nf.ClassBody(p, sharedMembers);
+    	ClassDecl sharedDecl = nf.ClassDecl(p, Flags.NONE, nf.Id(p, "Shared<T>"), null, new ArrayList<TypeNode>(), sharedBody);
+    	return sharedDecl;
 	}
 	
 	public Node rewrite(Node n) {
@@ -59,12 +148,12 @@ public class GallifreyRewriter extends ExtensionRewriter {
         // add Unique and Shared decls
         if (n instanceof SourceFile) {
         	SourceFile sf = (SourceFile) n.copy();
-//        	ClassDecl uniqueDecl = qq().parseDecl(this.uniqueDecl, new ArrayList<>());
-//        	ClassDecl sharedDecl = qq().parseDecl(this.sharedDecl, new ArrayList<>());
-//        	List<TopLevelDecl> decls = sf.decls();
-//        	decls.add(0, uniqueDecl);
-//        	decls.add(0, sharedDecl);
-        	return sf;
+        	ClassDecl uniqueDecl = makeUniqueDecl(sf);
+        	ClassDecl sharedDecl = makeSharedDecl(sf);
+        	List<TopLevelDecl> decls = new ArrayList<>(sf.decls());
+        	decls.add(0, uniqueDecl);
+        	decls.add(0, sharedDecl);
+        	return sf.decls(decls);
         }
         
         if (n instanceof Assign) {

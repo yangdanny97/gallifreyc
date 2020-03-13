@@ -66,34 +66,6 @@ public class GallifreyExt extends Ext_c implements GallifreyOps {
         return node();
     }
     
-    
-    // when Field appears on RHS, this makes it safe to null out
-    public Block rewriteField(String fresh, Field f, ExtensionRewriter rw) {
-    	// only rewrite if enclosing object is an expression (not a type)
-        NodeFactory nf = rw.nodeFactory();
-    	Receiver r = f.target();
-    	if (r instanceof Expr) {
-        	Expr o = (Expr) r;
-        	Type oType = o.type();
-    		Stmt stmt1 = rw.qq().parseStmt("%T %s = %E;", oType, fresh, o);
-    		return nf.Block(node.position(), stmt1);
-    	}
-		return nf.Block(node.position(), new ArrayList<Stmt>());
-    }
-    
- // when ArrayAccess appears on RHS, this makes it safe to null out
-    public Block rewriteArrayAccess(String fresh1, String fresh2, ArrayAccess a, ExtensionRewriter rw) {
-        NodeFactory nf = rw.nodeFactory();
-    	Expr array = a.array();
-    	Expr index = a.index();
-    	Type aType = array.type();
-    	Type iType = index.type();
-		Stmt stmt1 = rw.qq().parseStmt("%T %s = %E;", aType, fresh1, array);
-		Stmt stmt2 = rw.qq().parseStmt("%T %s = %E;", iType, fresh2, index);
-		return nf.Block(node.position(), stmt1, stmt2);
-    }
-
-    
     @Override 
     public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
         GallifreyRewriter crw = (GallifreyRewriter) rw;
