@@ -30,7 +30,7 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
     
     /** From TopLevelDecl */
     public Flags flags() {
-    	return Flags.NONE; //TODO
+    	return Flags.NONE;
     }
 
     public String name() {
