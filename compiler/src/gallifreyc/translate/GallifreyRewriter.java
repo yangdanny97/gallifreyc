@@ -14,22 +14,6 @@ import gallifreyc.types.*;
 import java.util.*;
 
 public class GallifreyRewriter extends ExtensionRewriter {
-	
-	private static String uniqueDecl = "class Unique<T> { " + 
-			"public T value; " + 
-			"public Unique(T value) { " + 
-			"this.value = value; " + 
-			"} " + 
-			"}";
-	
-	private static String sharedDecl = "class Shared<T> { " + 
-			"public T value; " + 
-			"public String restriction; " + 
-			"public Shared(T value, String restriction) { " + 
-			"this.value = value; " + 
-			"this.restriction = restriction; " + 
-			"} " + 
-			"}";
 
     // when Field appears on RHS, this makes it safe to null out
     public Block rewriteField(String fresh, Field f, ExtensionRewriter rw) {
@@ -134,7 +118,7 @@ public class GallifreyRewriter extends ExtensionRewriter {
     	return sharedDecl;
 	}
 	
-	public Node rewrite(Node n) {
+	public Node rewrite(Node n) throws SemanticException {
         NodeFactory nf = nodeFactory();
         
         // unwrap Moves
@@ -199,7 +183,7 @@ public class GallifreyRewriter extends ExtensionRewriter {
         }
         
         
-        return n;
+        return n.extRewrite(this);
 	}
 	
 	public NodeVisitor rewriteEnter(Node n) {
