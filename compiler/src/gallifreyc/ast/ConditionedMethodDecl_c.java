@@ -51,23 +51,23 @@ public class ConditionedMethodDecl_c extends MethodDecl_c implements Conditioned
     
     @Override
     public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-        //TODO
+        pre.prettyPrint(w, tr);
+        post.prettyPrint(w, tr);
+        super.prettyPrint(w, tr);
     }
 
     @Override
     public void translate(CodeWriter w, Translator tr) {
-        //TODO
+        super.translate(w, tr);
     }
     
     @Override
     public Node visitChildren(NodeVisitor v) {
-    	//TODO
-        return this;
+    	return super.visitChildren(v);
     }
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        //TODO 
-    	return this;
+        return super.typeCheck(tc);
     }
 }

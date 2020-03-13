@@ -11,9 +11,10 @@ import polyglot.visit.PrettyPrinter;
 import polyglot.visit.Translator;
 import polyglot.visit.TypeChecker;
 
+import java.util.Iterator;
 import java.util.List;
 
-public class RestrictionBody_c extends Node_c implements RestrictionBody {
+public class RestrictionBody_c extends Term_c implements RestrictionBody {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
     protected List<Node> members;
@@ -35,23 +36,43 @@ public class RestrictionBody_c extends Node_c implements RestrictionBody {
     
     @Override
     public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-        //TODO
+        if (!members.isEmpty()) {
+            w.newline(4);
+            w.begin(0);
+            Node prev = null;
+
+            for (Iterator<Node> i = members.iterator(); i.hasNext();) {
+                Node member = i.next();
+                prev = member;
+                printBlock(member, w, tr);
+                if (i.hasNext()) {
+                    w.newline(0);
+                }
+            }
+            w.end();
+            w.newline(0);
+        }
     }
 
     @Override
     public void translate(CodeWriter w, Translator tr) {
         //TODO
     }
-    
-    @Override
-    public Node visitChildren(NodeVisitor v) {
-    	//TODO
-        return null;
-    }
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         //TODO 
-    	return null;
+    	return this;
     }
+
+	@Override
+	public Term firstChild() {
+		//intentional, I believe - same as ClassBody
+		return null;
+	}
+
+	@Override
+	public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
+		return succs;
+	}
 }

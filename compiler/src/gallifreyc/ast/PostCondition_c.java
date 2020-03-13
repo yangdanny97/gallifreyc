@@ -32,7 +32,7 @@ public class PostCondition_c extends Node_c implements PostCondition {
     
     @Override
     public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-        //TODO
+        w.write(this.toString() + ";");
     }
 
     @Override

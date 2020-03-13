@@ -1297,7 +1297,10 @@ primary_no_new_array ::=
                                         :}
  |  name:a dims:b DOT CLASS:d {:
                               RESULT = parser.nf.ClassLit(parser.pos(a, d, d), parser.array(a.toType(), b.intValue())); 
-                              :};
+                              :}
+ |  MOVE LPAREN expression:a RPAREN {:
+                                    RESULT = parser.nf.Move(parser.pos(a), a); 
+                                    :};
 
 class_instance_creation_expression ::=
     NEW:a class_or_interface_type:b LPAREN argument_list_opt:d RPAREN class_body_opt:f {:
@@ -1690,10 +1693,7 @@ expression_opt ::=
  |  expression:a {:  RESULT = a;  :};
 
 expression ::=
-    assignment_expression:a {:  RESULT = a;  :}
- |  MOVE LPAREN expression:a RPAREN {:
-                                    RESULT = parser.nf.Move(parser.pos(a), a); 
-                                    :};
+    assignment_expression:a {:  RESULT = a;  :};
 
 constant_expression ::=
     expression:a {:  RESULT = a;  :};

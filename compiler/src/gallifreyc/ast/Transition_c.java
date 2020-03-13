@@ -71,6 +71,6 @@ public class Transition_c extends Stmt_c implements Transition {
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         //TODO 
-    	return null;
+    	return this;
     }
 }

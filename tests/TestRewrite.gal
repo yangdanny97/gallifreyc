@@ -5,11 +5,20 @@ class C {
 		unique Integer a = 5;
 		unique Integer b = move(a);
         shared[MyRestriction] Integer c = move(b);
-        // System.out.println("hello");
+        
+        local String x = "hello";
+        // System.out.println(x);
+        
+        unique String y = "hello";
+       	// System.out.println(move(y));
+        
         local Integer d = 5 + 3;
         
         unique Integer e = 2;
         local Integer f = move(e);
+        
+        unique Integer g = 3;
+        // local Integer h = 3 + move(g);
 	}
 	
 }
