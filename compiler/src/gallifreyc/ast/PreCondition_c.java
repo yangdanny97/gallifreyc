@@ -34,7 +34,7 @@ public class PreCondition_c extends Node_c implements PreCondition {
     
     @Override
     public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-        //TODO
+    	w.write(this.toString() + ";");
     }
 
     @Override

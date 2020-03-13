@@ -280,7 +280,7 @@ extend statement ::=
 	{: RESULT = parser.nf.MatchRestriction(parser.pos(a,b), a, b);:}
 ;
 
-extend expression ::= 
+extend primary_no_new_array ::= 
 	MOVE LPAREN expression:a RPAREN
 	{: RESULT = parser.nf.Move(parser.pos(a), a); :}
 ;

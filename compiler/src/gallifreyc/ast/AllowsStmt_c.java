@@ -10,14 +10,14 @@ import polyglot.visit.PrettyPrinter;
 import polyglot.visit.Translator;
 import polyglot.visit.TypeChecker;
 
-public class AllowsStmt_c extends RestrictionMember_c implements AllowsStmt {
+public class AllowsStmt_c extends Node_c implements AllowsStmt {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
     protected Id id;
     protected Id contingent_id;
 
     public AllowsStmt_c(Position pos, Id id, Id contingent_id) {
-        super(pos);
+    	super(pos);
         this.id = id;
         this.contingent_id = contingent_id;
     }
@@ -41,7 +41,7 @@ public class AllowsStmt_c extends RestrictionMember_c implements AllowsStmt {
     
     @Override
     public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-        //TODO
+    	w.write(this.toString() + ";");
     }
 
     @Override
@@ -51,7 +51,6 @@ public class AllowsStmt_c extends RestrictionMember_c implements AllowsStmt {
     
     @Override
     public Node visitChildren(NodeVisitor v) {
-    	//TODO
         return this;
     }
 

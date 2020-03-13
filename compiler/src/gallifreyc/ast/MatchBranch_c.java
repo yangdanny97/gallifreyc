@@ -1,10 +1,11 @@
 package gallifreyc.ast;
 
 import polyglot.ast.Term_c;
+import polyglot.types.Context;
+import polyglot.types.LocalInstance_c;
 import polyglot.types.SemanticException;
-import polyglot.ast.Node;
-import polyglot.ast.Stmt;
-import polyglot.ast.Term;
+import polyglot.types.VarInstance;
+import polyglot.ast.*;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.visit.CFGBuilder;
@@ -66,14 +67,33 @@ public class MatchBranch_c extends Term_c implements MatchBranch {
     
     @Override
     public Node visitChildren(NodeVisitor v) {
-    	//TODO
-        return null;
+    	LocalDecl pattern = visitChild(this.pattern, v);
+    	Stmt stmt = visitChild(this.stmt, v);
+    	MatchBranch_c mb = (MatchBranch_c) this.copy();
+    	mb.pattern = pattern;
+    	mb.stmt = stmt;
+        return mb;
     }
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         //TODO 
-    	return null;
+    	return this;
     }
+
+	@Override
+	public Context enterScope(Context c) {
+		VarInstance li = pattern.varInstance();
+		c.pushBlock();
+		c.addVariable(li);
+		return super.enterScope(c);
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return super.clone();
+	}
 	
+    
 }

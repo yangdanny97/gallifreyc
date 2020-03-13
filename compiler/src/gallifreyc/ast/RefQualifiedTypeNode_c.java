@@ -44,6 +44,7 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
         TypeNode base = visitChild(this.base, v);
         RefQualifiedTypeNode_c n = copyIfNeeded(this);
         n.base = base;
+        n.refQualification = this.refQualification;
         return n;
     }
     

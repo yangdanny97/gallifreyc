@@ -73,13 +73,20 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
     
     @Override
     public Node visitChildren(NodeVisitor v) {
-    	//TODO
-        return null;
+    	Expr e = visitChild(this.expr, v);
+    	List<MatchBranch> brs = new ArrayList<>();
+    	for (MatchBranch b: this.branches) {
+    		brs.add(visitChild(b, v));
+    	}
+    	MatchRestriction_c mr = (MatchRestriction_c) this.copy();
+    	mr.expr = e;
+    	mr.branches = brs;
+    	return mr;
     }
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         //TODO 
-    	return null;
+    	return this;
     }
 }

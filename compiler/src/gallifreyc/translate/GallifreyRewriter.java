@@ -141,7 +141,6 @@ public class GallifreyRewriter extends ExtensionRewriter {
         if (n instanceof Move) {
         	Move m = (Move) n;
         	Expr e = m.expr();
-        	//TODO maybe unbox here?
         	return e;
         }
         
