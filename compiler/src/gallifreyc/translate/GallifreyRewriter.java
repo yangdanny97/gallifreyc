@@ -63,6 +63,7 @@ public class GallifreyRewriter extends ExtensionRewriter {
 		
     	List<ClassMember> uniqueMembers = new ArrayList<>(); 
     	FieldDecl f1 = nf.FieldDecl(p, Flags.PUBLIC, t, "value");
+    	FieldDecl f2 = nf.FieldDecl(p, Flags.PUBLIC, t, "temp");
     	
     	List<Formal> constructorFormals = new ArrayList<>();
     	constructorFormals.add(nf.Formal(p, Flags.NONE, (TypeNode) t.copy(), "v"));
@@ -77,6 +78,7 @@ public class GallifreyRewriter extends ExtensionRewriter {
     			nf.Block(p, constructorStmts));
     	
     	uniqueMembers.add(f1);
+    	uniqueMembers.add(f2);
     	uniqueMembers.add(c);
     	
     	ClassBody uniqueBody = nf.ClassBody(p, uniqueMembers);
@@ -123,9 +125,27 @@ public class GallifreyRewriter extends ExtensionRewriter {
         
         // unwrap Moves
         if (n instanceof Move) {
+        	// move(a) ---> ((a.temp = a.value) == (a.value = null)) ? a.temp : a.temp
         	Move m = (Move) n;
+        	Position p = n.position();
         	Expr e = m.expr();
-        	return e;
+        	
+        	//HACK: re-wrap unique exprs inside of Moves
+        	if (e instanceof Field) {
+        		Field f = (Field) e;
+        		if (f.name().toString().equals("value")) {
+        			e = (Expr) f.target();
+        		}
+        	}
+        	
+        	Field tempField = nf.Field(p, e, nf.Id(p, "temp"));
+        	Field valueField = nf.Field(p, e, nf.Id(p, "value"));
+        	Expr cond = nf.Binary(p, 
+    			nf.FieldAssign(p, (Field) tempField.copy(), Assign.ASSIGN, (Expr) valueField.copy()), 
+    			Binary.EQ, 
+    			nf.FieldAssign(p, (Field) valueField.copy(), Assign.ASSIGN, nf.NullLit(p))
+        	);
+        	return nf.Conditional(p, cond, (Expr) tempField.copy(), (Expr) tempField.copy());
         }
         
         // add Unique and Shared decls
