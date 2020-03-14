@@ -10,10 +10,15 @@ import polyglot.types.Type;
 import polyglot.util.Position;
 import polyglot.visit.NodeVisitor;
 import gallifreyc.ast.*;
+import gallifreyc.extension.GallifreyLang;
 import gallifreyc.types.*;
 import java.util.*;
 
 public class GallifreyRewriter extends ExtensionRewriter {
+	List<Stmt> hoisted;
+	final String VALUE = "VALUE";
+	final String RES = "RESTRICTION";
+	final String TEMP = "TEMP";
 
     // when Field appears on RHS, this makes it safe to null out
     public Block rewriteField(String fresh, Field f, ExtensionRewriter rw) {
@@ -40,11 +45,17 @@ public class GallifreyRewriter extends ExtensionRewriter {
 		Stmt stmt2 = rw.qq().parseStmt("%T %s = %E;", iType, fresh2, index);
 		return nf.Block(a.position(), stmt1, stmt2);
     }
+    
+    @Override
+    public GallifreyLang lang() {
+    	return (GallifreyLang) super.lang();
+    }
 
 	
 	public GallifreyRewriter(Job job, ExtensionInfo from_ext, ExtensionInfo to_ext) {
 		super(job, from_ext, to_ext);
 		// TODO Auto-generated constructor stub
+		hoisted = new ArrayList<>();
 	}
 	
 	// remove unique/shared annotations
@@ -62,15 +73,19 @@ public class GallifreyRewriter extends ExtensionRewriter {
 		TypeNode t = nf.TypeNodeFromQualifiedName(p, "T");
 		
     	List<ClassMember> uniqueMembers = new ArrayList<>(); 
-    	FieldDecl f1 = nf.FieldDecl(p, Flags.PUBLIC, t, "value");
-    	FieldDecl f2 = nf.FieldDecl(p, Flags.PUBLIC, t, "temp");
+    	// public T value;
+    	FieldDecl f1 = nf.FieldDecl(p, Flags.PUBLIC, t, nf.Id(p, VALUE));
+    	// public T TEMP;
+    	FieldDecl f2 = nf.FieldDecl(p, Flags.PUBLIC, t, nf.Id(p, TEMP));
     	
     	List<Formal> constructorFormals = new ArrayList<>();
-    	constructorFormals.add(nf.Formal(p, Flags.NONE, (TypeNode) t.copy(), "v"));
+    	// public Unique(T v)
+    	constructorFormals.add(nf.Formal(p, Flags.NONE, (TypeNode) t.copy(),  nf.Id(p, VALUE)));
     	
     	List<Stmt> constructorStmts = new ArrayList<>();
-    	constructorStmts.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, "value")), 
-    			Assign.ASSIGN, nf.AmbExpr(p, "v"))));
+    	// this.value = v;
+    	constructorStmts.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, VALUE)), 
+    			Assign.ASSIGN, nf.AmbExpr(p, nf.Id(p, VALUE)))));
     	
     	ConstructorDecl c = nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, "Unique"), 
     			constructorFormals,
@@ -93,18 +108,23 @@ public class GallifreyRewriter extends ExtensionRewriter {
 		TypeNode str = nf.TypeNodeFromQualifiedName(p, "String");
 		
     	List<ClassMember> sharedMembers = new ArrayList<>(); 
-    	FieldDecl f1 = nf.FieldDecl(p, Flags.PUBLIC, t, "value");
-    	FieldDecl f2 = nf.FieldDecl(p, Flags.PUBLIC, str, "restriction");
+    	// public T value
+    	FieldDecl f1 = nf.FieldDecl(p, Flags.PUBLIC, t,  nf.Id(p, VALUE));
+    	// public T restriction
+    	FieldDecl f2 = nf.FieldDecl(p, Flags.PUBLIC, str,  nf.Id(p, RES));
     	
     	List<Formal> constructorFormals = new ArrayList<>();
-    	constructorFormals.add(nf.Formal(p, Flags.NONE, (TypeNode) t.copy(), "v"));
-    	constructorFormals.add(nf.Formal(p, Flags.NONE, (TypeNode) str.copy(), "r"));
+    	// public Shared(T v, String r)
+    	constructorFormals.add(nf.Formal(p, Flags.NONE, (TypeNode) t.copy(),  nf.Id(p, VALUE)));
+    	constructorFormals.add(nf.Formal(p, Flags.NONE, (TypeNode) str.copy(),  nf.Id(p, RES)));
     	
     	List<Stmt> constructorStmts = new ArrayList<>();
-    	constructorStmts.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, "value")), 
-    			Assign.ASSIGN, nf.AmbExpr(p, "v"))));
-    	constructorStmts.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, "restriction")), 
-    			Assign.ASSIGN, nf.AmbExpr(p, "r"))));
+    	// this.value = v;
+    	constructorStmts.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, VALUE)), 
+    			Assign.ASSIGN, nf.AmbExpr(p, nf.Id(p, VALUE)))));
+    	// this.restriction = r;
+    	constructorStmts.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, RES)), 
+    			Assign.ASSIGN, nf.AmbExpr(p, nf.Id(p, RES)))));
     	
     	ConstructorDecl c = nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, "Shared"), 
     			constructorFormals,
@@ -120,12 +140,23 @@ public class GallifreyRewriter extends ExtensionRewriter {
     	return sharedDecl;
 	}
 	
+	// hoist an expression e and replace it with a fresh temp
+	private NamedVariable hoist(Expr e) {
+		if (e instanceof NamedVariable) return (NamedVariable) e;
+		NodeFactory nf = nodeFactory();
+		Position p = e.position();
+		String fresh = lang().freshVar();
+		LocalDecl l = nf.LocalDecl(p, Flags.NONE, nf.CanonicalTypeNode(p, e.type()), nf.Id(p, fresh), e);
+		hoisted.add(l);
+		return nf.Local(p, nf.Id(p, fresh));
+	}
+	
 	public Node rewrite(Node n) throws SemanticException {
         NodeFactory nf = nodeFactory();
         
         // unwrap Moves
         if (n instanceof Move) {
-        	// move(a) ---> ((a.temp = a.value) == (a.value = null)) ? a.temp : a.temp
+        	// move(a) ---> ((a.TEMP = a.value) == (a.value = null)) ? a.TEMP : a.TEMP
         	Move m = (Move) n;
         	Position p = n.position();
         	Expr e = m.expr();
@@ -133,19 +164,19 @@ public class GallifreyRewriter extends ExtensionRewriter {
         	//HACK: re-wrap unique exprs inside of Moves
         	if (e instanceof Field) {
         		Field f = (Field) e;
-        		if (f.name().toString().equals("value")) {
+        		if (f.name().toString().equals(VALUE)) {
         			e = (Expr) f.target();
         		}
         	}
         	
-        	Field tempField = nf.Field(p, e, nf.Id(p, "temp"));
-        	Field valueField = nf.Field(p, e, nf.Id(p, "value"));
+        	Field TEMPField = nf.Field(p, e, nf.Id(p, TEMP));
+        	Field valueField = nf.Field(p, e, nf.Id(p, VALUE));
         	Expr cond = nf.Binary(p, 
-    			nf.FieldAssign(p, (Field) tempField.copy(), Assign.ASSIGN, (Expr) valueField.copy()), 
+    			nf.FieldAssign(p, (Field) TEMPField.copy(), Assign.ASSIGN, (Expr) valueField.copy()), 
     			Binary.EQ, 
     			nf.FieldAssign(p, (Field) valueField.copy(), Assign.ASSIGN, nf.NullLit(p))
         	);
-        	return nf.Conditional(p, cond, (Expr) tempField.copy(), (Expr) tempField.copy());
+        	return nf.Conditional(p, cond, (Expr) TEMPField.copy(), (Expr) TEMPField.copy());
         }
         
         // add Unique and Shared decls
@@ -159,11 +190,10 @@ public class GallifreyRewriter extends ExtensionRewriter {
         	return sf.decls(decls);
         }
         
-        if (n instanceof Assign) {
-        	Assign a = (Assign) n.copy();
-        	//TODO 
-        	return a;
-        }
+        // normalizing
+        if (n instanceof ArrayAccess) { //TODO }
+        if (n instanceof Field) { //TODO }
+        if (n instanceof Call) { //TODO }
         
         if (n instanceof LocalDecl) {
         	//rewrite RHS of decls
@@ -195,11 +225,18 @@ public class GallifreyRewriter extends ExtensionRewriter {
         	if (t instanceof RefQualifiedType) {
         		RefQualifiedType rt = (RefQualifiedType) t;
         		if (rt.refQualification() instanceof SharedRef || rt.refQualification() instanceof UniqueRef) {
-        			Expr new_e = qq().parseExpr("(%E).value", e);
+        			Expr new_e = qq().parseExpr("(%E)." + VALUE, e);
         			return new_e;
         		}
         	}
-        	return e;
+        }
+        
+        // replace statements with blocks
+        if (n instanceof Stmt) {
+        	hoisted.add((Stmt) n);
+        	List<Stmt> blockBody = hoisted;
+        	hoisted = new ArrayList<>();
+        	return nf.Block(n.position(), blockBody);
         }
         
         
@@ -256,7 +293,7 @@ public class GallifreyRewriter extends ExtensionRewriter {
 //		 * Nulling out references:
 //		 * let local/shared x and unique y
 //		 * From: x = y;
-//		 * To: temp = y; x = temp; y = null;
+//		 * To: TEMP = y; x = TEMP; y = null;
 //		 */
 //		if (refRType.refQualification() instanceof UniqueRef) {
 //			String fresh = lang().freshVar();
@@ -285,7 +322,7 @@ public class GallifreyRewriter extends ExtensionRewriter {
 //		 * Nulling out references:
 //		 * let local/shared x and unique y
 //		 * From: x = y;
-//		 * To: temp = y; x = temp; y = null;
+//		 * To: TEMP = y; x = TEMP; y = null;
 //		 */
 //		if (refRType.refQualification() instanceof UniqueRef) {
 //			String fresh = lang().freshVar();

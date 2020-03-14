@@ -7,8 +7,9 @@ import polyglot.util.InternalCompilerError;
 import polyglot.translate.ExtensionRewriter;
 
 public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
-	public int counter;
+
     public static final GallifreyLang_c instance = new GallifreyLang_c();
+    private int counter;
 
     public static GallifreyLang lang(NodeOps n) {
         while (n != null) {
@@ -22,6 +23,7 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
     }
 
     protected GallifreyLang_c() {
+    	super();
     	counter = 0;
     }
 
