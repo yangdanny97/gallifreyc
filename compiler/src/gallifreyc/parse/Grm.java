@@ -13842,7 +13842,7 @@ class CUP$Grm$actions {
         case 631: // restriction_body_declaration ::= allows_stmt SEMICOLON 
             {
                 List<Node> RESULT = null;
-                RestrictionMember a = CUP$Grm$stack.elementAt(CUP$Grm$top-1).<RestrictionMember> value();
+                AllowsStmt a = CUP$Grm$stack.elementAt(CUP$Grm$top-1).<AllowsStmt> value();
                 
                            
 	     List<Node> l = new LinkedList<>();
@@ -13871,7 +13871,7 @@ class CUP$Grm$actions {
         /*. . . . . . . . . . . . . . . . . . . .*/
         case 633: // allows_stmt ::= ALLOWS IDENTIFIER 
             {
-                RestrictionMember RESULT = null;
+                AllowsStmt RESULT = null;
                 Token a = CUP$Grm$stack.elementAt(CUP$Grm$top-1).<Token> value();
                 Identifier b = CUP$Grm$stack.peek().<Identifier> value();
                 
@@ -13885,7 +13885,7 @@ class CUP$Grm$actions {
         /*. . . . . . . . . . . . . . . . . . . .*/
         case 634: // allows_stmt ::= ALLOWS IDENTIFIER CONTINGENT IDENTIFIER 
             {
-                RestrictionMember RESULT = null;
+                AllowsStmt RESULT = null;
                 Token a = CUP$Grm$stack.elementAt(CUP$Grm$top-3).<Token> value();
                 Identifier b = CUP$Grm$stack.elementAt(CUP$Grm$top-2).<Identifier> value();
                 Identifier c = CUP$Grm$stack.peek().<Identifier> value();

@@ -307,7 +307,7 @@ non terminal RestrictionBody restriction_body;
 non terminal List<Node> restriction_body_declarations_opt;
 non terminal List<Node> restriction_body_declarations;
 non terminal List<Node> restriction_body_declaration;
-non terminal RestrictionMember allows_stmt;
+non terminal AllowsStmt allows_stmt;
 non terminal MethodDecl test_declaration;
 non terminal MethodDecl test_header;
 non terminal RestrictionId restriction_id;
