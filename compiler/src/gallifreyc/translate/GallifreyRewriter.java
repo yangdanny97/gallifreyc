@@ -19,32 +19,6 @@ public class GallifreyRewriter extends ExtensionRewriter {
 	final String VALUE = "VALUE";
 	final String RES = "RESTRICTION";
 	final String TEMP = "TEMP";
-
-    // when Field appears on RHS, this makes it safe to null out
-    public Block rewriteField(String fresh, Field f, ExtensionRewriter rw) {
-    	// only rewrite if enclosing object is an expression (not a type)
-        NodeFactory nf = rw.nodeFactory();
-    	Receiver r = f.target();
-    	if (r instanceof Expr) {
-        	Expr o = (Expr) r;
-        	Type oType = o.type();
-    		Stmt stmt1 = rw.qq().parseStmt("%T %s = %E;", oType, fresh, o);
-    		return nf.Block(f.position(), stmt1);
-    	}
-		return nf.Block(f.position(), new ArrayList<Stmt>());
-    }
-    
- // when ArrayAccess appears on RHS, this makes it safe to null out
-    public Block rewriteArrayAccess(String fresh1, String fresh2, ArrayAccess a, ExtensionRewriter rw) {
-        NodeFactory nf = rw.nodeFactory();
-    	Expr array = a.array();
-    	Expr index = a.index();
-    	Type aType = array.type();
-    	Type iType = index.type();
-		Stmt stmt1 = rw.qq().parseStmt("%T %s = %E;", aType, fresh1, array);
-		Stmt stmt2 = rw.qq().parseStmt("%T %s = %E;", iType, fresh2, index);
-		return nf.Block(a.position(), stmt1, stmt2);
-    }
     
     @Override
     public GallifreyLang lang() {
@@ -67,7 +41,7 @@ public class GallifreyRewriter extends ExtensionRewriter {
 		return super.typeToJava(t, pos);
 	}
 	
-	public ClassDecl makeUniqueDecl(SourceFile sf) {
+	private ClassDecl makeUniqueDecl(SourceFile sf) {
 		NodeFactory nf = nodeFactory();
 		Position p = sf.position();
 		TypeNode t = nf.TypeNodeFromQualifiedName(p, "T");
@@ -101,7 +75,7 @@ public class GallifreyRewriter extends ExtensionRewriter {
     	return uniqueDecl;
 	}
 	
-	public ClassDecl makeSharedDecl(SourceFile sf) {
+	private ClassDecl makeSharedDecl(SourceFile sf) {
 		NodeFactory nf = nodeFactory();
 		Position p = sf.position();
 		TypeNode t = nf.TypeNodeFromQualifiedName(p, "T");
@@ -141,8 +115,17 @@ public class GallifreyRewriter extends ExtensionRewriter {
 	}
 	
 	// hoist an expression e and replace it with a fresh temp
-	private NamedVariable hoist(Expr e) {
-		if (e instanceof NamedVariable) return (NamedVariable) e;
+	private Expr hoist(Expr e) {
+		// variables and literals are safe
+		if (e instanceof NamedVariable || e instanceof Lit) return e;
+		// things we unwrapped in this pass are safe
+		if (e instanceof Field) {
+			Field f = (Field) e;
+			if (f.name() == VALUE) {
+				return e;
+			}
+		}
+		// hoist everything else
 		NodeFactory nf = nodeFactory();
 		Position p = e.position();
 		String fresh = lang().freshVar();
@@ -151,7 +134,21 @@ public class GallifreyRewriter extends ExtensionRewriter {
 		return nf.Local(p, nf.Id(p, fresh));
 	}
 	
-	public Node rewrite(Node n) throws SemanticException {
+	// wrap unique/shared refs with .value, AFTER rewriting
+	private Node wrapExpr(Expr n) {
+    	Expr e = (Expr) n.copy();
+    	Type t = e.type();
+    	if (t instanceof RefQualifiedType) {
+    		RefQualifiedType rt = (RefQualifiedType) t;
+    		if (rt.refQualification() instanceof SharedRef || rt.refQualification() instanceof UniqueRef) {
+    			Expr new_e = qq().parseExpr("(%E)." + VALUE, e);
+    			return new_e;
+    		}
+    	}
+    	return e;
+	}
+	
+	private Node rewriteExpr(Node n) throws SemanticException {
         NodeFactory nf = nodeFactory();
         
         // unwrap Moves
@@ -169,32 +166,57 @@ public class GallifreyRewriter extends ExtensionRewriter {
         		}
         	}
         	
-        	Field TEMPField = nf.Field(p, e, nf.Id(p, TEMP));
+        	Field tempField = nf.Field(p, e, nf.Id(p, TEMP));
         	Field valueField = nf.Field(p, e, nf.Id(p, VALUE));
         	Expr cond = nf.Binary(p, 
-    			nf.FieldAssign(p, (Field) TEMPField.copy(), Assign.ASSIGN, (Expr) valueField.copy()), 
+    			nf.FieldAssign(p, (Field) tempField.copy(), Assign.ASSIGN, (Expr) valueField.copy()), 
     			Binary.EQ, 
     			nf.FieldAssign(p, (Field) valueField.copy(), Assign.ASSIGN, nf.NullLit(p))
         	);
-        	return nf.Conditional(p, cond, (Expr) TEMPField.copy(), (Expr) TEMPField.copy());
+        	return nf.Conditional(p, cond, (Expr) tempField.copy(), (Expr) tempField.copy());
         }
         
-        // add Unique and Shared decls
-        if (n instanceof SourceFile) {
-        	SourceFile sf = (SourceFile) n.copy();
-        	ClassDecl uniqueDecl = makeUniqueDecl(sf);
-        	ClassDecl sharedDecl = makeSharedDecl(sf);
-        	List<TopLevelDecl> decls = new ArrayList<>(sf.decls());
-        	decls.add(0, uniqueDecl);
-        	decls.add(0, sharedDecl);
-        	return sf.decls(decls);
+        // a-normalizing
+        if (n instanceof ArrayAccess) { 
+        	ArrayAccess a = (ArrayAccess) n.copy();
+        	a = a.array(hoist(a.array()));
+        	a = a.index(hoist(a.index()));
+        	return a;
+        }
+        if (n instanceof Field) { 
+        	Field f = (Field) n.copy();
+        	if (f.target() instanceof Expr) {
+        		f = f.target(hoist((Expr) f.target()));
+        		return f;
+        	}
+        	return n.extRewrite(this);
+        }
+        if (n instanceof ProcedureCall) {
+        	ProcedureCall c = (ProcedureCall) n.copy();
+        	List<Expr> args = new ArrayList<>(c.arguments());
+        	List<Expr> hoistedArgs = new ArrayList<>();
+        	for (Expr arg : args) {
+        		hoistedArgs.add(hoist(arg));
+        	}
+        	c = c.arguments(hoistedArgs);
+        	return c;
         }
         
-        // normalizing
-        if (n instanceof ArrayAccess) { //TODO }
-        if (n instanceof Field) { //TODO }
-        if (n instanceof Call) { //TODO }
-        
+        return n.extRewrite(this);
+	}
+	
+	// replace statements with blocks of hoisted decls, if any
+	private Node hoistStmt(Stmt s) {
+		if (hoisted.size() > 0) {
+	    	hoisted.add(s);
+	    	List<Stmt> blockBody = hoisted;
+	    	hoisted = new ArrayList<>();
+	    	return nf.Block(s.position(), blockBody);
+		}
+		return s;
+	}
+	
+	private Node rewriteStmt(Node n) throws SemanticException {
         if (n instanceof LocalDecl) {
         	//rewrite RHS of decls
         	LocalDecl l = (LocalDecl) n.copy();
@@ -215,30 +237,42 @@ public class GallifreyRewriter extends ExtensionRewriter {
         			return l;
         		}
         	}
-        	//TODO rewrite LHS of decls
         	return l;
         }
-        
-        if (n instanceof Expr) {
-        	Expr e = (Expr) n.copy();
-        	Type t = e.type();
-        	if (t instanceof RefQualifiedType) {
-        		RefQualifiedType rt = (RefQualifiedType) t;
-        		if (rt.refQualification() instanceof SharedRef || rt.refQualification() instanceof UniqueRef) {
-        			Expr new_e = qq().parseExpr("(%E)." + VALUE, e);
-        			return new_e;
-        		}
+        if (n instanceof ProcedureCall) {
+        	ProcedureCall c = (ProcedureCall) n.copy();
+        	List<Expr> args = new ArrayList<>(c.arguments());
+        	List<Expr> hoistedArgs = new ArrayList<>();
+        	for (Expr arg : args) {
+        		hoistedArgs.add(hoist(arg));
         	}
+        	c = c.arguments(hoistedArgs);
+        	return c;
         }
+        return n.extRewrite(this);
+	}
+	
+	public Node rewrite(Node n) throws SemanticException {
+		if (n instanceof Expr) {
+			Expr e = (Expr) rewriteExpr(n);
+			return wrapExpr(e);
+		} 
+		
+		if (n instanceof Stmt && ! (n instanceof Block)) {
+			Stmt s = (Stmt) rewriteStmt(n);
+			return hoistStmt(s);
+		} 
         
-        // replace statements with blocks
-        if (n instanceof Stmt) {
-        	hoisted.add((Stmt) n);
-        	List<Stmt> blockBody = hoisted;
-        	hoisted = new ArrayList<>();
-        	return nf.Block(n.position(), blockBody);
+        // add Unique and Shared decls
+        if (n instanceof SourceFile) {
+        	SourceFile sf = (SourceFile) n.copy();
+        	ClassDecl uniqueDecl = makeUniqueDecl(sf);
+        	ClassDecl sharedDecl = makeSharedDecl(sf);
+        	List<TopLevelDecl> decls = new ArrayList<>(sf.decls());
+        	decls.add(0, uniqueDecl);
+        	decls.add(0, sharedDecl);
+        	return sf.decls(decls);
         }
-        
         
         return n.extRewrite(this);
 	}
@@ -252,85 +286,4 @@ public class GallifreyRewriter extends ExtensionRewriter {
 		}
 		return this;
 	}
-//  if (n instanceof ArrayAccessAssign) {
-//	ArrayAccessAssign an = (ArrayAccessAssign) n;
-//	ArrayAccess left = an.left();
-//	String fresh1 = lang().freshVar();
-//	String fresh2 = lang().freshVar();
-//	Stmt rewrittenAccessStmt = rewriteArrayAccess(fresh1, fresh2, left, rw);
-//	left = (ArrayAccess) rw.qq().parseExpr("%s[%s]", fresh1, fresh2);
-//	
-//	Expr right = an.right();
-//	Type lType = left.type();
-//	Type rType = right.type();
-//	
-//	TypeNode lTypetn = crw.typeToJava(lType, lType.position());
-//	TypeNode rTypetn = crw.typeToJava(rType, rType.position());
-//	
-//	if (rType instanceof RefQualifiedType) {
-//		RefQualifiedType refRType = (RefQualifiedType) rType;
-//		if (refRType.refQualification() instanceof UniqueRef) {
-//			String fresh = lang().freshVar();
-//			Stmt stmt1 = rw.qq().parseStmt("%T %s = %E;", rTypetn, fresh, right);
-//			Stmt stmt2 = rw.qq().parseStmt("%E = %s;", left, fresh);
-//			Stmt stmt3;
-//			return nf.Block(node.position(), stmt1, stmt2, stmt3);
-//		}
-//	}
-//else if (n instanceof Assign) {
-//	Assign an = (Assign) n;
-//	Expr left = an.left();
-//	Expr right = an.right();
-//	Type lType = left.type();
-//	Type rType = right.type();
-//	
-//	TypeNode lTypetn = rw.typeToJava(lType, lType.position());
-//	TypeNode rTypetn = rw.typeToJava(rType, rType.position());
-//	
-//	if (rType instanceof RefQualifiedType) {
-//		RefQualifiedType refRType = (RefQualifiedType) rType;
-//		/**
-//		 * Nulling out references:
-//		 * let local/shared x and unique y
-//		 * From: x = y;
-//		 * To: TEMP = y; x = TEMP; y = null;
-//		 */
-//		if (refRType.refQualification() instanceof UniqueRef) {
-//			String fresh = lang().freshVar();
-//			Stmt stmt1 = rw.qq().parseStmt("%T %s = %E;", rTypetn, fresh, right);
-//			Stmt stmt2 = rw.qq().parseStmt("%E = %s;", left, fresh);
-//			Stmt stmt3;
-//			if (right instanceof ArrayAccess || right instanceof Variable || right instanceof Field) {
-//				stmt3 = rw.qq().parseStmt("%E = %E", right, nf.NullLit(right.position()));
-//			}
-//			return nf.Block(node.position(), stmt1, stmt2, stmt3);
-//		}
-//	}
-//} else if (n instanceof LocalDecl) {
-//	LocalDecl ldn = (LocalDecl) n;
-//	Id lName = ldn.id();
-//	
-//	Expr right = ldn.init();
-//	Type rType = right.type();
-//	
-//	TypeNode lTypetn = ldn.type();
-//	TypeNode rTypetn = rw.typeToJava(rType, rType.position());
-//	
-//	if (rType instanceof RefQualifiedType) {
-//		RefQualifiedType refRType = (RefQualifiedType) rType;
-//		/**
-//		 * Nulling out references:
-//		 * let local/shared x and unique y
-//		 * From: x = y;
-//		 * To: TEMP = y; x = TEMP; y = null;
-//		 */
-//		if (refRType.refQualification() instanceof UniqueRef) {
-//			String fresh = lang().freshVar();
-//			Stmt stmt1 = rw.qq().parseStmt("%T %s = %E;", rTypetn, fresh, right);
-//			Stmt stmt2 = rw.qq().parseStmt("%T %s = %s;", , fresh);
-//			Stmt stmt3 = rw.qq().parseStmt("%E = %E", right, nf.NullLit(right.position()));
-//			return nf.Block(node.position(), stmt1, stmt2, stmt3);
-//		}
-//	}
-//}
 }
