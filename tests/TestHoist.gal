@@ -1,0 +1,14 @@
+class C {
+	
+	public C() {}
+	
+	public static local Integer f() {
+		return 1;
+	}
+	
+	public void testFun() {
+		local Integer[] x = {1, 2, 3};
+		local Integer y = x[f()];
+	}
+	
+}
