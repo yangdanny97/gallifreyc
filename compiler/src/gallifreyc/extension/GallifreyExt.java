@@ -9,14 +9,16 @@ import polyglot.visit.NodeVisitor;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.translate.ExtensionRewriter;
+import gallifreyc.translate.GRewriter;
 import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.*;
-import gallifreyc.ast.UniqueRef;
 import gallifreyc.ast.*;
 import java.util.*;
 
 public class GallifreyExt extends Ext_c implements GallifreyOps {
     private static final long serialVersionUID = SerialVersionUID.generate();
+    
+    private boolean isConst = false;
 
     public static GallifreyExt ext(Node n) {
         Ext e = n.ext();
@@ -34,7 +36,19 @@ public class GallifreyExt extends Ext_c implements GallifreyOps {
     public final GallifreyLang lang() {
         return GallifreyLang_c.instance;
     }
-
+    
+    @Override 
+    public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+        GRewriter crw = (GRewriter) rw;
+        return crw.rewrite(node);
+    }
+    
+    @Override 
+    public NodeVisitor extRewriteEnter(ExtensionRewriter rw) throws SemanticException {
+        GRewriter crw = (GRewriter) rw;
+        return crw.rewriteEnter(node);
+    }
+    
     @Override
     public SharedTypeWrapper wrapSharedTypeEnter(SharedTypeWrapper v) {
 ////        System.out.printf("Calling wrapSharedTypeEnter on this='%s' whose class is '%s'\n", node(), node().getClass().getName());
@@ -64,17 +78,5 @@ public class GallifreyExt extends Ext_c implements GallifreyOps {
 //            System.out.printf("v.sourceFile() == null is %b\n", v.sourceFile() == null);
 //        }
         return node();
-    }
-    
-    @Override 
-    public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
-        GallifreyRewriter crw = (GallifreyRewriter) rw;
-        return crw.rewrite(node);
-    }
-    
-    @Override 
-    public NodeVisitor extRewriteEnter(ExtensionRewriter rw) throws SemanticException {
-        GallifreyRewriter crw = (GallifreyRewriter) rw;
-        return crw.rewriteEnter(node);
     }
 }

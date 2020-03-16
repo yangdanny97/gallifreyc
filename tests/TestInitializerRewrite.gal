@@ -3,5 +3,7 @@ class C {
 	public local Integer b = 6;
 	public local Integer c;
 	
-	public C() {}
+	public C() {
+		this.c = 3;
+	}
 }
