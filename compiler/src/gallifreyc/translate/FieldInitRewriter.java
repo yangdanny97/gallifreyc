@@ -12,7 +12,7 @@ import polyglot.util.Position;
 import polyglot.visit.NodeVisitor;
 import java.util.*;
 
-// hoist field inits to constructor
+//move field initializers into an initializer block
 public class FieldInitRewriter extends ExtensionRewriter implements GRewriter {
 
 	public FieldInitRewriter(Job job, ExtensionInfo from_ext, ExtensionInfo to_ext) {
@@ -22,7 +22,6 @@ public class FieldInitRewriter extends ExtensionRewriter implements GRewriter {
 	@Override
 	public Node rewrite(Node n) throws SemanticException {
 		NodeFactory nf = nodeFactory();
-		// remove initializers from field inits and add them to initializer block
 		if (n instanceof ClassDecl) {
 			ClassDecl c = (ClassDecl) n.copy();
 			ClassBody b = (ClassBody) c.body().copy();
@@ -38,12 +37,14 @@ public class FieldInitRewriter extends ExtensionRewriter implements GRewriter {
 								nf.Eval(p, nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, f.name())), 
 						    			Assign.ASSIGN, f.init()))
 						);
-						newMembers.add(f);
+						// remove inits
+						newMembers.add(f.init(null));
 					} else {
 						newMembers.add((ClassMember) f.copy());
 					}
 				} else newMembers.add(member);
 			}
+			// for some reason Disambiguation pass doesn't make an II for the Initializer
 			Initializer i = nf.Initializer(n.position(), Flags.NONE, nf.Block(n.position(), hoistedDecls));
 			InitializerInstance ii = new InitializerInstance_c(from_ext.typeSystem(), n.position(), c.type(), Flags.NONE);
 			i = i.initializerInstance(ii);
