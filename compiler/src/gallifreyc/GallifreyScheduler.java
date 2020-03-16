@@ -22,10 +22,10 @@ public class GallifreyScheduler extends JL7Scheduler {
     
     /* PASS ORDERING:
      * Validated
-     * RewriteFieldInit
+     * RewriteFieldInitPass
      * Disambiguated2
      * Serialized
-     * Rewrite
+     * FinalRewritePass
      * CodeGenerated
      * */
     
@@ -44,7 +44,9 @@ public class GallifreyScheduler extends JL7Scheduler {
         return internGoal(g);
     }
     
-    public Goal RewriteFieldInit(Job job) {
+    
+    // hoist field initializers to separate block
+    public Goal RewriteFieldInitPass(Job job) {
     	FieldInitRewriter rw = new FieldInitRewriter(job, extInfo, extInfo);
         Goal g = new VisitorGoal(job, rw);
         try {
@@ -56,12 +58,13 @@ public class GallifreyScheduler extends JL7Scheduler {
         return internGoal(g);
     }
     
+    // second disambiguation pass after hoisting
     public Goal Disambiguated2(Job job) {
         TypeSystem ts = extInfo.typeSystem();
         NodeFactory nf = extInfo.nodeFactory();
         Goal g = new VisitorGoal(job, new AmbiguityRemover(job, ts, nf, true, true));
         try {
-            g.addPrerequisiteGoal(RewriteFieldInit(job), this);
+            g.addPrerequisiteGoal(RewriteFieldInitPass(job), this);
         }
         catch (CyclicDependencyException e) {
             throw new InternalCompilerError(e);
@@ -73,7 +76,6 @@ public class GallifreyScheduler extends JL7Scheduler {
     public Goal Serialized(Job job) {
         Goal g = super.Serialized(job);
         try {
-            // g.addPrerequisiteGoal(RewriteFieldInit(job), this);
             g.addPrerequisiteGoal(Disambiguated2(job), this);
         }
         catch (CyclicDependencyException e) {
@@ -82,12 +84,12 @@ public class GallifreyScheduler extends JL7Scheduler {
         return internGoal(g);
     }
     
-    public Goal Rewrite(Job job) {
+    // autoboxing for Shared/Unique, a-normalization for Field/ArrayAccess/Function Calls, nulling out moves
+    public Goal FinalRewritePass(Job job) {
     	GallifreyRewriter rw = new GallifreyRewriter(job, extInfo, extInfo);
         Goal g = new VisitorGoal(job, rw);
         try {
         	g.addPrerequisiteGoal(Serialized(job), this);
-        	//g.addPrerequisiteGoal(RewriteFieldInit(job), this);
         }
         catch (CyclicDependencyException e) {
             throw new InternalCompilerError(e);
@@ -99,8 +101,7 @@ public class GallifreyScheduler extends JL7Scheduler {
     public Goal CodeGenerated(Job job) {
         Goal g = super.CodeGenerated(job);
         try {
-        	//g.addPrerequisiteGoal(Serialized(job), this);
-            g.addPrerequisiteGoal(Rewrite(job), this);
+            g.addPrerequisiteGoal(FinalRewritePass(job), this);
         }
         catch (CyclicDependencyException e) {
             throw new InternalCompilerError(e);

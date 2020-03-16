@@ -116,7 +116,6 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
 	
 	// hoist an expression e and replace it with a fresh temp
 	private Expr hoist(Expr e) {
-//		System.out.println(e.toString());
 		// variables and literals are safe
 		if (e instanceof NamedVariable || e instanceof Lit || e instanceof Special) return e;
 		// things we unwrapped in this pass are safe
@@ -256,7 +255,6 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
 	}
 	
 	public Node rewrite(Node n) throws SemanticException {
-//		System.out.println("EXIT   " + n.toString());
 		if (n instanceof Expr) {
 			Expr e = (Expr) rewriteExpr(n);
 			return wrapExpr(e);
@@ -266,26 +264,6 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
 			Stmt s = (Stmt) rewriteStmt(n);
 			return hoistStmt(s);
 		}
-		
-//		if (n instanceof ClassDecl) {
-//			ClassDecl c = (ClassDecl) n.copy();
-//			ClassBody b = (ClassBody) c.body().copy();
-//			List<ClassMember> members = new ArrayList<>(b.members());
-//			List<ClassMember> newMembers = new ArrayList<>();
-//			for (ClassMember member : members) {
-//				if (member instanceof FieldDecl) {
-//					FieldDecl f = (FieldDecl) member.copy();
-//					Position p = f.position();
-//					if (f.init() != null) {
-//						newMembers.add(f.init(null));
-//					} else {
-//						newMembers.add((ClassMember) f.copy());
-//					}
-//				}
-//			}
-//			ClassBody newB = b.members(newMembers);
-//			return c.body(newB);
-//		}
         
         // add Unique and Shared decls
         if (n instanceof SourceFile) {
@@ -302,7 +280,6 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
 	}
 	
 	public NodeVisitor rewriteEnter(Node n) throws SemanticException {
-//		System.out.println(n.toString());
 		if (n instanceof ClassDecl) {
 			//TODO move field inits to constructor
 		}
