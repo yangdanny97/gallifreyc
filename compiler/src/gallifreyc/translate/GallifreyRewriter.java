@@ -14,7 +14,7 @@ import gallifreyc.extension.GallifreyLang;
 import gallifreyc.types.*;
 import java.util.*;
 
-public class GallifreyRewriter extends ExtensionRewriter {
+public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
 	List<Stmt> hoisted;
 	final String VALUE = "VALUE";
 	final String RES = "RESTRICTION";
@@ -116,8 +116,9 @@ public class GallifreyRewriter extends ExtensionRewriter {
 	
 	// hoist an expression e and replace it with a fresh temp
 	private Expr hoist(Expr e) {
+//		System.out.println(e.toString());
 		// variables and literals are safe
-		if (e instanceof NamedVariable || e instanceof Lit) return e;
+		if (e instanceof NamedVariable || e instanceof Lit || e instanceof Special) return e;
 		// things we unwrapped in this pass are safe
 		if (e instanceof Field) {
 			Field f = (Field) e;
@@ -228,11 +229,13 @@ public class GallifreyRewriter extends ExtensionRewriter {
         			RestrictionId rid = s.restriction();
         			Expr restriction = nf.StringLit(n.position(), rid.toString());
         			Expr new_rhs = qq().parseExpr("new Shared(%E, %E)", rhs, restriction);
+        			l = l.type(qq().parseType("Shared<%T>", rt.base()));
         			l = l.init(new_rhs);
         			return l;
         		}
         		if (rt.refQualification() instanceof UniqueRef) {
         			Expr new_rhs = qq().parseExpr("new Unique(%E)", rhs);
+        			l = l.type(qq().parseType("Unique<%T>", rt.base()));
         			l = l.init(new_rhs);
         			return l;
         		}
@@ -253,6 +256,7 @@ public class GallifreyRewriter extends ExtensionRewriter {
 	}
 	
 	public Node rewrite(Node n) throws SemanticException {
+//		System.out.println("EXIT   " + n.toString());
 		if (n instanceof Expr) {
 			Expr e = (Expr) rewriteExpr(n);
 			return wrapExpr(e);
@@ -261,7 +265,27 @@ public class GallifreyRewriter extends ExtensionRewriter {
 		if (n instanceof Stmt && ! (n instanceof Block)) {
 			Stmt s = (Stmt) rewriteStmt(n);
 			return hoistStmt(s);
-		} 
+		}
+		
+//		if (n instanceof ClassDecl) {
+//			ClassDecl c = (ClassDecl) n.copy();
+//			ClassBody b = (ClassBody) c.body().copy();
+//			List<ClassMember> members = new ArrayList<>(b.members());
+//			List<ClassMember> newMembers = new ArrayList<>();
+//			for (ClassMember member : members) {
+//				if (member instanceof FieldDecl) {
+//					FieldDecl f = (FieldDecl) member.copy();
+//					Position p = f.position();
+//					if (f.init() != null) {
+//						newMembers.add(f.init(null));
+//					} else {
+//						newMembers.add((ClassMember) f.copy());
+//					}
+//				}
+//			}
+//			ClassBody newB = b.members(newMembers);
+//			return c.body(newB);
+//		}
         
         // add Unique and Shared decls
         if (n instanceof SourceFile) {
@@ -277,13 +301,14 @@ public class GallifreyRewriter extends ExtensionRewriter {
         return n.extRewrite(this);
 	}
 	
-	public NodeVisitor rewriteEnter(Node n) {
+	public NodeVisitor rewriteEnter(Node n) throws SemanticException {
+//		System.out.println(n.toString());
 		if (n instanceof ClassDecl) {
 			//TODO move field inits to constructor
 		}
 		if (n instanceof For) {
 			//TODO hoist var decls outside
 		}
-		return this;
+		return n.extRewriteEnter(this);
 	}
 }
