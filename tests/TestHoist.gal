@@ -2,13 +2,18 @@ class C {
 	
 	public C() {}
 	
-	public static local Integer f() {
+	public local Integer f() {
 		return 1;
+	}
+	
+	public local Integer f2(local Integer x) {
+		return x + 1;
 	}
 	
 	public void testFun() {
 		local Integer[] x = {1, 2, 3};
 		local Integer y = x[f()];
+		local Integer z = x[f2(f())];
 	}
 	
 }
