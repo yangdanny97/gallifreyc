@@ -28,7 +28,6 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
 	
 	public GallifreyRewriter(Job job, ExtensionInfo from_ext, ExtensionInfo to_ext) {
 		super(job, from_ext, to_ext);
-		// TODO Auto-generated constructor stub
 		hoisted = new ArrayList<>();
 	}
 	
@@ -64,14 +63,17 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
     	ConstructorDecl c = nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, "Unique"), 
     			constructorFormals,
     			new ArrayList<TypeNode>(),
-    			nf.Block(p, constructorStmts));
+    			nf.Block(p, constructorStmts),
+    			nf.Javadoc(p, ""));
     	
     	uniqueMembers.add(f1);
     	uniqueMembers.add(f2);
     	uniqueMembers.add(c);
     	
     	ClassBody uniqueBody = nf.ClassBody(p, uniqueMembers);
-    	ClassDecl uniqueDecl = nf.ClassDecl(p, Flags.NONE, nf.Id(p, "Unique<T>"), null, new ArrayList<TypeNode>(), uniqueBody);
+    	ClassDecl uniqueDecl = nf.ClassDecl(p, Flags.NONE, 
+    			nf.Id(p, "Unique<T>"), null, new ArrayList<TypeNode>(), 
+    			uniqueBody, nf.Javadoc(p, ""));
     	return uniqueDecl;
 	}
 	
@@ -84,7 +86,7 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
     	List<ClassMember> sharedMembers = new ArrayList<>(); 
     	// public T value
     	FieldDecl f1 = nf.FieldDecl(p, Flags.PUBLIC, t,  nf.Id(p, VALUE));
-    	// public T restriction
+    	// public String restriction
     	FieldDecl f2 = nf.FieldDecl(p, Flags.PUBLIC, str,  nf.Id(p, RES));
     	
     	List<Formal> constructorFormals = new ArrayList<>();
@@ -103,14 +105,17 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
     	ConstructorDecl c = nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, "Shared"), 
     			constructorFormals,
     			new ArrayList<TypeNode>(),
-    			nf.Block(p, constructorStmts));
+    			nf.Block(p, constructorStmts),
+    			nf.Javadoc(p, ""));
     	
     	sharedMembers.add(f1);
     	sharedMembers.add(f2);
     	sharedMembers.add(c);
     	
     	ClassBody sharedBody = nf.ClassBody(p, sharedMembers);
-    	ClassDecl sharedDecl = nf.ClassDecl(p, Flags.NONE, nf.Id(p, "Shared<T>"), null, new ArrayList<TypeNode>(), sharedBody);
+    	ClassDecl sharedDecl = nf.ClassDecl(p, Flags.NONE, 
+    			nf.Id(p, "Shared<T>"), null, new ArrayList<TypeNode>(), 
+    			sharedBody, nf.Javadoc(p, ""));
     	return sharedDecl;
 	}
 	
@@ -241,16 +246,6 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
         	}
         	return l;
         }
-        if (n instanceof ProcedureCall) {
-        	ProcedureCall c = (ProcedureCall) n.copy();
-        	List<Expr> args = new ArrayList<>(c.arguments());
-        	List<Expr> hoistedArgs = new ArrayList<>();
-        	for (Expr arg : args) {
-        		hoistedArgs.add(hoist(arg));
-        	}
-        	c = c.arguments(hoistedArgs);
-        	return c;
-        }
         return n.extRewrite(this);
 	}
 	
@@ -280,9 +275,6 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
 	}
 	
 	public NodeVisitor rewriteEnter(Node n) throws SemanticException {
-		if (n instanceof ClassDecl) {
-			//TODO move field inits to constructor
-		}
 		if (n instanceof For) {
 			//TODO hoist var decls outside
 		}
