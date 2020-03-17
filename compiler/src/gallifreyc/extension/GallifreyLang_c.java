@@ -60,7 +60,4 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
     public String freshVar() {
     	return "generatedVar" + fresh();
     }
-
-    // TODO:  Implement dispatch methods for new AST operations.
-    // TODO:  Override *Ops methods for AST nodes with new extension nodes.
 }

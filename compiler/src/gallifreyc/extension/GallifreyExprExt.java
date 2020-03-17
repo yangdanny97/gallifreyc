@@ -9,6 +9,7 @@ import polyglot.util.SerialVersionUID;
 
 public class GallifreyExprExt extends GallifreyExt {
     private static final long serialVersionUID = SerialVersionUID.generate();
+    private boolean isConst = false; //TODO
     
     @Override
     public Expr node() {

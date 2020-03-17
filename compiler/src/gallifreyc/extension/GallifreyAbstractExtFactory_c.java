@@ -18,9 +18,6 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         super(nextExtFactory);
     }
 
-    // TODO: Implement factory methods for new extension nodes in future
-    // extensions.  This entails calling the factory method for extension's
-    // AST superclass.
     public final Ext extPreCondition() {
         Ext e = extPreConditionImpl();
 
@@ -290,8 +287,6 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         e = composeExts(e, e2);
         return postExtMatchRestriction(e);
     }
-    
-    // TODO
     
     // IMPL
 

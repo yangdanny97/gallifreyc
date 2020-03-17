@@ -39,7 +39,6 @@ public class RefQualifiedType_c extends Type_c implements RefQualifiedType {
 
 	@Override
     public String translate(Resolver c) {
-    	//TODO 
         return this.base.translate(c);
     }
     
