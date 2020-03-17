@@ -17,8 +17,6 @@ import java.util.*;
 
 public class GallifreyExt extends Ext_c implements GallifreyOps {
     private static final long serialVersionUID = SerialVersionUID.generate();
-    
-    private boolean isConst = false;
 
     public static GallifreyExt ext(Node n) {
         Ext e = n.ext();
@@ -51,32 +49,11 @@ public class GallifreyExt extends Ext_c implements GallifreyOps {
     
     @Override
     public SharedTypeWrapper wrapSharedTypeEnter(SharedTypeWrapper v) {
-////        System.out.printf("Calling wrapSharedTypeEnter on this='%s' whose class is '%s'\n", node(), node().getClass().getName());
-////        System.out.printf("v's hashcode = %d\n", v.hashCode());
-////        System.out.printf("v.sourceFile() == null is %b\n", v.sourceFile() == null);
-//        if (node() instanceof SourceFile) {
-////            System.out.printf("Calling wrapSharedTypeEnter on this='%s' whose class is '%s'\n", node(), node().getClass().getName());
-//            return v.sourceFile((SourceFile) node());
-//        }
         return v;
     }
 
     @Override
     public Node wrapSharedType(SharedTypeWrapper v) {
-//        System.out.printf("Calling wrapSharedType on this='%s' whose class is '%s'\n", node(), node().getClass().getName());
-//        if (node() instanceof ClassDecl) {
-//            System.out.printf("Calling wrapSharedType on this='%s' whose type is '%s' (class: %s)\n",
-//                              node(),
-//                              ((ClassDecl) node()).type(),
-//                              ((ClassDecl) node()).type().getClass().getName());
-//            System.out.printf("Visiting node %s with type %s");
-//        }
-//        System.out.printf("v's hashcode = %d\n", v.hashCode());
-//        if (v.sourceFile() != null) {
-//            System.out.printf("v.sourceFile().decls().size() = %d\n", v.sourceFile().decls().size());
-//        } else {
-//            System.out.printf("v.sourceFile() == null is %b\n", v.sourceFile() == null);
-//        }
         return node();
     }
 }
