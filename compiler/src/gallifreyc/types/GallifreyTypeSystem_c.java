@@ -11,7 +11,6 @@ import polyglot.util.InternalCompilerError;
 import polyglot.util.Position;
 
 public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyTypeSystem {
-    private final String defaultRefQualification = "local";
     
     public RefQualifiedType refQualifiedTypeOf(Position pos, Type base, RefQualification q) {
         return new RefQualifiedType_c(this, pos, base, q);
