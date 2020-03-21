@@ -56,13 +56,12 @@ public class MatchBranch_c extends Term_c implements MatchBranch {
 	}
 	
     @Override
-    public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-        //TODO
-    }
-
-    @Override
-    public void translate(CodeWriter w, Translator tr) {
-        //TODO
+    public void prettyPrint(CodeWriter w, PrettyPrinter pp) {
+        w.write("|");
+        print(pattern, w, pp);
+        w.write(" -> {");
+        print(stmt, w, pp);
+        w.write("}");
     }
     
     @Override
@@ -91,7 +90,6 @@ public class MatchBranch_c extends Term_c implements MatchBranch {
 
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
-		// TODO Auto-generated method stub
 		return super.clone();
 	}
 	

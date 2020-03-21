@@ -47,17 +47,15 @@ public class Transition_c extends Stmt_c implements Transition {
     
     @Override
     public String toString() {
-    	return "transition(" + expr.toString() + ", " + restriction.toString() + ")";
+    	return "transition(" + expr.toString() + ", " + restriction.toString() + ");";
     }
     
+    // by default, the translator relies on the pretty-printer
     @Override
-    public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-        //TODO
-    }
-
-    @Override
-    public void translate(CodeWriter w, Translator tr) {
-        //TODO
+    public void prettyPrint(CodeWriter w, PrettyPrinter pp) {
+        w.write("transition(");
+        expr.prettyPrint(w, pp);
+        w.write(", " + restriction.toString() + ");");
     }
     
     @Override

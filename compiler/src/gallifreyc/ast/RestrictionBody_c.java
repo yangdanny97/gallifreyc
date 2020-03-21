@@ -55,11 +55,6 @@ public class RestrictionBody_c extends Term_c implements RestrictionBody {
     }
 
     @Override
-    public void translate(CodeWriter w, Translator tr) {
-        //TODO
-    }
-
-    @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         //TODO 
     	return this;
