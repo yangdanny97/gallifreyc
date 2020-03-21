@@ -5,6 +5,8 @@ import polyglot.ext.jl7.ast.J7Lang_c;
 import polyglot.util.InternalCompilerError;
 import polyglot.translate.ExtensionRewriter;
 
+
+// language dispatcher, singleton class
 public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
 
     public static final GallifreyLang_c instance = new GallifreyLang_c();
@@ -38,6 +40,8 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
     protected GallifreyOps GallifreyOps(Node n) {
         return gallifreycExt(n);
     }
+    
+    // TODO: define custom/new ops for new node AST classes as necessary and add methods here
     
     @Override
     public int fresh() {

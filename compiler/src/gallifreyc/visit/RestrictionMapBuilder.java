@@ -8,6 +8,7 @@ import polyglot.frontend.Job;
 import polyglot.types.TypeSystem;
 import polyglot.visit.ContextVisitor;
 
+// build a map of each Restriction and the Class they are meant for
 public class RestrictionMapBuilder extends ContextVisitor {
 
 	public Map<String, String> restrictionMap;
@@ -17,6 +18,6 @@ public class RestrictionMapBuilder extends ContextVisitor {
 		restrictionMap = new HashMap<>();
 	}
 	
-	
+	//TODO
 
 }
