@@ -1,6 +1,5 @@
 package gallifreyc.extension;
 
-import gallifreyc.visit.SharedTypeWrapper;
 import polyglot.ast.*;
 import polyglot.util.Copy;
 import polyglot.util.InternalCompilerError;
@@ -45,15 +44,5 @@ public class GallifreyExt extends Ext_c implements GallifreyOps {
     public NodeVisitor extRewriteEnter(ExtensionRewriter rw) throws SemanticException {
         GRewriter crw = (GRewriter) rw;
         return crw.rewriteEnter(node);
-    }
-    
-    @Override
-    public SharedTypeWrapper wrapSharedTypeEnter(SharedTypeWrapper v) {
-        return v;
-    }
-
-    @Override
-    public Node wrapSharedType(SharedTypeWrapper v) {
-        return node();
     }
 }

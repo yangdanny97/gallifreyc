@@ -47,21 +47,6 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         e = composeExts(e, e2);
         return postExtPostCondition(e);
     }
-    
-    public final Ext extLocalRef() {
-        Ext e = extLocalRefImpl();
-
-        ExtFactory nextEF = nextExtFactory();
-        Ext e2;
-        if (nextEF instanceof GallifreyExtFactory) {
-            e2 = ((GallifreyExtFactory) nextEF).extLocalRef();
-        } else {
-            e2 = nextEF.extNode();
-        }
-
-        e = composeExts(e, e2);
-        return postExtLocalRef(e);
-    }
 
     public final Ext extUniqueRef() {
         Ext e = extUniqueRefImpl();
@@ -123,21 +108,6 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         return postExtRestrictionId(e);
     }
     
-    public final Ext extRefQualification() {
-        Ext e = extRefQualificationImpl();
-
-        ExtFactory nextEF = nextExtFactory();
-        Ext e2;
-        if (nextEF instanceof GallifreyExtFactory) {
-            e2 = ((GallifreyExtFactory) nextEF).extRefQualification();
-        } else {
-            e2 = nextEF.extNode();
-        }
-
-        e = composeExts(e, e2);
-        return postExtRefQualification(e);
-    }
-    
     public final Ext extRefQualifiedTypeNode() {
         Ext e = extRefQualifiedTypeNodeImpl();
 
@@ -196,21 +166,6 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
 
         e = composeExts(e, e2);
         return postExtRestrictionBody(e);
-    }
-
-    public final Ext extRestrictionMember() {
-        Ext e = extRestrictionMemberImpl();
-
-        ExtFactory nextEF = nextExtFactory();
-        Ext e2;
-        if (nextEF instanceof GallifreyExtFactory) {
-            e2 = ((GallifreyExtFactory) nextEF).extRestrictionMember();
-        } else {
-            e2 = nextEF.extNode();
-        }
-
-        e = composeExts(e, e2);
-        return postExtRestrictionMember(e);
     }
 
     public final Ext extAllowsStmt() {
@@ -298,27 +253,19 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         return extNode();
     }
     
-    protected Ext extLocalRefImpl() {
-        return extRefQualification();
-    }
-    
     protected Ext extUniqueRefImpl() {
-        return extRefQualification();
-    }
-    
-    protected Ext extMoveRefImpl() {
-        return extRefQualification();
-    }
-    
-    protected Ext extSharedRefImpl() {
-        return extRefQualification();
-    }
-    
-    protected Ext extRestrictionIdImpl() {
         return extNode();
     }
     
-    protected Ext extRefQualificationImpl() {
+    protected Ext extMoveRefImpl() {
+        return extNode();
+    }
+    
+    protected Ext extSharedRefImpl() {
+        return extNode();
+    }
+    
+    protected Ext extRestrictionIdImpl() {
         return extNode();
     }
     
@@ -335,10 +282,6 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     }
     
     protected Ext extRestrictionBodyImpl() {
-        return extNode();
-    }
-    
-    protected Ext extRestrictionMemberImpl() {
         return extNode();
     }
     
@@ -372,27 +315,19 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         return postExtNode(e);
     }
     
-    protected Ext postExtLocalRef(Ext e) {
-        return postExtRefQualification(e);
-    }
-    
     protected Ext postExtUniqueRef(Ext e) {
-        return postExtRefQualification(e);
+    	return postExtNode(e);
     }
     
     protected Ext postExtSharedRef(Ext e) {
-        return postExtRefQualification(e);
+    	return postExtNode(e);
     }
     
     protected Ext postExtMoveRef(Ext e) {
-        return postExtRefQualification(e);
+    	return postExtNode(e);
     }
     
     protected Ext postExtRestrictionId(Ext e) {
-        return postExtNode(e);
-    }
-    
-    protected Ext postExtRefQualification(Ext e) {
         return postExtNode(e);
     }
     
@@ -412,12 +347,8 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         return postExtNode(e);
     }
     
-    protected Ext postExtRestrictionMember(Ext e) {
-        return postExtNode(e);
-    }
-    
     protected Ext postExtAllowsStmt(Ext e) {
-        return postExtRestrictionMember(e);
+        return postExtNode(e);
     }
     
     protected Ext postExtTransition(Ext e) {

@@ -24,7 +24,6 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
         return (GallifreyExtFactory) super.extFactory();
     }
 
-    // TODO:  Implement factory methods for new AST nodes.
     @Override
     public PreCondition PreCondition(Position pos, Expr e) {
         PreCondition p = new PreCondition_c(pos, e);
@@ -48,13 +47,6 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
         return method;
     }
     
-    @Override
-    public LocalRef LocalRef(Position pos) {
-        LocalRef l = new LocalRef_c(pos);
-        l = ext(l, extFactory().extLocalRef());
-        return l;
-    }
-
     @Override
     public UniqueRef UniqueRef(Position pos) {
         UniqueRef u = new UniqueRef_c(pos);
@@ -119,7 +111,7 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     {
         MethodDecl n = super.MethodDecl(pos, flags.flags(), flags.annotations(),
                                         returnType, name, formals, throwTypes,
-                                        body, new LinkedList<ParamTypeNode>());
+                                        body, new LinkedList<ParamTypeNode>(), Javadoc(pos, ""));
         GallifreyMethodDeclExt ext = (GallifreyMethodDeclExt) GallifreyExt.ext(n);
         ext.isTest = isTest;
         return n;

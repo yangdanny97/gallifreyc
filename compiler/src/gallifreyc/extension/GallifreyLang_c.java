@@ -1,6 +1,5 @@
 package gallifreyc.extension;
 
-import gallifreyc.visit.SharedTypeWrapper;
 import polyglot.ast.*;
 import polyglot.ext.jl7.ast.J7Lang_c;
 import polyglot.util.InternalCompilerError;
@@ -38,16 +37,6 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
     
     protected GallifreyOps GallifreyOps(Node n) {
         return gallifreycExt(n);
-    }
-
-    @Override
-    public SharedTypeWrapper wrapSharedTypeEnter(Node n, SharedTypeWrapper v) {
-        return GallifreyOps(n).wrapSharedTypeEnter(v);
-    }
-
-    @Override
-    public Node wrapSharedType(Node n, SharedTypeWrapper v) {
-        return GallifreyOps(n).wrapSharedType(v);
     }
     
     @Override
