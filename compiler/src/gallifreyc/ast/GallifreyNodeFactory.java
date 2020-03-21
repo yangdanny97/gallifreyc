@@ -15,12 +15,10 @@ import java.util.*;
  * NodeFactory for gallifreyc extension.
  */
 public interface GallifreyNodeFactory extends JL7NodeFactory {
-    // TODO: Declare any factory methods for new AST nodes.
     PreCondition PreCondition(Position pos, Expr e);
     PostCondition PostCondition(Position pos, Expr e);
-//    ConditionedMethodDecl ConditionedMethodDecl(Position pos, MethodDecl method, PreCondition pre, PostCondition post);
     MethodDecl MethodDecl(Position pos, MethodDecl method, PreCondition pre, PostCondition post);
-    LocalRef LocalRef(Position pos);
+
     UniqueRef UniqueRef(Position pos);
     MoveRef MoveRef(Position pos);
     SharedRef SharedRef(Position pos, RestrictionId restriction);
@@ -30,7 +28,6 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     Move Move(Position pos, Expr expr);
     MatchRestriction MatchRestriction(Position pos, Expr expr, List<MatchBranch> branches);
     MatchBranch MatchBranch(Position pos, LocalDecl pattern, Stmt stmt);
-    
     
     // Restrictions
     RestrictionDecl RestrictionDecl(Position pos, Id id, Id for_id, RestrictionBody body);

@@ -5,7 +5,6 @@ import java.util.List;
 
 import gallifreyc.types.RefQualifiedType;
 import gallifreyc.types.RefQualifiedType_c;
-import gallifreyc.visit.SharedTypeWrapper;
 import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.ClassBody;
 import polyglot.ast.ClassBody_c;
@@ -26,31 +25,12 @@ import polyglot.util.ListUtil;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
+// extra operations for source files
 public class GallifreySourceFileExt extends GallifreyExt {
     private static final long serialVersionUID = SerialVersionUID.generate();
     
     @Override
     public SourceFile node() {
         return (SourceFile) super.node();
-    }
-
-    @Override
-    public Node wrapSharedType(SharedTypeWrapper v) {
-//        System.out.printf("In wrapSharedType for SourceFile");
-//        System.out.printf("(SourceFile) node() hashcode is %d\n", node().hashCode());
-//        System.out.printf("v.decls.size() = %d\n", v.decls.size());
-//        for (TopLevelDecl d : v.decls) {
-//            System.out.printf("Found decl %s\n", d);
-//        }
-        List<TopLevelDecl> curr_decls = ListUtil.copy(node().decls(), false);
-        curr_decls.addAll(v.decls);
-        return node().decls(curr_decls);
-//        if (v.sourceFile() != null) {
-//            System.out.printf("v.sourceFile() != null in wrapSharedType\n");
-//            return v.sourceFile();
-//        } else {
-//            System.out.println("v.sourceFile() is null");
-//        }
-//        return super.wrapSharedType(v);
     }
 }

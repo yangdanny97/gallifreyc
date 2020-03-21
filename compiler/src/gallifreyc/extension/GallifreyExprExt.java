@@ -7,6 +7,7 @@ import polyglot.ast.Node;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
+// extra operations for expressions
 public class GallifreyExprExt extends GallifreyExt {
     private static final long serialVersionUID = SerialVersionUID.generate();
     private boolean isConst = false; //TODO
