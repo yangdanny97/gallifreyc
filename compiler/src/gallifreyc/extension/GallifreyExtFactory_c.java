@@ -3,6 +3,7 @@ package gallifreyc.extension;
 import polyglot.ast.Ext;
 import polyglot.ast.ExtFactory;
 
+// override default extension methods
 public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
 
     public GallifreyExtFactory_c() {

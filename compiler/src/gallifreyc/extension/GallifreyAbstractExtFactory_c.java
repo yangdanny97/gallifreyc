@@ -5,7 +5,7 @@ import polyglot.ast.Ext;
 import polyglot.ast.ExtFactory;
 import polyglot.ext.jl7.ast.JL7AbstractExtFactory_c;
 
-// TODO: figure out what the heck this file is for
+// new methods to create extension objects for new AST nodes
 
 public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactory_c
         implements GallifreyExtFactory {

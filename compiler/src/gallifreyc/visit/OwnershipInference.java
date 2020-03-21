@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 
+// an implementation of the Union Find data structure for ownership inference ; currently unused as owners are unimplemented
 public class OwnershipInference  extends ContextVisitor{
 	public class UnionFind<T> {
 		public class Node {
