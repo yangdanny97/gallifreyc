@@ -46,11 +46,6 @@ public class Move_c extends Expr_c implements Move {
     public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
         w.write(this.toString());
     }
-
-    @Override
-    public void translate(CodeWriter w, Translator tr) {
-        //TODO
-    }
     
     @Override
     public Node visitChildren(NodeVisitor v) {

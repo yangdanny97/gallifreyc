@@ -8,6 +8,7 @@ import java.util.List;
 public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDecl {
 	protected Id id;
 	protected List<Id> restrictions;
+	protected Javadoc javadoc;
 	
     public RestrictionUnionDecl_c(Position pos, Id id, List<Id> ids) {
         super(pos);
@@ -38,10 +39,11 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
     }
     
     public Documentable javadoc(Javadoc javadoc) {
-    	return null; //TODO
+    	this.javadoc = javadoc;
+    	return this;
     }
 
     public Javadoc javadoc() {
-    	return null; //TODO
+    	return javadoc;
     }
 }

@@ -40,15 +40,10 @@ public class AllowsStmt_c extends Node_c implements AllowsStmt {
     }
     
     @Override
-    public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-    	w.write(this.toString() + ";");
+    public void prettyPrint(CodeWriter w, PrettyPrinter pp) {
+    	w.write(this.toString());
     }
 
-    @Override
-    public void translate(CodeWriter w, Translator tr) {
-        //TODO
-    }
-    
     @Override
     public Node visitChildren(NodeVisitor v) {
         return this;

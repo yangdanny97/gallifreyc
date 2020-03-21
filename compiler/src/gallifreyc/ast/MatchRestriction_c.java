@@ -4,10 +4,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
+import polyglot.ast.Case;
 import polyglot.ast.Expr;
 import polyglot.ast.Node;
 import polyglot.ast.NodeFactory;
 import polyglot.ast.Stmt_c;
+import polyglot.ast.SwitchElement;
 import polyglot.ast.Term;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
@@ -63,12 +65,20 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
     
     @Override
     public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-        //TODO
-    }
+        w.write("match_restriction (");
+        printBlock(expr, w, tr);
+        w.write(") {");
+        w.unifiedBreak(4);
+        w.begin(0);
 
-    @Override
-    public void translate(CodeWriter w, Translator tr) {
-        //TODO
+        for (MatchBranch b : branches) {
+            w.unifiedBreak(4);
+            print(b, w, tr);
+        }
+
+        w.end();
+        w.unifiedBreak(0);
+        w.write("}");
     }
     
     @Override

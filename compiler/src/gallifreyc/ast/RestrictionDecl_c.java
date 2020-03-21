@@ -20,6 +20,7 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
     protected Id id;
     protected Id for_id;
     protected RestrictionBody body;
+    protected Javadoc javadoc;
 
     public RestrictionDecl_c(Position pos, Id id, Id for_id, RestrictionBody body) {
         super(pos);
@@ -56,11 +57,12 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
     }
     
     public Documentable javadoc(Javadoc javadoc) {
-    	return null; //TODO
+    	this.javadoc = javadoc;
+    	return this;
     }
 
     public Javadoc javadoc() {
-    	return null; //TODO
+    	return this.javadoc;
     }
     
     @Override
@@ -71,11 +73,6 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
         w.newline();
         w.write("}");
         w.newline();
-    }
-
-    @Override
-    public void translate(CodeWriter w, Translator tr) {
-        //TODO
     }
     
     @Override
