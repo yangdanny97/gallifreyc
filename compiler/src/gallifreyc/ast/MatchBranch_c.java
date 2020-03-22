@@ -1,6 +1,6 @@
 package gallifreyc.ast;
 
-import polyglot.ast.Term_c;
+import polyglot.ast.AbstractBlock_c;
 import polyglot.types.Context;
 import polyglot.types.LocalInstance_c;
 import polyglot.types.SemanticException;
@@ -8,22 +8,24 @@ import polyglot.types.VarInstance;
 import polyglot.ast.*;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
+import polyglot.util.SerialVersionUID;
 import polyglot.visit.CFGBuilder;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.Translator;
 import polyglot.visit.TypeChecker;
 
-import java.util.List;
+import java.util.*;
 
 import polyglot.ast.LocalDecl;
 
-public class MatchBranch_c extends Term_c implements MatchBranch {
+public class MatchBranch_c extends AbstractBlock_c implements MatchBranch {
+	private static final long serialVersionUID = SerialVersionUID.generate();
 	private LocalDecl pattern;
 	private Stmt stmt;
 
 	public MatchBranch_c(Position pos, LocalDecl pattern, Stmt stmt) {
-		super(pos);
+		super(pos, Collections.singletonList(stmt));
 		assert pattern.init() == null;
 		this.pattern = pattern;
 		this.stmt = stmt;
@@ -74,18 +76,10 @@ public class MatchBranch_c extends Term_c implements MatchBranch {
         return mb;
     }
 
-    @Override
-    public Node typeCheck(TypeChecker tc) throws SemanticException {
-        //TODO 
-    	return this;
-    }
-
 	@Override
 	public Context enterScope(Context c) {
-		VarInstance li = pattern.varInstance();
-		c.pushBlock();
-		c.addVariable(li);
-		return super.enterScope(c);
+		// declaration is already added by the LocalDecl
+		return c.pushBlock();
 	}
 
 	@Override

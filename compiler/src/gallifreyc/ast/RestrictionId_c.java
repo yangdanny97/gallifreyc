@@ -3,8 +3,10 @@ package gallifreyc.ast;
 import polyglot.ast.Id;
 import polyglot.ast.Node_c;
 import polyglot.util.Position;
+import polyglot.util.SerialVersionUID;
 
 public class RestrictionId_c extends Node_c implements RestrictionId {
+	private static final long serialVersionUID = SerialVersionUID.generate();
 	// rv::restriction OR wildcard::restriction OR restriction
     private Id rv;
     private Id restriction;

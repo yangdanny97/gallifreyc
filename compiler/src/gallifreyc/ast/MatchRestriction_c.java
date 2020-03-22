@@ -15,6 +15,7 @@ import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
+import polyglot.util.SerialVersionUID;
 import polyglot.visit.CFGBuilder;
 import polyglot.visit.FlowGraph;
 import polyglot.visit.NodeVisitor;
@@ -23,6 +24,7 @@ import polyglot.visit.Translator;
 import polyglot.visit.TypeChecker;
 
 public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
+	private static final long serialVersionUID = SerialVersionUID.generate();
 	private Expr expr;
 	private List<MatchBranch> branches;
 
