@@ -3,8 +3,11 @@ package gallifreyc.ast;
 import java.util.Collections;
 import java.util.List;
 
+import gallifreyc.types.RefQualifiedType;
 import polyglot.ast.*;
 import polyglot.types.SemanticException;
+import polyglot.types.Type;
+import polyglot.types.TypeSystem;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
@@ -68,7 +71,11 @@ public class Transition_c extends Stmt_c implements Transition {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        //TODO 
+    	Type t = expr.type();
+    	if (!(t instanceof RefQualifiedType) || !(((RefQualifiedType) t).refQualification() instanceof SharedRef)) {
+            throw new SemanticException("Can only transition restrictions for Shared types");
+    	}
+    	//TODO check that restriction is valid
     	return this;
     }
 }

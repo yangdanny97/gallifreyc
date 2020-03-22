@@ -31,6 +31,8 @@ public class MatchBranch_c extends AbstractBlock_c implements MatchBranch {
 		this.stmt = stmt;
 	}
 	
+	//pushing scope and TC are handled by AbstractBlock_c
+	
 	public LocalDecl pattern() {
 		return pattern;
 	}
@@ -77,15 +79,7 @@ public class MatchBranch_c extends AbstractBlock_c implements MatchBranch {
     }
 
 	@Override
-	public Context enterScope(Context c) {
-		// declaration is already added by the LocalDecl
-		return c.pushBlock();
-	}
-
-	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
-	
-    
 }

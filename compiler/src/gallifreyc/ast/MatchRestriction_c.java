@@ -2,6 +2,9 @@ package gallifreyc.ast;
 
 import java.util.Collections;
 import java.util.List;
+
+import gallifreyc.types.RefQualifiedType;
+
 import java.util.ArrayList;
 
 import polyglot.ast.Case;
@@ -98,7 +101,10 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        //TODO 
+    	Type t = expr.type();
+    	if (!(t instanceof RefQualifiedType) || !(((RefQualifiedType) t).refQualification() instanceof SharedRef)) {
+            throw new SemanticException("Can only match restrictions for Shared types");
+    	}
     	return this;
     }
 }
