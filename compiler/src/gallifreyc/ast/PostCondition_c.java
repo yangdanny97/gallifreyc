@@ -2,6 +2,7 @@ package gallifreyc.ast;
 
 import polyglot.ast.*;
 import polyglot.types.SemanticException;
+import polyglot.types.TypeSystem;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
@@ -45,7 +46,11 @@ public class PostCondition_c extends Node_c implements PostCondition {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        //TODO 
+    	TypeSystem ts = tc.typeSystem();
+        if (!ts.typeEquals(cond.type(), ts.Boolean()) && !ts.isImplicitCastValid(cond.type(), ts.Boolean())) {
+            throw new SemanticException("Postcondition must be of type boolean.",
+                                        cond.position());
+        }
     	return this;
     }
 }

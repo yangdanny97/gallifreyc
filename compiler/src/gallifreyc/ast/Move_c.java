@@ -6,6 +6,7 @@ import polyglot.ast.*;
 import polyglot.types.*;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
+import polyglot.util.SerialVersionUID;
 import polyglot.visit.CFGBuilder;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
@@ -14,6 +15,7 @@ import polyglot.visit.TypeChecker;
 import gallifreyc.types.*;
 
 public class Move_c extends Expr_c implements Move {
+	private static final long serialVersionUID = SerialVersionUID.generate();
 	Expr expr;
 
 	public Move_c(Position pos, Expr expr) {

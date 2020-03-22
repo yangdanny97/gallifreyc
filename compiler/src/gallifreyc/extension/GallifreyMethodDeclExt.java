@@ -19,6 +19,8 @@ public class GallifreyMethodDeclExt extends GallifreyExt {
     public PostCondition post;
     // Is this MethodDecl a test method (inside a restriction)
     public boolean isTest;
+    
+    //TODO overwrite context pushing to allow pre/postcondition to be typechecked in the correct context
 
     PreCondition pre() {
         return pre;
