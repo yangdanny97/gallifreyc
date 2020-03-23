@@ -2,6 +2,7 @@ package gallifreyc.types;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import gallifreyc.ast.*;
@@ -12,10 +13,12 @@ import polyglot.util.Position;
 
 public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyTypeSystem {
 	public Map<String, String> restrictionMap;
+	public Map<String, List<String>> restrictionUnionMap;
 	
     public GallifreyTypeSystem_c() {
 		super();
 		restrictionMap = new HashMap<>();
+		restrictionUnionMap = new HashMap<>();
 	}
 
 	public RefQualifiedType refQualifiedTypeOf(Position pos, Type base, RefQualification q) {
@@ -69,6 +72,19 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 			return null;
 		}
 		return restrictionMap.get(restriction);
+	}
+	
+	@Override
+	public void addUnionRestriction(String union, List<String> restrictions) {
+		restrictionUnionMap.put(union, restrictions);
+	}
+	
+	@Override
+	public List<String> getVariantRestrictions(String restriction) {
+		if (!restrictionUnionMap.containsKey(restriction)) {
+			return null;
+		}
+		return restrictionUnionMap.get(restriction);
 	}
     
 }

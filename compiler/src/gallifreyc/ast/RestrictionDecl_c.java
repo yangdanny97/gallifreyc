@@ -117,8 +117,11 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
 	@Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         TypeSystem ts = tc.typeSystem();
-        if (!(ts.typeForName(for_id.id()) instanceof ClassType)) {
-        	throw new SemanticException("Restriction "+ gtc.currentRestrictionClass +" must be for a valid class", this.position);
+        if (tc instanceof GallifreyTypeChecker) {
+        	GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
+            if (!(ts.typeForName(for_id.id()) instanceof ClassType)) {
+            	throw new SemanticException("Restriction "+ gtc.currentRestrictionClass +" must be for a valid class", this.position);
+            }
         }
     	return this;
     }

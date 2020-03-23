@@ -1,11 +1,20 @@
 package gallifreyc.ast;
 
 import polyglot.ast.*;
+import polyglot.types.ClassType;
 import polyglot.types.Flags;
+import polyglot.types.SemanticException;
+import polyglot.types.TypeSystem;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
+import polyglot.visit.TypeBuilder;
+import polyglot.visit.TypeChecker;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import gallifreyc.types.GallifreyTypeSystem;
+import gallifreyc.visit.GallifreyTypeChecker;
 
 public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDecl {
 	private static final long serialVersionUID = SerialVersionUID.generate();
@@ -48,5 +57,45 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
 
     public Javadoc javadoc() {
     	return javadoc;
+    }
+    
+	@Override
+	public Node buildTypes(TypeBuilder tb) throws SemanticException {
+		TypeSystem ts = tb.typeSystem();
+		if (ts instanceof GallifreyTypeSystem) {
+			GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
+			List<String> restrictionClasses = new ArrayList<>();
+			List<String> variants = new ArrayList<>();
+			for (Id r : restrictions) {
+				String forClass = gts.classNameForRestriction(r.id());
+				if (forClass == null) {
+					throw new SemanticException("Unknown restriction " + r.id(), this.position());
+				}
+				// requires all variant restrictions to be for the same class
+				if (restrictionClasses.size() > 0 && forClass != restrictionClasses.get(0)) {
+					throw new SemanticException("Restriction classes in union do not match", this.position());
+				}
+				restrictionClasses.add(0, forClass);
+				variants.add(r.id());
+			}
+			gts.addRestrictionMapping(id.id(), restrictionClasses.get(0));
+			gts.addUnionRestriction(id.id(), variants);
+		}
+		return super.buildTypes(tb);
+	}
+
+	@Override
+    public Node typeCheck(TypeChecker tc) throws SemanticException {
+        TypeSystem ts = tc.typeSystem();
+        if (tc instanceof GallifreyTypeChecker) {
+        	GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
+    		if (ts instanceof GallifreyTypeSystem) {
+    			GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
+                if (!(ts.typeForName(gts.classNameForRestriction(id.id())) instanceof ClassType)) {
+                	throw new SemanticException("Restriction "+ id.id() +" must be for a valid class", this.position);
+                }
+    		}
+        }
+    	return this;
     }
 }
