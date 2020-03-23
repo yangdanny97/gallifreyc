@@ -3,8 +3,10 @@ package gallifreyc.ast;
 import java.util.Collections;
 import java.util.List;
 
+import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.types.RefQualifiedType;
 import polyglot.ast.*;
+import polyglot.types.ClassType;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.types.TypeSystem;
@@ -71,11 +73,23 @@ public class Transition_c extends Stmt_c implements Transition {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
+    	TypeSystem ts = tc.typeSystem();
     	Type t = expr.type();
     	if (!(t instanceof RefQualifiedType) || !(((RefQualifiedType) t).refQualification() instanceof SharedRef)) {
-            throw new SemanticException("Can only transition restrictions for Shared types");
+            throw new SemanticException("Can only transition restrictions for Shared types", this.position);
     	}
-    	//TODO check that restriction is valid
+    	if (ts instanceof GallifreyTypeSystem) {
+    		GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
+    		String restrictionClass = gts.classNameForRestriction(restriction.restriction().id());
+    		if (restrictionClass == null) {
+    			throw new SemanticException("Unknown Restriction "+restriction.restriction().id(), this.position());
+    		}
+    		Type base = ((RefQualifiedType) t).base();
+    		// requires equality between expr type and restriction's "for" type
+    		if (!ts.typeEquals(base, ts.typeForName(restrictionClass))) {
+    			throw new SemanticException("Invalid restriction for class "+restrictionClass, this.position());
+    		}
+    	}
     	return this;
     }
 }

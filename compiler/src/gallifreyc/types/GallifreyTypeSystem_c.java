@@ -11,8 +11,14 @@ import polyglot.util.InternalCompilerError;
 import polyglot.util.Position;
 
 public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyTypeSystem {
-    
-    public RefQualifiedType refQualifiedTypeOf(Position pos, Type base, RefQualification q) {
+	public Map<String, String> restrictionMap;
+	
+    public GallifreyTypeSystem_c() {
+		super();
+		restrictionMap = new HashMap<>();
+	}
+
+	public RefQualifiedType refQualifiedTypeOf(Position pos, Type base, RefQualification q) {
         return new RefQualifiedType_c(this, pos, base, q);
     }
     
@@ -51,5 +57,18 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         //TODO make consts treated like Moves
         return true; //super.isImplicitCastValid(fromType, toType);
     }
+
+	@Override
+	public void addRestrictionMapping(String restriction, String cls) {
+		restrictionMap.put(restriction, cls);
+	}
+	
+	@Override
+	public String classNameForRestriction(String restriction) {
+		if (!restrictionMap.containsKey(restriction)) {
+			return null;
+		}
+		return restrictionMap.get(restriction);
+	}
     
 }

@@ -2,9 +2,13 @@ package gallifreyc.ast;
 
 import java.util.List;
 
+import gallifreyc.types.GallifreyTypeSystem;
+import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.*;
+import polyglot.types.ClassType;
 import polyglot.types.Flags;
 import polyglot.types.SemanticException;
+import polyglot.types.TypeSystem;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
@@ -12,6 +16,7 @@ import polyglot.visit.CFGBuilder;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.Translator;
+import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
 
 public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
@@ -79,10 +84,42 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
     public Term firstChild() {
         return body;
     }
+    
+    
+    
+	@Override
+	public NodeVisitor typeCheckEnter(TypeChecker tc) throws SemanticException {
+		if (tc instanceof GallifreyTypeChecker) {
+			GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
+    		gtc.currentRestriction = id.id();
+    		gtc.currentRestrictionClass = for_id.id();
+		}
+		return super.typeCheckEnter(tc);
+	}
+	
+	
 
-    @Override
+	@Override
+	public Node buildTypes(TypeBuilder tb) throws SemanticException {
+		TypeSystem ts = tb.typeSystem();
+		if (ts instanceof GallifreyTypeSystem) {
+			GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
+			gts.addRestrictionMapping(id.id(), for_id.id());
+		}
+		return super.buildTypes(tb);
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+
+	@Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        //TODO 
+        TypeSystem ts = tc.typeSystem();
+        if (!(ts.typeForName(for_id.id()) instanceof ClassType)) {
+        	throw new SemanticException("Restriction "+ gtc.currentRestrictionClass +" must be for a valid class", this.position);
+        }
     	return this;
     }
 

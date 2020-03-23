@@ -1,7 +1,12 @@
 package gallifreyc.ast;
 
+import gallifreyc.types.GallifreyTypeSystem;
+import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.*;
+import polyglot.types.ClassType;
 import polyglot.types.SemanticException;
+import polyglot.types.Type;
+import polyglot.types.TypeSystem;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
@@ -51,7 +56,18 @@ public class AllowsStmt_c extends Node_c implements AllowsStmt {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        //TODO 
+        TypeSystem ts = tc.typeSystem();
+        if (tc instanceof GallifreyTypeChecker) {
+        	GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
+        	Type t = ts.typeForName(gtc.currentRestrictionClass);
+            if (!(t instanceof ClassType)) {
+            	throw new SemanticException("Restriction "+ gtc.currentRestrictionClass +" must be for a valid class", this.position);
+            }
+            ClassType ct = (ClassType) t;
+            if (ct.methodsNamed(id.id()).size() == 0) {
+            	throw new SemanticException("Unable to find method named " + id.id() + " in " + gtc.currentRestrictionClass, this.position);
+            }
+        }
     	return this;
     }
 }

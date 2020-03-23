@@ -14,6 +14,8 @@ import gallifreyc.extension.GallifreyLang;
 import gallifreyc.types.*;
 import java.util.*;
 
+
+// TODO: move Shared/Unique to imports, move a-normalization to earlier pass, translations for transition and match
 public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
 	List<Stmt> hoisted;
 	final String VALUE = "VALUE";
