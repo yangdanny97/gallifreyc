@@ -1,5 +1,6 @@
 package gallifreyc.types;
 
+import java.util.List;
 import java.util.Map;
 
 import gallifreyc.ast.RefQualification;
@@ -12,4 +13,7 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
     
     public void addRestrictionMapping(String restriction, String cls);
     public String classNameForRestriction(String restriction);
+    
+    public void addUnionRestriction(String union, List<String> restrictions);
+    public List<String> getVariantRestrictions(String restriction);
 }
