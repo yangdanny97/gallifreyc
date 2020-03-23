@@ -8,9 +8,15 @@ import java.util.*;
 
 // overwrite any typechecker operations
 public class GallifreyTypeChecker extends TypeChecker {
-
+	public String currentRestrictionClass;
+	public String currentRestriction;
+	public String currentMatchBranchRV;
+	
 	public GallifreyTypeChecker(Job job, TypeSystem ts, NodeFactory nf) {
 		super(job, ts, nf);
+		currentRestriction = null;
+		currentRestrictionClass = null;
+		currentMatchBranchRV = null;
 	}
 
 }
