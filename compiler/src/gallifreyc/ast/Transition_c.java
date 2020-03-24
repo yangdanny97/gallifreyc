@@ -80,7 +80,7 @@ public class Transition_c extends Stmt_c implements Transition {
     	}
     	if (ts instanceof GallifreyTypeSystem) {
     		GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
-    		String restrictionClass = gts.classNameForRestriction(restriction.restriction().id());
+    		String restrictionClass = gts.getClassNameForRestriction(restriction.restriction().id());
     		if (restrictionClass == null) {
     			throw new SemanticException("Unknown Restriction "+restriction.restriction().id(), this.position());
     		}

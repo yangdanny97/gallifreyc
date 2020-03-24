@@ -67,7 +67,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 	}
 	
 	@Override
-	public String classNameForRestriction(String restriction) {
+	public String getClassNameForRestriction(String restriction) {
 		if (!restrictionMap.containsKey(restriction)) {
 			return null;
 		}
@@ -85,6 +85,11 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 			return null;
 		}
 		return restrictionUnionMap.get(restriction);
+	}
+	
+	@Override
+	public boolean isUnionRestriction(String restriction) {
+		return restrictionUnionMap.containsKey(restriction);
 	}
     
 }
