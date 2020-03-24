@@ -12,8 +12,9 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
     RefQualifiedType refQualifiedTypeOf(Position pos, Type base, RefQualification q);
     
     public void addRestrictionMapping(String restriction, String cls);
-    public String classNameForRestriction(String restriction);
+    public String getClassNameForRestriction(String restriction);
     
     public void addUnionRestriction(String union, List<String> restrictions);
     public List<String> getVariantRestrictions(String restriction);
+    public boolean isUnionRestriction(String restriction);
 }

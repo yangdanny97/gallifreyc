@@ -67,7 +67,7 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
 			List<String> restrictionClasses = new ArrayList<>();
 			List<String> variants = new ArrayList<>();
 			for (Id r : restrictions) {
-				String forClass = gts.classNameForRestriction(r.id());
+				String forClass = gts.getClassNameForRestriction(r.id());
 				if (forClass == null) {
 					throw new SemanticException("Unknown restriction " + r.id(), this.position());
 				}
@@ -91,7 +91,7 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
         	GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
     		if (ts instanceof GallifreyTypeSystem) {
     			GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
-                if (!(ts.typeForName(gts.classNameForRestriction(id.id())) instanceof ClassType)) {
+                if (!(ts.typeForName(gts.getClassNameForRestriction(id.id())) instanceof ClassType)) {
                 	throw new SemanticException("Restriction "+ id.id() +" must be for a valid class", this.position);
                 }
     		}
