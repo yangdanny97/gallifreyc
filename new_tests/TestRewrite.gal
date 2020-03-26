@@ -7,10 +7,7 @@ class C {
         shared[MyRestriction] Integer c = move(b);
         
         local String x = "hello";
-        // System.out.println(x);
-        
         unique String y = "hello";
-       	// System.out.println(move(y));
         
         local Integer d = 5 + 3;
         
@@ -18,7 +15,6 @@ class C {
         local Integer f = move(e);
         
         unique Integer g = 3;
-        // local Integer h = 3 + move(g);
 	}
 	
 }

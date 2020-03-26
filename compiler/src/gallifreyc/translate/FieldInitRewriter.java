@@ -4,6 +4,8 @@ import polyglot.ast.*;
 import polyglot.frontend.ExtensionInfo;
 import polyglot.frontend.Job;
 import polyglot.translate.ExtensionRewriter;
+import polyglot.types.FieldInstance;
+import polyglot.types.FieldInstance_c;
 import polyglot.types.Flags;
 import polyglot.types.InitializerInstance;
 import polyglot.types.InitializerInstance_c;
@@ -33,9 +35,11 @@ public class FieldInitRewriter extends ExtensionRewriter implements GRewriter {
 					FieldDecl f = (FieldDecl) member.copy();
 					Position p = f.position();
 					if (f.init() != null) {
+						Field field = nf.Field(p, nf.This(p), nf.Id(p, f.name()));
+						FieldInstance fi = new FieldInstance_c(typeSystem(), p, c.type(),Flags.NONE, f.init().type(), f.name());
+						field = field.fieldInstance(fi);
 						hoistedDecls.add(
-								nf.Eval(p, nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, f.name())), 
-						    			Assign.ASSIGN, f.init()))
+								nf.Eval(p, nf.FieldAssign(p, field, Assign.ASSIGN, f.init()))
 						);
 						// remove inits
 						newMembers.add(f.init(null));
@@ -44,7 +48,6 @@ public class FieldInitRewriter extends ExtensionRewriter implements GRewriter {
 					}
 				} else newMembers.add(member);
 			}
-			// for some reason Disambiguation pass doesn't make an II for the Initializer
 			Initializer i = nf.Initializer(n.position(), Flags.NONE, nf.Block(n.position(), hoistedDecls));
 			InitializerInstance ii = new InitializerInstance_c(from_ext.typeSystem(), n.position(), c.type(), Flags.NONE);
 			i = i.initializerInstance(ii);
