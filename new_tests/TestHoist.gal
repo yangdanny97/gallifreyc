@@ -10,10 +10,13 @@ class C {
 		return x + 1;
 	}
 	
+	public void f3(local Integer x, local Integer y) { }
+	
 	public void testFun() {
 		local Integer[] x = {1, 2, 3};
 		local Integer y = x[f()];
 		local Integer z = x[f2(f())];
+		f3(f2(1), 2);
 	}
 	
 }

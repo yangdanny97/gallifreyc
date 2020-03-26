@@ -9,6 +9,7 @@ import polyglot.frontend.goals.*;
 import polyglot.types.TypeSystem;
 import polyglot.util.InternalCompilerError;
 import polyglot.visit.AmbiguityRemover;
+import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
 
 /**
@@ -22,10 +23,9 @@ public class GallifreyScheduler extends JL7Scheduler {
     
     /* PASS ORDERING:
      * Validated
-     * RewriteFieldInitPass
-     * Disambiguated2
-     * Serialized
-     * FinalRewritePass
+     * <<RewriteFieldInitPass>>
+     * <<ANormalizePass>>
+     * <<FinalRewritePass>>
      * CodeGenerated
      * */
     
@@ -58,11 +58,10 @@ public class GallifreyScheduler extends JL7Scheduler {
         return internGoal(g);
     }
     
-    // second disambiguation pass after hoisting
-    public Goal Disambiguated2(Job job) {
-        TypeSystem ts = extInfo.typeSystem();
-        NodeFactory nf = extInfo.nodeFactory();
-        Goal g = new VisitorGoal(job, new AmbiguityRemover(job, ts, nf, true, true));
+    // A-Normalize Field/ArrayAccess/Function Calls
+    public Goal ANormalizePass(Job job) {
+    	ANormalizer rw = new ANormalizer(job, extInfo, extInfo);
+        Goal g = new VisitorGoal(job, rw);
         try {
             g.addPrerequisiteGoal(RewriteFieldInitPass(job), this);
         }
@@ -72,24 +71,12 @@ public class GallifreyScheduler extends JL7Scheduler {
         return internGoal(g);
     }
     
-    @Override
-    public Goal Serialized(Job job) {
-        Goal g = super.Serialized(job);
-        try {
-            g.addPrerequisiteGoal(Disambiguated2(job), this);
-        }
-        catch (CyclicDependencyException e) {
-            throw new InternalCompilerError(e);
-        }
-        return internGoal(g);
-    }
-    
-    // autoboxing for Shared/Unique, a-normalization for Field/ArrayAccess/Function Calls, nulling out moves
+    // autoboxing for Shared/Unique, nulling out moves
     public Goal FinalRewritePass(Job job) {
     	GallifreyRewriter rw = new GallifreyRewriter(job, extInfo, extInfo);
         Goal g = new VisitorGoal(job, rw);
         try {
-        	g.addPrerequisiteGoal(Serialized(job), this);
+        	g.addPrerequisiteGoal(ANormalizePass(job), this);
         }
         catch (CyclicDependencyException e) {
             throw new InternalCompilerError(e);
