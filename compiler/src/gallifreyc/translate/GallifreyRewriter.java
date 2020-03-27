@@ -108,6 +108,48 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
         	}
         	return l;
         }
+        //translate Transition to java
+        if (n instanceof Transition) {
+        	Transition t = (Transition) n;
+        	Position p = t.position();
+        	FieldAssign fa = nf.FieldAssign(p, 
+        			nf.Field(p, t.expr(), nf.Id(p, RES)), 
+        			Assign.ASSIGN, 
+        			nf.StringLit(p, t.restriction().toString())
+        	);
+        	return nf.Eval(p, fa);
+        }
+        //translate MatchRestriction to java
+        if (n instanceof MatchRestriction) {
+        	MatchRestriction m = (MatchRestriction) n;
+        	Expr e = m.expr();
+        	Position p = m.position();
+        	If currentif = null;
+        	List<MatchBranch> branches = new ArrayList<>(m.branches());
+        	Collections.reverse(branches);
+        	
+        	for (MatchBranch b : branches) {
+        		LocalDecl d = b.pattern();
+        		RefQualifiedType t = (RefQualifiedType) d.type().type();
+        		RestrictionId restriction = ((SharedRef) t.refQualification()).restriction();
+        		
+            	Expr cond = nf.Binary(p, 
+            			nf.Field(p, e, nf.Id(p, RES)), 
+            			Binary.EQ, 
+            			nf.StringLit(p, restriction.restriction().toString())
+                	);
+            	Block block = nf.Block(p, d.init(e), b.stmt());
+            	
+            	if (currentif != null) {
+            		If i = nf.If(p, cond, block, currentif);
+            		currentif = i;
+            	} else {
+            		If i = nf.If(p, cond, block);
+            		currentif = i;
+            	}
+        	}
+        	return currentif;
+        }
         return n;
 	}
 	
