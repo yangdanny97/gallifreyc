@@ -45,10 +45,20 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
 	public Expr expr() {
 		return expr;
 	}
+	
+	@Override
+	public MatchRestriction expr(Expr e) {
+		return new MatchRestriction_c(this.position(), e, this.branches());
+	}
 
 	@Override
 	public List<MatchBranch> branches() {
 		return branches;
+	}
+	
+	@Override
+	public MatchRestriction branches(List<MatchBranch> b) {
+		return new MatchRestriction_c(this.position(), this.expr(), b);
 	}
 	
     @Override

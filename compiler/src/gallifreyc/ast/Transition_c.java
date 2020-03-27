@@ -34,6 +34,10 @@ public class Transition_c extends Stmt_c implements Transition {
 		return expr;
 	}
 	
+	public Transition expr(Expr e) {
+		return new Transition_c(this.position, e, this.restriction);
+	}
+	
 	public RestrictionId restriction() {
 		return restriction;
 	}

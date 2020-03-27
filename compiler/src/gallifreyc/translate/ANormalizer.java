@@ -3,6 +3,8 @@ package gallifreyc.translate;
 import java.util.ArrayList;
 import java.util.List;
 
+import gallifreyc.ast.MatchRestriction;
+import gallifreyc.ast.Transition;
 import gallifreyc.extension.GallifreyLang;
 import polyglot.ast.ArrayAccess;
 import polyglot.ast.Block;
@@ -95,6 +97,19 @@ public class ANormalizer extends ExtensionRewriter implements GRewriter {
         	}
         	c = c.arguments(hoistedArgs);
         	return c;
+        }
+        if (n instanceof MatchRestriction) {
+        	MatchRestriction m = (MatchRestriction) n;
+        	m = m.expr(hoist(m.expr()));
+        	Stmt s = addHoistedDecls(m);
+        	return s;
+        }
+        
+        if (n instanceof Transition) {
+        	Transition t = (Transition) n;
+        	t = t.expr(hoist(t.expr()));
+        	Stmt s = addHoistedDecls(t);
+        	return s;
         }
         
 		if (n instanceof Stmt && ! (n instanceof Block)) {
