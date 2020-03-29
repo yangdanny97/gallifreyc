@@ -1,0 +1,21 @@
+class C {
+	public C() {}
+	
+	public void testFun() {
+		System.out.println("o");
+	}
+	
+}
+
+restriction R for C {
+	allows testFun;
+}
+
+class D {
+	public D(){}
+	
+	public void test2() {
+		unique C  c = new C();
+		shared[R] C c2 = move(c);
+	}
+}
