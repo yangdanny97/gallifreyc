@@ -26,7 +26,7 @@
 #      CmdLineArgs  :   additional command line args for the Polyglot 
 #                       compiler; is always enclosed in quotes.
 
-gallifreyc.ExtensionInfo "-d out" {
+gallifreyc.GallifreyExtensionInfo "-d out" {
     # Hello.gal;
     RefQualification1.gal;
     RefQualification2a.gal;

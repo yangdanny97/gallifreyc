@@ -41,7 +41,7 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
         return gallifreycExt(n);
     }
     
-    // TODO: define custom/new ops for new node AST classes as necessary and add methods here
+    // TODO: new ops here
     
     @Override
     public int fresh() {

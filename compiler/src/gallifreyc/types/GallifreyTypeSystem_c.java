@@ -1,5 +1,6 @@
 package gallifreyc.types;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -91,5 +92,4 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 	public boolean isUnionRestriction(String restriction) {
 		return restrictionUnionMap.containsKey(restriction);
 	}
-    
 }

@@ -1,3 +1,5 @@
+package gallifrey;
+
 class Shared<T> {
 	public T VALUE;
 	public String RESTRICTION;

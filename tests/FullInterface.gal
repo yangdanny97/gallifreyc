@@ -13,9 +13,9 @@ interface Library {
 
 	void addItem ( unique Item i , local String col )
 	requires collection ( col )
-	ensures next ( numItems ()) >= numItems ();
+	ensures next ( numItems()) >= numItems ();
 
 	// also moves items in col to a default collection
 	void removeCollection ( local String col )
-	ensures ! collection ( col ) && ( next ( numItems ()) == numItems ());
+	ensures ! collection ( col ) && ( next ( numItems()) == numItems ());
 }

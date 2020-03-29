@@ -14,7 +14,7 @@ class C {
         unique Integer e = 2;
         local Integer f = move(e);
         
-        unique Integer g = 3;
+        System.out.println("hello");
 	}
 	
 }

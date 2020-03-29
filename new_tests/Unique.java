@@ -1,3 +1,5 @@
+package gallifrey;
+
 class Unique<T> {
 	public T VALUE;
 	
