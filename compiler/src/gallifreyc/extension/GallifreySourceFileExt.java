@@ -47,7 +47,7 @@ public class GallifreySourceFileExt extends GallifreyExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	// remove restriction decls during TC
+    	// remove restriction decls before passing to superlang typecheck
     	SourceFile n = node();
     	List<TopLevelDecl> cd = new ArrayList<>();
     	List<RestrictionDecl> rd = new ArrayList<>();
@@ -55,10 +55,11 @@ public class GallifreySourceFileExt extends GallifreyExt {
     		if (d instanceof ClassDecl) cd.add(d);
     		if (d instanceof RestrictionDecl) rd.add((RestrictionDecl) d);
     	}
+    	n = n.decls(cd);
+    	n = (SourceFile) superLang().typeCheck(n, tc);
     	for (RestrictionDecl r : rd) {
     		lang().typeCheck(r, tc);
     	}
-    	SourceFile supertc = n.decls(cd);
-    	return superLang().typeCheck(supertc, tc);
+    	return n;
     }
 }
