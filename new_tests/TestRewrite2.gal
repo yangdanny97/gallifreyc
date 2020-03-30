@@ -1,9 +1,7 @@
 class C {
 	public C() {}
 	
-	public void testFun() {
-		System.out.println("o");
-	}
+	public void testFun() {}
 	
 }
 

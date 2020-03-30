@@ -9,6 +9,7 @@ import polyglot.frontend.goals.*;
 import polyglot.types.TypeSystem;
 import polyglot.util.InternalCompilerError;
 import polyglot.visit.AmbiguityRemover;
+import polyglot.visit.ConstantChecker;
 import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
 
@@ -29,6 +30,7 @@ public class GallifreyScheduler extends JL7Scheduler {
      * CodeGenerated
      * */
     
+    
     @Override
     public Goal TypeChecked(Job job) {
         TypeSystem ts = extInfo.typeSystem();
@@ -44,12 +46,27 @@ public class GallifreyScheduler extends JL7Scheduler {
         return internGoal(g);
     }
     
+    @Override
+    public Goal ConstantsChecked(Job job) {
+        TypeSystem ts = extInfo.typeSystem();
+        NodeFactory nf = extInfo.nodeFactory();
+        Goal g = new VisitorGoal(job, new ConstantChecker(job, ts, nf));
+        try {
+            g.addPrerequisiteGoal(TypeChecked(job), this);
+        }
+        catch (CyclicDependencyException e) {
+            throw new InternalCompilerError(e);
+        }
+        return internGoal(g);
+    }
+    
     
     // hoist field initializers to separate block
     public Goal RewriteFieldInitPass(Job job) {
     	FieldInitRewriter rw = new FieldInitRewriter(job, extInfo, extInfo);
         Goal g = new VisitorGoal(job, rw);
         try {
+        	g.addPrerequisiteGoal(ConstantsChecked(job), this);
             g.addPrerequisiteGoal(Validated(job), this);
         }
         catch (CyclicDependencyException e) {
