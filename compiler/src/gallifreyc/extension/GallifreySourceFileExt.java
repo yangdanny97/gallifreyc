@@ -55,6 +55,7 @@ public class GallifreySourceFileExt extends GallifreyExt {
     		if (d instanceof ClassDecl) cd.add(d);
     		if (d instanceof RestrictionDecl) rd.add((RestrictionDecl) d);
     	}
+    	// TODO revisit this ordering... I think restriction mapping needs to be done pre-TC
     	n = n.decls(cd);
     	n = (SourceFile) superLang().typeCheck(n, tc);
     	for (RestrictionDecl r : rd) {

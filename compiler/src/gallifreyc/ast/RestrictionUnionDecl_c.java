@@ -72,8 +72,10 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
 					throw new SemanticException("Unknown restriction " + r.id(), this.position());
 				}
 				// requires all variant restrictions to be for the same class
-				if (restrictionClasses.size() > 0 && forClass != restrictionClasses.get(0)) {
-					throw new SemanticException("Restriction classes in union do not match", this.position());
+				if (restrictionClasses.size() > 0 && !forClass.contentEquals(restrictionClasses.get(0))) {
+					throw new SemanticException(
+							"Restriction classes in union do not match: " + forClass + ", " + restrictionClasses.get(0), 
+							this.position());
 				}
 				restrictionClasses.add(0, forClass);
 				variants.add(r.id());

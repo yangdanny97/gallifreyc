@@ -41,6 +41,12 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
         return gallifreycExt(n);
     }
     
+    @Override
+    protected ExprOps ExprOps(Expr n) {
+        return (ExprOps) gallifreycExt(n);
+    }
+
+    
     // TODO: new ops here
     
     @Override

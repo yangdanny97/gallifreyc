@@ -123,6 +123,7 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
             	throw new SemanticException("Restriction "+ gtc.currentRestrictionClass +" must be for a valid class", this.position);
             }
         }
+        body.typeCheck(tc);
     	return this;
     }
 
