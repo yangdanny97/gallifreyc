@@ -9,11 +9,9 @@ restriction R for C {
 	allows testFun;
 }
 
-restriction R2 for C {
+restriction R2 for D {
 	allows testFun;
 }
-
-restriction R3 = R | R2
 
 class D {
 	public D(){}
@@ -21,6 +19,6 @@ class D {
 	public void test2() {
 		unique C  c = new C();
 		shared[R] C c2 = move(c);
-		// transition(c2, R2);
+		transition(c2, R2);
 	}
 }

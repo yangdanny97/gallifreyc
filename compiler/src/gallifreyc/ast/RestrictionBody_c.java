@@ -56,6 +56,11 @@ public class RestrictionBody_c extends Term_c implements RestrictionBody {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
+    	for (Node n : members) {
+    		if (n instanceof AllowsStmt) {
+    			((AllowsStmt) n).typeCheck(tc);
+    		}
+    	}
     	return this;
     }
 

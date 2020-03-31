@@ -18,6 +18,16 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
     protected Ext extNodeImpl() {
         return new GallifreyExt();
     }
+    
+    @Override
+    protected Ext extTermImpl() {
+        return new GallifreyExt();
+    }
+    
+    @Override
+    protected Ext extStmtImpl() {
+        return new GallifreyExt();
+    }
 
     @Override
     protected Ext extMethodDeclImpl() {

@@ -1,0 +1,10 @@
+class C {
+	public C() {}
+	
+	public void testFun() {}
+	
+}
+
+restriction R for C {
+	allows NONEXISTENTFUNCTION;
+}

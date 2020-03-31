@@ -1,0 +1,14 @@
+class C {
+	public C() {}
+}
+
+class D {
+	public D() {}
+}
+
+
+restriction R for C { }
+
+restriction R2 for D { }
+
+restriction R3 = R | R2
