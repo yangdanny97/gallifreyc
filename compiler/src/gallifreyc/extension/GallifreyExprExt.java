@@ -1,6 +1,7 @@
 package gallifreyc.extension;
 
 import gallifreyc.ast.MoveRef;
+import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.SharedRef;
 import gallifreyc.ast.UniqueRef;
 import gallifreyc.types.RefQualifiedType;
@@ -17,6 +18,10 @@ import polyglot.util.SerialVersionUID;
 // extra operations for expressions
 public class GallifreyExprExt extends GallifreyExt implements ExprOps {
     private static final long serialVersionUID = SerialVersionUID.generate();
+    
+    public RefQualification qualification;
+    public String capability;
+    public String path;
     
     @Override
     public Expr node() {

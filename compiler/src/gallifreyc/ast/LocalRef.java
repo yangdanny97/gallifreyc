@@ -1,23 +1,24 @@
 package gallifreyc.ast;
 
+import polyglot.ast.Node_c;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
-import polyglot.ast.Node_c;
 
-public class MoveRef_c extends Node_c implements MoveRef {
+public class LocalRef extends Node_c implements RefQualification {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
-    public MoveRef_c(Position pos) {
+    public LocalRef(Position pos) {
         super(pos);
     }
 
     @Override
     public String toString() {
-        return "move";
+        return "local";
     }
     
     @Override
     public boolean equals(Object other) {
-    	return other instanceof MoveRef;
+    	return other instanceof LocalRef;
     }
 }
+
