@@ -49,14 +49,14 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     
     @Override
     public UniqueRef UniqueRef(Position pos) {
-        UniqueRef u = new UniqueRef_c(pos);
+        UniqueRef u = new UniqueRef(pos);
         u = ext(u, extFactory().extUniqueRef());
         return u;
     }
     
     @Override
     public MoveRef MoveRef(Position pos) {
-        MoveRef m = new MoveRef_c(pos);
+        MoveRef m = new MoveRef(pos);
         m = ext(m, extFactory().extUniqueRef());
         return m;
     }
@@ -64,7 +64,7 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
 
     @Override
     public SharedRef SharedRef(Position pos, RestrictionId restriction) {
-        SharedRef s = new SharedRef_c(pos, restriction);
+        SharedRef s = new SharedRef(pos, restriction);
         s = ext(s, extFactory().extSharedRef());
         return s;
     }
