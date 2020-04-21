@@ -1,16 +1,11 @@
 package gallifreyc.types;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 import gallifreyc.ast.*;
-import polyglot.ext.jl7.types.JL7TypeSystem_c;
+import polyglot.ext.jl5.types.*;
+import polyglot.ext.jl7.types.*;
 import polyglot.types.*;
-import polyglot.util.InternalCompilerError;
-import polyglot.util.Position;
+import polyglot.util.*;
 
 public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyTypeSystem {
 	public Map<String, String> restrictionMap;
@@ -61,7 +56,47 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         //TODO make consts treated like Moves
         return true; //super.isImplicitCastValid(fromType, toType);
     }
+    
+    
 
+	@Override
+	public MethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
+			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, RefQualification q) {
+		return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes, Collections.<TypeVariable> emptyList(), q);
+	}
+
+	@Override
+	public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
+			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, 
+			List<TypeVariable> typeParams, RefQualification q) {
+		return new GallifreyMethodInstance_c(this, pos, container, flags, returnType, name, argTypes, excTypes, typeParams, q);
+	}
+
+	@Override
+	public ConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
+			List<? extends Type> argTypes, List<? extends Type> excTypes) {
+		return constructorInstance(pos, container, flags, argTypes, excTypes, Collections.<TypeVariable> emptyList());
+	}
+
+	@Override
+	public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
+			List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams) {
+		return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, typeParams);
+	}
+
+	@Override
+	public LocalInstance localInstance(Position pos, Flags flags, Type type, String name, RefQualification q) {
+		return new GallifreyLocalInstance_c(this, pos, flags, type, name, q);
+	}
+
+
+	@Override
+	public GallifreyFieldInstance fieldInstance(Position pos, ReferenceType container, 
+			Flags flags, Type type, String name, RefQualification q) {
+		return new GallifreyFieldInstance_c(this, pos, container, flags, type, name, q);
+	}
+
+	
 	@Override
 	public void addRestrictionMapping(String restriction, String cls) {
 		restrictionMap.put(restriction, cls);
