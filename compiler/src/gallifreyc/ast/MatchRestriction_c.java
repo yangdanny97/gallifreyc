@@ -3,6 +3,8 @@ package gallifreyc.ast;
 import java.util.Collections;
 import java.util.List;
 
+import gallifreyc.extension.GallifreyExprExt;
+import gallifreyc.extension.GallifreyLang;
 import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.types.RefQualifiedType;
 import gallifreyc.visit.GallifreyTypeChecker;
@@ -17,6 +19,7 @@ import polyglot.ast.NodeFactory;
 import polyglot.ast.Stmt_c;
 import polyglot.ast.SwitchElement;
 import polyglot.ast.Term;
+import polyglot.ast.TypeNode;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.types.TypeSystem;
@@ -119,22 +122,25 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
     	if (ts instanceof GallifreyTypeSystem) {
     		GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
         	Type t = expr.type();
-        	if (!(t instanceof RefQualifiedType) || !(((RefQualifiedType) t).refQualification() instanceof SharedRef)) {
+            GallifreyExprExt ext = ((GallifreyLang) lang()).exprExt(this.expr);
+            GallifreyNodeFactory nf = (GallifreyNodeFactory) tc.nodeFactory();
+        	RefQualification q = ext.gallifreyType.qualification();
+
+        	if (q instanceof SharedRef) {
                 throw new SemanticException("Can only match restrictions for Shared types", this.position);
         	}
-        	RefQualifiedType rt = (RefQualifiedType) t;
-        	String thisRV = ((SharedRef) rt.refQualification()).restriction().restriction().id();
+        	String thisRV = ((SharedRef) q).restriction().restriction().id();
         	if (!gts.isUnionRestriction(thisRV)) {
         		throw new SemanticException("Can only match on union restrictions", this.position);
         	}
         	for (MatchBranch b: this.branches) {
         		LocalDecl ld = b.pattern();
-            	Type ldt = ld.declType();
-            	if (!(ldt instanceof RefQualifiedType) || !(((RefQualifiedType) ldt).refQualification() instanceof SharedRef)) {
+            	TypeNode ldt = ld.type();
+            	if (!(ldt instanceof RefQualifiedTypeNode) || !(((RefQualifiedTypeNode) ldt).qualification() instanceof SharedRef)) {
                     throw new SemanticException("Pattern in match branch must be shared type", b.position());
             	}
-            	RefQualifiedType ldrt = (RefQualifiedType) ldt;
-            	RestrictionId rid = ((SharedRef) rt.refQualification()).restriction();
+            	RefQualifiedTypeNode ldrt = (RefQualifiedTypeNode) ldt;
+            	RestrictionId rid = ((SharedRef) ldrt.qualification()).restriction();
             	if (!rid.isRvQualified()) {
             		throw new SemanticException("Match branch restriction must be qualified", b.position());
             	}

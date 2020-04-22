@@ -10,6 +10,7 @@ import polyglot.types.Type;
 import polyglot.util.Position;
 import polyglot.visit.NodeVisitor;
 import gallifreyc.ast.*;
+import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyLang;
 import gallifreyc.types.*;
 import java.util.*;
@@ -30,26 +31,20 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
 	public GallifreyRewriter(Job job, ExtensionInfo from_ext, ExtensionInfo to_ext) {
 		super(job, from_ext, to_ext);
 	}
-	
-	// remove unique/shared annotations
+
 	@Override 
 	public TypeNode typeToJava(Type t, Position pos) {
-		if (t instanceof RefQualifiedType) {
-			return nf.CanonicalTypeNode(pos, ((RefQualifiedType) t).base());
-		}
 		return super.typeToJava(t, pos);
 	}
 	
 	// wrap unique/shared refs with .value, AFTER rewriting
 	private Node wrapExpr(Expr e) {
-    	Type t = e.type();
-    	if (t instanceof RefQualifiedType) {
-    		RefQualifiedType rt = (RefQualifiedType) t;
-    		if (rt.refQualification() instanceof SharedRef || rt.refQualification() instanceof UniqueRef) {
-    			Expr new_e = qq().parseExpr("(%E)." + VALUE, e);
-    			return new_e;
-    		}
-    	}
+		GallifreyExprExt ext = lang().exprExt(e);
+		RefQualification q = ext.gallifreyType.qualification();
+		if (q instanceof SharedRef || q instanceof UniqueRef) {
+			Expr new_e = qq().parseExpr("(%E)." + VALUE, e);
+			return new_e;
+		}
     	return e;
 	}
 	
@@ -88,24 +83,23 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
         	//rewrite RHS of decls
         	LocalDecl l = (LocalDecl) n;
         	Expr rhs = l.init();
-        	if (l.type().type() instanceof RefQualifiedType) {
-        		RefQualifiedType rt = (RefQualifiedType) l.type().type();
-        		if (rt.refQualification() instanceof SharedRef) {
-        			SharedRef s = (SharedRef) rt.refQualification();
-        			RestrictionId rid = s.restriction();
-        			Expr restriction = nf.StringLit(n.position(), rid.toString());
-        			Expr new_rhs = qq().parseExpr("new Shared(%E, %E)", rhs, restriction);
-        			l = l.type(nf.TypeNodeFromQualifiedName(l.position(), "Shared<"+rt.base().toString()+">"));
-        			l = l.init(new_rhs);
-        			return l;
-        		}
-        		if (rt.refQualification() instanceof UniqueRef) {
-        			Expr new_rhs = qq().parseExpr("new Unique(%E)", rhs);
-        			l = l.type(nf.TypeNodeFromQualifiedName(l.position(), "Unique<"+rt.base().toString()+">"));
-        			l = l.init(new_rhs);
-        			return l;
-        		}
-        	}
+    		GallifreyExprExt ext = lang().exprExt(rhs);
+    		RefQualification q = ext.gallifreyType.qualification();
+    		if (q instanceof SharedRef) {
+    			SharedRef s = (SharedRef) q;
+    			RestrictionId rid = s.restriction();
+    			Expr restriction = nf.StringLit(n.position(), rid.toString());
+    			Expr new_rhs = qq().parseExpr("new Shared(%E, %E)", rhs, restriction);
+    			l = l.type(nf.TypeNodeFromQualifiedName(l.position(), "Shared<"+l.type().type().toString()+">"));
+    			l = l.init(new_rhs);
+    			return l;
+    		}
+    		if (q instanceof UniqueRef) {
+    			Expr new_rhs = qq().parseExpr("new Unique(%E)", rhs);
+    			l = l.type(nf.TypeNodeFromQualifiedName(l.position(), "Unique<"+l.type().type().toString()+">"));
+    			l = l.init(new_rhs);
+    			return l;
+    		}
         	return l;
         }
         //translate Transition to java
@@ -130,8 +124,8 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
         	
         	for (MatchBranch b : branches) {
         		LocalDecl d = b.pattern();
-        		RefQualifiedType t = (RefQualifiedType) d.type().type();
-        		RestrictionId restriction = ((SharedRef) t.refQualification()).restriction();
+        		RefQualifiedTypeNode t = (RefQualifiedTypeNode) d.type();
+        		RestrictionId restriction = ((SharedRef) t.qualification()).restriction();
         		
             	Expr cond = nf.Binary(p, 
             			nf.Field(p, e, nf.Id(p, RES)), 

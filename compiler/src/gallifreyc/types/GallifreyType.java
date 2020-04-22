@@ -1,6 +1,11 @@
 package gallifreyc.types;
 
+import gallifreyc.ast.LocalRef;
+import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualification;
+import gallifreyc.ast.SharedRef;
+import gallifreyc.ast.UniqueRef;
+import polyglot.types.Type;
 
 public class GallifreyType {
 	public RefQualification qualification;
@@ -37,5 +42,22 @@ public class GallifreyType {
 		this.path = path;
 		return this;
 	}
+	
+    public boolean isMove() {
+    	return qualification instanceof MoveRef;
+    }
+    
+    public boolean isUnique() {
+    	return qualification instanceof UniqueRef;
+    }
+    
+    public boolean isShared() {
+    	return qualification instanceof SharedRef;
+    }
+    
+    public boolean isLocal() {
+    	return qualification instanceof LocalRef;
+    }
+
 
 }
