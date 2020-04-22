@@ -16,6 +16,5 @@ public class GallifreyStringLitExt extends GallifreyExprExt {
     	Expr node = (Expr) node();
     	this.gallifreyType = new GallifreyType(new MoveRef(node.position()));
         return node().typeCheck(tc);
-    }
-    
+    } 
 }

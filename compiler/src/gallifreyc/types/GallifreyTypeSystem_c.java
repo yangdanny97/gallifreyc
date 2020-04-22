@@ -41,6 +41,11 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 			List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams) {
 		return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, typeParams);
 	}
+	
+	@Override
+	public LocalInstance localInstance(Position pos, Flags flags, Type type, String name) {
+		return new GallifreyLocalInstance_c(this, pos, flags, type, name, null);
+	}
 
 	@Override
 	public LocalInstance localInstance(Position pos, Flags flags, Type type, String name, RefQualification q) {

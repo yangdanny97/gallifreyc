@@ -44,6 +44,16 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
         return new GallifreySourceFileExt();
     }
     
+    @Override
+    protected Ext extLocalDeclImpl() {
+        return new GallifreyLocalDeclExt();
+    }
+    
+    @Override
+    protected Ext extFormalImpl() {
+        return new GallifreyFormalExt();
+    }
+    
     // OVERRIDE EXPRS
     @Override
     protected Ext extAmbExprImpl() {
