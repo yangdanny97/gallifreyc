@@ -51,7 +51,7 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tb.typeSystem();
-        return type(ts.refQualifiedTypeOf(position(), base.type(), this.refQualification));
+        return type(base.type());
     }
 
     @Override
@@ -63,8 +63,7 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
         if (!baseType.isCanonical()) {
             return this;
         }
-        return nf.CanonicalTypeNode(position(),
-                                    ts.refQualifiedTypeOf(position(), baseType, this.refQualification));
+        return nf.CanonicalTypeNode(position(), baseType);
     }
 
     @Override
@@ -80,7 +79,7 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
     }
 
     @Override
-    public RefQualification refQualification() {
+    public RefQualification qualification() {
         return refQualification;
     }
 }

@@ -17,48 +17,6 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 		restrictionUnionMap = new HashMap<>();
 	}
 
-	public RefQualifiedType refQualifiedTypeOf(Position pos, Type base, RefQualification q) {
-        return new RefQualifiedType_c(this, pos, base, q);
-    }
-    
-    @Override
-    public boolean typeEquals(Type type1, Type type2) {
-        if (type1 instanceof RefQualifiedType && type2 instanceof RefQualifiedType) {
-            return type1.typeEqualsImpl(type2) && type2.typeEqualsImpl(type1);
-        } else if (type1 instanceof RefQualifiedType || type2 instanceof RefQualifiedType) {
-        	return false;
-        }
-        else {
-            return super.typeEquals(type1, type2);
-        }
-    }
-
-    // Override JL5 Type system things
-    @Override
-    public boolean isImplicitCastValid(Type fromType, Type toType) {
-        if (fromType instanceof RefQualifiedType && toType instanceof RefQualifiedType) {
-            RefQualifiedType refFromType = (RefQualifiedType) fromType;
-            RefQualifiedType refToType = (RefQualifiedType) toType;
-            // move -> shared/unique
-            if (refFromType.refQualification() instanceof MoveRef) {
-            	return super.isImplicitCastValid(refFromType.base(), refToType.base());
-            }
-            return typeEquals(fromType, toType);
-        }
-        if (fromType instanceof RefQualifiedType) {
-            RefQualifiedType refFromType = (RefQualifiedType) fromType;
-            // move -> local
-            if (refFromType.refQualification() instanceof MoveRef) {
-            	return super.isImplicitCastValid(refFromType.base(), toType);
-            }
-            return typeEquals(fromType, toType);
-        }
-        //TODO make consts treated like Moves
-        return true; //super.isImplicitCastValid(fromType, toType);
-    }
-    
-    
-
 	@Override
 	public MethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
 			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, RefQualification q) {
@@ -89,14 +47,12 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 		return new GallifreyLocalInstance_c(this, pos, flags, type, name, q);
 	}
 
-
 	@Override
 	public GallifreyFieldInstance fieldInstance(Position pos, ReferenceType container, 
 			Flags flags, Type type, String name, RefQualification q) {
 		return new GallifreyFieldInstance_c(this, pos, container, flags, type, name, q);
 	}
 
-	
 	@Override
 	public void addRestrictionMapping(String restriction, String cls) {
 		restrictionMap.put(restriction, cls);
