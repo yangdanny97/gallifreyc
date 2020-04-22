@@ -3,6 +3,11 @@ package gallifreyc.extension;
 import polyglot.types.SemanticException;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
+import gallifreyc.ast.MoveRef;
+import gallifreyc.ast.RefQualifiedTypeNode;
+import gallifreyc.types.GallifreyType;
+import polyglot.ast.Cast;
+import polyglot.ast.Expr;
 import polyglot.ast.Node;
 
 public class GallifreyCastExt extends GallifreyExprExt {
@@ -10,7 +15,17 @@ public class GallifreyCastExt extends GallifreyExprExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	//TODO
+    	//TODO check over this
+    	Cast node = (Cast) node();
+    	GallifreyExprExt ext = lang().exprExt(node.expr());
+    	if (!(node.castType() instanceof RefQualifiedTypeNode)) {
+    		throw new SemanticException("missing ref qualification!");
+    	}
+    	RefQualifiedTypeNode rt = (RefQualifiedTypeNode) node.castType();
+    	if (!rt.qualification().equals(ext.gallifreyType.qualification())) {
+    		throw new SemanticException("qualifications do not match for casting!");
+    	}
+    	this.gallifreyType = new GallifreyType(new MoveRef(node.position()));
         return node().typeCheck(tc);
     }
 }
