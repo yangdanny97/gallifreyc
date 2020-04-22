@@ -17,5 +17,4 @@ public class GallifreyUnaryExt extends GallifreyExprExt {
     	this.gallifreyType = new GallifreyType(exprExt.gallifreyType.qualification);
         return node().typeCheck(tc);
     }
-    
 }
