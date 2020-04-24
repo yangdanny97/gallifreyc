@@ -16,19 +16,36 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 		restrictionMap = new HashMap<>();
 		restrictionUnionMap = new HashMap<>();
 	}
+    
+    //METHOD INSTANCE
 
 	@Override
 	public MethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
-			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, RefQualification q) {
-		return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes, Collections.<TypeVariable> emptyList(), q);
+			String name, List<? extends Type> argTypes, List<? extends Type> excTypes) {
+		return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes, Collections.<TypeVariable> emptyList(), null);
 	}
 
 	@Override
 	public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
 			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, 
-			List<TypeVariable> typeParams, RefQualification q) {
-		return new GallifreyMethodInstance_c(this, pos, container, flags, returnType, name, argTypes, excTypes, typeParams, q);
+			List<TypeVariable> typeParams) {
+		return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes, typeParams, null);
 	}
+    
+	@Override
+	public MethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
+			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, RefQualification returnQ) {
+		return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes, Collections.<TypeVariable> emptyList(), returnQ);
+	}
+
+	@Override
+	public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
+			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, 
+			List<TypeVariable> typeParams, RefQualification returnQ) {
+		return new GallifreyMethodInstance_c(this, pos, container, flags, returnType, name, argTypes, excTypes, typeParams, returnQ);
+	}
+	
+	//CONSTRUCTOR INSTANCE
 
 	@Override
 	public ConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
@@ -42,8 +59,11 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 		return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, typeParams);
 	}
 	
+	//LOCAL INSTANCE
+	
 	@Override
 	public LocalInstance localInstance(Position pos, Flags flags, Type type, String name) {
+		//null qualification for now, fill in later
 		return new GallifreyLocalInstance_c(this, pos, flags, type, name, null);
 	}
 
@@ -51,12 +71,22 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 	public LocalInstance localInstance(Position pos, Flags flags, Type type, String name, RefQualification q) {
 		return new GallifreyLocalInstance_c(this, pos, flags, type, name, q);
 	}
+	
+	//FIELD INSTANCE
+	
+	@Override
+	public GallifreyFieldInstance fieldInstance(Position pos, ReferenceType container, 
+			Flags flags, Type type, String name) {
+		return new GallifreyFieldInstance_c(this, pos, container, flags, type, name, null);
+	}
 
 	@Override
 	public GallifreyFieldInstance fieldInstance(Position pos, ReferenceType container, 
 			Flags flags, Type type, String name, RefQualification q) {
 		return new GallifreyFieldInstance_c(this, pos, container, flags, type, name, q);
 	}
+	
+	//RESTRICTIONS
 
 	@Override
 	public void addRestrictionMapping(String restriction, String cls) {
