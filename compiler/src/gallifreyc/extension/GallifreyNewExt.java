@@ -3,6 +3,10 @@ package gallifreyc.extension;
 import polyglot.types.SemanticException;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
+import gallifreyc.ast.MoveRef;
+import gallifreyc.types.GallifreyType;
+import polyglot.ast.Expr;
+import polyglot.ast.New;
 import polyglot.ast.Node;
 
 public class GallifreyNewExt extends GallifreyExprExt {
@@ -10,7 +14,9 @@ public class GallifreyNewExt extends GallifreyExprExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	//TODO
-        return node().typeCheck(tc);
+    	New node = (New) node().typeCheck(tc);
+    	//TODO check arguments, just like function calls
+    	this.gallifreyType = new GallifreyType(new MoveRef(node.position()));
+        return node;
     }
 }

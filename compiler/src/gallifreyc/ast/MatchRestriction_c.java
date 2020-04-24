@@ -5,7 +5,6 @@ import java.util.List;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyLang;
 import gallifreyc.types.GallifreyTypeSystem;
-import gallifreyc.types.RefQualifiedType;
 import gallifreyc.visit.GallifreyTypeChecker;
 
 import java.util.ArrayList;

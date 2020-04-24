@@ -3,6 +3,8 @@ package gallifreyc.extension;
 import polyglot.types.SemanticException;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
+import gallifreyc.types.GallifreyType;
+import polyglot.ast.ArrayAccess;
 import polyglot.ast.Node;
 
 public class GallifreyArrayAccessExt extends GallifreyExprExt {
@@ -10,7 +12,10 @@ public class GallifreyArrayAccessExt extends GallifreyExprExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	//TODO
-        return node().typeCheck(tc);
+    	// array contents and container have same qualification
+    	ArrayAccess aa = (ArrayAccess) node().typeCheck(tc);
+    	GallifreyType arrayType = lang().exprExt(aa.array()).gallifreyType;
+    	this.gallifreyType = new GallifreyType(arrayType.qualification());
+        return aa;
     }
 }
