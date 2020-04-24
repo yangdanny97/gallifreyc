@@ -1,7 +1,6 @@
 package gallifreyc.extension;
 
 import polyglot.ast.Ext;
-import polyglot.ast.ExtFactory;
 import polyglot.ext.jl7.ast.JL7ExtFactory;
 
 /**

@@ -1,14 +1,18 @@
 package gallifreyc.types;
 
 import java.util.List;
-import java.util.Map;
 
 import gallifreyc.ast.RefQualification;
 import polyglot.ext.jl5.types.JL5ConstructorInstance;
 import polyglot.ext.jl5.types.JL5FieldInstance;
 import polyglot.ext.jl5.types.TypeVariable;
 import polyglot.ext.jl7.types.JL7TypeSystem;
-import polyglot.types.*;
+import polyglot.types.ClassType;
+import polyglot.types.Flags;
+import polyglot.types.LocalInstance;
+import polyglot.types.MethodInstance;
+import polyglot.types.ReferenceType;
+import polyglot.types.Type;
 import polyglot.util.Position;
 
 public interface GallifreyTypeSystem extends JL7TypeSystem {

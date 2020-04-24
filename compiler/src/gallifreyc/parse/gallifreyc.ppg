@@ -65,15 +65,18 @@ non terminal List<MatchBranch> match_branch_list;
 start with goal;
 
 // Reference Qualifications (local, unique, shared)
-// TODO: Add example, fix result types
 override type ::=
     // TypeNode
     primitive_type:a
-		{: RESULT = a; :}
+		{: 	
+			// unsure if wrapping is needed
+			RefQualification r = parser.nf.MoveRef(parser.pos(a)); 
+			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a), r, a);
+		:}
     | LOCAL:a reference_type:t
 		{: 
-			// I _think_ that this is probably cleaner, no method relabeling
-			RESULT = t;
+			RefQualification r = parser.nf.LocalRef(parser.pos(a)); 
+			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
 		:}
 	| UNIQUE:a reference_type:t
 		{: 

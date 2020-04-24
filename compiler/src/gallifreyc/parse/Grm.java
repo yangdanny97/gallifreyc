@@ -6079,7 +6079,13 @@ class CUP$Grm$actions {
             {
                 TypeNode RESULT = null;
                 TypeNode a = CUP$Grm$stack.peek().<TypeNode> value();
-                  RESULT = a;  
+                
+                     	
+			// unsure if wrapping is needed
+			RefQualification r = parser.nf.MoveRef(parser.pos(a)); 
+			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a), r, a);
+		
+                     
                 CUP$Grm$result = parser.getSymbolFactory().newSymbol("type",3, RESULT);
             }
             return CUP$Grm$result;
@@ -6092,8 +6098,8 @@ class CUP$Grm$actions {
                 TypeNode t = CUP$Grm$stack.peek().<TypeNode> value();
                 
                              
-			// I _think_ that this is probably cleaner, no method relabeling
-			RESULT = t;
+			RefQualification r = parser.nf.LocalRef(parser.pos(a)); 
+			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
 		
                              
                 CUP$Grm$result = parser.getSymbolFactory().newSymbol("type",3, RESULT);

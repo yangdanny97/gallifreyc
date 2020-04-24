@@ -3,10 +3,6 @@ package gallifreyc.ast;
 import polyglot.ast.*;
 import polyglot.ext.jl5.parse.FlagAnnotations;
 import polyglot.ext.jl7.ast.JL7NodeFactory;
-import polyglot.types.Flags;
-import polyglot.types.Package;
-import polyglot.types.Type;
-import polyglot.types.Qualifier;
 import polyglot.util.*;
 import java.util.*;
 
@@ -25,6 +21,8 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     UniqueRef UniqueRef(Position pos);
     
     MoveRef MoveRef(Position pos);
+
+    LocalRef LocalRef(Position pos);
     
     SharedRef SharedRef(Position pos, RestrictionId restriction);
     

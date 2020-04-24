@@ -1,6 +1,5 @@
 package gallifreyc.ast;
 
-import java.util.Collections;
 import java.util.List;
 
 import gallifreyc.extension.GallifreyExprExt;

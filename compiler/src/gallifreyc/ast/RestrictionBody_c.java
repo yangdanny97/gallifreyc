@@ -6,9 +6,7 @@ import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.CFGBuilder;
-import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
-import polyglot.visit.Translator;
 import polyglot.visit.TypeChecker;
 
 import java.util.Iterator;

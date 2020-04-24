@@ -1,6 +1,5 @@
 package gallifreyc.extension;
 
-import polyglot.ast.Node;
 import polyglot.ast.NodeOps;
 
 /**

@@ -1,18 +1,12 @@
 package gallifreyc.extension;
 
 import polyglot.ast.*;
-import polyglot.util.Copy;
 import polyglot.util.InternalCompilerError;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.NodeVisitor;
 import polyglot.types.SemanticException;
-import polyglot.types.Type;
 import polyglot.translate.ExtensionRewriter;
 import gallifreyc.translate.GRewriter;
-import gallifreyc.translate.GallifreyRewriter;
-import gallifreyc.types.*;
-import gallifreyc.ast.*;
-import java.util.*;
 
 public class GallifreyExt extends Ext_c implements GallifreyOps {
     private static final long serialVersionUID = SerialVersionUID.generate();
