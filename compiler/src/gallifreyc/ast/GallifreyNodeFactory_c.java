@@ -3,11 +3,8 @@ package gallifreyc.ast;
 import polyglot.ext.jl5.ast.ParamTypeNode;
 import polyglot.ast.*;
 import gallifreyc.extension.*;
-import polyglot.ext.jl5.ast.JL5Ext;
-import polyglot.ext.jl5.ast.JL5MethodDeclExt;
 import polyglot.ext.jl5.parse.FlagAnnotations;
 import polyglot.ext.jl7.ast.JL7NodeFactory_c;
-import polyglot.types.Flags;
 import polyglot.util.*;
 import java.util.*;
 
@@ -57,6 +54,13 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     @Override
     public MoveRef MoveRef(Position pos) {
         MoveRef m = new MoveRef(pos);
+        m = ext(m, extFactory().extUniqueRef());
+        return m;
+    }
+    
+    @Override
+    public LocalRef LocalRef(Position pos) {
+        LocalRef m = new LocalRef(pos);
         m = ext(m, extFactory().extUniqueRef());
         return m;
     }
@@ -119,7 +123,6 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     
     @Override
     public RefQualifiedTypeNode RefQualifiedTypeNode(Position pos, RefQualification refQualification, TypeNode t) {
-    	
         RefQualifiedTypeNode n = new RefQualifiedTypeNode_c(pos, refQualification, t);
         n = ext(n, extFactory().extRefQualifiedTypeNode());
         return n;

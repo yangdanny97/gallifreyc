@@ -1,14 +1,8 @@
 package gallifreyc.extension;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import gallifreyc.ast.PostCondition;
 import gallifreyc.ast.PreCondition;
 import polyglot.ast.MethodDecl;
-import polyglot.ast.Node;
-import polyglot.types.MethodInstance;
-import polyglot.types.Type;
 import polyglot.util.SerialVersionUID;
 
 // extends method declarations to hold an optional pre/post condition, and a flag for whether it's a test method

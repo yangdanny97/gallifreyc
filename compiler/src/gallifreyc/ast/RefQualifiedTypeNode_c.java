@@ -27,6 +27,9 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
         super(pos);
         this.base = t;
         this.refQualification = refQualification;
+    	if (t instanceof RefQualifiedTypeNode) {
+    		throw new IllegalArgumentException("cannot nest ref-qualifications");
+    	}
     }
     
     @Override
