@@ -17,7 +17,7 @@ public class GallifreyFormalExt extends GallifreyExt {
         Formal n = (Formal) node().buildTypes(tb);
         TypeNode t = n.type();
         if (!(t instanceof RefQualifiedTypeNode)) {
-        	throw new SemanticException("declaration must have qualification");
+        	throw new SemanticException("declaration must have qualification", n.position());
         }
         RefQualifiedTypeNode rt = (RefQualifiedTypeNode) t;
         GallifreyLocalInstance li = (GallifreyLocalInstance) n.localInstance();

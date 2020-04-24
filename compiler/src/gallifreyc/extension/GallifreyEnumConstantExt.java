@@ -3,6 +3,9 @@ package gallifreyc.extension;
 import polyglot.types.SemanticException;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
+import gallifreyc.ast.MoveRef;
+import gallifreyc.types.GallifreyType;
+import polyglot.ast.Expr;
 import polyglot.ast.Node;
 
 public class GallifreyEnumConstantExt extends GallifreyExprExt {
@@ -10,7 +13,8 @@ public class GallifreyEnumConstantExt extends GallifreyExprExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	//TODO
+    	Expr node = (Expr) node();
+    	this.gallifreyType = new GallifreyType(new MoveRef(node.position()));
         return node().typeCheck(tc);
     }
 }

@@ -14,6 +14,7 @@ public class GallifreySpecialExt extends GallifreyExprExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
+    	//this & super are always local
     	Expr node = (Expr) node();
     	this.gallifreyType = new GallifreyType(new LocalRef(node.position()));
         return node().typeCheck(tc);

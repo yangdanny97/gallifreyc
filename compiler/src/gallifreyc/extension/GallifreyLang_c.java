@@ -3,6 +3,7 @@ package gallifreyc.extension;
 import polyglot.ast.*;
 import polyglot.ext.jl7.ast.J7Lang_c;
 import polyglot.util.InternalCompilerError;
+import polyglot.util.UniqueID;
 import polyglot.translate.ExtensionRewriter;
 
 
@@ -10,7 +11,6 @@ import polyglot.translate.ExtensionRewriter;
 public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
 
     public static final GallifreyLang_c instance = new GallifreyLang_c();
-    private int counter;
 
     public static GallifreyLang lang(NodeOps n) {
         while (n != null) {
@@ -25,7 +25,6 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
 
     protected GallifreyLang_c() {
     	super();
-    	counter = 0;
     }
 
     protected static GallifreyExt gallifreycExt(Node n) {
@@ -54,8 +53,7 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
     
     @Override
     public int fresh() {
-    	counter++;
-    	return counter;
+    	return UniqueID.newIntID();
     }
     
     @Override
