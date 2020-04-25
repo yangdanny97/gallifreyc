@@ -24,17 +24,13 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
     public List<String> getVariantRestrictions(String restriction);
     public boolean isUnionRestriction(String restriction);
     
-    public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
-			List<? extends Type> argTypes, List<? extends Type> excTypes, 
-			List<TypeVariable> typeParams);
-    
-	public MethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
+	public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
 			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, RefQualification q);
     public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
 			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, 
 			List<TypeVariable> typeParams, RefQualification q);
     
-    public LocalInstance localInstance(Position pos, Flags flags, Type type, String name, RefQualification q);
+    public GallifreyLocalInstance localInstance(Position pos, Flags flags, Type type, String name, RefQualification q);
     public GallifreyFieldInstance fieldInstance(Position pos, ReferenceType container, 
     		Flags flags, Type type, String name, RefQualification q);
 }

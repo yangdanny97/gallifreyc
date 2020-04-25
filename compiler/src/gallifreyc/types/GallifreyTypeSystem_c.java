@@ -33,7 +33,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 	}
     
 	@Override
-	public MethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
+	public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
 			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, RefQualification returnQ) {
 		return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes, Collections.<TypeVariable> emptyList(), returnQ);
 	}
@@ -48,27 +48,28 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 	//CONSTRUCTOR INSTANCE
 
 	@Override
-	public ConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
+	public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
 			List<? extends Type> argTypes, List<? extends Type> excTypes) {
 		return constructorInstance(pos, container, flags, argTypes, excTypes, Collections.<TypeVariable> emptyList());
 	}
-
-	@Override
-	public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
-			List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams) {
-		return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, typeParams);
-	}
+	
+    @Override
+    public GallifreyConstructorInstance constructorInstance(Position pos,
+            ClassType container, Flags flags, List<? extends Type> argTypes,
+            List<? extends Type> excTypes, List<TypeVariable> typeParams) {
+    	return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, typeParams);
+    }
 	
 	//LOCAL INSTANCE
 	
 	@Override
-	public LocalInstance localInstance(Position pos, Flags flags, Type type, String name) {
+	public GallifreyLocalInstance localInstance(Position pos, Flags flags, Type type, String name) {
 		//null qualification for now, fill in later
 		return new GallifreyLocalInstance_c(this, pos, flags, type, name, null);
 	}
 
 	@Override
-	public LocalInstance localInstance(Position pos, Flags flags, Type type, String name, RefQualification q) {
+	public GallifreyLocalInstance localInstance(Position pos, Flags flags, Type type, String name, RefQualification q) {
 		return new GallifreyLocalInstance_c(this, pos, flags, type, name, q);
 	}
 	
