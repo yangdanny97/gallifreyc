@@ -18,7 +18,7 @@ public class GallifreyArrayInitExt extends GallifreyExprExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        ArrayInit node = (ArrayInit) node().typeCheck(tc);
+        ArrayInit node = (ArrayInit) superLang().typeCheck(this.node(), tc);
         List<Expr> elements = node.elements();
         //init expressions need to be all the same OR moves
         RefQualification acc = null;

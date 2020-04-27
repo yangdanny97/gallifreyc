@@ -14,7 +14,7 @@ public class GallifreyNewExt extends GallifreyExprExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	New node = (New) node().typeCheck(tc);
+    	New node = (New) superLang().typeCheck(this.node(), tc);
     	//TODO check arguments, just like function calls
     	this.gallifreyType = new GallifreyType(new MoveRef(node.position()));
         return node;

@@ -12,7 +12,7 @@ public class GallifreyUnaryExt extends GallifreyExprExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	Unary node = (Unary) node().typeCheck(tc);
+    	Unary node = (Unary) superLang().typeCheck(this.node(), tc);
     	GallifreyExprExt exprExt = lang().exprExt(node.expr());
     	this.gallifreyType = new GallifreyType(exprExt.gallifreyType.qualification);
         return node;

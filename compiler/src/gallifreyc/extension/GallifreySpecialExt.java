@@ -17,6 +17,6 @@ public class GallifreySpecialExt extends GallifreyExprExt {
     	//this & super are always local
     	Expr node = (Expr) node();
     	this.gallifreyType = new GallifreyType(new LocalRef(node.position()));
-        return node().typeCheck(tc);
+        return superLang().typeCheck(this.node(), tc);
     }
 }

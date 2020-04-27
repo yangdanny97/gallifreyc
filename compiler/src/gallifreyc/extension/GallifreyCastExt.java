@@ -15,7 +15,7 @@ public class GallifreyCastExt extends GallifreyExprExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	Cast node = (Cast) node().typeCheck(tc);
+    	Cast node = (Cast) superLang().typeCheck(this.node(), tc);
     	if (!(node.castType() instanceof RefQualifiedTypeNode)) {
     		throw new SemanticException("missing ref qualification for cast!", node.position());
     	}

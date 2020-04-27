@@ -18,7 +18,7 @@ public class GallifreyLocalDeclExt extends GallifreyExt {
     
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
-        LocalDecl n = (LocalDecl) node().buildTypes(tb);
+        LocalDecl n = (LocalDecl) superLang().buildTypes(this.node, tb);
         TypeNode t = n.type();
         if (!(t instanceof RefQualifiedTypeNode)) {
         	throw new SemanticException("declaration must have qualification");
