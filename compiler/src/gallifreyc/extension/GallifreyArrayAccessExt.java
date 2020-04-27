@@ -13,7 +13,7 @@ public class GallifreyArrayAccessExt extends GallifreyExprExt {
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
     	// array contents and container have same qualification
-    	ArrayAccess aa = (ArrayAccess) node().typeCheck(tc);
+    	ArrayAccess aa = (ArrayAccess) superLang().typeCheck(this.node(), tc);
     	GallifreyType arrayType = lang().exprExt(aa.array()).gallifreyType;
     	this.gallifreyType = new GallifreyType(arrayType.qualification());
         return aa;

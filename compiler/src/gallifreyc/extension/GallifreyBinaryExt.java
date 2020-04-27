@@ -16,7 +16,7 @@ public class GallifreyBinaryExt extends GallifreyExprExt {
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
     	// assuming results of binary are always const
-    	Expr node = (Expr) node().typeCheck(tc);
+    	Expr node = (Expr) superLang().typeCheck(this.node(), tc);
     	this.gallifreyType = new GallifreyType(new MoveRef(node.position()));
         return node;
     }

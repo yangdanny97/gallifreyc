@@ -12,7 +12,7 @@ public class GallifreyConditionalExt extends GallifreyExprExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	Conditional c = (Conditional) node().typeCheck(tc);
+    	Conditional c = (Conditional) superLang().typeCheck(this.node(), tc);
     	GallifreyType trueType = lang().exprExt(c.consequent()).gallifreyType;
     	GallifreyType falseType = lang().exprExt(c.consequent()).gallifreyType;
     	if (!trueType.qualification().equals(falseType.qualification())) {

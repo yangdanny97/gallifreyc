@@ -14,7 +14,7 @@ public class GallifreyAssignExt extends GallifreyExprExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	Assign a = (Assign) node().typeCheck(tc);
+    	Assign a = (Assign) superLang().typeCheck(this.node(), tc);
     	GallifreyType lt = lang().exprExt(a.left()).gallifreyType;
     	GallifreyType rt = lang().exprExt(a.right()).gallifreyType;
     	

@@ -2,6 +2,8 @@ package gallifreyc.types;
 
 import java.util.*;
 import gallifreyc.ast.*;
+import polyglot.ast.Expr;
+import polyglot.ast.Formal;
 import polyglot.ext.jl5.types.*;
 import polyglot.ext.jl7.types.*;
 import polyglot.types.*;
@@ -118,5 +120,58 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 	@Override
 	public boolean isUnionRestriction(String restriction) {
 		return restrictionUnionMap.containsKey(restriction);
+	}
+	
+	//check args and get return qualification for some function call
+	
+	
+	
+	public GallifreyType checkArgs(List<Formal> params, List<Expr> args) {
+		//TODO
+		return null;
+	}
+	
+	// Casting
+
+	@Override
+	public boolean isSubtype(Type t1, Type t2) {
+		// TODO Auto-generated method stub
+		return super.isSubtype(t1, t2);
+	}
+
+	@Override
+	public boolean isImplicitCastValid(Type fromType, Type toType) {
+		// TODO Auto-generated method stub
+		return super.isImplicitCastValid(fromType, toType);
+	}
+
+	@Override
+	public LinkedList<Type> isImplicitCastValidChain(Type fromType, Type toType) {
+		// TODO Auto-generated method stub
+		return super.isImplicitCastValidChain(fromType, toType);
+	}
+
+	@Override
+	public boolean isCastValid(Type fromType, Type toType) {
+		// TODO Auto-generated method stub
+		return super.isCastValid(fromType, toType);
+	}
+
+	@Override
+	protected boolean isCastValidFromClass(ClassType fromType, Type toType) {
+		// TODO Auto-generated method stub
+		return super.isCastValidFromClass(fromType, toType);
+	}
+
+	@Override
+	protected boolean isCastValidFromInterface(ClassType fromType, Type toType) {
+		// TODO Auto-generated method stub
+		return super.isCastValidFromInterface(fromType, toType);
+	}
+
+	@Override
+	protected boolean isCastValidFromArray(ArrayType arrayType, Type toType) {
+		// TODO Auto-generated method stub
+		return super.isCastValidFromArray(arrayType, toType);
 	}
 }

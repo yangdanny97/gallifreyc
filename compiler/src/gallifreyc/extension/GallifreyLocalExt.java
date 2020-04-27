@@ -19,6 +19,6 @@ public class GallifreyLocalExt extends GallifreyExprExt {
         Context c = tc.context();
         GallifreyLocalInstance li = (GallifreyLocalInstance) c.findLocal(node.name());
         this.gallifreyType = new GallifreyType(li.gallifreyType().qualification);
-        return node().typeCheck(tc);
+        return superLang().typeCheck(this.node(), tc);
     }
 }

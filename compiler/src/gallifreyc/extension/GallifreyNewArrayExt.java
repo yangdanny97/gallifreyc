@@ -16,7 +16,7 @@ public class GallifreyNewArrayExt extends GallifreyExprExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	NewArray node = (NewArray) node().typeCheck(tc);
+    	NewArray node = (NewArray) superLang().typeCheck(this.node(), tc);
     	TypeNode t = node.baseType();
         if (!(t instanceof RefQualifiedTypeNode)) {
         	throw new SemanticException("array must have qualification", node.position());

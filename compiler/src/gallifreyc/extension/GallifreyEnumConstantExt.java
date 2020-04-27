@@ -13,8 +13,8 @@ public class GallifreyEnumConstantExt extends GallifreyExprExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	Expr node = (Expr) node();
+    	Expr node = (Expr) superLang().typeCheck(this.node(), tc);
     	this.gallifreyType = new GallifreyType(new MoveRef(node.position()));
-        return node().typeCheck(tc);
+        return node;
     }
 }

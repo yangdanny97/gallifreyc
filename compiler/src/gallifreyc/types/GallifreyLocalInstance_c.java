@@ -16,6 +16,7 @@ public class GallifreyLocalInstance_c extends JL5LocalInstance_c implements Gall
 	public GallifreyLocalInstance_c(GallifreyTypeSystem ts, Position pos, Flags flags, Type type, String name, RefQualification q) {
 		super(ts, pos, flags, type, name);
 		this.gallifreyType = new GallifreyType(q);
+		// Note: sometimes q is null, it gets filled in later
 	}
 	
 	public GallifreyLocalInstance gallifreyType(GallifreyType t) {
