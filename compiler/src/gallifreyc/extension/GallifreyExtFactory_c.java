@@ -28,20 +28,28 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
     protected Ext extStmtImpl() {
         return new GallifreyExt();
     }
+    
+    
+    @Override
+    protected Ext extSourceFileImpl() {
+        return new GallifreySourceFileExt();
+    }
+    
+    // Decls
 
     @Override
     protected Ext extMethodDeclImpl() {
         return new GallifreyMethodDeclExt();
     }
-
+    
     @Override
-    protected Ext extExprImpl() {
-        return new GallifreyExprExt();
+    protected Ext extConstructorDeclImpl() {
+        return new GallifreyConstructorDeclExt();
     }
     
     @Override
-    protected Ext extSourceFileImpl() {
-        return new GallifreySourceFileExt();
+    protected Ext extFieldDeclImpl() {
+    	return new GallifreyFieldDeclExt();
     }
     
     @Override
@@ -49,12 +57,19 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
         return new GallifreyLocalDeclExt();
     }
     
+    //Types
+    
     @Override
     protected Ext extFormalImpl() {
         return new GallifreyFormalExt();
     }
     
     // OVERRIDE EXPRS
+    @Override
+    protected Ext extExprImpl() {
+        return new GallifreyExprExt();
+    }
+    
     @Override
     protected Ext extAmbExprImpl() {
         return new GallifreyAmbExprExt();
