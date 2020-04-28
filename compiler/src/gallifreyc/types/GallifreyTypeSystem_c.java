@@ -40,28 +40,31 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 	public MethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
 			String name, List<? extends Type> argTypes, List<? extends Type> excTypes) {
 		return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes,
-				Collections.<TypeVariable>emptyList(), null);
+				Collections.<TypeVariable>emptyList(), 
+				new ArrayList<RefQualification>(), null);
 	}
 
 	@Override
 	public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
 			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams) {
-		return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes, typeParams, null);
+		return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes, 
+				typeParams, new ArrayList<RefQualification>(), null);
 	}
 
 	@Override
 	public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
-			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, RefQualification returnQ) {
+			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, 
+			List<RefQualification> inputQ, RefQualification returnQ) {
 		return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes,
-				Collections.<TypeVariable>emptyList(), returnQ);
+				Collections.<TypeVariable>emptyList(), inputQ, returnQ);
 	}
 
 	@Override
 	public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
 			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams,
-			RefQualification returnQ) {
+			List<RefQualification> inputQ, RefQualification returnQ) {
 		return new GallifreyMethodInstance_c(this, pos, container, flags, returnType, name, argTypes, excTypes,
-				typeParams, returnQ);
+				typeParams, inputQ, returnQ);
 	}
 
 	// CONSTRUCTOR INSTANCE
@@ -69,13 +72,15 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 	@Override
 	public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
 			List<? extends Type> argTypes, List<? extends Type> excTypes) {
-		return constructorInstance(pos, container, flags, argTypes, excTypes, Collections.<TypeVariable>emptyList());
+		return constructorInstance(pos, container, flags, argTypes, excTypes, 
+				Collections.<TypeVariable>emptyList(), new ArrayList<RefQualification>());
 	}
 
 	@Override
 	public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
-			List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams) {
-		return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, typeParams);
+			List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams, 
+			List<RefQualification> inputQ) {
+		return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, typeParams, inputQ);
 	}
 
 	// LOCAL INSTANCE

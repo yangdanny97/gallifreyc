@@ -1,7 +1,11 @@
 package gallifreyc.types;
 
+import java.util.Collections;
+
 import polyglot.ext.jl5.types.JL5ArrayType_c;
 import polyglot.types.ArrayType;
+import polyglot.types.FieldInstance;
+import polyglot.types.MethodInstance;
 import polyglot.types.Type;
 import polyglot.types.TypeSystem;
 import polyglot.util.Position;
@@ -48,6 +52,28 @@ public class GallifreyArrayType extends JL5ArrayType_c implements ArrayType {
         }
 
         return ts.isSubtype(this, toType);
+    }
+    
+    
+    @Override
+    protected MethodInstance createCloneMethodInstance() {
+    	//TODO
+        return ts.methodInstance(position(), this, ts.Public(), this, // clone returns this type
+                                 "clone",
+                                 Collections.<Type> emptyList(),
+                                 Collections.<Type> emptyList());
+    }
+    
+    @Override
+    protected FieldInstance createLengthFieldInstance() {
+    	//TODO
+        FieldInstance fi = ts.fieldInstance(position(),
+                                            this,
+                                            ts.Public().Final(),
+                                            ts.Int(),
+                                            "length");
+        fi.setNotConstant();
+        return fi;
     }
 
 }

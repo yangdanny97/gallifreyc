@@ -3,6 +3,10 @@ package gallifreyc.extension;
 import polyglot.types.SemanticException;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
+import gallifreyc.types.GallifreyMethodInstance;
+import gallifreyc.types.GallifreyType;
+import gallifreyc.types.GallifreyTypeSystem;
+import polyglot.ast.Call;
 import polyglot.ast.Node;
 
 public class GallifreyCallExt extends GallifreyExprExt {
@@ -10,7 +14,11 @@ public class GallifreyCallExt extends GallifreyExprExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	//TODO
-        return node().typeCheck(tc);
+    	Call node = (Call) superLang().typeCheck(this.node, tc);
+    	GallifreyMethodInstance mi = (GallifreyMethodInstance) node.methodInstance();
+    	GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
+    	//TODO check args
+    	this.gallifreyType = new GallifreyType(mi.gallifreyReturnType().qualification());
+        return node;
     }
 }

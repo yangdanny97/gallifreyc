@@ -28,15 +28,20 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
     public boolean isUnionRestriction(String restriction);
     
 	public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
-			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, RefQualification q);
+			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, 
+			List<RefQualification> inputQ, RefQualification returnQ);
     public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
 			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, 
-			List<TypeVariable> typeParams, RefQualification q);
+			List<TypeVariable> typeParams, List<RefQualification> inputQ, RefQualification returnQ);
     
     public GallifreyLocalInstance localInstance(Position pos, Flags flags, Type type, String name, RefQualification q);
     public GallifreyFieldInstance fieldInstance(Position pos, ReferenceType container, 
     		Flags flags, Type type, String name, RefQualification q);
     
+	public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
+			List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams, 
+			List<RefQualification> inputQ);
+	
     // check args of a function call, calculate the qualification of the returned value
 	public GallifreyType checkArgs(List<Formal> params, List<Expr> args) throws SemanticException;
 	
