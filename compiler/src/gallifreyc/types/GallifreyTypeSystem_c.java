@@ -2,6 +2,9 @@ package gallifreyc.types;
 
 import java.util.*;
 import gallifreyc.ast.*;
+import gallifreyc.extension.GallifreyExprExt;
+import gallifreyc.extension.GallifreyLang;
+import gallifreyc.extension.GallifreyLang_c;
 import polyglot.ast.Expr;
 import polyglot.ast.Formal;
 import polyglot.ext.jl5.types.*;
@@ -20,47 +23,15 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 	}
 
 	// ARRAY TYPES
-	Map<Type, ArrayType> varargsArrayTypeCache = new HashMap<>();
-	Map<Type, ArrayType> arrayTypeCache = new HashMap<>();
-
-	@Override
-	public ArrayType arrayOf(Position position, Type type, boolean isVarargs) {
-		return arrayType(position, type, isVarargs);
-	}
 
 	@Override
 	protected ArrayType createArrayType(Position pos, Type type, boolean isVarargs) {
-		GallifreyArrayType at = new GallifreyArrayType(this, pos, type, isVarargs);
-		return at;
+		return new GallifreyArrayType(this, pos, type, isVarargs);
 	}
 
 	@Override
 	protected ArrayType createArrayType(Position pos, Type type) {
 		return new GallifreyArrayType(this, pos, type, false);
-	}
-
-	@Override
-	protected ArrayType arrayType(Position pos, Type type) {
-		ArrayType t = arrayTypeCache.get(type);
-		if (t == null) {
-			t = createArrayType(pos, type);
-			arrayTypeCache.put(type, t);
-		}
-		return t;
-	}
-
-	@Override
-	protected ArrayType arrayType(Position pos, Type type, boolean isVarargs) {
-		if (isVarargs) {
-			ArrayType t = varargsArrayTypeCache.get(type);
-			if (t == null) {
-				t = createArrayType(pos, type, isVarargs);
-				varargsArrayTypeCache.put(type, t);
-			}
-			return t;
-		} else {
-			return arrayType(pos, type);
-		}
 	}
 
 	// METHOD INSTANCE
@@ -167,32 +138,37 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 		return restrictionUnionMap.containsKey(restriction);
 	}
 
-	// check args and get return qualification for some function call
+	// checking qualifications
 
-	public GallifreyType checkArgs(List<Formal> params, List<Expr> args) {
-		// TODO
-		return null;
+	public GallifreyType checkArgs(List<Formal> params, List<Expr> args) throws SemanticException {
+		//TODO check param qualifications
+		boolean allMoves = true;
+		for (Expr e : args) {
+			GallifreyType gt = GallifreyLang_c.instance.exprExt(e).gallifreyType;
+			if (!(gt.qualification() instanceof MoveRef)) {
+				allMoves = false;
+			}
+		}
+		if (allMoves) {
+			return new GallifreyType(new MoveRef(Position.COMPILER_GENERATED));
+		} else {
+			return new GallifreyType(new LocalRef(Position.COMPILER_GENERATED));
+		}
+	}
+	
+	public boolean checkQualifications(GallifreyType fromType, GallifreyType toType) {
+		if (fromType.qualification instanceof MoveRef) {
+			return true;
+		}
+		
+		if (fromType.qualification instanceof LocalRef && toType.qualification instanceof LocalRef) {
+			return true;
+		}
+		
+		return false;
 	}
 
 	// Casting
-
-	@Override
-	public boolean isSubtype(Type t1, Type t2) {
-		// TODO Auto-generated method stub
-		return super.isSubtype(t1, t2);
-	}
-
-	@Override
-	public boolean isImplicitCastValid(Type fromType, Type toType) {
-		// TODO Auto-generated method stub
-		return super.isImplicitCastValid(fromType, toType);
-	}
-
-	@Override
-	public boolean isCastValid(Type fromType, Type toType) {
-		// TODO Auto-generated method stub
-		return super.isCastValid(fromType, toType);
-	}
 
 	protected boolean isCastValidFromArray(ArrayType arrayType, Type toType) {
 		if (toType.isArray()) {
