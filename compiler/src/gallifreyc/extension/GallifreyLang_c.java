@@ -45,11 +45,10 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
         return (ExprOps) gallifreycExt(n);
     }
     
+    @Override
     public GallifreyExprExt exprExt(Expr n) {
     	return (GallifreyExprExt) gallifreycExt(n);
     }
-
-    // TODO: new ops here
     
     @Override
     public int fresh() {
