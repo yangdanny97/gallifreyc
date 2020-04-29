@@ -4,7 +4,6 @@ import polyglot.types.SemanticException;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
 import gallifreyc.ast.LocalRef;
-import gallifreyc.ast.MoveRef;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.Expr;
 import polyglot.ast.Node;

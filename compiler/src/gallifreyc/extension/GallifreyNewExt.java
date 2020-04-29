@@ -5,7 +5,6 @@ import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
 import gallifreyc.ast.MoveRef;
 import gallifreyc.types.GallifreyType;
-import polyglot.ast.Expr;
 import polyglot.ast.New;
 import polyglot.ast.Node;
 

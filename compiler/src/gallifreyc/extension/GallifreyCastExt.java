@@ -7,7 +7,6 @@ import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.Cast;
-import polyglot.ast.Expr;
 import polyglot.ast.Node;
 
 public class GallifreyCastExt extends GallifreyExprExt {

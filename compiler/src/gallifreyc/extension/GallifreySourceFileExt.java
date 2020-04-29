@@ -4,8 +4,6 @@ import java.util.*;
 
 import gallifreyc.ast.RestrictionDecl;
 import polyglot.ast.*;
-import polyglot.ast.Import.Kind;
-import polyglot.ext.jl5.ast.JL5Import;
 import polyglot.types.*;
 import polyglot.util.*;
 import polyglot.visit.TypeChecker;

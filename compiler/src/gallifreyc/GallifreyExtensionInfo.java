@@ -12,7 +12,6 @@ import polyglot.ext.jl5.ast.JL5ExtFactory_c;
 import polyglot.ext.jl7.JL7ExtensionInfo;
 import polyglot.ext.jl7.ast.JL7ExtFactory_c;
 import polyglot.frontend.*;
-import polyglot.main.*;
 import polyglot.types.*;
 import polyglot.util.*;
 

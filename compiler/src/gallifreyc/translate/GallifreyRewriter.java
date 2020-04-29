@@ -11,7 +11,6 @@ import polyglot.visit.NodeVisitor;
 import gallifreyc.ast.*;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyLang;
-import gallifreyc.types.*;
 import java.util.*;
 
 

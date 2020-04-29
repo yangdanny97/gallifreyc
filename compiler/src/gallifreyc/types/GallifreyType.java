@@ -5,7 +5,6 @@ import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.SharedRef;
 import gallifreyc.ast.UniqueRef;
-import polyglot.types.Type;
 
 public class GallifreyType {
 	public RefQualification qualification;
