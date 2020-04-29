@@ -3,7 +3,7 @@ package gallifreyc.ast;
 import java.util.List;
 
 import gallifreyc.extension.GallifreyExprExt;
-import gallifreyc.extension.GallifreyLang;
+import gallifreyc.extension.GallifreyLang_c;
 import gallifreyc.types.GallifreyTypeSystem;
 import java.util.ArrayList;
 
@@ -14,7 +14,6 @@ import polyglot.ast.Stmt_c;
 import polyglot.ast.Term;
 import polyglot.ast.TypeNode;
 import polyglot.types.SemanticException;
-import polyglot.types.Type;
 import polyglot.types.TypeSystem;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
@@ -113,9 +112,7 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
     	TypeSystem ts = tc.typeSystem();
     	if (ts instanceof GallifreyTypeSystem) {
     		GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
-        	Type t = expr.type();
-            GallifreyExprExt ext = ((GallifreyLang) lang()).exprExt(this.expr);
-            GallifreyNodeFactory nf = (GallifreyNodeFactory) tc.nodeFactory();
+            GallifreyExprExt ext = GallifreyLang_c.instance.exprExt(this.expr);
         	RefQualification q = ext.gallifreyType.qualification();
 
         	if (q instanceof SharedRef) {

@@ -3,6 +3,7 @@ package gallifreyc.extension;
 import java.util.ArrayList;
 import java.util.List;
 
+import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.translate.GRewriter;
 import gallifreyc.types.GallifreyConstructorInstance;
@@ -12,6 +13,7 @@ import polyglot.ast.Formal;
 import polyglot.ast.Node;
 import polyglot.translate.ExtensionRewriter;
 import polyglot.types.SemanticException;
+import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
@@ -43,10 +45,11 @@ public class GallifreyConstructorDeclExt extends GallifreyExt implements Gallifr
         List<GallifreyType> inputTypes = new ArrayList<>();
         
         for (Formal f : cd.formals()) {
-            if (!(f instanceof RefQualifiedTypeNode)) {
+            if (!(f instanceof RefQualifiedTypeNode) && !f.declType().isPrimitive()) {
             	throw new SemanticException("param types must be ref qualified: " + cd.name(), cd.position());
             }
-            GallifreyType fQ = new GallifreyType(((RefQualifiedTypeNode) f).qualification());
+            GallifreyType fQ = (f.declType().isPrimitive()) ? new GallifreyType(new MoveRef(Position.COMPILER_GENERATED)) :
+        		new GallifreyType(((RefQualifiedTypeNode) f).qualification());
             inputTypes.add(fQ);
         }
         

@@ -1,6 +1,5 @@
 package gallifreyc.ast;
 
-import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.Node;
 import polyglot.ast.NodeFactory;
 import polyglot.ast.TypeNode;
@@ -52,13 +51,13 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
     
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
-        GallifreyTypeSystem ts = (GallifreyTypeSystem) tb.typeSystem();
+        tb.typeSystem();
         return type(base.type());
     }
 
     @Override
     public Node disambiguate(AmbiguityRemover ar) throws SemanticException {
-        GallifreyTypeSystem ts = (GallifreyTypeSystem) ar.typeSystem();
+        ar.typeSystem();
         NodeFactory nf = ar.nodeFactory();
         Type baseType = base.type();
 

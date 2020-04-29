@@ -5,7 +5,6 @@ import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
 import gallifreyc.types.GallifreyMethodInstance;
 import gallifreyc.types.GallifreyType;
-import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.Call;
 import polyglot.ast.Node;
 
@@ -21,7 +20,7 @@ public class GallifreyCallExt extends GallifreyExprExt {
     public Node typeCheck(TypeChecker tc) throws SemanticException {
     	Call node = (Call) superLang().typeCheck(this.node, tc);
     	GallifreyMethodInstance mi = (GallifreyMethodInstance) node.methodInstance();
-    	GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
+    	tc.typeSystem();
     	//TODO check args
     	this.gallifreyType = new GallifreyType(mi.gallifreyReturnType().qualification());
         return node;

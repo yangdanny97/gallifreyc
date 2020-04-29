@@ -12,7 +12,7 @@ import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeChecker;
 import gallifreyc.extension.GallifreyExprExt;
-import gallifreyc.extension.GallifreyLang;
+import gallifreyc.extension.GallifreyLang_c;
 
 public class Move_c extends Expr_c implements Move {
 	private static final long serialVersionUID = SerialVersionUID.generate();
@@ -64,8 +64,8 @@ public class Move_c extends Expr_c implements Move {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        GallifreyExprExt ext = ((GallifreyLang) lang()).exprExt(this.expr);
-        GallifreyNodeFactory nf = (GallifreyNodeFactory) tc.nodeFactory();
+        GallifreyExprExt ext = GallifreyLang_c.instance.exprExt(this.expr);
+        tc.nodeFactory();
     	RefQualification q = ext.gallifreyType.qualification();
     	if (q instanceof UniqueRef) {
     		ext.gallifreyType.qualification = new MoveRef(q.position());
