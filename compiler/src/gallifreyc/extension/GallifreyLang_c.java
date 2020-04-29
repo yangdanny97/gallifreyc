@@ -4,7 +4,6 @@ import polyglot.ast.*;
 import polyglot.ext.jl7.ast.J7Lang_c;
 import polyglot.util.InternalCompilerError;
 import polyglot.util.UniqueID;
-import polyglot.translate.ExtensionRewriter;
 
 
 // language dispatcher, singleton class
@@ -27,7 +26,7 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
     	super();
     }
 
-    protected static GallifreyExt gallifreycExt(Node n) {
+    protected static GallifreyOps gallifreycExt(Node n) {
         return GallifreyExt.ext(n);
     }
 

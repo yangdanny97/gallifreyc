@@ -19,4 +19,13 @@ public class GallifreyFieldInstance_c extends JL5FieldInstance_c implements Gall
 		super(ts, pos, container, flags, type, name);
 		this.gallifreyType = new GallifreyType(q);
 	}
+	
+	public GallifreyFieldInstance gallifreyType(GallifreyType t) {
+		gallifreyType = t;
+		return this;
+	};
+	
+	public GallifreyType gallifreyType() {
+		return gallifreyType;
+	};
 }

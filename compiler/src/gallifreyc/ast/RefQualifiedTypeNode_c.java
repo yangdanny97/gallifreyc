@@ -1,7 +1,6 @@
 package gallifreyc.ast;
 
 import gallifreyc.types.GallifreyTypeSystem;
-import polyglot.ast.MethodDecl;
 import polyglot.ast.Node;
 import polyglot.ast.NodeFactory;
 import polyglot.ast.TypeNode;

@@ -4,7 +4,6 @@ import gallifreyc.ast.RefQualification;
 import polyglot.ext.jl5.types.JL5LocalInstance_c;
 import polyglot.types.Flags;
 import polyglot.types.Type;
-import polyglot.types.TypeSystem;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 

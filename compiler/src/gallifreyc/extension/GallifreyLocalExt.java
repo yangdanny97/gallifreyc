@@ -1,7 +1,6 @@
 package gallifreyc.extension;
 
 import polyglot.types.Context;
-import polyglot.types.LocalInstance;
 import polyglot.types.SemanticException;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;

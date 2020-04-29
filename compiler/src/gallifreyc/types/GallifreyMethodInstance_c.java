@@ -5,7 +5,6 @@ import java.util.List;
 
 import gallifreyc.ast.RefQualification;
 import polyglot.ext.jl5.types.JL5MethodInstance_c;
-import polyglot.ext.jl5.types.JL5TypeSystem;
 import polyglot.ext.jl5.types.TypeVariable;
 import polyglot.types.Flags;
 import polyglot.types.ReferenceType;

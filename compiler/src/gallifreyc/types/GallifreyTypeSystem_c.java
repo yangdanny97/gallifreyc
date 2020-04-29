@@ -2,8 +2,6 @@ package gallifreyc.types;
 
 import java.util.*;
 import gallifreyc.ast.*;
-import gallifreyc.extension.GallifreyExprExt;
-import gallifreyc.extension.GallifreyLang;
 import gallifreyc.extension.GallifreyLang_c;
 import polyglot.ast.Expr;
 import polyglot.ast.Formal;

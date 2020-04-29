@@ -13,7 +13,6 @@ import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeChecker;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyLang;
-import gallifreyc.types.*;
 
 public class Move_c extends Expr_c implements Move {
 	private static final long serialVersionUID = SerialVersionUID.generate();

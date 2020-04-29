@@ -7,7 +7,6 @@ import gallifreyc.ast.MoveRef;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.Binary;
 import polyglot.ast.Expr;
-import polyglot.ast.MethodDecl;
 import polyglot.ast.Node;
 
 public class GallifreyBinaryExt extends GallifreyExprExt {

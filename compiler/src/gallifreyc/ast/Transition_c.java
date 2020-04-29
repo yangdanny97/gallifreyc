@@ -6,7 +6,6 @@ import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyLang;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.*;
-import polyglot.types.ClassType;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.types.TypeSystem;
@@ -16,7 +15,6 @@ import polyglot.util.SerialVersionUID;
 import polyglot.visit.CFGBuilder;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
-import polyglot.visit.Translator;
 import polyglot.visit.TypeChecker;
 
 public class Transition_c extends Stmt_c implements Transition {

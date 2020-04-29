@@ -8,10 +8,7 @@ import polyglot.frontend.*;
 import polyglot.frontend.goals.*;
 import polyglot.types.TypeSystem;
 import polyglot.util.InternalCompilerError;
-import polyglot.visit.AmbiguityRemover;
 import polyglot.visit.ConstantChecker;
-import polyglot.visit.TypeBuilder;
-import polyglot.visit.TypeChecker;
 
 /**
  * {@code GallifreyScheduler} extends the base scheduler to handle translations of

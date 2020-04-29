@@ -5,17 +5,12 @@ import java.util.List;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyLang;
 import gallifreyc.types.GallifreyTypeSystem;
-import gallifreyc.visit.GallifreyTypeChecker;
-
 import java.util.ArrayList;
 
-import polyglot.ast.Case;
 import polyglot.ast.Expr;
 import polyglot.ast.LocalDecl;
 import polyglot.ast.Node;
-import polyglot.ast.NodeFactory;
 import polyglot.ast.Stmt_c;
-import polyglot.ast.SwitchElement;
 import polyglot.ast.Term;
 import polyglot.ast.TypeNode;
 import polyglot.types.SemanticException;
@@ -28,7 +23,6 @@ import polyglot.visit.CFGBuilder;
 import polyglot.visit.FlowGraph;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
-import polyglot.visit.Translator;
 import polyglot.visit.TypeChecker;
 
 public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
