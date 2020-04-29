@@ -11,16 +11,16 @@ import gallifreyc.translate.GRewriter;
 public class GallifreyExt extends Ext_c implements GallifreyOps {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
-    public static GallifreyExt ext(Node n) {
+    public static GallifreyOps ext(Node n) {
         Ext e = n.ext();
-        while (e != null && !(e instanceof GallifreyExt)) {
+        while (e != null && !(e instanceof GallifreyOps)) {
             e = e.ext();
         }
         if (e == null) {
             throw new InternalCompilerError("No Gallifrey extension object for node "
                     + n + " (" + n.getClass() + ")", n.position());
         }
-        return (GallifreyExt) e;
+        return (GallifreyOps) e;
     }
 
     @Override

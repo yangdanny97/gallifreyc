@@ -8,7 +8,12 @@ import polyglot.ast.ArrayAccess;
 import polyglot.ast.Node;
 
 public class GallifreyArrayAccessExt extends GallifreyExprExt {
-    private static final long serialVersionUID = SerialVersionUID.generate();    
+    private static final long serialVersionUID = SerialVersionUID.generate();
+
+    @Override
+    public ArrayAccess node() {
+    	return (ArrayAccess) super.node();
+    }
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
+import gallifreyc.translate.GRewriter;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.ConstructorDecl;
 import polyglot.ast.Formal;
@@ -17,6 +18,7 @@ import polyglot.ext.jl5.ast.JL5Ext;
 import polyglot.ext.jl5.ast.JL5FormalExt;
 import polyglot.ext.jl5.types.JL5Flags;
 import polyglot.ext.jl5.types.TypeVariable;
+import polyglot.translate.ExtensionRewriter;
 import polyglot.types.ConstructorInstance;
 import polyglot.types.Flags;
 import polyglot.types.MethodInstance;
@@ -24,10 +26,28 @@ import polyglot.types.ParsedClassType;
 import polyglot.types.SemanticException;
 import polyglot.types.UnknownType;
 import polyglot.util.SerialVersionUID;
+import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
 
-public class GallifreyConstructorDeclExt extends JL5ConstructorDeclExt {
+public class GallifreyConstructorDeclExt extends JL5ConstructorDeclExt implements GallifreyOps {
 	private static final long serialVersionUID = SerialVersionUID.generate();
+    
+    @Override 
+    public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+        GRewriter crw = (GRewriter) rw;
+        return crw.rewrite(node);
+    }
+    
+    @Override 
+    public NodeVisitor extRewriteEnter(ExtensionRewriter rw) throws SemanticException {
+        GRewriter crw = (GRewriter) rw;
+        return crw.rewriteEnter(node);
+    }
+	
+    @Override
+    public ConstructorDecl node() {
+    	return (ConstructorDecl) super.node();
+    }
 	
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {

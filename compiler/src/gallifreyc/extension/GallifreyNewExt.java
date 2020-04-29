@@ -10,7 +10,12 @@ import polyglot.ast.New;
 import polyglot.ast.Node;
 
 public class GallifreyNewExt extends GallifreyExprExt {
-    private static final long serialVersionUID = SerialVersionUID.generate();    
+    private static final long serialVersionUID = SerialVersionUID.generate(); 
+    
+    @Override
+    public New node() {
+    	return (New) super.node();
+    }
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {

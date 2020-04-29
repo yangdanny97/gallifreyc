@@ -13,6 +13,11 @@ public class GallifreyFormalExt extends GallifreyExt {
     private static final long serialVersionUID = SerialVersionUID.generate(); 
     
     @Override
+    public Formal node() {
+    	return (Formal) super.node();
+    }
+    
+    @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         Formal n = (Formal) superLang().buildTypes(this.node, tb);
         TypeNode t = n.type();

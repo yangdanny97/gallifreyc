@@ -14,6 +14,11 @@ public class GallifreyCastExt extends GallifreyExprExt {
     private static final long serialVersionUID = SerialVersionUID.generate();    
     
     @Override
+    public Cast node() {
+    	return (Cast) super.node();
+    }
+    
+    @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
     	Cast node = (Cast) superLang().typeCheck(this.node(), tc);
     	if (!(node.castType() instanceof RefQualifiedTypeNode)) {

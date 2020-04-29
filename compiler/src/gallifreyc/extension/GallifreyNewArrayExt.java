@@ -12,7 +12,12 @@ import polyglot.ast.Node;
 import polyglot.ast.TypeNode;
 
 public class GallifreyNewArrayExt extends GallifreyExprExt {
-    private static final long serialVersionUID = SerialVersionUID.generate();    
+    private static final long serialVersionUID = SerialVersionUID.generate(); 
+    
+    @Override
+    public NewArray node() {
+    	return (NewArray) super.node();
+    }
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
