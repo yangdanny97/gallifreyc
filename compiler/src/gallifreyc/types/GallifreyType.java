@@ -5,11 +5,19 @@ import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.SharedRef;
 import gallifreyc.ast.UniqueRef;
+import polyglot.util.SerialVersionUID;
+import java.io.Serializable;
 
-public class GallifreyType {
+public class GallifreyType implements Serializable {
+	private static final long serialVersionUID = SerialVersionUID.generate();
+	
 	public RefQualification qualification;
     public String capability;
     public String path;
+    
+    /* for serialization */
+    protected GallifreyType() {
+    }
 
 	public GallifreyType(RefQualification q) {
 		this.qualification = q;
@@ -57,6 +65,4 @@ public class GallifreyType {
     public boolean isLocal() {
     	return qualification instanceof LocalRef;
     }
-
-
 }

@@ -14,6 +14,8 @@ import polyglot.ast.TypeNode;
 public class GallifreyFieldDeclExt extends GallifreyExt implements GallifreyOps {
     private static final long serialVersionUID = SerialVersionUID.generate(); 
     
+    public RefQualification qualification;
+    
     @Override
     public FieldDecl node() {
     	return (FieldDecl) super.node();
@@ -28,10 +30,15 @@ public class GallifreyFieldDeclExt extends GallifreyExt implements GallifreyOps 
         	throw new SemanticException("cannot declare unqualified field");
         }
         RefQualification q = ((RefQualifiedTypeNode) t).qualification();
+        qualification = q;
         GallifreyFieldInstance fi = (GallifreyFieldInstance) node.fieldInstance();
         fi.gallifreyType(new GallifreyType(q));
         
         return node;
+    }
+    
+    public RefQualification qualification() {
+    	return qualification;
     }
 }
 

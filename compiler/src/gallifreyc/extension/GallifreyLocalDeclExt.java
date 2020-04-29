@@ -1,5 +1,6 @@
 package gallifreyc.extension;
 
+import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.types.GallifreyLocalInstance;
 import polyglot.ast.LocalDecl;
@@ -11,6 +12,8 @@ import polyglot.visit.TypeBuilder;
 
 public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps {
     private static final long serialVersionUID = SerialVersionUID.generate(); 
+    
+    public RefQualification qualification;
     
     @Override
     public LocalDecl node() {
@@ -24,9 +27,14 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
         if (!(t instanceof RefQualifiedTypeNode)) {
         	throw new SemanticException("declaration must have qualification");
         }
-        RefQualifiedTypeNode rt = (RefQualifiedTypeNode) t;
+        RefQualification q = ((RefQualifiedTypeNode) t).qualification();
         GallifreyLocalInstance li = (GallifreyLocalInstance) n.localInstance();
-        li.gallifreyType().qualification = rt.qualification();
+        li.gallifreyType().qualification = q;
+        qualification = q;
         return n;
+    }
+    
+    public RefQualification qualification() {
+    	return qualification;
     }
 }
