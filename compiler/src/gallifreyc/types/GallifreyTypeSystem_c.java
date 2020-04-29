@@ -73,6 +73,13 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 		return constructorInstance(pos, container, flags, argTypes, excTypes, 
 				Collections.<TypeVariable>emptyList(), new ArrayList<RefQualification>());
 	}
+	
+	@Override
+	public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
+			List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams) {
+		return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, 
+				typeParams, new ArrayList<RefQualification>());
+	}
 
 	@Override
 	public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
