@@ -12,7 +12,6 @@ public class GallifreyExprExt extends GallifreyExt implements ExprOps {
     private static final long serialVersionUID = SerialVersionUID.generate();
     
     public GallifreyType gallifreyType;
-    
     {
     	gallifreyType = new GallifreyType(new UnknownRef(Position.COMPILER_GENERATED));
     }

@@ -14,6 +14,7 @@ import polyglot.visit.TypeChecker;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyExt;
 import gallifreyc.extension.GallifreyLang_c;
+import gallifreyc.types.GallifreyType;
 
 public class Move_c extends Expr_c implements Move {
 	private static final long serialVersionUID = SerialVersionUID.generate();
@@ -70,8 +71,10 @@ public class Move_c extends Expr_c implements Move {
     	RefQualification q = ext.gallifreyType.qualification();
     	if (q instanceof UniqueRef) {
     		ext.gallifreyType.qualification = new MoveRef(q.position());
+    		GallifreyExprExt thisExt = GallifreyExprExt.ext(this);
+    		thisExt.gallifreyType = new GallifreyType(new MoveRef(q.position()));
             return type(this.expr.type());
     	}
-        throw new SemanticException("cannot move non-unique!");
+        throw new SemanticException("cannot move non-unique!", this.position());
     }
 }

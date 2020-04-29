@@ -23,8 +23,6 @@ public class GallifreyAssignExt extends GallifreyExprExt {
     	GallifreyType lt = GallifreyExprExt.ext(a.left()).gallifreyType;
     	GallifreyType rt = GallifreyExprExt.ext(a.right()).gallifreyType;
     	
-    	//TODO shared
-    	
     	if (rt.qualification instanceof MoveRef) {}
     	else if (lt.qualification instanceof LocalRef && rt.qualification instanceof LocalRef) {}
     	else {

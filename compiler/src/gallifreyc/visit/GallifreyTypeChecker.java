@@ -3,6 +3,7 @@ package gallifreyc.visit;
 import gallifreyc.ast.UnknownRef;
 import gallifreyc.extension.GallifreyExprExt;
 import polyglot.ast.Expr;
+import polyglot.ast.Field_c;
 import polyglot.ast.Node;
 import polyglot.ast.NodeFactory;
 import polyglot.frontend.Job;
@@ -35,6 +36,12 @@ public class GallifreyTypeChecker extends TypeChecker {
         		throw new SemanticException("no gallifrey type found", m.position());
         	}
         	if (ext.gallifreyType().qualification() instanceof UnknownRef) {
+            	if (m instanceof Field_c) {
+            		System.out.println(m);
+            	}
+        		System.out.println(GallifreyExprExt.ext(old).gallifreyType().qualification());
+        		System.out.println(GallifreyExprExt.ext(n).gallifreyType().qualification());
+        		System.out.println(GallifreyExprExt.ext(m).gallifreyType().qualification());
         		throw new SemanticException("invalid qualification", m.position());
         	}
         }
