@@ -17,17 +17,17 @@ public class GallifreyExprExt extends GallifreyExt implements ExprOps {
 
     @Override
     public boolean constantValueSet(Lang lang) {
-        return lang().constantValueSet(node(), lang);
+        return superLang().constantValueSet(node(), lang);
     }
 
     @Override
     public boolean isConstant(Lang lang) {
-        return lang().isConstant(node(), lang);
+        return superLang().isConstant(node(), lang);
     }
 
     @Override
     public Object constantValue(Lang lang) {
-        return lang().constantValue(node(), lang);
+        return superLang().constantValue(node(), lang);
     }
     
     public boolean isMove() {

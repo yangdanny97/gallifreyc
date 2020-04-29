@@ -3,7 +3,7 @@ package gallifreyc.ast;
 import java.util.List;
 
 import gallifreyc.extension.GallifreyExprExt;
-import gallifreyc.extension.GallifreyLang;
+import gallifreyc.extension.GallifreyLang_c;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.*;
 import polyglot.types.SemanticException;
@@ -75,10 +75,9 @@ public class Transition_c extends Stmt_c implements Transition {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
+        GallifreyExprExt ext = GallifreyLang_c.instance.exprExt(this.expr);
     	TypeSystem ts = tc.typeSystem();
     	Type t = expr.type();
-        GallifreyExprExt ext = ((GallifreyLang) lang()).exprExt(this.expr);
-        GallifreyNodeFactory nf = (GallifreyNodeFactory) tc.nodeFactory();
         
     	RefQualification q = ext.gallifreyType.qualification();
     	

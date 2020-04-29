@@ -3,6 +3,7 @@ package gallifreyc.extension;
 import java.util.ArrayList;
 import java.util.List;
 
+import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.PostCondition;
 import gallifreyc.ast.PreCondition;
 import gallifreyc.ast.RefQualifiedTypeNode;
@@ -13,6 +14,7 @@ import polyglot.ast.MethodDecl;
 import polyglot.ast.Node;
 import polyglot.ast.TypeNode;
 import polyglot.types.SemanticException;
+import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeBuilder;
 
@@ -49,16 +51,18 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
         List<GallifreyType> inputTypes = new ArrayList<>();
         
         TypeNode returnType = md.returnType();
-        if (!(returnType instanceof RefQualifiedTypeNode)) {
+        if (!(returnType instanceof RefQualifiedTypeNode) && !returnType.type().isPrimitive()) {
         	throw new SemanticException("return type must be ref qualified: " + md.name(), md.position());
         }
-        GallifreyType gReturn = new GallifreyType(((RefQualifiedTypeNode) returnType).qualification());
+        GallifreyType gReturn = (returnType.type().isPrimitive()) ? new GallifreyType(new MoveRef(Position.COMPILER_GENERATED)) :
+        		new GallifreyType(((RefQualifiedTypeNode) returnType).qualification());
         
         for (Formal f : md.formals()) {
-            if (!(f instanceof RefQualifiedTypeNode)) {
+            if (!(f instanceof RefQualifiedTypeNode) && !f.declType().isPrimitive()) {
             	throw new SemanticException("param types must be ref qualified: " + md.name(), md.position());
             }
-            GallifreyType fQ = new GallifreyType(((RefQualifiedTypeNode) f).qualification());
+            GallifreyType fQ = (f.declType().isPrimitive()) ? new GallifreyType(new MoveRef(Position.COMPILER_GENERATED)) :
+        		new GallifreyType(((RefQualifiedTypeNode) f).qualification());
             inputTypes.add(fQ);
         }
         

@@ -90,8 +90,7 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         TypeSystem ts = tc.typeSystem();
         if (tc instanceof GallifreyTypeChecker) {
-        	GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
-    		if (ts instanceof GallifreyTypeSystem) {
+        	if (ts instanceof GallifreyTypeSystem) {
     			GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
                 if (!(ts.typeForName(gts.getClassNameForRestriction(id.id())) instanceof ClassType)) {
                 	throw new SemanticException("Restriction "+ id.id() +" must be for a valid class", this.position);
