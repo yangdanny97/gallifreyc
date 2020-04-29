@@ -28,7 +28,7 @@ public class GallifreyArrayInitExt extends GallifreyExprExt {
         //init expressions need to be all the same OR moves
         RefQualification acc = null;
         for (Expr e : elements) {
-        	RefQualification eq = lang().exprExt(e).gallifreyType.qualification();
+        	RefQualification eq = GallifreyExprExt.ext(e).gallifreyType.qualification();
         	if (acc == null) {
         		acc = eq;
         	} else if (acc instanceof MoveRef) {

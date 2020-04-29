@@ -1,7 +1,10 @@
 package gallifreyc.extension;
 
+import gallifreyc.ast.UnknownRef;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.*;
+import polyglot.util.InternalCompilerError;
+import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
 // extra operations for expressions
@@ -9,6 +12,14 @@ public class GallifreyExprExt extends GallifreyExt implements ExprOps {
     private static final long serialVersionUID = SerialVersionUID.generate();
     
     public GallifreyType gallifreyType;
+    
+    {
+    	gallifreyType = new GallifreyType(new UnknownRef(Position.COMPILER_GENERATED));
+    }
+    
+	public static GallifreyExprExt ext(Node n) {
+		return (GallifreyExprExt) GallifreyExt.ext(n);
+	}
     
     @Override
     public Expr node() {
