@@ -112,7 +112,7 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
     	TypeSystem ts = tc.typeSystem();
     	if (ts instanceof GallifreyTypeSystem) {
     		GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
-            GallifreyExprExt ext = GallifreyLang_c.instance.exprExt(this.expr);
+            GallifreyExprExt ext = GallifreyExprExt.ext(this.expr);
         	RefQualification q = ext.gallifreyType.qualification();
 
         	if (q instanceof SharedRef) {

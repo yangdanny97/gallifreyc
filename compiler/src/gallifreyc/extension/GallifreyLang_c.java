@@ -45,11 +45,6 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
     }
     
     @Override
-    public GallifreyExprExt exprExt(Expr n) {
-    	return (GallifreyExprExt) gallifreycExt(n);
-    }
-    
-    @Override
     public int fresh() {
     	return UniqueID.newIntID();
     }

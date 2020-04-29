@@ -27,7 +27,7 @@ public class GallifreyNewArrayExt extends GallifreyExprExt {
         	throw new SemanticException("array must have qualification", node.position());
         }
         RefQualification q = ((RefQualifiedTypeNode) t).qualification();
-        GallifreyType initType = lang().exprExt(node.init()).gallifreyType;
+        GallifreyType initType = GallifreyExprExt.ext(node.init()).gallifreyType;
         if (!initType.qualification().equals(q) && !(initType.qualification() instanceof MoveRef)) {
         	throw new SemanticException("qualifications of array "+q+" and initializer "+ initType.qualification +" do not match");
         }

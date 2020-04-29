@@ -57,7 +57,7 @@ public class ANormalizer extends ExtensionRewriter implements GRewriter {
 
         LocalDecl l = nf.LocalDecl(p, Flags.NONE, nf.CanonicalTypeNode(p, e.type()), nf.Id(p, fresh), e);
 
-        GallifreyExprExt ext = lang().exprExt(e);
+        GallifreyExprExt ext = GallifreyExprExt.ext(e);
         GallifreyLocalDeclExt lde = (GallifreyLocalDeclExt) GallifreyExt.ext(l);
         lde.qualification = ext.gallifreyType().qualification;
 

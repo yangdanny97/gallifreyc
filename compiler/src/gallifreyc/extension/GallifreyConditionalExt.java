@@ -18,8 +18,8 @@ public class GallifreyConditionalExt extends GallifreyExprExt {
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
     	Conditional c = (Conditional) superLang().typeCheck(this.node(), tc);
-    	GallifreyType trueType = lang().exprExt(c.consequent()).gallifreyType;
-    	GallifreyType falseType = lang().exprExt(c.consequent()).gallifreyType;
+    	GallifreyType trueType = GallifreyExprExt.ext(c.consequent()).gallifreyType;
+    	GallifreyType falseType = GallifreyExprExt.ext(c.alternative()).gallifreyType;
     	if (!trueType.qualification().equals(falseType.qualification())) {
     		throw new SemanticException("branches of ternary must have same qualification", c.position());
     	}

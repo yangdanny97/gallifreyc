@@ -2,6 +2,7 @@ package gallifreyc.types;
 
 import java.util.*;
 import gallifreyc.ast.*;
+import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyLang_c;
 import polyglot.ast.Expr;
 import polyglot.ast.Formal;
@@ -154,7 +155,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 		//TODO check param qualifications
 		boolean allMoves = true;
 		for (Expr e : args) {
-			GallifreyType gt = GallifreyLang_c.instance.exprExt(e).gallifreyType;
+			GallifreyType gt = GallifreyExprExt.ext(e).gallifreyType;
 			if (!(gt.qualification() instanceof MoveRef)) {
 				allMoves = false;
 			}

@@ -24,7 +24,7 @@ public class GallifreyCastExt extends GallifreyExprExt {
     		throw new SemanticException("missing ref qualification for cast!", node.position());
     	}
     	
-    	GallifreyType exprT = lang().exprExt(node.expr()).gallifreyType;
+    	GallifreyType exprT = GallifreyExprExt.ext(node.expr()).gallifreyType;
     	RefQualifiedTypeNode castT = (RefQualifiedTypeNode) node.castType();
 
     	if (!castT.qualification().equals(exprT.qualification())) {

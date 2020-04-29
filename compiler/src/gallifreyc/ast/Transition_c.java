@@ -75,7 +75,7 @@ public class Transition_c extends Stmt_c implements Transition {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        GallifreyExprExt ext = GallifreyLang_c.instance.exprExt(this.expr);
+        GallifreyExprExt ext = GallifreyExprExt.ext(this.expr);
     	TypeSystem ts = tc.typeSystem();
     	Type t = expr.type();
         

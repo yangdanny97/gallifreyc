@@ -4,6 +4,8 @@ import polyglot.ast.*;
 import polyglot.frontend.ExtensionInfo;
 import polyglot.frontend.Job;
 import polyglot.translate.ExtensionRewriter;
+import polyglot.types.FieldInstance;
+import polyglot.types.Flags;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.util.Position;
@@ -11,6 +13,9 @@ import polyglot.visit.NodeVisitor;
 import gallifreyc.ast.*;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyLang;
+import gallifreyc.types.GallifreyType;
+import gallifreyc.types.GallifreyTypeSystem;
+
 import java.util.*;
 
 
@@ -24,7 +29,6 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
     public GallifreyLang lang() {
         return (GallifreyLang) super.lang();
     }
-
     
     public GallifreyRewriter(Job job, ExtensionInfo from_ext, ExtensionInfo to_ext) {
         super(job, from_ext, to_ext);
@@ -37,7 +41,7 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
     
     // wrap unique/shared refs with .value, AFTER rewriting
     private Node wrapExpr(Expr e) {
-        GallifreyExprExt ext = lang().exprExt(e);
+        GallifreyExprExt ext = GallifreyExprExt.ext(e);
         RefQualification q;
         try {
         q = ext.gallifreyType.qualification();
@@ -54,6 +58,7 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
     
     private Node rewriteExpr(Node n) throws SemanticException {
         NodeFactory nf = nodeFactory();
+        GallifreyTypeSystem ts = (GallifreyTypeSystem) typeSystem();
         
         // unwrap Moves
         if (n instanceof Move) {
@@ -71,13 +76,18 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
             }
             
             Field tempField = nf.Field(p, e, nf.Id(p, TEMP));
+            Field tempField2 = nf.Field(p, e, nf.Id(p, TEMP));
+            Field tempField3 = nf.Field(p, e, nf.Id(p, TEMP));
             Field valueField = nf.Field(p, e, nf.Id(p, VALUE));
-            Expr cond = nf.Binary(p, 
-                nf.FieldAssign(p, (Field) tempField.copy(), Assign.ASSIGN, (Expr) valueField.copy()), 
-                Binary.EQ, 
-                nf.FieldAssign(p, (Field) valueField.copy(), Assign.ASSIGN, nf.NullLit(p))
-            );
-            return nf.Conditional(p, cond, (Expr) tempField.copy(), (Expr) tempField.copy());
+            Field valueField2 = nf.Field(p, e, nf.Id(p, VALUE));
+            
+            FieldAssign fa1 = nf.FieldAssign(p, tempField, Assign.ASSIGN, valueField);
+            FieldAssign fa2 = nf.FieldAssign(p, valueField2, Assign.ASSIGN, nf.NullLit(p));
+                        
+            Expr cond = nf.Binary(p, fa1, Binary.EQ, fa2);
+            Expr conditional = nf.Conditional(p, cond, tempField2, tempField3);
+
+            return conditional;
         }
         return n;
     }
@@ -87,8 +97,7 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
             //rewrite RHS of decls
             LocalDecl l = (LocalDecl) n;
             Expr rhs = l.init();
-            GallifreyExprExt ext = lang().exprExt(rhs);
-            RefQualification q = ext.gallifreyType.qualification();
+            RefQualification q = GallifreyExprExt.ext(rhs).gallifreyType().qualification();
             if (q instanceof SharedRef) {
                 SharedRef s = (SharedRef) q;
                 RestrictionId rid = s.restriction();
@@ -131,11 +140,9 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
                 RefQualifiedTypeNode t = (RefQualifiedTypeNode) d.type();
                 RestrictionId restriction = ((SharedRef) t.qualification()).restriction();
                 
-                Expr cond = nf.Binary(p, 
-                        nf.Field(p, e, nf.Id(p, RES)), 
-                        Binary.EQ, 
-                        nf.StringLit(p, restriction.restriction().toString())
-                    );
+                Expr field = nf.Field(p, e, nf.Id(p, RES));
+                Expr cond = nf.Binary(p, field, Binary.EQ, nf.StringLit(p, restriction.restriction().toString()));
+
                 Block block = nf.Block(p, d.init(e), b.stmt());
                 
                 if (currentif != null) {
