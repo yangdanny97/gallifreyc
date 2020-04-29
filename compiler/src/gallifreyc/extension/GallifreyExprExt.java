@@ -30,6 +30,15 @@ public class GallifreyExprExt extends GallifreyExt implements ExprOps {
         return superLang().constantValue(node(), lang);
     }
     
+    public GallifreyType gallifreyType() {
+    	return gallifreyType;
+    }
+    
+    public GallifreyExprExt gallifreyType(GallifreyType t) {
+    	gallifreyType = t;
+    	return this;
+    }
+    
     public boolean isMove() {
     	return gallifreyType.isMove();
     }
