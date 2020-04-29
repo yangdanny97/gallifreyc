@@ -125,7 +125,8 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
         	for (MatchBranch b: this.branches) {
         		LocalDecl ld = b.pattern();
             	TypeNode ldt = ld.type();
-            	if (!(ldt instanceof RefQualifiedTypeNode) || !(((RefQualifiedTypeNode) ldt).qualification() instanceof SharedRef)) {
+            	if (!(ldt instanceof RefQualifiedTypeNode) || 
+            			!(((RefQualifiedTypeNode) ldt).qualification() instanceof SharedRef)) {
                     throw new SemanticException("Pattern in match branch must be shared type", b.position());
             	}
             	RefQualifiedTypeNode ldrt = (RefQualifiedTypeNode) ldt;
@@ -134,7 +135,8 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
             		throw new SemanticException("Match branch restriction must be qualified", b.position());
             	}
             	if (!rid.wildcardRv() && rid.rv().id() != thisRV) {
-            		throw new SemanticException("Match branch restriction qualification does not match current restriction", b.position());
+            		throw new SemanticException(
+            				"Match branch restriction qualification does not match current restriction", b.position());
             	}
             	String variant = rid.restriction().id();
             	if (!gts.getVariantRestrictions(thisRV).contains(variant)) {

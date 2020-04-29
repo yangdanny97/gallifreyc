@@ -5,6 +5,8 @@ import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.SharedRef;
 import gallifreyc.ast.UniqueRef;
+import gallifreyc.ast.UnknownRef;
+import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import java.io.Serializable;
 
@@ -17,9 +19,11 @@ public class GallifreyType implements Serializable {
     
     /* for serialization */
     protected GallifreyType() {
+    	this.qualification = new UnknownRef(Position.COMPILER_GENERATED);
     }
 
 	public GallifreyType(RefQualification q) {
+		assert (q != null);
 		this.qualification = q;
 	}
 	

@@ -13,7 +13,7 @@ public class GallifreyLitExt extends GallifreyExprExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	Expr node = (Expr) node();
+    	Expr node = (Expr) superLang().typeCheck(node(), tc);
     	this.gallifreyType = new GallifreyType(new MoveRef(node.position()));
         return node().typeCheck(tc);
     }
