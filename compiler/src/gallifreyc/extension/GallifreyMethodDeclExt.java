@@ -7,6 +7,7 @@ import gallifreyc.ast.PostCondition;
 import gallifreyc.ast.PreCondition;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
+import gallifreyc.translate.GRewriter;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.Formal;
@@ -21,6 +22,7 @@ import polyglot.ext.jl5.types.JL5Flags;
 import polyglot.ext.jl5.types.JL5MethodInstance;
 import polyglot.ext.jl5.types.JL5TypeSystem;
 import polyglot.ext.jl5.types.TypeVariable;
+import polyglot.translate.ExtensionRewriter;
 import polyglot.types.Flags;
 import polyglot.types.MethodInstance;
 import polyglot.types.ParsedClassType;
@@ -28,11 +30,12 @@ import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.types.UnknownType;
 import polyglot.util.SerialVersionUID;
+import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
 
 // extends method declarations to hold an optional pre/post condition, and a flag for whether it's a test method
-public class GallifreyMethodDeclExt extends JL5MethodDeclExt {
+public class GallifreyMethodDeclExt extends JL5MethodDeclExt implements GallifreyOps {
     private static final long serialVersionUID = SerialVersionUID.generate();
     
     public PreCondition pre;
@@ -50,6 +53,18 @@ public class GallifreyMethodDeclExt extends JL5MethodDeclExt {
     
     boolean isTest() {
         return isTest;
+    }
+    
+    @Override 
+    public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+        GRewriter crw = (GRewriter) rw;
+        return crw.rewrite(node);
+    }
+    
+    @Override 
+    public NodeVisitor extRewriteEnter(ExtensionRewriter rw) throws SemanticException {
+        GRewriter crw = (GRewriter) rw;
+        return crw.rewriteEnter(node);
     }
     
     @Override

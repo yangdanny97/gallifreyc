@@ -8,7 +8,12 @@ import polyglot.ast.Conditional;
 import polyglot.ast.Node;
 
 public class GallifreyConditionalExt extends GallifreyExprExt {
-    private static final long serialVersionUID = SerialVersionUID.generate();    
+    private static final long serialVersionUID = SerialVersionUID.generate();  
+    
+    @Override
+    public Conditional node() {
+    	return (Conditional) super.node();
+    }
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {

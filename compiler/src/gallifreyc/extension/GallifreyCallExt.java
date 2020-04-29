@@ -13,6 +13,11 @@ public class GallifreyCallExt extends GallifreyExprExt {
     private static final long serialVersionUID = SerialVersionUID.generate();    
     
     @Override
+    public Call node() {
+    	return (Call) super.node();
+    }
+    
+    @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
     	Call node = (Call) superLang().typeCheck(this.node, tc);
     	GallifreyMethodInstance mi = (GallifreyMethodInstance) node.methodInstance();

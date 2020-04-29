@@ -17,6 +17,11 @@ public class GallifreyArrayInitExt extends GallifreyExprExt {
     private static final long serialVersionUID = SerialVersionUID.generate();    
     
     @Override
+    public ArrayInit node() {
+    	return (ArrayInit) super.node();
+    }
+    
+    @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         ArrayInit node = (ArrayInit) superLang().typeCheck(this.node(), tc);
         List<Expr> elements = node.elements();

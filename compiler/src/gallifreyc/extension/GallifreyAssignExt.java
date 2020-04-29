@@ -13,6 +13,11 @@ public class GallifreyAssignExt extends GallifreyExprExt {
     private static final long serialVersionUID = SerialVersionUID.generate();    
     
     @Override
+    public Assign node() {
+    	return (Assign) super.node();
+    }
+    
+    @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
     	Assign a = (Assign) superLang().typeCheck(this.node(), tc);
     	GallifreyType lt = lang().exprExt(a.left()).gallifreyType;
