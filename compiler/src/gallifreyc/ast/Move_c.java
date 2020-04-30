@@ -12,8 +12,6 @@ import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeChecker;
 import gallifreyc.extension.GallifreyExprExt;
-import gallifreyc.extension.GallifreyExt;
-import gallifreyc.extension.GallifreyLang_c;
 import gallifreyc.types.GallifreyType;
 
 public class Move_c extends Expr_c implements Move {

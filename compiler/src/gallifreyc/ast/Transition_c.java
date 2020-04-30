@@ -3,7 +3,6 @@ package gallifreyc.ast;
 import java.util.List;
 
 import gallifreyc.extension.GallifreyExprExt;
-import gallifreyc.extension.GallifreyLang_c;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.*;
 import polyglot.types.SemanticException;
