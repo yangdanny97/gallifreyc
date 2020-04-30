@@ -31,19 +31,19 @@ public class GallifreyTypeChecker extends TypeChecker {
     	// sanity checks
         Node m = super.leaveCall(old, n, v);
         if (m instanceof Expr) {
-        	GallifreyExprExt ext = GallifreyExprExt.ext(m);
-        	if (ext.gallifreyType() == null) {
+        	GallifreyExprExt extM = GallifreyExprExt.ext(m);
+        	
+            //HACK: attach n's gallifreyType to m so it doesn't disappear
+        	GallifreyExprExt extN = GallifreyExprExt.ext(n);
+        	extM.gallifreyType(extN.gallifreyType());
+        	
+        	if (extM.gallifreyType() == null) {
         		throw new SemanticException("no gallifrey type found", m.position());
         	}
-        	if (ext.gallifreyType().qualification() instanceof UnknownRef) {
-            	if (m instanceof Field_c) {
-            		System.out.println(m);
-            	}
-        		System.out.println(GallifreyExprExt.ext(old).gallifreyType().qualification());
-        		System.out.println(GallifreyExprExt.ext(n).gallifreyType().qualification());
-        		System.out.println(GallifreyExprExt.ext(m).gallifreyType().qualification());
+        	if (extM.gallifreyType().qualification() instanceof UnknownRef) {
         		throw new SemanticException("invalid qualification", m.position());
         	}
+        	
         }
         
         return m;
