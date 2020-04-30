@@ -19,7 +19,7 @@ import java.io.*;
 import java.util.Set;
 
 /**
- * Extension information for gallifreyc extension.
+ * Extension information for gallifreyc extension. Sets up the NodeFactory, TypeSystem, and Scheduler.
  */
 public class GallifreyExtensionInfo extends JL7ExtensionInfo {
     static {
