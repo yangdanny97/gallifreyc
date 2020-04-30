@@ -1,11 +1,24 @@
-This directory contains a skeleton for a Polyglot extension.  Run
-the script <polyglot>/bin/newext.sh to create a new extension us-
-ing this skeleton.
+# Gallifrey Polyglot Extension
 
-The skeleton includes its own build.xml file.  Building the gen-
-erated extension requires that Polyglot be installed and in your
+This is the Polyglot extension for Gallifrey.
+
+**To build:** run build.xml
+
+Building the generated extension requires that Polyglot be installed and in your
 classpath.  Adjust the classpath to include polyglot.jar, ja-
-va_cup.jar, and JFlex.jar or add these jar files to the new
-<ext>/lib directory.
+va_cup.jar, and JFlex.jar or add these jar files to the gallifreyc/lib directory.
 
+**To run:** invoke gallifreyc.Main (see Polyglot documentation for list of arguments/flags)
+
+### Repository Overview:
+
+| Package                | Contents                                            |
+|------------------------|-----------------------------------------------------|
+| `gallifreyc`           | Scheduler                                           |
+| `gallifreyc.ast`       | NodeFactory, new AST nodes                          |
+| `gallifreyc.extension` | ExtensionFactory, extensions for existing AST nodes |
+| `gallifreyc.parse`     | Lexer and Parser (`.ppg` compiles to `.cup`)        |
+| `gallifreyc.translate` | Rewriters                                           |
+| `gallifreyc.types`     | TypeSystem and Type overrides                       |
+| `gallifreyc.visit`     | TypeChecker                                         |
 
