@@ -1,8 +1,13 @@
 package gallifreyc.extension;
 
 import polyglot.types.SemanticException;
+import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
+import gallifreyc.ast.MoveRef;
+import gallifreyc.ast.RefQualification;
+import gallifreyc.types.GallifreyFieldInstance;
+import gallifreyc.types.GallifreyType;
 import polyglot.ast.Field;
 import polyglot.ast.Node;
 
@@ -16,7 +21,14 @@ public class GallifreyFieldExt extends GallifreyExprExt {
     
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	//TODO
-        return node().typeCheck(tc);
+    	Field f = (Field) superLang().typeCheck(node(), tc);
+    	GallifreyFieldInstance fi = (GallifreyFieldInstance) f.fieldInstance();
+    	RefQualification q = fi.gallifreyType().qualification();
+    	//HACK: for things like java.lang
+    	if (q == null) {
+    		q = new MoveRef(Position.COMPILER_GENERATED);
+    	}
+    	gallifreyType = new GallifreyType(q);
+    	return f;
     }
 }
