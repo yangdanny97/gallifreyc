@@ -3,7 +3,6 @@ package gallifreyc.extension;
 import gallifreyc.ast.UnknownRef;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.*;
-import polyglot.util.InternalCompilerError;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 

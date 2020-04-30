@@ -4,18 +4,14 @@ import polyglot.ast.*;
 import polyglot.frontend.ExtensionInfo;
 import polyglot.frontend.Job;
 import polyglot.translate.ExtensionRewriter;
-import polyglot.types.FieldInstance;
-import polyglot.types.FieldInstance_c;
 import polyglot.types.Flags;
 import polyglot.types.InitializerInstance;
-import polyglot.types.InitializerInstance_c;
 import polyglot.types.SemanticException;
 import polyglot.util.Position;
 import polyglot.visit.NodeVisitor;
 import java.util.*;
 
 import gallifreyc.ast.RefQualification;
-import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.extension.GallifreyExt;
 import gallifreyc.extension.GallifreyFieldDeclExt;
 import gallifreyc.types.GallifreyFieldInstance;

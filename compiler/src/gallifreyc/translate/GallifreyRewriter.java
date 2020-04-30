@@ -4,8 +4,6 @@ import polyglot.ast.*;
 import polyglot.frontend.ExtensionInfo;
 import polyglot.frontend.Job;
 import polyglot.translate.ExtensionRewriter;
-import polyglot.types.FieldInstance;
-import polyglot.types.Flags;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.util.Position;
@@ -13,7 +11,6 @@ import polyglot.visit.NodeVisitor;
 import gallifreyc.ast.*;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyLang;
-import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
 
 import java.util.*;
@@ -58,7 +55,6 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
     
     private Node rewriteExpr(Node n) throws SemanticException {
         NodeFactory nf = nodeFactory();
-        GallifreyTypeSystem ts = (GallifreyTypeSystem) typeSystem();
         
         // unwrap Moves
         if (n instanceof Move) {

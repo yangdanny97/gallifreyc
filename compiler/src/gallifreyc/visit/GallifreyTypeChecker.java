@@ -3,15 +3,11 @@ package gallifreyc.visit;
 import gallifreyc.ast.UnknownRef;
 import gallifreyc.extension.GallifreyExprExt;
 import polyglot.ast.Expr;
-import polyglot.ast.Field_c;
 import polyglot.ast.Node;
 import polyglot.ast.NodeFactory;
 import polyglot.frontend.Job;
-import polyglot.frontend.goals.Goal;
-import polyglot.main.Report;
 import polyglot.types.SemanticException;
 import polyglot.types.TypeSystem;
-import polyglot.visit.ConstantChecker;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeChecker;
 
