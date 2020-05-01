@@ -3,14 +3,13 @@ package gallifreyc.extension;
 import polyglot.ast.*;
 import polyglot.ext.jl7.ast.J7Lang_c;
 import polyglot.util.InternalCompilerError;
-import polyglot.translate.ExtensionRewriter;
+import polyglot.util.UniqueID;
 
 
 // language dispatcher, singleton class
 public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
 
     public static final GallifreyLang_c instance = new GallifreyLang_c();
-    private int counter;
 
     public static GallifreyLang lang(NodeOps n) {
         while (n != null) {
@@ -25,11 +24,18 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
 
     protected GallifreyLang_c() {
     	super();
-    	counter = 0;
     }
 
-    protected static GallifreyExt gallifreycExt(Node n) {
+    protected static GallifreyOps gallifreycExt(Node n) {
         return GallifreyExt.ext(n);
+    }
+    
+    protected GallifreyOps GallifreyOps(Node n) {
+        return gallifreycExt(n);
+    }
+    
+    protected GallifreyExprOps GallifreyExprOps(Node n) {
+        return (GallifreyExprOps) gallifreycExt(n);
     }
 
     @Override
@@ -37,22 +43,40 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
         return gallifreycExt(n);
     }
     
-    protected GallifreyOps GallifreyOps(Node n) {
-        return gallifreycExt(n);
-    }
-    
     @Override
     protected ExprOps ExprOps(Expr n) {
         return (ExprOps) gallifreycExt(n);
     }
-
     
-    // TODO: new ops here
+    @Override
+    protected CallOps CallOps(Call n) {
+        return (CallOps) gallifreycExt(n);
+    }
+
+    @Override
+    protected ClassDeclOps ClassDeclOps(ClassDecl n) {
+        return (ClassDeclOps) gallifreycExt(n);
+    }
+
+    @Override
+    protected NewOps NewOps(New n) {
+        return (NewOps) gallifreycExt(n);
+    }
+
+    @Override
+    protected ProcedureCallOps ProcedureCallOps(ProcedureCall n) {
+        return (ProcedureCallOps) gallifreycExt(n);
+    }
+
+    @Override
+    protected ProcedureDeclOps ProcedureDeclOps(ProcedureDecl n) {
+    	return (ProcedureDeclOps)  gallifreycExt(n);
+    }
+      
     
     @Override
     public int fresh() {
-    	counter++;
-    	return counter;
+    	return UniqueID.newIntID();
     }
     
     @Override

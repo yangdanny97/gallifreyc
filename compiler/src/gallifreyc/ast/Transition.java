@@ -1,6 +1,5 @@
 package gallifreyc.ast;
 
-import polyglot.ast.Node;
 import polyglot.ast.Expr;
 import polyglot.ast.Stmt;
 

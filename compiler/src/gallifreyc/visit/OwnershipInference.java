@@ -4,8 +4,6 @@ import polyglot.ast.NodeFactory;
 import polyglot.frontend.Job;
 import polyglot.types.TypeSystem;
 import polyglot.visit.ContextVisitor;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 

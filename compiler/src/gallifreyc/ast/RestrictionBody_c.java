@@ -6,9 +6,7 @@ import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.CFGBuilder;
-import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
-import polyglot.visit.Translator;
 import polyglot.visit.TypeChecker;
 
 import java.util.Iterator;
@@ -39,11 +37,8 @@ public class RestrictionBody_c extends Term_c implements RestrictionBody {
         if (!members.isEmpty()) {
             w.newline(4);
             w.begin(0);
-            Node prev = null;
-
             for (Iterator<Node> i = members.iterator(); i.hasNext();) {
                 Node member = i.next();
-                prev = member;
                 printBlock(member, w, tr);
                 if (i.hasNext()) {
                     w.newline(0);

@@ -1,22 +1,23 @@
 package gallifreyc.extension;
 
-import gallifreyc.ast.MoveRef;
-import gallifreyc.ast.SharedRef;
-import gallifreyc.ast.UniqueRef;
-import gallifreyc.types.RefQualifiedType;
-import gallifreyc.types.RefQualifiedType_c;
-import polyglot.ast.Expr;
-import polyglot.ast.ExprOps;
-import polyglot.ast.Lang;
-import polyglot.ast.Node;
-import polyglot.ast.TypeNode;
-import polyglot.types.Type;
+import gallifreyc.ast.UnknownRef;
+import gallifreyc.types.GallifreyType;
+import polyglot.ast.*;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
 // extra operations for expressions
-public class GallifreyExprExt extends GallifreyExt implements ExprOps {
+public class GallifreyExprExt extends GallifreyExt implements ExprOps, GallifreyExprOps {
     private static final long serialVersionUID = SerialVersionUID.generate();
+    
+    public GallifreyType gallifreyType;
+    {
+    	gallifreyType = new GallifreyType(new UnknownRef(Position.COMPILER_GENERATED));
+    }
+    
+	public static GallifreyExprExt ext(Node n) {
+		return (GallifreyExprExt) GallifreyExt.ext(n);
+	}
     
     @Override
     public Expr node() {
@@ -38,30 +39,28 @@ public class GallifreyExprExt extends GallifreyExt implements ExprOps {
         return superLang().constantValue(node(), lang);
     }
     
+    public GallifreyType gallifreyType() {
+    	return gallifreyType;
+    }
+    
+    public GallifreyExprExt gallifreyType(GallifreyType t) {
+    	gallifreyType = t;
+    	return this;
+    }
+    
     public boolean isMove() {
-    	Type t = node().type();
-        if (t != null && t instanceof RefQualifiedType) {
-            RefQualifiedType rt = (RefQualifiedType) t;
-            return rt.refQualification() instanceof MoveRef;
-        }
-        return false;
+    	return gallifreyType.isMove();
     }
     
     public boolean isUnique() {
-    	Type t = node().type();
-        if (t != null && t instanceof RefQualifiedType) {
-            RefQualifiedType rt = (RefQualifiedType) t;
-            return rt.refQualification() instanceof UniqueRef;
-        }
-        return false;
+    	return gallifreyType.isUnique();
     }
     
     public boolean isShared() {
-    	Type t = node().type();
-        if (t != null && t instanceof RefQualifiedType) {
-            RefQualifiedType rt = (RefQualifiedType) t;
-            return rt.refQualification() instanceof SharedRef;
-        }
-        return false;
+    	return gallifreyType.isShared();
+    }
+    
+    public boolean isLocal() {
+    	return gallifreyType.isShared();
     }
 }

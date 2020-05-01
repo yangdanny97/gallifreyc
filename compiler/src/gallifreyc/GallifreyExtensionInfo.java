@@ -12,7 +12,6 @@ import polyglot.ext.jl5.ast.JL5ExtFactory_c;
 import polyglot.ext.jl7.JL7ExtensionInfo;
 import polyglot.ext.jl7.ast.JL7ExtFactory_c;
 import polyglot.frontend.*;
-import polyglot.main.*;
 import polyglot.types.*;
 import polyglot.util.*;
 
@@ -20,7 +19,7 @@ import java.io.*;
 import java.util.Set;
 
 /**
- * Extension information for gallifreyc extension.
+ * Extension information for gallifreyc extension. Sets up the NodeFactory, TypeSystem, and Scheduler.
  */
 public class GallifreyExtensionInfo extends JL7ExtensionInfo {
     static {

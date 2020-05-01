@@ -10,9 +10,9 @@ import polyglot.util.SerialVersionUID;
 import polyglot.visit.CFGBuilder;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
-import polyglot.visit.Translator;
 import polyglot.visit.TypeChecker;
-import gallifreyc.types.*;
+import gallifreyc.extension.GallifreyExprExt;
+import gallifreyc.types.GallifreyType;
 
 public class Move_c extends Expr_c implements Move {
 	private static final long serialVersionUID = SerialVersionUID.generate();
@@ -64,19 +64,15 @@ public class Move_c extends Expr_c implements Move {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        Type t = this.expr.type();
-        GallifreyNodeFactory nf = (GallifreyNodeFactory) tc.nodeFactory();
-        assert t != null;
-        if (t instanceof RefQualifiedType) {
-        	RefQualifiedType rt = (RefQualifiedType) t;
-        	RefQualification q = rt.refQualification();
-        	if (q instanceof UniqueRef) {
-        		q = nf.MoveRef(q.position());
-                RefQualifiedType new_type = (RefQualifiedType) t.copy();
-                new_type.refQualification(q);
-                return type(new_type);
-        	}
-        }
-        throw new SemanticException("cannot move non-unique!");
+        GallifreyExprExt ext = GallifreyExprExt.ext(this.expr);
+        tc.nodeFactory();
+    	RefQualification q = ext.gallifreyType.qualification();
+    	if (q instanceof UniqueRef) {
+    		ext.gallifreyType.qualification = new MoveRef(q.position());
+    		GallifreyExprExt thisExt = GallifreyExprExt.ext(this);
+    		thisExt.gallifreyType = new GallifreyType(new MoveRef(q.position()));
+            return type(this.expr.type());
+    	}
+        throw new SemanticException("cannot move non-unique!", this.position());
     }
 }

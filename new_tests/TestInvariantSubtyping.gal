@@ -1,0 +1,17 @@
+class D {
+    public D(){}
+}
+
+class E extends D {
+    public E(){}
+}
+
+class C {
+    public C() {}
+    
+    public void testFun() {
+        local E[] e = new local E[]{new E(), new E()};
+        local D[] d = e;
+    }
+    
+}

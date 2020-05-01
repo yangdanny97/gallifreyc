@@ -1,12 +1,10 @@
 package gallifreyc.ast;
 
-import java.util.Collections;
 import java.util.List;
 
+import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.types.GallifreyTypeSystem;
-import gallifreyc.types.RefQualifiedType;
 import polyglot.ast.*;
-import polyglot.types.ClassType;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.types.TypeSystem;
@@ -16,7 +14,6 @@ import polyglot.util.SerialVersionUID;
 import polyglot.visit.CFGBuilder;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
-import polyglot.visit.Translator;
 import polyglot.visit.TypeChecker;
 
 public class Transition_c extends Stmt_c implements Transition {
@@ -77,9 +74,13 @@ public class Transition_c extends Stmt_c implements Transition {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
+        GallifreyExprExt ext = GallifreyExprExt.ext(this.expr);
     	TypeSystem ts = tc.typeSystem();
     	Type t = expr.type();
-    	if (!(t instanceof RefQualifiedType) || !(((RefQualifiedType) t).refQualification() instanceof SharedRef)) {
+        
+    	RefQualification q = ext.gallifreyType.qualification();
+    	
+    	if (q instanceof SharedRef) {
             throw new SemanticException("Can only transition restrictions for Shared types", this.position);
     	}
     	if (ts instanceof GallifreyTypeSystem) {
@@ -88,9 +89,8 @@ public class Transition_c extends Stmt_c implements Transition {
     		if (restrictionClass == null) {
     			throw new SemanticException("Unknown Restriction "+restriction.restriction().id(), this.position());
     		}
-    		Type base = ((RefQualifiedType) t).base();
     		// requires equality between expr type and restriction's "for" type
-    		if (!ts.typeEquals(base, ts.typeForName(restrictionClass))) {
+    		if (!ts.typeEquals(t, ts.typeForName(restrictionClass))) {
     			throw new SemanticException("Invalid restriction for class "+restrictionClass, this.position());
     		}
     	}

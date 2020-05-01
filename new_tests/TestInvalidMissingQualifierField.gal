@@ -1,0 +1,7 @@
+class D {
+    public Integer y;
+    
+    public D(local Integer x){
+        y = x;
+    }
+}

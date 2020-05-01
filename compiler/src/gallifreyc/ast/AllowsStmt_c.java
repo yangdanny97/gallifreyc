@@ -1,6 +1,5 @@
 package gallifreyc.ast;
 
-import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.*;
 import polyglot.types.ClassType;
@@ -12,7 +11,6 @@ import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
-import polyglot.visit.Translator;
 import polyglot.visit.TypeChecker;
 
 public class AllowsStmt_c extends Node_c implements AllowsStmt {
