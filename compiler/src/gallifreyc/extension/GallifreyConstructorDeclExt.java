@@ -23,49 +23,49 @@ import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeBuilder;
 
 public class GallifreyConstructorDeclExt extends GallifreyExt implements GallifreyOps, ProcedureDeclOps {
-	private static final long serialVersionUID = SerialVersionUID.generate();
-    
-    @Override 
+    private static final long serialVersionUID = SerialVersionUID.generate();
+
+    @Override
     public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
         GRewriter crw = (GRewriter) rw;
         return crw.rewrite(node);
     }
-    
-    @Override 
+
+    @Override
     public NodeVisitor extRewriteEnter(ExtensionRewriter rw) throws SemanticException {
         GRewriter crw = (GRewriter) rw;
         return crw.rewriteEnter(node);
     }
-	
+
     @Override
     public ConstructorDecl node() {
-    	return (ConstructorDecl) super.node();
+        return (ConstructorDecl) super.node();
     }
-	
+
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
-    	ConstructorDecl cd = (ConstructorDecl) superLang().buildTypes(this.node, tb);
-        
+        ConstructorDecl cd = (ConstructorDecl) superLang().buildTypes(this.node, tb);
+
         List<GallifreyType> inputTypes = new ArrayList<>();
-        
+
         for (Formal f : cd.formals()) {
             if (!(f.type() instanceof RefQualifiedTypeNode) && (f.declType() == null || !f.declType().isPrimitive())) {
-            	throw new SemanticException("param types must be ref qualified: " + f.name(), f.position());
+                throw new SemanticException("param types must be ref qualified: " + f.name(), f.position());
             }
-            GallifreyType fQ = (f.declType() == null && f.declType().isPrimitive()) ? 
-            		new GallifreyType(new MoveRef(Position.COMPILER_GENERATED)) :
-        		new GallifreyType(((RefQualifiedTypeNode) f.type()).qualification());
+            GallifreyType fQ = (f.declType() == null && f.declType().isPrimitive())
+                    ? new GallifreyType(new MoveRef(Position.COMPILER_GENERATED))
+                    : new GallifreyType(((RefQualifiedTypeNode) f.type()).qualification());
             inputTypes.add(fQ);
         }
-        
+
         GallifreyConstructorInstance ci = (GallifreyConstructorInstance) cd.constructorInstance();
         ci.gallifreyInputTypes(inputTypes);
 
         return cd;
     }
 
-	@Override
-	public void prettyPrintHeader(Flags flags, CodeWriter w, PrettyPrinter tr) {
-		superLang().prettyPrintHeader(node(), flags, w, tr);
-	}
+    @Override
+    public void prettyPrintHeader(Flags flags, CodeWriter w, PrettyPrinter tr) {
+        superLang().prettyPrintHeader(node(), flags, w, tr);
+    }
 }

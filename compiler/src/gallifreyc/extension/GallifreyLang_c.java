@@ -5,7 +5,6 @@ import polyglot.ext.jl7.ast.J7Lang_c;
 import polyglot.util.InternalCompilerError;
 import polyglot.util.UniqueID;
 
-
 // language dispatcher, singleton class
 public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
 
@@ -14,26 +13,28 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
     public static GallifreyLang lang(NodeOps n) {
         while (n != null) {
             Lang lang = n.lang();
-            if (lang instanceof GallifreyLang) return (GallifreyLang) lang;
+            if (lang instanceof GallifreyLang)
+                return (GallifreyLang) lang;
             if (n instanceof Ext)
                 n = ((Ext) n).pred();
-            else return null;
+            else
+                return null;
         }
         throw new InternalCompilerError("Impossible to reach");
     }
 
     protected GallifreyLang_c() {
-    	super();
+        super();
     }
 
     protected static GallifreyOps gallifreycExt(Node n) {
         return GallifreyExt.ext(n);
     }
-    
+
     protected GallifreyOps GallifreyOps(Node n) {
         return gallifreycExt(n);
     }
-    
+
     protected GallifreyExprOps GallifreyExprOps(Node n) {
         return (GallifreyExprOps) gallifreycExt(n);
     }
@@ -42,12 +43,12 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
     protected NodeOps NodeOps(Node n) {
         return gallifreycExt(n);
     }
-    
+
     @Override
     protected ExprOps ExprOps(Expr n) {
         return (ExprOps) gallifreycExt(n);
     }
-    
+
     @Override
     protected CallOps CallOps(Call n) {
         return (CallOps) gallifreycExt(n);
@@ -70,17 +71,16 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
 
     @Override
     protected ProcedureDeclOps ProcedureDeclOps(ProcedureDecl n) {
-    	return (ProcedureDeclOps)  gallifreycExt(n);
+        return (ProcedureDeclOps) gallifreycExt(n);
     }
-      
-    
+
     @Override
     public int fresh() {
-    	return UniqueID.newIntID();
+        return UniqueID.newIntID();
     }
-    
+
     @Override
     public String freshVar() {
-    	return "generatedVar" + fresh();
+        return "generatedVar" + fresh();
     }
 }

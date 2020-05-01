@@ -31,12 +31,12 @@ public class PreCondition_c extends Node_c implements PreCondition {
     public Expr cond() {
         return cond;
     }
-    
+
     @Override
     public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-    	w.write(this.toString() + ";");
+        w.write(this.toString() + ";");
     }
-    
+
     @Override
     public Node visitChildren(NodeVisitor v) {
         Expr expr = visitChild(this.cond, v);
@@ -47,11 +47,10 @@ public class PreCondition_c extends Node_c implements PreCondition {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	TypeSystem ts = tc.typeSystem();
+        TypeSystem ts = tc.typeSystem();
         if (!ts.typeEquals(cond.type(), ts.Boolean()) && !ts.isImplicitCastValid(cond.type(), ts.Boolean())) {
-            throw new SemanticException("Precondition must be of type boolean.",
-                                        cond.position());
+            throw new SemanticException("Precondition must be of type boolean.", cond.position());
         }
-    	return this;
+        return this;
     }
 }

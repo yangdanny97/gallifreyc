@@ -15,10 +15,9 @@ public class LocalRef extends Node_c implements RefQualification {
     public String toString() {
         return "local";
     }
-    
+
     @Override
     public boolean equals(Object other) {
-    	return other instanceof LocalRef;
+        return other instanceof LocalRef;
     }
 }
-

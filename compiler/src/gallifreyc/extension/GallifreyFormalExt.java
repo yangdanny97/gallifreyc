@@ -10,19 +10,19 @@ import polyglot.ast.Node;
 import polyglot.ast.TypeNode;
 
 public class GallifreyFormalExt extends GallifreyExt {
-    private static final long serialVersionUID = SerialVersionUID.generate(); 
-    
+    private static final long serialVersionUID = SerialVersionUID.generate();
+
     @Override
     public Formal node() {
-    	return (Formal) super.node();
+        return (Formal) super.node();
     }
-    
+
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         Formal n = (Formal) superLang().buildTypes(this.node, tb);
         TypeNode t = n.type();
         if (!(t instanceof RefQualifiedTypeNode)) {
-        	throw new SemanticException("declaration must have qualification", n.position());
+            throw new SemanticException("declaration must have qualification", n.position());
         }
         RefQualifiedTypeNode rt = (RefQualifiedTypeNode) t;
         GallifreyLocalInstance li = (GallifreyLocalInstance) n.localInstance();
@@ -30,4 +30,3 @@ public class GallifreyFormalExt extends GallifreyExt {
         return n;
     }
 }
-

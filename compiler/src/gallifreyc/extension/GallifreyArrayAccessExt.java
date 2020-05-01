@@ -12,15 +12,15 @@ public class GallifreyArrayAccessExt extends GallifreyExprExt {
 
     @Override
     public ArrayAccess node() {
-    	return (ArrayAccess) super.node();
+        return (ArrayAccess) super.node();
     }
-    
+
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	// array contents and container have same qualification
-    	ArrayAccess aa = (ArrayAccess) superLang().typeCheck(this.node(), tc);
-    	GallifreyType arrayType = GallifreyExprExt.ext(aa.array()).gallifreyType;
-    	this.gallifreyType = new GallifreyType(arrayType.qualification());
+        // array contents and container have same qualification
+        ArrayAccess aa = (ArrayAccess) superLang().typeCheck(this.node(), tc);
+        GallifreyType arrayType = GallifreyExprExt.ext(aa.array()).gallifreyType;
+        this.gallifreyType = new GallifreyType(arrayType.qualification());
         return aa;
     }
 }

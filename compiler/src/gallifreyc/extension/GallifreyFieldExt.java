@@ -12,23 +12,23 @@ import polyglot.ast.Field;
 import polyglot.ast.Node;
 
 public class GallifreyFieldExt extends GallifreyExprExt {
-    private static final long serialVersionUID = SerialVersionUID.generate();   
-    
+    private static final long serialVersionUID = SerialVersionUID.generate();
+
     @Override
     public Field node() {
-    	return (Field) super.node();
+        return (Field) super.node();
     }
-    
+
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	Field f = (Field) superLang().typeCheck(node(), tc);
-    	GallifreyFieldInstance fi = (GallifreyFieldInstance) f.fieldInstance();
-    	RefQualification q = fi.gallifreyType().qualification();
-    	//HACK: for things like java.lang
-    	if (q == null) {
-    		q = new MoveRef(Position.COMPILER_GENERATED);
-    	}
-    	gallifreyType = new GallifreyType(q);
-    	return f;
+        Field f = (Field) superLang().typeCheck(node(), tc);
+        GallifreyFieldInstance fi = (GallifreyFieldInstance) f.fieldInstance();
+        RefQualification q = fi.gallifreyType().qualification();
+        // HACK: for things like java.lang
+        if (q == null) {
+            q = new MoveRef(Position.COMPILER_GENERATED);
+        }
+        gallifreyType = new GallifreyType(q);
+        return f;
     }
 }

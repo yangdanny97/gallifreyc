@@ -12,19 +12,19 @@ import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
 public class GallifreyArrayType extends JL5ArrayType_c implements ArrayType {
-	private static final long serialVersionUID = SerialVersionUID.generate();
+    private static final long serialVersionUID = SerialVersionUID.generate();
 
-	public GallifreyArrayType(TypeSystem ts, Position pos, Type base, boolean isVarargs) {
-		super(ts, pos, base, isVarargs);
-	}
-	
-	// invariant subtyping - modified from ArrayType_c
-	
+    public GallifreyArrayType(TypeSystem ts, Position pos, Type base, boolean isVarargs) {
+        super(ts, pos, base, isVarargs);
+    }
+
+    // invariant subtyping - modified from ArrayType_c
+
     @Override
     public boolean isSubtypeImpl(Type t) {
-    	return ts.typeEquals(this, t);
+        return ts.typeEquals(this, t);
     }
-    
+
     @Override
     public boolean isImplicitCastValidImpl(Type toType) {
         if (toType.isArray()) {
@@ -33,45 +33,43 @@ public class GallifreyArrayType extends JL5ArrayType_c implements ArrayType {
 
         return ts.isSubtype(this, toType);
     }
-    
+
     @Override
     public boolean isCastValidImpl(Type toType) {
-        if (!toType.isReference()) return false;
+        if (!toType.isReference())
+            return false;
 
         if (toType.isArray()) {
             Type fromBase = base();
             Type toBase = toType.toArray().base();
 
-            if (fromBase.isPrimitive()) return ts.typeEquals(toBase, fromBase);
-            if (toBase.isPrimitive()) return false;
+            if (fromBase.isPrimitive())
+                return ts.typeEquals(toBase, fromBase);
+            if (toBase.isPrimitive())
+                return false;
 
-            if (fromBase.isNull()) return false;
-            if (toBase.isNull()) return false;
+            if (fromBase.isNull())
+                return false;
+            if (toBase.isNull())
+                return false;
 
             return ts.typeEquals(fromBase, toBase);
         }
 
         return ts.isSubtype(this, toType);
     }
-    
-    
+
     @Override
     protected MethodInstance createCloneMethodInstance() {
-    	//TODO
+        // TODO
         return ts.methodInstance(position(), this, ts.Public(), this, // clone returns this type
-                                 "clone",
-                                 Collections.<Type> emptyList(),
-                                 Collections.<Type> emptyList());
+                "clone", Collections.<Type>emptyList(), Collections.<Type>emptyList());
     }
-    
+
     @Override
     protected FieldInstance createLengthFieldInstance() {
-    	//TODO
-        FieldInstance fi = ts.fieldInstance(position(),
-                                            this,
-                                            ts.Public().Final(),
-                                            ts.Int(),
-                                            "length");
+        // TODO
+        FieldInstance fi = ts.fieldInstance(position(), this, ts.Public().Final(), ts.Int(), "length");
         fi.setNotConstant();
         return fi;
     }

@@ -6,6 +6,8 @@ import polyglot.ast.TopLevelDecl;
 
 public interface RestrictionDecl extends Term, TopLevelDecl {
     Id id();
+
     Id for_id();
+
     RestrictionBody body();
 }

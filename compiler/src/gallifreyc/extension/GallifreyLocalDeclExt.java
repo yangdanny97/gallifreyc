@@ -11,21 +11,21 @@ import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeBuilder;
 
 public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps {
-    private static final long serialVersionUID = SerialVersionUID.generate(); 
-    
+    private static final long serialVersionUID = SerialVersionUID.generate();
+
     public RefQualification qualification;
-    
+
     @Override
     public LocalDecl node() {
-    	return (LocalDecl) super.node();
+        return (LocalDecl) super.node();
     }
-    
+
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         LocalDecl n = (LocalDecl) superLang().buildTypes(this.node, tb);
         TypeNode t = n.type();
         if (!(t instanceof RefQualifiedTypeNode)) {
-        	throw new SemanticException("declaration must have qualification");
+            throw new SemanticException("declaration must have qualification");
         }
         RefQualification q = ((RefQualifiedTypeNode) t).qualification();
         GallifreyLocalInstance li = (GallifreyLocalInstance) n.localInstance();
@@ -33,8 +33,8 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
         qualification = q;
         return n;
     }
-    
+
     public RefQualification qualification() {
-    	return qualification;
+        return qualification;
     }
 }

@@ -10,27 +10,27 @@ import polyglot.ast.Cast;
 import polyglot.ast.Node;
 
 public class GallifreyCastExt extends GallifreyExprExt {
-    private static final long serialVersionUID = SerialVersionUID.generate();    
-    
+    private static final long serialVersionUID = SerialVersionUID.generate();
+
     @Override
     public Cast node() {
-    	return (Cast) super.node();
+        return (Cast) super.node();
     }
-    
+
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	Cast node = (Cast) superLang().typeCheck(this.node(), tc);
-    	if (!(node.castType() instanceof RefQualifiedTypeNode)) {
-    		throw new SemanticException("missing ref qualification for cast!", node.position());
-    	}
-    	
-    	GallifreyType exprT = GallifreyExprExt.ext(node.expr()).gallifreyType;
-    	RefQualifiedTypeNode castT = (RefQualifiedTypeNode) node.castType();
+        Cast node = (Cast) superLang().typeCheck(this.node(), tc);
+        if (!(node.castType() instanceof RefQualifiedTypeNode)) {
+            throw new SemanticException("missing ref qualification for cast!", node.position());
+        }
 
-    	if (!castT.qualification().equals(exprT.qualification())) {
-    		throw new SemanticException("qualifications do not match for casting!", node.position());
-    	}
-    	this.gallifreyType = new GallifreyType(new MoveRef(node.position()));
+        GallifreyType exprT = GallifreyExprExt.ext(node.expr()).gallifreyType;
+        RefQualifiedTypeNode castT = (RefQualifiedTypeNode) node.castType();
+
+        if (!castT.qualification().equals(exprT.qualification())) {
+            throw new SemanticException("qualifications do not match for casting!", node.position());
+        }
+        this.gallifreyType = new GallifreyType(new MoveRef(node.position()));
         return node;
     }
 }

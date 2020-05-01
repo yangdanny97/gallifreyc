@@ -10,18 +10,18 @@ import polyglot.ast.Node;
 import polyglot.ast.Special;
 
 public class GallifreySpecialExt extends GallifreyExprExt {
-    private static final long serialVersionUID = SerialVersionUID.generate();  
-    
+    private static final long serialVersionUID = SerialVersionUID.generate();
+
     @Override
     public Special node() {
-    	return (Special) super.node();
+        return (Special) super.node();
     }
-    
+
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	//this & super are always local
-    	Expr node = node();
-    	this.gallifreyType = new GallifreyType(new LocalRef(node.position()));
+        // this & super are always local
+        Expr node = node();
+        this.gallifreyType = new GallifreyType(new LocalRef(node.position()));
         return superLang().typeCheck(this.node(), tc);
     }
 }

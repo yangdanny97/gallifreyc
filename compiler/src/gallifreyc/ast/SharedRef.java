@@ -22,12 +22,12 @@ public class SharedRef extends Node_c implements RefQualification {
     public RestrictionId restriction() {
         return restriction;
     }
-    
+
     @Override
     public boolean equals(Object other) {
-    	if (other instanceof SharedRef) {
-    		return restriction.equals(((SharedRef) other).restriction());
-    	}
-    	return false;
+        if (other instanceof SharedRef) {
+            return restriction.equals(((SharedRef) other).restriction());
+        }
+        return false;
     }
 }

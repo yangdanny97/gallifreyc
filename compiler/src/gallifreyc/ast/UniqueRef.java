@@ -15,9 +15,9 @@ public class UniqueRef extends Node_c implements RefQualification {
     public String toString() {
         return "unique";
     }
-    
+
     @Override
     public boolean equals(Object other) {
-    	return other instanceof UniqueRef;
+        return other instanceof UniqueRef;
     }
 }

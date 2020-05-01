@@ -9,12 +9,12 @@ import polyglot.ast.Expr;
 import polyglot.ast.Node;
 
 public class GallifreyLitExt extends GallifreyExprExt {
-    private static final long serialVersionUID = SerialVersionUID.generate();    
-    
+    private static final long serialVersionUID = SerialVersionUID.generate();
+
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	Expr node = (Expr) superLang().typeCheck(node(), tc);
-    	this.gallifreyType = new GallifreyType(new MoveRef(node.position()));
+        Expr node = (Expr) superLang().typeCheck(node(), tc);
+        this.gallifreyType = new GallifreyType(new MoveRef(node.position()));
         return node().typeCheck(tc);
     }
 }

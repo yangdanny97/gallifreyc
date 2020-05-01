@@ -38,21 +38,20 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     public MethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
             String name, List<? extends Type> argTypes, List<? extends Type> excTypes) {
         return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes,
-                Collections.<TypeVariable>emptyList(), 
-                new ArrayList<RefQualification>(), null);
+                Collections.<TypeVariable>emptyList(), new ArrayList<RefQualification>(), null);
     }
 
     @Override
     public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
             String name, List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams) {
-        return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes, 
-                typeParams, new ArrayList<RefQualification>(), null);
+        return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes, typeParams,
+                new ArrayList<RefQualification>(), null);
     }
 
     @Override
     public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
-            String name, List<? extends Type> argTypes, List<? extends Type> excTypes, 
-            List<RefQualification> inputQ, RefQualification returnQ) {
+            String name, List<? extends Type> argTypes, List<? extends Type> excTypes, List<RefQualification> inputQ,
+            RefQualification returnQ) {
         return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes,
                 Collections.<TypeVariable>emptyList(), inputQ, returnQ);
     }
@@ -70,20 +69,20 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     @Override
     public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
             List<? extends Type> argTypes, List<? extends Type> excTypes) {
-        return constructorInstance(pos, container, flags, argTypes, excTypes, 
-                Collections.<TypeVariable>emptyList(), new ArrayList<RefQualification>());
-    }
-    
-    @Override
-    public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
-            List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams) {
-        return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, 
-                typeParams, new ArrayList<RefQualification>());
+        return constructorInstance(pos, container, flags, argTypes, excTypes, Collections.<TypeVariable>emptyList(),
+                new ArrayList<RefQualification>());
     }
 
     @Override
     public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
-            List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams, 
+            List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams) {
+        return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, typeParams,
+                new ArrayList<RefQualification>());
+    }
+
+    @Override
+    public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
+            List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams,
             List<RefQualification> inputQ) {
         return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, typeParams, inputQ);
     }
@@ -151,7 +150,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     // checking qualifications
 
     public GallifreyType checkArgs(List<Formal> params, List<Expr> args) throws SemanticException {
-        //TODO check param qualifications
+        // TODO check param qualifications
         boolean allMoves = true;
         for (Expr e : args) {
             GallifreyType gt = GallifreyExprExt.ext(e).gallifreyType;
@@ -165,16 +164,16 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
             return new GallifreyType(new LocalRef(Position.COMPILER_GENERATED));
         }
     }
-    
+
     public boolean checkQualifications(GallifreyType fromType, GallifreyType toType) {
         if (fromType.qualification instanceof MoveRef) {
             return true;
         }
-        
+
         if (fromType.qualification instanceof LocalRef && toType.qualification instanceof LocalRef) {
             return true;
         }
-        
+
         return false;
     }
 

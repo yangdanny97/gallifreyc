@@ -34,7 +34,7 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
         p = ext(p, extFactory().extPostCondition());
         return p;
     }
-    
+
     @Override
     public MethodDecl MethodDecl(Position pos, MethodDecl method, PreCondition pre, PostCondition post) {
         GallifreyMethodDeclExt ext = (GallifreyMethodDeclExt) GallifreyExt.ext(method);
@@ -43,21 +43,21 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
         ext.isTest = false;
         return method;
     }
-    
+
     @Override
     public UniqueRef UniqueRef(Position pos) {
         UniqueRef u = new UniqueRef(pos);
         u = ext(u, extFactory().extUniqueRef());
         return u;
     }
-    
+
     @Override
     public MoveRef MoveRef(Position pos) {
         MoveRef m = new MoveRef(pos);
         m = ext(m, extFactory().extUniqueRef());
         return m;
     }
-    
+
     @Override
     public LocalRef LocalRef(Position pos) {
         LocalRef m = new LocalRef(pos);
@@ -65,21 +65,20 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
         return m;
     }
 
-
     @Override
     public SharedRef SharedRef(Position pos, RestrictionId restriction) {
         SharedRef s = new SharedRef(pos, restriction);
         s = ext(s, extFactory().extSharedRef());
         return s;
     }
-    
+
     @Override
     public RestrictionId RestrictionId(Position pos, Id rv, Id restriction, boolean wildcard) {
-    	RestrictionId i = new RestrictionId_c(pos, rv, restriction, wildcard);
-    	i = ext(i, extFactory().extRestrictionId());
-    	return i;
+        RestrictionId i = new RestrictionId_c(pos, rv, restriction, wildcard);
+        i = ext(i, extFactory().extRestrictionId());
+        return i;
     }
-    
+
     @Override
     public RestrictionDecl RestrictionDecl(Position pos, Id id, Id for_id, RestrictionBody body) {
         RestrictionDecl d = new RestrictionDecl_c(pos, id, for_id, body);
@@ -109,57 +108,54 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     }
 
     @Override
-    public MethodDecl MethodDecl(Position pos, FlagAnnotations flags, TypeNode returnType,
-                             Id name, List<Formal> formals, List<TypeNode> throwTypes,
-                             Block body, boolean isTest)
-    {
-        MethodDecl n = super.MethodDecl(pos, flags.flags(), flags.annotations(),
-                                        returnType, name, formals, throwTypes,
-                                        body, new LinkedList<ParamTypeNode>(), Javadoc(pos, ""));
+    public MethodDecl MethodDecl(Position pos, FlagAnnotations flags, TypeNode returnType, Id name,
+            List<Formal> formals, List<TypeNode> throwTypes, Block body, boolean isTest) {
+        MethodDecl n = super.MethodDecl(pos, flags.flags(), flags.annotations(), returnType, name, formals, throwTypes,
+                body, new LinkedList<ParamTypeNode>(), Javadoc(pos, ""));
         GallifreyMethodDeclExt ext = (GallifreyMethodDeclExt) GallifreyExt.ext(n);
         ext.isTest = isTest;
         return n;
     }
-    
+
     @Override
     public RefQualifiedTypeNode RefQualifiedTypeNode(Position pos, RefQualification refQualification, TypeNode t) {
         RefQualifiedTypeNode n = new RefQualifiedTypeNode_c(pos, refQualification, t);
         n = ext(n, extFactory().extRefQualifiedTypeNode());
         return n;
     }
-    
+
     @Override
     public RestrictionUnionDecl RestrictionUnionDecl(Position pos, Id name, List<Id> restrictions) {
-    	RestrictionUnionDecl d = new RestrictionUnionDecl_c(pos, name, restrictions);
-    	d = ext(d, extFactory().extRestrictionUnionDecl());
-    	return d;
+        RestrictionUnionDecl d = new RestrictionUnionDecl_c(pos, name, restrictions);
+        d = ext(d, extFactory().extRestrictionUnionDecl());
+        return d;
     }
-    
+
     @Override
     public Transition Transition(Position pos, Expr expr, RestrictionId newRestriction) {
-    	Transition t = new Transition_c(pos, expr, newRestriction);
-    	t = ext(t, extFactory().extTransition());
-    	return t;
+        Transition t = new Transition_c(pos, expr, newRestriction);
+        t = ext(t, extFactory().extTransition());
+        return t;
     }
-    
+
     @Override
     public MatchRestriction MatchRestriction(Position pos, Expr expr, List<MatchBranch> branches) {
-    	MatchRestriction m = new MatchRestriction_c(pos, expr, branches);
-    	m = ext(m, extFactory().extMatchRestriction());
-    	return m;
+        MatchRestriction m = new MatchRestriction_c(pos, expr, branches);
+        m = ext(m, extFactory().extMatchRestriction());
+        return m;
     }
-    
+
     @Override
     public MatchBranch MatchBranch(Position pos, LocalDecl pattern, Stmt stmt) {
-    	MatchBranch b = new MatchBranch_c(pos, pattern, stmt);
-    	b = ext(b, extFactory().extMatchBranch());
-    	return b;
+        MatchBranch b = new MatchBranch_c(pos, pattern, stmt);
+        b = ext(b, extFactory().extMatchBranch());
+        return b;
     }
-    
+
     @Override
     public Move Move(Position pos, Expr expr) {
-    	Move m = new Move_c(pos, expr);
-    	m = ext(m, extFactory().extMove());
-    	return m;
+        Move m = new Move_c(pos, expr);
+        m = ext(m, extFactory().extMove());
+        return m;
     }
 }
