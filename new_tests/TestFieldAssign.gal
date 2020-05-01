@@ -1,0 +1,7 @@
+class D {
+    local Integer y;
+    
+    public D(local Integer x){
+        this.y = x;
+    }
+}

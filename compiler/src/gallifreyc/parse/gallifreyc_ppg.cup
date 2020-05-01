@@ -361,31 +361,8 @@ boundary_literal ::=
                       :};
 
 type ::=
-    primitive_type:a {:
-                     	
-			// unsure if wrapping is needed
-			RefQualification r = parser.nf.MoveRef(parser.pos(a)); 
-			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a), r, a);
-		
-                     :}
- |  LOCAL:a reference_type:t {:
-                             
-			RefQualification r = parser.nf.LocalRef(parser.pos(a)); 
-			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
-		
-                             :}
- |  UNIQUE:a reference_type:t {:
-                              
-			RefQualification r = parser.nf.UniqueRef(parser.pos(a)); 
-			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
-		
-                              :}
- |  SHARED:a LBRACK restriction_id:b RBRACK:c reference_type:t {:
-                                                               
-			RefQualification r = parser.nf.SharedRef(parser.pos(a, c), b); 
-			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
-		
-                                                               :};
+    primitive_type:a {:  RESULT = a;  :}
+ |  reference_type:a {:  RESULT = a;  :};
 
 primitive_type ::=
     numeric_type:a {:  RESULT = a;  :}
@@ -432,7 +409,25 @@ class_or_interface_type ::=
     class_or_interface:a {:  RESULT = a;  :}
  |  class_or_interface:a LT type_argument_list_1:c {:
                                                    RESULT = parser.nf.AmbTypeInstantiation(parser.pos(a, c), a, c); 
-                                                   :};
+                                                   :}
+ |  LOCAL:a class_or_interface_type:t {:
+                                      
+            RefQualification r = parser.nf.LocalRef(parser.pos(a)); 
+            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
+        
+                                      :}
+ |  UNIQUE:a class_or_interface_type:t {:
+                                       
+            RefQualification r = parser.nf.UniqueRef(parser.pos(a)); 
+            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
+        
+                                       :}
+ |  SHARED:a LBRACK restriction_id:b RBRACK:c class_or_interface_type:t {:
+                                                                        
+            RefQualification r = parser.nf.SharedRef(parser.pos(a, c), b); 
+            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
+        
+                                                                        :};
 
 class_type ::=
     class_or_interface_type:a {:  RESULT = a;  :};
@@ -451,7 +446,25 @@ array_type ::=
  |  class_or_interface:a LT type_argument_list_1:b dims:c {:
                                                           
             RESULT = parser.array(parser.nf.AmbTypeInstantiation(parser.pos(a, b), a, b), c.intValue()); 
-                                                          :};
+                                                          :}
+ |  LOCAL:a array_type:t {:
+                         
+            RefQualification r = parser.nf.LocalRef(parser.pos(a)); 
+            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
+        
+                         :}
+ |  UNIQUE:a array_type:t {:
+                          
+            RefQualification r = parser.nf.UniqueRef(parser.pos(a)); 
+            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
+        
+                          :}
+ |  SHARED:a LBRACK restriction_id:b RBRACK:c array_type:t {:
+                                                           
+            RefQualification r = parser.nf.SharedRef(parser.pos(a, c), b); 
+            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
+        
+                                                           :};
 
 name ::=
     simple_name:a {:  RESULT = a;  :}
