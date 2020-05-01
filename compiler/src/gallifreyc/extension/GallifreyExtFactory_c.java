@@ -36,6 +36,11 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
     }
     
     // Decls
+    
+    @Override
+    protected Ext extClassDeclImpl() {
+        return new GallifreyClassDeclExt();
+    }
 
     @Override
     protected Ext extMethodDeclImpl() {
@@ -55,6 +60,13 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
     @Override
     protected Ext extLocalDeclImpl() {
         return new GallifreyLocalDeclExt();
+    }
+    
+    // statements
+    
+    @Override
+    protected Ext extConstructorCallImpl() {
+        return new GallifreyConstructorCallExt();
     }
     
     //Types

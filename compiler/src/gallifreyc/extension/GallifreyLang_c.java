@@ -29,13 +29,17 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
     protected static GallifreyOps gallifreycExt(Node n) {
         return GallifreyExt.ext(n);
     }
-
-    @Override
-    protected NodeOps NodeOps(Node n) {
+    
+    protected GallifreyOps GallifreyOps(Node n) {
         return gallifreycExt(n);
     }
     
-    protected GallifreyOps GallifreyOps(Node n) {
+    protected GallifreyExprOps GallifreyExprOps(Node n) {
+        return (GallifreyExprOps) gallifreycExt(n);
+    }
+
+    @Override
+    protected NodeOps NodeOps(Node n) {
         return gallifreycExt(n);
     }
     
@@ -43,6 +47,32 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
     protected ExprOps ExprOps(Expr n) {
         return (ExprOps) gallifreycExt(n);
     }
+    
+    @Override
+    protected CallOps CallOps(Call n) {
+        return (CallOps) gallifreycExt(n);
+    }
+
+    @Override
+    protected ClassDeclOps ClassDeclOps(ClassDecl n) {
+        return (ClassDeclOps) gallifreycExt(n);
+    }
+
+    @Override
+    protected NewOps NewOps(New n) {
+        return (NewOps) gallifreycExt(n);
+    }
+
+    @Override
+    protected ProcedureCallOps ProcedureCallOps(ProcedureCall n) {
+        return (ProcedureCallOps) gallifreycExt(n);
+    }
+
+    @Override
+    protected ProcedureDeclOps ProcedureDeclOps(ProcedureDecl n) {
+    	return (ProcedureDeclOps)  gallifreycExt(n);
+    }
+      
     
     @Override
     public int fresh() {

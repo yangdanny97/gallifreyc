@@ -44,7 +44,6 @@ terminal Token MOVE;
 // Reference Qualifications (local, unique, shared)
 non terminal PreCondition pre_condition_opt;
 non terminal PostCondition post_condition_opt;
-non terminal RefQualification ref_qualification;
 
 // Restrictions
 non terminal TopLevelDecl restriction_declaration;
@@ -65,29 +64,40 @@ non terminal List<MatchBranch> match_branch_list;
 start with goal;
 
 // Reference Qualifications (local, unique, shared)
-override type ::=
-    // TypeNode
-    primitive_type:a
-		{: 	
-			// unsure if wrapping is needed
-			RefQualification r = parser.nf.MoveRef(parser.pos(a)); 
-			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a), r, a);
-		:}
-    | LOCAL:a reference_type:t
-		{: 
-			RefQualification r = parser.nf.LocalRef(parser.pos(a)); 
-			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
-		:}
-	| UNIQUE:a reference_type:t
-		{: 
-			RefQualification r = parser.nf.UniqueRef(parser.pos(a)); 
-			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
-		:}
-	| SHARED:a LBRACK restriction_id:b RBRACK:c reference_type:t
-		{: 
-			RefQualification r = parser.nf.SharedRef(parser.pos(a, c), b); 
-			RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
-		:}
+extend class_or_interface_type ::=
+      LOCAL:a class_or_interface_type:t
+        {: 
+            RefQualification r = parser.nf.LocalRef(parser.pos(a)); 
+            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
+        :}
+    | UNIQUE:a class_or_interface_type:t
+        {: 
+            RefQualification r = parser.nf.UniqueRef(parser.pos(a)); 
+            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
+        :}
+    | SHARED:a LBRACK restriction_id:b RBRACK:c class_or_interface_type:t
+        {: 
+            RefQualification r = parser.nf.SharedRef(parser.pos(a, c), b); 
+            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
+        :}
+;
+
+extend array_type ::=
+      LOCAL:a array_type:t
+        {: 
+            RefQualification r = parser.nf.LocalRef(parser.pos(a)); 
+            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
+        :}
+    | UNIQUE:a array_type:t
+        {: 
+            RefQualification r = parser.nf.UniqueRef(parser.pos(a)); 
+            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
+        :}
+    | SHARED:a LBRACK restriction_id:b RBRACK:c array_type:t
+        {: 
+            RefQualification r = parser.nf.SharedRef(parser.pos(a, c), b); 
+            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
+        :}
 ;
 
 restriction_id ::=
@@ -109,11 +119,6 @@ restriction_id ::=
 			parser.nf.Id(parser.pos(a), a.getIdentifier()),
 			parser.nf.Id(parser.pos(b), b.getIdentifier()),
 			false); :}
-;
-
-ref_qualification ::=
-    // RefQualification
-
 ;
 
 // Pre/post conditions on method declarations in interfaces
