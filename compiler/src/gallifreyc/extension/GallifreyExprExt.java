@@ -7,7 +7,7 @@ import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
 // extra operations for expressions
-public class GallifreyExprExt extends GallifreyExt implements ExprOps, GallifreyExprOps {
+public class GallifreyExprExt extends GallifreyExt implements GallifreyExprOps {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
     public GallifreyType gallifreyType;
