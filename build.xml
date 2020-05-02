@@ -60,15 +60,15 @@
         <pathelement location="${compiler.classes}" />
         <pathelement location="${runtime.classes}" />
 
-        <!-- the java classpath -->
-        <pathelement path="${java.class.path}" />
-
         <!-- jar files in the lib directory, excluding generated jars -->
         <fileset dir="${lib.dir}">
             <include name="*.jar" />
             <exclude name="${name}.jar" />
             <exclude name="${name}-rt.jar" />
         </fileset>
+
+				<!-- the java classpath -->
+        <pathelement path="${java.class.path}" />
     </path>
 
 
@@ -439,6 +439,11 @@
         <antcall target="standard-ext-qq-dep" />
         <antcall target="compile-ext" />
     </target>
+
+		<target name="print-classpath">
+			<pathconvert property="classpathInName" refid="standard.classpath" />
+			<echo>Classpath is ${classpathInName}</echo>
+		</target>
 
 </project>
 
