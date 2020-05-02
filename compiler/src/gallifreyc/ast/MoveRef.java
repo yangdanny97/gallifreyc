@@ -15,9 +15,9 @@ public class MoveRef extends Node_c implements RefQualification {
     public String toString() {
         return "move";
     }
-    
+
     @Override
     public boolean equals(Object other) {
-    	return other instanceof MoveRef;
+        return other instanceof MoveRef;
     }
 }

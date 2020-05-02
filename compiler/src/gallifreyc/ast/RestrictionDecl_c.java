@@ -38,7 +38,6 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
         return "restriction " + id.toString() + " for " + for_id.toString() + " " + body;
     }
 
-
     public Id id() {
         return id;
     }
@@ -50,25 +49,25 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
     public RestrictionBody body() {
         return body;
     }
-    
+
     /** From TopLevelDecl */
     public Flags flags() {
-    	return Flags.NONE;
+        return Flags.NONE;
     }
 
     public String name() {
-    	return id.id();
+        return id.id();
     }
-    
+
     public Documentable javadoc(Javadoc javadoc) {
-    	this.javadoc = javadoc;
-    	return this;
+        this.javadoc = javadoc;
+        return this;
     }
 
     public Javadoc javadoc() {
-    	return this.javadoc;
+        return this.javadoc;
     }
-    
+
     @Override
     public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
         w.write("restriction " + id.toString() + " for " + for_id.toString() + " {");
@@ -78,57 +77,54 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
         w.write("}");
         w.newline();
     }
-    
+
     @Override
     public Term firstChild() {
         return body;
     }
-    
-    
-    
-	@Override
-	public NodeVisitor typeCheckEnter(TypeChecker tc) throws SemanticException {
-		if (tc instanceof GallifreyTypeChecker) {
-			GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
-    		gtc.currentRestriction = id.id();
-    		gtc.currentRestrictionClass = for_id.id();
-		}
-		return super.typeCheckEnter(tc);
-	}
-	
-	
 
-	@Override
-	public Node buildTypes(TypeBuilder tb) throws SemanticException {
-		TypeSystem ts = tb.typeSystem();
-		if (ts instanceof GallifreyTypeSystem) {
-			GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
-			gts.addRestrictionMapping(id.id(), for_id.id());
-		}
-		return super.buildTypes(tb);
-	}
+    @Override
+    public NodeVisitor typeCheckEnter(TypeChecker tc) throws SemanticException {
+        if (tc instanceof GallifreyTypeChecker) {
+            GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
+            gtc.currentRestriction = id.id();
+            gtc.currentRestrictionClass = for_id.id();
+        }
+        return super.typeCheckEnter(tc);
+    }
 
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
+    @Override
+    public Node buildTypes(TypeBuilder tb) throws SemanticException {
+        TypeSystem ts = tb.typeSystem();
+        if (ts instanceof GallifreyTypeSystem) {
+            GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
+            gts.addRestrictionMapping(id.id(), for_id.id());
+        }
+        return super.buildTypes(tb);
+    }
 
-	@Override
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         TypeSystem ts = tc.typeSystem();
         if (tc instanceof GallifreyTypeChecker) {
-        	GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
+            GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
             if (!(ts.typeForName(for_id.id()) instanceof ClassType)) {
-            	throw new SemanticException("Restriction "+ gtc.currentRestrictionClass +" must be for a valid class", this.position);
+                throw new SemanticException("Restriction " + gtc.currentRestrictionClass + " must be for a valid class",
+                        this.position);
             }
         }
         body.typeCheck(tc);
-    	return this;
+        return this;
     }
 
-	@Override
-	public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
+    @Override
+    public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
         v.visitCFG(this.body(), this, EXIT);
         return succs;
-	}
+    }
 }

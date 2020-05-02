@@ -6,19 +6,19 @@ import polyglot.util.SerialVersionUID;
 
 /* used for compiler-generated nodes where the qualification doesn't matter */
 public class UnknownRef extends Node_c implements RefQualification {
-	private static final long serialVersionUID = SerialVersionUID.generate();
+    private static final long serialVersionUID = SerialVersionUID.generate();
 
-	public UnknownRef(Position pos) {
-		super(pos);
-	}
-	
+    public UnknownRef(Position pos) {
+        super(pos);
+    }
+
     @Override
     public String toString() {
         return "UNKNOWN-QUALIFICATION";
     }
-    
+
     @Override
     public boolean equals(Object other) {
-    	return other instanceof UnknownRef;
+        return other instanceof UnknownRef;
     }
 }

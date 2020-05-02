@@ -19,40 +19,40 @@ import polyglot.ast.CallOps;
 import polyglot.ast.Node;
 
 public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
-    private static final long serialVersionUID = SerialVersionUID.generate();    
-    
+    private static final long serialVersionUID = SerialVersionUID.generate();
+
     @Override
     public Call node() {
-    	return (Call) super.node();
+        return (Call) super.node();
     }
-    
+
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	Call node = (Call) superLang().typeCheck(this.node, tc);
-    	GallifreyMethodInstance mi = (GallifreyMethodInstance) node.methodInstance();
-    	tc.typeSystem();
-    	//TODO check args
-    	this.gallifreyType = new GallifreyType(mi.gallifreyReturnType().qualification());
+        Call node = (Call) superLang().typeCheck(this.node, tc);
+        GallifreyMethodInstance mi = (GallifreyMethodInstance) node.methodInstance();
+        tc.typeSystem();
+        // TODO check args
+        this.gallifreyType = new GallifreyType(mi.gallifreyReturnType().qualification());
         return node;
     }
 
-	@Override
-	public void printArgs(CodeWriter w, PrettyPrinter tr) {
-		superLang().printArgs(node(), w, tr);
-	}
+    @Override
+    public void printArgs(CodeWriter w, PrettyPrinter tr) {
+        superLang().printArgs(node(), w, tr);
+    }
 
-	@Override
-	public Type findContainer(TypeSystem ts, MethodInstance mi) {
-		return superLang().findContainer(node(), ts, mi);
-	}
+    @Override
+    public Type findContainer(TypeSystem ts, MethodInstance mi) {
+        return superLang().findContainer(node(), ts, mi);
+    }
 
-	@Override
-	public ReferenceType findTargetType() throws SemanticException {
-		return superLang().findTargetType(node());
-	}
+    @Override
+    public ReferenceType findTargetType() throws SemanticException {
+        return superLang().findTargetType(node());
+    }
 
-	@Override
-	public Node typeCheckNullTarget(TypeChecker tc, List<Type> argTypes) throws SemanticException {
-		return superLang().typeCheckNullTarget(node(), tc, argTypes);
-	}
+    @Override
+    public Node typeCheckNullTarget(TypeChecker tc, List<Type> argTypes) throws SemanticException {
+        return superLang().typeCheckNullTarget(node(), tc, argTypes);
+    }
 }

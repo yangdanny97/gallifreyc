@@ -5,6 +5,7 @@ import polyglot.ast.Stmt;
 import polyglot.ast.LocalDecl;
 
 public interface MatchBranch extends Term {
-	LocalDecl pattern();
-	Stmt stmt();
+    LocalDecl pattern();
+
+    Stmt stmt();
 }

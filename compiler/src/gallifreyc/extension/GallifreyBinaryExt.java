@@ -10,17 +10,17 @@ import polyglot.ast.Expr;
 import polyglot.ast.Node;
 
 public class GallifreyBinaryExt extends GallifreyExprExt {
-    private static final long serialVersionUID = SerialVersionUID.generate();  
-    
+    private static final long serialVersionUID = SerialVersionUID.generate();
+
     @Override
     public Binary node() {
-    	return (Binary) super.node();
+        return (Binary) super.node();
     }
-    
+
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-    	Expr node = (Expr) superLang().typeCheck(this.node(), tc);
-    	this.gallifreyType = new GallifreyType(new LocalRef(node.position()));
+        Expr node = (Expr) superLang().typeCheck(this.node(), tc);
+        this.gallifreyType = new GallifreyType(new LocalRef(node.position()));
         return node;
     }
 }

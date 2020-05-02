@@ -17,45 +17,46 @@ import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeChecker;
 
 public class Transition_c extends Stmt_c implements Transition {
-	private static final long serialVersionUID = SerialVersionUID.generate();
-	private Expr expr;
-	private RestrictionId restriction;
-	
-	public Transition_c(Position pos, Expr expr, RestrictionId restriction) {
-		super(pos);
-		this.expr = expr;
-		this.restriction = restriction;
-	}
-	
-	public Expr expr() {
-		return expr;
-	}
-	
-	public Transition expr(Expr e) {
-		return new Transition_c(this.position, e, this.restriction);
-	}
-	
-	public RestrictionId restriction() {
-		return restriction;
-	}
-	
+    private static final long serialVersionUID = SerialVersionUID.generate();
+    private Expr expr;
+    private RestrictionId restriction;
+
+    public Transition_c(Position pos, Expr expr, RestrictionId restriction) {
+        super(pos);
+        this.expr = expr;
+        this.restriction = restriction;
+    }
+
+    public Expr expr() {
+        return expr;
+    }
+
+    public Transition expr(Expr e) {
+        return new Transition_c(this.position, e, this.restriction);
+    }
+
+    public RestrictionId restriction() {
+        return restriction;
+    }
+
     @Override
     public Term firstChild() {
-        if (expr != null) return expr;
+        if (expr != null)
+            return expr;
         return null;
     }
-    
+
     @Override
     public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
         v.visitCFG(expr, this, EXIT);
         return succs;
     }
-    
+
     @Override
     public String toString() {
-    	return "transition(" + expr.toString() + ", " + restriction.toString() + ");";
+        return "transition(" + expr.toString() + ", " + restriction.toString() + ");";
     }
-    
+
     // by default, the translator relies on the pretty-printer
     @Override
     public void prettyPrint(CodeWriter w, PrettyPrinter pp) {
@@ -63,10 +64,10 @@ public class Transition_c extends Stmt_c implements Transition {
         expr.prettyPrint(w, pp);
         w.write(", " + restriction.toString() + ");");
     }
-    
+
     @Override
     public Node visitChildren(NodeVisitor v) {
-    	Expr e = visitChild(this.expr, v);
+        Expr e = visitChild(this.expr, v);
         Transition_c n = copyIfNeeded(this);
         n.expr = e;
         return n;
@@ -75,25 +76,25 @@ public class Transition_c extends Stmt_c implements Transition {
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         GallifreyExprExt ext = GallifreyExprExt.ext(this.expr);
-    	TypeSystem ts = tc.typeSystem();
-    	Type t = expr.type();
-        
-    	RefQualification q = ext.gallifreyType.qualification();
-    	
-    	if (q instanceof SharedRef) {
+        TypeSystem ts = tc.typeSystem();
+        Type t = expr.type();
+
+        RefQualification q = ext.gallifreyType.qualification();
+
+        if (q instanceof SharedRef) {
             throw new SemanticException("Can only transition restrictions for Shared types", this.position);
-    	}
-    	if (ts instanceof GallifreyTypeSystem) {
-    		GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
-    		String restrictionClass = gts.getClassNameForRestriction(restriction.restriction().id());
-    		if (restrictionClass == null) {
-    			throw new SemanticException("Unknown Restriction "+restriction.restriction().id(), this.position());
-    		}
-    		// requires equality between expr type and restriction's "for" type
-    		if (!ts.typeEquals(t, ts.typeForName(restrictionClass))) {
-    			throw new SemanticException("Invalid restriction for class "+restrictionClass, this.position());
-    		}
-    	}
-    	return this;
+        }
+        if (ts instanceof GallifreyTypeSystem) {
+            GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
+            String restrictionClass = gts.getClassNameForRestriction(restriction.restriction().id());
+            if (restrictionClass == null) {
+                throw new SemanticException("Unknown Restriction " + restriction.restriction().id(), this.position());
+            }
+            // requires equality between expr type and restriction's "for" type
+            if (!ts.typeEquals(t, ts.typeForName(restrictionClass))) {
+                throw new SemanticException("Invalid restriction for class " + restrictionClass, this.position());
+            }
+        }
+        return this;
     }
 }

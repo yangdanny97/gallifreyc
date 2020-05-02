@@ -7,18 +7,18 @@ import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
 // extra operations for expressions
-public class GallifreyExprExt extends GallifreyExt implements ExprOps, GallifreyExprOps {
+public class GallifreyExprExt extends GallifreyExt implements GallifreyExprOps {
     private static final long serialVersionUID = SerialVersionUID.generate();
-    
+
     public GallifreyType gallifreyType;
     {
-    	gallifreyType = new GallifreyType(new UnknownRef(Position.COMPILER_GENERATED));
+        gallifreyType = new GallifreyType(new UnknownRef(Position.COMPILER_GENERATED));
     }
-    
-	public static GallifreyExprExt ext(Node n) {
-		return (GallifreyExprExt) GallifreyExt.ext(n);
-	}
-    
+
+    public static GallifreyExprExt ext(Node n) {
+        return (GallifreyExprExt) GallifreyExt.ext(n);
+    }
+
     @Override
     public Expr node() {
         return (Expr) super.node();
@@ -38,29 +38,29 @@ public class GallifreyExprExt extends GallifreyExt implements ExprOps, Gallifrey
     public Object constantValue(Lang lang) {
         return superLang().constantValue(node(), lang);
     }
-    
+
     public GallifreyType gallifreyType() {
-    	return gallifreyType;
+        return gallifreyType;
     }
-    
+
     public GallifreyExprExt gallifreyType(GallifreyType t) {
-    	gallifreyType = t;
-    	return this;
+        gallifreyType = t;
+        return this;
     }
-    
+
     public boolean isMove() {
-    	return gallifreyType.isMove();
+        return gallifreyType.isMove();
     }
-    
+
     public boolean isUnique() {
-    	return gallifreyType.isUnique();
+        return gallifreyType.isUnique();
     }
-    
+
     public boolean isShared() {
-    	return gallifreyType.isShared();
+        return gallifreyType.isShared();
     }
-    
+
     public boolean isLocal() {
-    	return gallifreyType.isShared();
+        return gallifreyType.isShared();
     }
 }

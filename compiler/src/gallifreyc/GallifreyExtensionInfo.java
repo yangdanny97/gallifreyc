@@ -19,7 +19,8 @@ import java.io.*;
 import java.util.Set;
 
 /**
- * Extension information for gallifreyc extension. Sets up the NodeFactory, TypeSystem, and Scheduler.
+ * Extension information for gallifreyc extension. Sets up the NodeFactory,
+ * TypeSystem, and Scheduler.
  */
 public class GallifreyExtensionInfo extends JL7ExtensionInfo {
     static {
@@ -47,22 +48,20 @@ public class GallifreyExtensionInfo extends JL7ExtensionInfo {
 
     @Override
     public Set<String> keywords() {
-	return new Lexer_c(null).keywords();
+        return new Lexer_c(null).keywords();
     }
 
     @Override
     protected NodeFactory createNodeFactory() {
         return new GallifreyNodeFactory_c(GallifreyLang_c.instance,
-                                          new GallifreyExtFactory_c(
-                                              new JL7ExtFactory_c(
-                                                  new JL5ExtFactory_c())));
+                new GallifreyExtFactory_c(new JL7ExtFactory_c(new JL5ExtFactory_c())));
     }
 
     @Override
     protected TypeSystem createTypeSystem() {
         return new GallifreyTypeSystem_c();
     }
-    
+
     @Override
     public Scheduler createScheduler() {
         return new GallifreyScheduler(this);

@@ -14,7 +14,6 @@ import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeBuilder;
 
-
 public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTypeNode {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
@@ -25,11 +24,11 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
         super(pos);
         this.base = t;
         this.refQualification = refQualification;
-    	if (t instanceof RefQualifiedTypeNode) {
-    		throw new IllegalArgumentException("cannot nest ref-qualifications");
-    	}
+        if (t instanceof RefQualifiedTypeNode) {
+            throw new IllegalArgumentException("cannot nest ref-qualifications");
+        }
     }
-    
+
     @Override
     public boolean isDisambiguated() {
         return this.base.isDisambiguated();
@@ -48,7 +47,7 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
         n.refQualification = this.refQualification;
         return n;
     }
-    
+
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         tb.typeSystem();
@@ -71,7 +70,7 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
     public String toString() {
         return refQualification.toString() + " " + super.toString();
     }
-    
+
     @Override
     public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
         print(refQualification, w, tr);
