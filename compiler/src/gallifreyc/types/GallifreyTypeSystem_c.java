@@ -3,6 +3,8 @@ package gallifreyc.types;
 import java.util.*;
 import gallifreyc.ast.*;
 import gallifreyc.extension.GallifreyExprExt;
+import gallifreyc.extension.GallifreyExt;
+import gallifreyc.extension.GallifreyFormalExt;
 import polyglot.ast.Expr;
 import polyglot.ast.Formal;
 import polyglot.ext.jl5.types.*;
@@ -149,15 +151,28 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 
     // checking qualifications
 
-    public GallifreyType checkArgs(List<Formal> params, List<Expr> args) throws SemanticException {
-        // TODO check param qualifications
+    public GallifreyType checkArgs(List<GallifreyType> params, List<Expr> args) throws SemanticException {
         boolean allMoves = true;
+        List<GallifreyType> argTypes = new ArrayList<>();
         for (Expr e : args) {
-            GallifreyType gt = GallifreyExprExt.ext(e).gallifreyType;
+            GallifreyType gt = GallifreyExprExt.ext(e).gallifreyType();
             if (!(gt.qualification() instanceof MoveRef)) {
                 allMoves = false;
             }
+            argTypes.add(gt);
         }
+        if (params.size() != args.size()) {
+            // this shouldn't happen
+            throw new SemanticException("number of params and arguments don't match");
+        }
+        for (int i = 0; i < params.size(); i++) {
+            GallifreyType gt = argTypes.get(i);
+            if (!checkQualifications(params.get(i), gt)) {
+                throw new SemanticException("invalid qualifications - param: " + params.get(i).qualification + 
+                        ", arg: " + gt.qualification);
+            }
+        }
+        
         if (allMoves) {
             return new GallifreyType(new MoveRef(Position.COMPILER_GENERATED));
         } else {

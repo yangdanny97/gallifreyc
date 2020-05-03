@@ -1,5 +1,6 @@
 package gallifreyc.extension;
 
+import polyglot.types.Flags;
 import polyglot.types.MethodInstance;
 import polyglot.types.ReferenceType;
 import polyglot.types.SemanticException;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import gallifreyc.types.GallifreyMethodInstance;
 import gallifreyc.types.GallifreyType;
+import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.Call;
 import polyglot.ast.CallOps;
 import polyglot.ast.Node;
@@ -30,9 +32,13 @@ public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         Call node = (Call) superLang().typeCheck(this.node, tc);
         GallifreyMethodInstance mi = (GallifreyMethodInstance) node.methodInstance();
-        tc.typeSystem();
-        // TODO check args
-        this.gallifreyType = new GallifreyType(mi.gallifreyReturnType().qualification());
+        GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
+        GallifreyType returnType = ts.checkArgs(mi.gallifreyInputTypes(), node().arguments());
+        if (mi.flags().contains(Flags.STATIC)) {
+            this.gallifreyType = returnType;
+        } else {
+            this.gallifreyType = new GallifreyType(mi.gallifreyReturnType().qualification());
+        }
         return node;
     }
 

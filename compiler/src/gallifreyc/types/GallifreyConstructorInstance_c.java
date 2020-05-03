@@ -8,6 +8,7 @@ import polyglot.ext.jl5.types.JL5ConstructorInstance_c;
 import polyglot.ext.jl5.types.TypeVariable;
 import polyglot.types.ClassType;
 import polyglot.types.Flags;
+import polyglot.types.ConstructorInstance;
 import polyglot.types.Type;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
@@ -45,4 +46,22 @@ public class GallifreyConstructorInstance_c extends JL5ConstructorInstance_c imp
         gallifreyInputs = in;
         return this;
     }
+    
+    @Override
+    public boolean isSameConstructorImpl(ConstructorInstance mi) {
+        if (!(mi instanceof GallifreyConstructorInstance)) {
+            return false;
+        }
+        List<GallifreyType> gallifreyInputTypes = ((GallifreyConstructorInstance) mi).gallifreyInputTypes();
+        if (gallifreyInputTypes.size() != this.gallifreyInputs.size()) {
+            return false;
+        }
+        for (int i = 0; i < this.gallifreyInputs.size(); i++) {
+            if (!this.gallifreyInputs.get(i).equals(gallifreyInputTypes.get(i))) {
+                return false;
+            }
+        }
+        return super.isSameConstructorImpl(mi);
+    }
+
 }

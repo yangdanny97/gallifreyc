@@ -2,6 +2,7 @@ package gallifreyc.extension;
 
 import polyglot.types.ClassType;
 import polyglot.types.Context;
+import polyglot.types.Flags;
 import polyglot.types.SemanticException;
 import polyglot.util.CodeWriter;
 import polyglot.util.SerialVersionUID;
@@ -9,7 +10,10 @@ import polyglot.visit.AmbiguityRemover;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeChecker;
 import gallifreyc.ast.MoveRef;
+import gallifreyc.types.GallifreyConstructorInstance;
+import gallifreyc.types.GallifreyMethodInstance;
 import gallifreyc.types.GallifreyType;
+import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.Expr;
 import polyglot.ast.New;
 import polyglot.ast.NewOps;
@@ -27,8 +31,9 @@ public class GallifreyNewExt extends GallifreyExprExt implements NewOps {
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         New node = (New) superLang().typeCheck(this.node(), tc);
-        // TODO check arguments, just like function calls
-        this.gallifreyType = new GallifreyType(new MoveRef(node.position()));
+        GallifreyConstructorInstance ci = (GallifreyConstructorInstance) node.constructorInstance();
+        GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
+        this.gallifreyType = ts.checkArgs(ci.gallifreyInputTypes(), node().arguments());
         return node;
     }
 

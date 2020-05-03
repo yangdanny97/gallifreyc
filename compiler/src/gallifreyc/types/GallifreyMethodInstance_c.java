@@ -7,6 +7,7 @@ import gallifreyc.ast.RefQualification;
 import polyglot.ext.jl5.types.JL5MethodInstance_c;
 import polyglot.ext.jl5.types.TypeVariable;
 import polyglot.types.Flags;
+import polyglot.types.MethodInstance;
 import polyglot.types.ReferenceType;
 import polyglot.types.Type;
 import polyglot.util.Position;
@@ -45,6 +46,23 @@ public class GallifreyMethodInstance_c extends JL5MethodInstance_c implements Ga
     public GallifreyMethodInstance gallifreyInputTypes(List<GallifreyType> in) {
         gallifreyInputs = in;
         return this;
+    }
+
+    @Override
+    public boolean isSameMethodImpl(MethodInstance mi) {
+        if (!(mi instanceof GallifreyMethodInstance)) {
+            return false;
+        }
+        List<GallifreyType> gallifreyInputTypes = ((GallifreyMethodInstance) mi).gallifreyInputTypes();
+        if (gallifreyInputTypes.size() != this.gallifreyInputs.size()) {
+            return false;
+        }
+        for (int i = 0; i < this.gallifreyInputs.size(); i++) {
+            if (!this.gallifreyInputs.get(i).equals(gallifreyInputTypes.get(i))) {
+                return false;
+            }
+        }
+        return super.isSameMethodImpl(mi);
     }
 
 }

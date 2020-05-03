@@ -1,11 +1,15 @@
 package gallifreyc.extension;
 
+import gallifreyc.types.GallifreyConstructorInstance;
+import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.ConstructorCall;
-import polyglot.ast.ProcedureCall;
+import polyglot.ast.Node;
 import polyglot.ast.ProcedureCallOps;
+import polyglot.types.SemanticException;
 import polyglot.util.CodeWriter;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.PrettyPrinter;
+import polyglot.visit.TypeChecker;
 
 /* this is the constructor call STATEMENT (this(...) or super(...)) */
 public class GallifreyConstructorCallExt extends GallifreyExt implements ProcedureCallOps {
@@ -24,5 +28,12 @@ public class GallifreyConstructorCallExt extends GallifreyExt implements Procedu
         superLang().printArgs(node(), w, tr);
     }
 
-    // TODO
+    @Override
+    public Node typeCheck(TypeChecker tc) throws SemanticException {
+        ConstructorCall node = (ConstructorCall) superLang().typeCheck(this.node(), tc);
+        GallifreyConstructorInstance ci = (GallifreyConstructorInstance) node.constructorInstance();
+        GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
+        ts.checkArgs(ci.gallifreyInputTypes(), node().arguments());
+        return node;
+    }
 }
