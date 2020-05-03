@@ -1,3 +1,5 @@
+package gallifrey;
+
 class D {
     public local Integer y;
     

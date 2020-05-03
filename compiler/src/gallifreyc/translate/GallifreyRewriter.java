@@ -165,6 +165,12 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
         if (n instanceof SourceFile) {
             NodeFactory nf = nodeFactory();
             SourceFile sf = (SourceFile) n;
+            //HACK: don't add imports if the source file is Unique or Shared wrappers
+            for (TopLevelDecl d : sf.decls()) {
+                if (d.name().equals("Unique") || d.name().equals("Shared")) {
+                    return sf;
+                }
+            }
             Import unique = nf.Import(n.position(), Import.SINGLE_TYPE, "gallifrey.Unique");
             Import shared = nf.Import(n.position(), Import.SINGLE_TYPE, "gallifrey.Shared");
             List<Import> imports = new ArrayList<>(sf.imports());

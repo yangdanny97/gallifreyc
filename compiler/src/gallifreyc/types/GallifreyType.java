@@ -23,7 +23,6 @@ public class GallifreyType implements Serializable {
     }
 
     public GallifreyType(RefQualification q) {
-        assert (q != null);
         this.qualification = q;
     }
 

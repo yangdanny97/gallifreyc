@@ -1,3 +1,5 @@
+package gallifrey;
+
 class C {
 	public C() {}
 	

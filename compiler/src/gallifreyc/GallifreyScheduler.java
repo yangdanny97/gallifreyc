@@ -98,5 +98,10 @@ public class GallifreyScheduler extends JL7Scheduler {
         }
         return internGoal(g);
     }
-
+    
+    @Override
+    public Goal Serialized(Job job) {
+        Goal g = new EmptyGoal(job, "Serialized");
+        return internGoal(g);
+    }
 }

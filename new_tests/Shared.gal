@@ -1,0 +1,11 @@
+package gallifrey;
+
+public class Shared<T> {
+	public local T VALUE;
+	public local String RESTRICTION;
+	
+	public Shared(local T VALUE, local String RESTRICTION) {
+		this.VALUE = VALUE;
+		this.RESTRICTION = RESTRICTION;
+	}
+} 

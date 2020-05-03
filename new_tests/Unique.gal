@@ -1,0 +1,9 @@
+package gallifrey;
+
+public class Unique<T> {
+	public local T VALUE;
+	
+	public Unique(local T VALUE) {
+		this.VALUE = VALUE;
+	}
+} 

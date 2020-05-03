@@ -1,3 +1,5 @@
+package gallifrey;
+
 class C {
 	public C() {}
 	
@@ -21,6 +23,6 @@ class D {
 	public void test2() {
 		unique C  c = new C();
 		shared[R] C c2 = move(c);
-		// transition(c2, R2);
+		transition(c2, R2);
 	}
 }
