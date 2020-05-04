@@ -30,4 +30,6 @@ TODOs:
 - default qualifications for stdlib
 - typesystem allow method override
 - inheritance field qualifications
+- handling primitive types (canonical type nodes before typebuilding, no qualifiers needed)
+- AnyRef semantics
 

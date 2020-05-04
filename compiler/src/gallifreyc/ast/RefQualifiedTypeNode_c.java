@@ -47,7 +47,6 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
 
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
-        tb.typeSystem();
         if (base instanceof RefQualifiedTypeNode) {
             throw new SemanticException("cannot nest ref-qualifications", this.position());
         }

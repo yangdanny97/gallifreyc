@@ -1,6 +1,7 @@
 package gallifreyc.extension;
 
-import gallifreyc.types.GallifreyConstructorInstance;
+import gallifreyc.types.GallifreyProcedureInstance;
+import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.ConstructorCall;
 import polyglot.ast.Node;
@@ -31,7 +32,7 @@ public class GallifreyConstructorCallExt extends GallifreyExt implements Procedu
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         ConstructorCall node = (ConstructorCall) superLang().typeCheck(this.node(), tc);
-        GallifreyConstructorInstance ci = (GallifreyConstructorInstance) node.constructorInstance();
+        GallifreyProcedureInstance ci = (GallifreyProcedureInstance) node.constructorInstance();
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
         ts.checkArgs(ci.gallifreyInputTypes(), node().arguments());
         return node;

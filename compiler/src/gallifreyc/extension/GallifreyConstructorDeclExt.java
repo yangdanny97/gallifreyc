@@ -7,6 +7,7 @@ import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.translate.GRewriter;
 import gallifreyc.types.GallifreyConstructorInstance;
+import gallifreyc.types.GallifreyProcedureInstance;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.ConstructorDecl;
 import polyglot.ast.Formal;
@@ -58,8 +59,8 @@ public class GallifreyConstructorDeclExt extends GallifreyExt implements Gallifr
             inputTypes.add(fQ);
         }
 
-        GallifreyConstructorInstance ci = (GallifreyConstructorInstance) cd.constructorInstance();
-        ci.gallifreyInputTypes(inputTypes);
+        GallifreyProcedureInstance ci = (GallifreyProcedureInstance) cd.constructorInstance();
+        ci = ci.gallifreyInputTypes(inputTypes);
 
         return cd;
     }

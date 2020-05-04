@@ -30,19 +30,23 @@ public class GallifreyMethodInstance_c extends JL5MethodInstance_c implements Ga
         this.gallifreyReturnType = new GallifreyType(out);
     }
 
+    @Override
     public GallifreyType gallifreyReturnType() {
         return gallifreyReturnType;
     }
 
+    @Override
     public GallifreyMethodInstance gallifreyReturnType(GallifreyType returnType) {
         gallifreyReturnType = returnType;
         return this;
     }
 
+    @Override
     public List<GallifreyType> gallifreyInputTypes() {
         return gallifreyInputs;
     }
 
+    @Override
     public GallifreyMethodInstance gallifreyInputTypes(List<GallifreyType> in) {
         gallifreyInputs = in;
         return this;

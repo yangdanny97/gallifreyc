@@ -8,6 +8,7 @@ import gallifreyc.ast.PostCondition;
 import gallifreyc.ast.PreCondition;
 import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.types.GallifreyMethodInstance;
+import gallifreyc.types.GallifreyProcedureInstance;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.Formal;
 import polyglot.ast.MethodDecl;
@@ -67,16 +68,16 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
             if (!(f.type() instanceof RefQualifiedTypeNode) && (f.declType() == null || !f.declType().isPrimitive())) {
                 throw new SemanticException("param types must be ref qualified: " + f.name(), f.position());
             }
-            GallifreyType fQ = (f.declType() == null && f.declType().isPrimitive())
+            //TODO check this later
+            GallifreyType fQ = (f.declType() == null || f.declType().isPrimitive())
                     ? new GallifreyType(new MoveRef(Position.COMPILER_GENERATED))
                     : new GallifreyType(((RefQualifiedTypeNode) f.type()).qualification());
             inputTypes.add(fQ);
         }
 
-        GallifreyMethodInstance mi = (GallifreyMethodInstance) md.methodInstance();
-        mi.gallifreyInputTypes(inputTypes);
-        mi.gallifreyReturnType(gReturn);
-
+        GallifreyProcedureInstance mi = (GallifreyProcedureInstance) md.methodInstance();
+        mi = mi.gallifreyInputTypes(inputTypes);
+        mi = ((GallifreyMethodInstance) mi).gallifreyReturnType(gReturn);
         return md;
     }
 

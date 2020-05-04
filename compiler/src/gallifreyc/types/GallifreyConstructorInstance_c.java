@@ -29,19 +29,23 @@ public class GallifreyConstructorInstance_c extends JL5ConstructorInstance_c imp
         }
     }
 
+    @Override
     public GallifreyType gallifreyReturnType() {
         return gallifreyReturnType;
     }
 
+    @Override
     public GallifreyConstructorInstance gallifreyReturnType(GallifreyType returnType) {
         gallifreyReturnType = returnType;
         return this;
     }
 
+    @Override
     public List<GallifreyType> gallifreyInputTypes() {
         return gallifreyInputs;
     }
 
+    @Override
     public GallifreyConstructorInstance gallifreyInputTypes(List<GallifreyType> in) {
         gallifreyInputs = in;
         return this;

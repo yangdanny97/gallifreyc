@@ -88,6 +88,32 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
             List<RefQualification> inputQ) {
         return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, typeParams, inputQ);
     }
+    
+    @Override
+    public ConstructorInstance defaultConstructor(Position pos,
+            ClassType container) {
+        assert_(container);
+
+        // access for the default constructor is determined by the
+        // access of the containing class. See the JLS, 2nd Ed., 8.8.7.
+        Flags access = Flags.NONE;
+        if (container.flags().isPrivate()) {
+            access = access.Private();
+        }
+        if (container.flags().isProtected()) {
+            access = access.Protected();
+        }
+        if (container.flags().isPublic()) {
+            access = access.Public();
+        }
+        return constructorInstance(pos,
+                                   container,
+                                   access,
+                                   Collections.<Type> emptyList(),
+                                   Collections.<Type> emptyList(),
+                                   Collections.<TypeVariable> emptyList(),
+                                   Collections.<RefQualification> emptyList());
+    }
 
     // LOCAL INSTANCE
 
