@@ -14,6 +14,8 @@ public interface GallifreyExtFactory extends JL7ExtFactory {
     Ext extUniqueRef();
 
     Ext extMoveRef();
+    
+    Ext extLocalRef();
 
     Ext extSharedRef();
 

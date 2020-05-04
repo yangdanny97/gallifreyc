@@ -70,6 +70,11 @@ extend class_or_interface_type ::=
             RefQualification r = parser.nf.LocalRef(parser.pos(a)); 
             RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
         :}
+    | LOCAL:a LT IDENTIFIER:b GT class_or_interface_type:t
+        {: 
+            RefQualification r = parser.nf.LocalRef(parser.pos(a), b.getIdentifier()); 
+            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
+        :}
     | UNIQUE:a class_or_interface_type:t
         {: 
             RefQualification r = parser.nf.UniqueRef(parser.pos(a)); 
@@ -86,6 +91,11 @@ extend array_type ::=
       LOCAL:a array_type:t
         {: 
             RefQualification r = parser.nf.LocalRef(parser.pos(a)); 
+            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
+        :}
+    | LOCAL:a LT IDENTIFIER:b GT array_type:t
+        {: 
+            RefQualification r = parser.nf.LocalRef(parser.pos(a), b.getIdentifier()); 
             RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
         :}
     | UNIQUE:a array_type:t

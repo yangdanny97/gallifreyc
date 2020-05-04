@@ -1,1 +1,0 @@
-To run: run ./test.sh from this directory

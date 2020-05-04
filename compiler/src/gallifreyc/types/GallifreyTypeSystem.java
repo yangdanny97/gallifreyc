@@ -45,7 +45,7 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
 
     // check args of a function call, calculate the qualification of the returned
     // value
-    public GallifreyType checkArgs(List<GallifreyType> params, List<Expr> args) throws SemanticException;
+    public GallifreyType checkArgs(GallifreyProcedureInstance pi, List<Expr> args) throws SemanticException;
 
     // check qualifications as if we were doing an assignment of toType = fromType
     public boolean checkQualifications(GallifreyType fromType, GallifreyType toType);

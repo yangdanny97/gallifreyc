@@ -60,6 +60,21 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         e = composeExts(e, e2);
         return postExtUniqueRef(e);
     }
+    
+    public final Ext extLocalRef() {
+        Ext e = extLocalRefImpl();
+
+        ExtFactory nextEF = nextExtFactory();
+        Ext e2;
+        if (nextEF instanceof GallifreyExtFactory) {
+            e2 = ((GallifreyExtFactory) nextEF).extLocalRef();
+        } else {
+            e2 = nextEF.extNode();
+        }
+
+        e = composeExts(e, e2);
+        return postExtLocalRef(e);
+    }
 
     public final Ext extMoveRef() {
         Ext e = extMoveRefImpl();
@@ -254,6 +269,10 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     protected Ext extUniqueRefImpl() {
         return extNode();
     }
+    
+    protected Ext extLocalRefImpl() {
+        return extNode();
+    }
 
     protected Ext extMoveRefImpl() {
         return extNode();
@@ -314,6 +333,10 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     }
 
     protected Ext postExtUniqueRef(Ext e) {
+        return postExtNode(e);
+    }
+    
+    protected Ext postExtLocalRef(Ext e) {
         return postExtNode(e);
     }
 

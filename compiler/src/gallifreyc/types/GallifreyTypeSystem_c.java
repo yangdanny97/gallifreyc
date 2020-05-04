@@ -177,9 +177,12 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 
     // checking qualifications
 
-    public GallifreyType checkArgs(List<GallifreyType> params, List<Expr> args) throws SemanticException {
+    public GallifreyType checkArgs(GallifreyProcedureInstance pi, List<Expr> args) throws SemanticException {
         boolean allMoves = true;
+        List<GallifreyType> params = pi.gallifreyInputTypes();
         List<GallifreyType> argTypes = new ArrayList<>();
+        //TODO check owners
+        
         for (Expr e : args) {
             GallifreyType gt = GallifreyExprExt.ext(e).gallifreyType();
             if (!(gt.qualification() instanceof MoveRef)) {
@@ -187,15 +190,24 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
             }
             argTypes.add(gt);
         }
-        if (params.size() != args.size()) {
-            // this shouldn't happen
-            throw new SemanticException("number of params and arguments don't match");
+        
+        // First check that the number of arguments is reasonable
+        if (argTypes.size() != pi.formalTypes().size()) {
+            // the actual args don't match the number of the formal args.
+            if (!(pi.isVariableArity() && argTypes.size() >= pi.formalTypes()
+                                                               .size() - 1)) {
+                // the last (variable) argument can consume 0 or more of the actual arguments.
+                throw new SemanticException("invalid number of arguments");
+            }
         }
-        for (int i = 0; i < params.size(); i++) {
-            GallifreyType gt = argTypes.get(i);
-            if (!checkQualifications(params.get(i), gt)) {
-                throw new SemanticException("invalid qualifications - param: " + params.get(i).qualification + 
-                        ", arg: " + gt.qualification);
+        
+        for (int i = 0; i < argTypes.size(); i++) {
+            GallifreyType argType = argTypes.get(i);
+            GallifreyType paramType = params.get(Math.max(i, params.size() - 1));
+            
+            if (!checkQualifications(argType, paramType)) {
+                throw new SemanticException("invalid argument qualification - expected: " + paramType.qualification + 
+                        ", got: " + argType.qualification);
             }
         }
         
@@ -207,7 +219,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     }
 
     public boolean checkQualifications(GallifreyType fromType, GallifreyType toType) {
-        if (fromType.qualification instanceof MoveRef) {
+        if (fromType.qualification instanceof MoveRef || toType.qualification instanceof AnyRef) {
             return true;
         }
 

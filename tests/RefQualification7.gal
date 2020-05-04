@@ -1,6 +1,8 @@
+package gallifrey;
+
 public class Hello {
     public static void main(local String[] args) {
-        local String phrase1 = "Hello world!";
-        unique String phrase2 = phrase1;
+        unique String phrase1 = "Hello world!";
+        local String phrase2 = move(phrase1);
     }
 }

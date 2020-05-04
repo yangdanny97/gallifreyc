@@ -54,14 +54,21 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     @Override
     public MoveRef MoveRef(Position pos) {
         MoveRef m = new MoveRef(pos);
-        m = ext(m, extFactory().extUniqueRef());
+        m = ext(m, extFactory().extMoveRef());
         return m;
     }
 
     @Override
     public LocalRef LocalRef(Position pos) {
         LocalRef m = new LocalRef(pos);
-        m = ext(m, extFactory().extUniqueRef());
+        m = ext(m, extFactory().extLocalRef());
+        return m;
+    }
+    
+    @Override
+    public LocalRef LocalRef(Position pos, String owner) {
+        LocalRef m = new LocalRef(pos, owner);
+        m = ext(m, extFactory().extLocalRef());
         return m;
     }
 

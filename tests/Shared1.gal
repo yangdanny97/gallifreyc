@@ -1,3 +1,5 @@
+package gallifrey;
+
 class Foo {
     public int x;
     public Foo() {
@@ -9,6 +11,10 @@ class Foo {
     public void setX(int x) {
         this.x = x;
     }
+}
+
+restriction MyRestriction for Foo {
+    allows setX;
 }
 
 public class Hello {

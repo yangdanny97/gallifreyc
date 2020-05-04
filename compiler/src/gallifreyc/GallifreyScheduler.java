@@ -3,12 +3,14 @@ package gallifreyc;
 import gallifreyc.visit.*;
 import gallifreyc.translate.*;
 import polyglot.ast.NodeFactory;
+import polyglot.ext.jl5.visit.JL5Translator;
 import polyglot.ext.jl7.JL7Scheduler;
 import polyglot.frontend.*;
 import polyglot.frontend.goals.*;
 import polyglot.types.TypeSystem;
 import polyglot.util.InternalCompilerError;
 import polyglot.visit.ConstantChecker;
+import polyglot.visit.Translator;
 
 /**
  * {@code GallifreyScheduler} extends the base scheduler to handle translations

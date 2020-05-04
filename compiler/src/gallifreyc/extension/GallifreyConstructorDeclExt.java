@@ -53,6 +53,7 @@ public class GallifreyConstructorDeclExt extends GallifreyExt implements Gallifr
             if (!(f.type() instanceof RefQualifiedTypeNode) && (f.declType() == null || !f.declType().isPrimitive())) {
                 throw new SemanticException("param types must be ref qualified: " + f.name(), f.position());
             }
+            //TODO check this...
             GallifreyType fQ = (f.declType() == null && f.declType().isPrimitive())
                     ? new GallifreyType(new MoveRef(Position.COMPILER_GENERATED))
                     : new GallifreyType(((RefQualifiedTypeNode) f.type()).qualification());

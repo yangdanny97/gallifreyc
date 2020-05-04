@@ -1,3 +1,7 @@
+package gallifrey;
+
+restriction MyRestriction for String {}
+
 public class Hello {
     public static void main(local String[] args) {
         shared[MyRestriction] String phrase = "Hello world!";

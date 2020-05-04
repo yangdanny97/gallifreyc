@@ -34,7 +34,7 @@ public class GallifreyConstructorCallExt extends GallifreyExt implements Procedu
         ConstructorCall node = (ConstructorCall) superLang().typeCheck(this.node(), tc);
         GallifreyProcedureInstance ci = (GallifreyProcedureInstance) node.constructorInstance();
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
-        ts.checkArgs(ci.gallifreyInputTypes(), node().arguments());
+        ts.checkArgs(ci, node().arguments());
         return node;
     }
 }

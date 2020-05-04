@@ -1,3 +1,16 @@
+package gallifrey;
+
+public class Library {
+    Library() {}
+    
+    public void addItem() {}
+    
+    public void removeCollection() {}
+    
+    public int numItems() {return 0;}
+}
+
+
 restriction AddWins for Library {
 	allows addItem;
 	allows removeCollection contingent RemoveCollectionLost;

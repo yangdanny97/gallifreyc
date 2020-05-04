@@ -22,6 +22,8 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     MoveRef MoveRef(Position pos);
 
     LocalRef LocalRef(Position pos);
+    
+    LocalRef LocalRef(Position pos, String owner);
 
     SharedRef SharedRef(Position pos, RestrictionId restriction);
 

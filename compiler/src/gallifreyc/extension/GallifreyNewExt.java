@@ -33,7 +33,7 @@ public class GallifreyNewExt extends GallifreyExprExt implements NewOps {
         New node = (New) superLang().typeCheck(this.node(), tc);
         GallifreyConstructorInstance ci = (GallifreyConstructorInstance) node.constructorInstance();
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
-        this.gallifreyType = ts.checkArgs(ci.gallifreyInputTypes(), node().arguments());
+        this.gallifreyType = ts.checkArgs(ci, node().arguments());
         return node;
     }
 

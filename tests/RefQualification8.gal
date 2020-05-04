@@ -1,3 +1,5 @@
+package gallifrey;
+
 public class Foo<T> {
     unique T obj;
 }

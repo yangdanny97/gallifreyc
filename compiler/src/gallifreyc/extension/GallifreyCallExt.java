@@ -33,7 +33,7 @@ public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
         Call node = (Call) superLang().typeCheck(this.node, tc);
         GallifreyMethodInstance mi = (GallifreyMethodInstance) node.methodInstance();
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
-        GallifreyType returnType = ts.checkArgs(mi.gallifreyInputTypes(), node().arguments());
+        GallifreyType returnType = ts.checkArgs(mi, node().arguments());
         if (mi.flags().contains(Flags.STATIC)) {
             this.gallifreyType = returnType;
         } else {

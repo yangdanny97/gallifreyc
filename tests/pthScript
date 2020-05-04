@@ -4,7 +4,7 @@
 # conforms to the following grammar.
 #
 #      ScriptFile   ::= CompilerTest+
-#      CompilerTest ::= ExtClassName ["CmdLineArgs"] { FileTest [; FileTest]* }
+#      CompilerTest ::= ExtClassName ["CmdLineArgs"] { FileTest [, Shared.gal, Unique.gal; FileTest]* }
 #      FileTest     ::= CompilationUnits [Description] [FailureSet]
 #  CompilationUnits ::= Filenames [, Filenames]*
 #      Filenames    ::= Filename [Filename]*
@@ -21,31 +21,49 @@
 #      Filename     :   the name of a file. Is interpreted from the 
 #                       directory where pth is run.
 #      LitString    :   a literal string, enclosed in quotes.
-#      RegExp       :   a regular expression, as in java.util.regex; 
+#      RegExp       :   a regular expression, as in java.util.regex, Shared.gal, Unique.gal; 
 #                       is always enclosed in quotes.
 #      CmdLineArgs  :   additional command line args for the Polyglot 
-#                       compiler; is always enclosed in quotes.
+#                       compiler, Shared.gal, Unique.gal; is always enclosed in quotes.
 
+// old tests
 gallifreyc.GallifreyExtensionInfo "-d out" {
-    # Hello.gal;
-    RefQualification1.gal;
-    RefQualification2a.gal;
-    RefQualification2b.gal;
-    RefQualification3.gal;
-    RefQualification4.gal;
-    RefQualification5.gal;
-    RefQualification6.gal;
-    RefQualification7.gal;
-    RefQualification8.gal;
-    Interface1.gal;
-    Interface2.gal;
-    Interface3.gal;
-    Interface4.gal;
-    FullInterface.gal;
-    Class1.gal;
-    Restriction1.gal;
-    Restriction2.gal;
-    Restriction3.gal;
-    InterfaceWithoutRefQualifiedTypes.gal;
-    Shared1.gal;
+    RefQualification1.gal, Shared.gal, Unique.gal;
+    RefQualification2a.gal, Shared.gal, Unique.gal;
+    RefQualification2b.gal, Shared.gal, Unique.gal;
+    RefQualification3.gal, Shared.gal, Unique.gal;
+    RefQualification4.gal, Shared.gal, Unique.gal;
+    RefQualification5.gal, Shared.gal, Unique.gal;
+    RefQualification6.gal, Shared.gal, Unique.gal (Semantic);
+    RefQualification7.gal, Shared.gal, Unique.gal;
+    RefQualification8.gal, Shared.gal, Unique.gal;
+    Interface1.gal, Shared.gal, Unique.gal;
+    Interface2.gal, Shared.gal, Unique.gal;
+    Interface3.gal, Shared.gal, Unique.gal;
+    Interface4.gal, Shared.gal, Unique.gal;
+    FullInterface.gal, Shared.gal, Unique.gal;
+    Class1.gal, Shared.gal, Unique.gal;
+    Restriction1.gal, Shared.gal, Unique.gal;
+    Restriction2.gal, Shared.gal, Unique.gal;
+    Restriction3.gal, Shared.gal, Unique.gal;
+    InterfaceWithoutRefQualifiedTypes.gal, Shared.gal, Unique.gal;
+    Shared1.gal, Shared.gal, Unique.gal;
+}
+
+// new tests
+gallifreyc.GallifreyExtensionInfo "-d out" {
+    TestFieldAssign.gal, Shared.gal, Unique.gal;
+    TestHoist.gal, Shared.gal, Unique.gal;
+    TestInitializer.gal, Shared.gal, Unique.gal;
+    TestInvalidAllows.gal, Shared.gal, Unique.gal (Semantic);
+    TestInvalidFieldAssign.gal, Shared.gal, Unique.gal (Semantic);
+    TestInvalidMissingQualifierArg.gal, Shared.gal, Unique.gal (Semantic);
+    TestInvalidMissingQualifierField.gal, Shared.gal, Unique.gal (Semantic);
+    TestInvalidNestedQualifier.gal, Shared.gal, Unique.gal (Semantic);
+    TestInvalidRestrictionClass.gal, Shared.gal, Unique.gal (Semantic);
+    TestInvalidRestrictionUnion.gal, Shared.gal, Unique.gal (Semantic);
+    TestInvalidTransition.gal, Shared.gal, Unique.gal (Semantic);
+    TestInvariantSubtyping.gal, Shared.gal, Unique.gal (Semantic);
+    TestRewrite.gal, Shared.gal, Unique.gal;
+    TestRewrite2.gal, Shared.gal, Unique.gal;
 }

@@ -36,7 +36,7 @@ public class GallifreyExtensionInfo extends JL7ExtensionInfo {
 
     @Override
     public String compilerName() {
-        return "gallifreycc";
+        return "gallifreyc";
     }
 
     @Override
@@ -66,5 +66,4 @@ public class GallifreyExtensionInfo extends JL7ExtensionInfo {
     public Scheduler createScheduler() {
         return new GallifreyScheduler(this);
     }
-
 }
