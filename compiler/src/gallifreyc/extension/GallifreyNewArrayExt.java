@@ -1,6 +1,7 @@
 package gallifreyc.extension;
 
 import polyglot.types.SemanticException;
+import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
 import gallifreyc.ast.MoveRef;
@@ -22,17 +23,12 @@ public class GallifreyNewArrayExt extends GallifreyExprExt {
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         NewArray node = (NewArray) superLang().typeCheck(this.node(), tc);
-        TypeNode t = node.baseType();
-        if (!(t instanceof RefQualifiedTypeNode)) {
-            throw new SemanticException("array must have qualification", node.position());
+        if (node.init() != null) {
+            GallifreyType initType = GallifreyExprExt.ext(node.init()).gallifreyType;
+            this.gallifreyType = new GallifreyType(initType.qualification());
+        } else {
+            this.gallifreyType = new GallifreyType(new MoveRef(Position.COMPILER_GENERATED));
         }
-        RefQualification q = ((RefQualifiedTypeNode) t).qualification();
-        GallifreyType initType = GallifreyExprExt.ext(node.init()).gallifreyType;
-        if (!initType.qualification().equals(q) && !(initType.qualification() instanceof MoveRef)) {
-            throw new SemanticException(
-                    "qualifications of array " + q + " and initializer " + initType.qualification + " do not match");
-        }
-        this.gallifreyType = new GallifreyType(q);
         return node;
     }
 }

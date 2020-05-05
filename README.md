@@ -24,12 +24,9 @@ va_cup.jar, and JFlex.jar or add these jar files to the gallifreyc/lib directory
 
 
 TODOs:
-- parsing ambiguity for qualified array types
-- expected failing test cases are failing with unexpected messages
-- varargs during procedure calls
+- debug test cases - imports, unexpected failure messages
 - default qualifications for stdlib
-- typesystem allow method override
-- inheritance field qualifications
+- inheritance - qualfication checking/method override
 - handling primitive types (canonical type nodes before typebuilding, no qualifiers needed)
 - AnyRef semantics
 
