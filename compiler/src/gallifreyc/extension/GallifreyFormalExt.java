@@ -1,9 +1,12 @@
 package gallifreyc.extension;
 
 import polyglot.types.SemanticException;
+import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeBuilder;
+import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
+import gallifreyc.ast.UnknownRef;
 import gallifreyc.types.GallifreyLocalInstance;
 import polyglot.ast.Formal;
 import polyglot.ast.Node;
@@ -11,6 +14,12 @@ import polyglot.ast.TypeNode;
 
 public class GallifreyFormalExt extends GallifreyExt {
     private static final long serialVersionUID = SerialVersionUID.generate();
+    
+    public RefQualification qualification;
+    
+    {
+        qualification = new UnknownRef(Position.COMPILER_GENERATED);
+    }
 
     @Override
     public Formal node() {
@@ -27,6 +36,7 @@ public class GallifreyFormalExt extends GallifreyExt {
         RefQualifiedTypeNode rt = (RefQualifiedTypeNode) t;
         GallifreyLocalInstance li = (GallifreyLocalInstance) n.localInstance();
         li.gallifreyType().qualification = rt.qualification();
+        qualification = rt.qualification();
         return n;
     }
 }

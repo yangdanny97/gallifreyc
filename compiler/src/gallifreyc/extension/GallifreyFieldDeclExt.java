@@ -13,9 +13,7 @@ import gallifreyc.ast.UnknownRef;
 import gallifreyc.types.GallifreyFieldInstance;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
-import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.FieldDecl;
-import polyglot.ast.LocalDecl;
 import polyglot.ast.Node;
 import polyglot.ast.TypeNode;
 

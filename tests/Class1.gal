@@ -1,6 +1,9 @@
 package gallifrey;
 
 class RemoveCollectionLost {
-	local String collection ;
-	RemoveCollectionLost ( unique String col ) { collection = move(col) ; }
+	local String collection;
+	
+	RemoveCollectionLost(unique String col) { 
+	   collection = move(col); 
+    }
 }

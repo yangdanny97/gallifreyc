@@ -1,10 +1,11 @@
 package gallifreyc.visit;
 
-import gallifreyc.ast.UnknownRef;
 import gallifreyc.extension.GallifreyExt;
 import gallifreyc.extension.GallifreyFieldDeclExt;
+import gallifreyc.extension.GallifreyFormalExt;
 import gallifreyc.extension.GallifreyLocalDeclExt;
 import polyglot.ast.FieldDecl;
+import polyglot.ast.Formal;
 import polyglot.ast.LocalDecl;
 import polyglot.ast.Node;
 import polyglot.ast.NodeFactory;
@@ -28,20 +29,18 @@ public class GallifreyTypeBuilder extends TypeBuilder {
 
             GallifreyFieldDeclExt extN = (GallifreyFieldDeclExt) GallifreyExt.ext(n);
             extM.qualification = extN.qualification();
-            
-            if (extM.qualification == null || extM.qualification() instanceof UnknownRef) {
-                throw new IllegalArgumentException("invalid qualification");
-            }
         }
         if (m instanceof LocalDecl) {
             GallifreyLocalDeclExt extM = (GallifreyLocalDeclExt) GallifreyExt.ext(m);
 
             GallifreyLocalDeclExt extN = (GallifreyLocalDeclExt) GallifreyExt.ext(n);
             extM.qualification = extN.qualification();
-            
-            if (extM.qualification == null || extM.qualification() instanceof UnknownRef) {
-                throw new IllegalArgumentException("invalid qualification");
-            }
+        }
+        if (m instanceof Formal) {
+            GallifreyFormalExt extM = (GallifreyFormalExt) GallifreyExt.ext(m);
+
+            GallifreyFormalExt extN = (GallifreyFormalExt) GallifreyExt.ext(n);
+            extM.qualification = extN.qualification;
         }
 
         return m;

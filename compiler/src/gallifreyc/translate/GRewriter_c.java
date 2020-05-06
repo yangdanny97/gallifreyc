@@ -5,10 +5,12 @@ import gallifreyc.ast.UnknownRef;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyExt;
 import gallifreyc.extension.GallifreyFieldDeclExt;
+import gallifreyc.extension.GallifreyFormalExt;
 import gallifreyc.extension.GallifreyLang;
 import gallifreyc.extension.GallifreyLocalDeclExt;
 import polyglot.ast.Expr;
 import polyglot.ast.FieldDecl;
+import polyglot.ast.Formal;
 import polyglot.ast.LocalDecl;
 import polyglot.ast.Node;
 import polyglot.frontend.ExtensionInfo;
@@ -48,7 +50,7 @@ public abstract class GRewriter_c extends ExtensionRewriter implements GRewriter
                 throw new IllegalArgumentException("no gallifrey type found");
             }
             if (extM.gallifreyType().qualification() instanceof UnknownRef) {
-                throw new IllegalArgumentException("invalid qualification");
+                throw new IllegalArgumentException("invalid qualification: " + m);
             }
 
         }
@@ -59,7 +61,7 @@ public abstract class GRewriter_c extends ExtensionRewriter implements GRewriter
             extM.qualification = extN.qualification();
             
             if (extM.qualification == null || extM.qualification() instanceof UnknownRef) {
-                throw new IllegalArgumentException("invalid qualification");
+                throw new IllegalArgumentException("invalid qualification: " + m);
             }
         }
         if (m instanceof LocalDecl) {
@@ -69,7 +71,17 @@ public abstract class GRewriter_c extends ExtensionRewriter implements GRewriter
             extM.qualification = extN.qualification();
             
             if (extM.qualification == null || extM.qualification() instanceof UnknownRef) {
-                throw new SemanticException("invalid qualification");
+                throw new IllegalArgumentException("invalid qualification "+ m);
+            }
+        }
+        if (m instanceof Formal) {
+            GallifreyFormalExt extM = (GallifreyFormalExt) GallifreyExt.ext(m);
+
+            GallifreyFormalExt extN = (GallifreyFormalExt) GallifreyExt.ext(n);
+            extM.qualification = extN.qualification;
+            
+            if (extM.qualification == null || extM.qualification instanceof UnknownRef) {
+                throw new IllegalArgumentException("invalid qualification "+ m);
             }
         }
 

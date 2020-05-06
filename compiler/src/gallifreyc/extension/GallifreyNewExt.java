@@ -2,17 +2,13 @@ package gallifreyc.extension;
 
 import polyglot.types.ClassType;
 import polyglot.types.Context;
-import polyglot.types.Flags;
 import polyglot.types.SemanticException;
 import polyglot.util.CodeWriter;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.AmbiguityRemover;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeChecker;
-import gallifreyc.ast.MoveRef;
 import gallifreyc.types.GallifreyConstructorInstance;
-import gallifreyc.types.GallifreyMethodInstance;
-import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.Expr;
 import polyglot.ast.New;

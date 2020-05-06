@@ -3,6 +3,7 @@ package gallifreyc.translate;
 import java.util.ArrayList;
 import java.util.List;
 
+import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.MatchRestriction;
 import gallifreyc.ast.Transition;
 import gallifreyc.extension.GallifreyExprExt;
@@ -10,7 +11,6 @@ import gallifreyc.extension.GallifreyExt;
 import gallifreyc.extension.GallifreyLang;
 import gallifreyc.extension.GallifreyLocalDeclExt;
 import gallifreyc.types.GallifreyLocalInstance;
-import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.ArrayAccess;
 import polyglot.ast.Block;
 import polyglot.ast.Expr;
@@ -20,15 +20,12 @@ import polyglot.ast.Local;
 import polyglot.ast.LocalDecl;
 import polyglot.ast.NamedVariable;
 import polyglot.ast.Node;
-import polyglot.ast.NodeFactory;
 import polyglot.ast.ProcedureCall;
 import polyglot.ast.Special;
 import polyglot.ast.Stmt;
 import polyglot.frontend.ExtensionInfo;
 import polyglot.frontend.Job;
-import polyglot.translate.ExtensionRewriter;
 import polyglot.types.Flags;
-import polyglot.types.LocalInstance_c;
 import polyglot.types.SemanticException;
 import polyglot.util.Position;
 import polyglot.visit.NodeVisitor;
@@ -45,14 +42,20 @@ public class ANormalizer extends GRewriter_c implements GRewriter {
     public GallifreyLang lang() {
         return (GallifreyLang) super.lang();
     }
+    
+    @Override
+    public Node leaveCall(Node old, Node n, NodeVisitor v) throws SemanticException {
+        return super.leaveCall(old, n, v);
+    }
 
     // hoist an expression e and replace it with a fresh temp
     private Expr hoist(Expr e) {
         // variables and literals are safe
         if (e instanceof NamedVariable || e instanceof Lit || e instanceof Special)
             return e;
+        
         // hoist everything else
-        NodeFactory nf = nodeFactory();
+        GallifreyNodeFactory nf = nodeFactory();
         Position p = e.position();
         String fresh = lang().freshVar();
 

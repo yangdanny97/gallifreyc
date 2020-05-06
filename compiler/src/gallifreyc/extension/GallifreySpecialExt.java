@@ -1,6 +1,7 @@
 package gallifreyc.extension;
 
 import polyglot.types.SemanticException;
+import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
 import gallifreyc.ast.LocalRef;
@@ -16,12 +17,15 @@ public class GallifreySpecialExt extends GallifreyExprExt {
     public Special node() {
         return (Special) super.node();
     }
+    
+    {
+        gallifreyType = new GallifreyType(new LocalRef(Position.COMPILER_GENERATED));
+    }
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         // this & super are always local
-        Expr node = node();
-        this.gallifreyType = new GallifreyType(new LocalRef(node.position()));
-        return superLang().typeCheck(this.node(), tc);
+        Expr node = (Expr) superLang().typeCheck(this.node(), tc);
+        return node;
     }
 }

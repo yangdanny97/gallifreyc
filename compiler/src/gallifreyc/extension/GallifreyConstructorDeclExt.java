@@ -6,7 +6,6 @@ import java.util.List;
 import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.translate.GRewriter;
-import gallifreyc.types.GallifreyConstructorInstance;
 import gallifreyc.types.GallifreyProcedureInstance;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.CanonicalTypeNode;

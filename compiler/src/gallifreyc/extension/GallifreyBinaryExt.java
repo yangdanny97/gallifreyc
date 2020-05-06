@@ -1,6 +1,7 @@
 package gallifreyc.extension;
 
 import polyglot.types.SemanticException;
+import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
 import gallifreyc.ast.LocalRef;
@@ -12,6 +13,10 @@ import polyglot.ast.Node;
 public class GallifreyBinaryExt extends GallifreyExprExt {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
+    {
+        gallifreyType = new GallifreyType(new LocalRef(Position.COMPILER_GENERATED));
+    }
+    
     @Override
     public Binary node() {
         return (Binary) super.node();
@@ -20,7 +25,6 @@ public class GallifreyBinaryExt extends GallifreyExprExt {
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         Expr node = (Expr) superLang().typeCheck(this.node(), tc);
-        this.gallifreyType = new GallifreyType(new LocalRef(node.position()));
         return node;
     }
 }

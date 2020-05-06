@@ -1,7 +1,6 @@
 package gallifreyc.extension;
 
 import gallifreyc.types.GallifreyProcedureInstance;
-import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.ConstructorCall;
 import polyglot.ast.Node;

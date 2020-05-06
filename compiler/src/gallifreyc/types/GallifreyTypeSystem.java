@@ -4,7 +4,6 @@ import java.util.List;
 
 import gallifreyc.ast.RefQualification;
 import polyglot.ast.Expr;
-import polyglot.ast.Formal;
 import polyglot.ext.jl5.types.TypeVariable;
 import polyglot.ext.jl7.types.JL7TypeSystem;
 import polyglot.types.ClassType;

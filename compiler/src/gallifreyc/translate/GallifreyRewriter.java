@@ -3,20 +3,16 @@ package gallifreyc.translate;
 import polyglot.ast.*;
 import polyglot.frontend.ExtensionInfo;
 import polyglot.frontend.Job;
-import polyglot.translate.ExtensionRewriter;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
-import polyglot.util.ErrorInfo;
 import polyglot.util.Position;
 import polyglot.visit.NodeVisitor;
 import gallifreyc.ast.*;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyExt;
-import gallifreyc.extension.GallifreyFieldDeclExt;
+import gallifreyc.extension.GallifreyFormalExt;
 import gallifreyc.extension.GallifreyLang;
 import gallifreyc.extension.GallifreyLocalDeclExt;
-import gallifreyc.types.GallifreyTypeSystem;
-
 import java.util.*;
 
 // move a-normalization to earlier pass, translations for transition and match
@@ -29,7 +25,7 @@ public class GallifreyRewriter extends GRewriter_c implements GRewriter {
     public GallifreyLang lang() {
         return (GallifreyLang) super.lang();
     }
-    
+
     @Override
     public GallifreyNodeFactory nodeFactory() {
         return (GallifreyNodeFactory) super.nodeFactory();
@@ -42,6 +38,11 @@ public class GallifreyRewriter extends GRewriter_c implements GRewriter {
     @Override
     public TypeNode typeToJava(Type t, Position pos) {
         return super.typeToJava(t, pos);
+    }
+
+    @Override
+    public Node leaveCall(Node old, Node n, NodeVisitor v) throws SemanticException {
+        return super.leaveCall(old, n, v);
     }
 
     // wrap unique/shared refs with .value, AFTER rewriting
@@ -168,11 +169,26 @@ public class GallifreyRewriter extends GRewriter_c implements GRewriter {
             return s;
         }
 
+        if (n instanceof Formal) {
+            Formal f = (Formal) n;
+            GallifreyFormalExt ext = (GallifreyFormalExt) GallifreyExt.ext(n);
+            RefQualification q = ext.qualification;
+            if (q instanceof SharedRef) {
+                f = f.type(
+                        nf.TypeNodeFromQualifiedName(f.position(), "Shared<" + f.type().type().toString() + ">"));
+            }
+            if (q instanceof UniqueRef) {
+                f = f.type(
+                        nf.TypeNodeFromQualifiedName(f.position(), "Unique<" + f.type().type().toString() + ">"));
+            }
+            return f;
+        }
+
         // add Unique and Shared decls
         if (n instanceof SourceFile) {
             NodeFactory nf = nodeFactory();
             SourceFile sf = (SourceFile) n;
-            //HACK: don't add imports if the source file is Unique or Shared wrappers
+            // HACK: don't add imports if the source file is Unique or Shared wrappers
             for (TopLevelDecl d : sf.decls()) {
                 if (d.name().equals("Unique") || d.name().equals("Shared")) {
                     return sf;

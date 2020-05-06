@@ -5,12 +5,9 @@ import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
 import gallifreyc.ast.MoveRef;
-import gallifreyc.ast.RefQualification;
-import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.NewArray;
 import polyglot.ast.Node;
-import polyglot.ast.TypeNode;
 
 public class GallifreyNewArrayExt extends GallifreyExprExt {
     private static final long serialVersionUID = SerialVersionUID.generate();

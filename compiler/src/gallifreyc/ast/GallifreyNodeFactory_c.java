@@ -5,7 +5,6 @@ import polyglot.ast.*;
 import gallifreyc.extension.*;
 import polyglot.ext.jl5.parse.FlagAnnotations;
 import polyglot.ext.jl7.ast.JL7NodeFactory_c;
-import polyglot.types.Type;
 import polyglot.util.*;
 import java.util.*;
 
