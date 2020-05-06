@@ -10,6 +10,7 @@ import gallifreyc.extension.GallifreyExt;
 import gallifreyc.extension.GallifreyLang;
 import gallifreyc.extension.GallifreyLocalDeclExt;
 import gallifreyc.types.GallifreyLocalInstance;
+import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.ArrayAccess;
 import polyglot.ast.Block;
 import polyglot.ast.Expr;
@@ -32,7 +33,7 @@ import polyglot.types.SemanticException;
 import polyglot.util.Position;
 import polyglot.visit.NodeVisitor;
 
-public class ANormalizer extends ExtensionRewriter implements GRewriter {
+public class ANormalizer extends GRewriter_c implements GRewriter {
     List<Stmt> hoisted;
 
     public ANormalizer(Job job, ExtensionInfo from_ext, ExtensionInfo to_ext) {
@@ -55,23 +56,26 @@ public class ANormalizer extends ExtensionRewriter implements GRewriter {
         Position p = e.position();
         String fresh = lang().freshVar();
 
+        // hoisted local decl
         LocalDecl l = nf.LocalDecl(p, Flags.NONE, nf.CanonicalTypeNode(p, e.type()), nf.Id(p, fresh), e);
 
+        // transfer qualification
         GallifreyExprExt ext = GallifreyExprExt.ext(e);
+        GallifreyLocalInstance li = (GallifreyLocalInstance) typeSystem().localInstance(e.position(), Flags.NONE,
+                e.type(), fresh);
+        li = li.gallifreyType(ext.gallifreyType());
+        l = l.localInstance(li);
+        
         GallifreyLocalDeclExt lde = (GallifreyLocalDeclExt) GallifreyExt.ext(l);
         lde.qualification = ext.gallifreyType().qualification;
 
-        GallifreyLocalInstance li = (GallifreyLocalInstance) typeSystem().localInstance(e.position(), Flags.NONE,
-                e.type(), fresh);
-
-        li = li.gallifreyType(ext.gallifreyType());
-        l = l.localInstance(li);
-
         hoisted.add(l);
 
+        // new local variable to replace original expr
         Local newLocal = nf.Local(p, nf.Id(p, fresh));
-        newLocal = newLocal.localInstance(new LocalInstance_c(typeSystem(), e.position(), Flags.NONE, e.type(), fresh));
-
+        newLocal = newLocal.localInstance(li);
+        GallifreyExprExt localExt = GallifreyExprExt.ext(newLocal);
+        localExt.gallifreyType = ext.gallifreyType();
         return newLocal;
     }
 

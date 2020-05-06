@@ -13,6 +13,7 @@ import polyglot.visit.AmbiguityRemover;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeBuilder;
+import polyglot.visit.TypeChecker;
 
 public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTypeNode {
     private static final long serialVersionUID = SerialVersionUID.generate();
@@ -50,12 +51,16 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
         if (base instanceof RefQualifiedTypeNode) {
             throw new SemanticException("cannot nest ref-qualifications", this.position());
         }
+        return super.buildTypes(tb);
+    }
+    
+    @Override 
+    public Node typeCheck(TypeChecker tc) throws SemanticException {
         return type(base.type());
     }
 
     @Override
     public Node disambiguate(AmbiguityRemover ar) throws SemanticException {
-        ar.typeSystem();
         NodeFactory nf = ar.nodeFactory();
         Type baseType = base.type();
 

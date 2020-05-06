@@ -1,9 +1,10 @@
 package gallifrey;
 
 public class Unique<T> {
-	public local T VALUE;
+	public T VALUE;
+	public T TEMP = null;
 	
-	public Unique(local T VALUE) {
+	public Unique(T VALUE) {
 		this.VALUE = VALUE;
 	}
 } 

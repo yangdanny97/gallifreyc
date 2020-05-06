@@ -17,7 +17,7 @@ public class GallifreyMethodInstance_c extends JL5MethodInstance_c implements Ga
     private static final long serialVersionUID = SerialVersionUID.generate();
 
     public GallifreyType gallifreyReturnType;
-    public List<GallifreyType> gallifreyInputs;
+    public List<GallifreyType> gallifreyInputs = new ArrayList<>();
 
     public GallifreyMethodInstance_c(GallifreyTypeSystem ts, Position pos, ReferenceType container, Flags flags,
             Type returnType, String name, List<? extends Type> argTypes, List<? extends Type> excTypes,

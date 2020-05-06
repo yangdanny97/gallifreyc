@@ -14,13 +14,13 @@ va_cup.jar, and JFlex.jar or add these jar files to the gallifreyc/lib directory
 
 | Package                | Contents                                                      |
 |------------------------|---------------------------------------------------------------|
-| `gallifreyc`           | Scheduler                                                     |
-| `gallifreyc.ast`       | NodeFactory, new AST nodes                                    |
-| `gallifreyc.extension` | ExtFactory, Language dispatcher, exts for existing AST nodes  |
-| `gallifreyc.parse`     | Lexer (`.flex`) and Parser (`.ppg` compiles to `.cup`)        |
-| `gallifreyc.translate` | Rewriters                                                     |
-| `gallifreyc.types`     | TypeSystem and Type object overrides                          |
-| `gallifreyc.visit`     | TypeChecker                                                   |
+| gallifreyc             | Scheduler                                                     |
+| gallifreyc.ast         | NodeFactory, new AST nodes                                    |
+| gallifreyc.extension   | ExtFactory, Language dispatcher, exts for existing AST nodes  |
+| gallifreyc.parse       | Lexer (.flex) and Parser (.ppg compiles to .cup)              |
+| gallifreyc.translate   | Rewriters                                                     |
+| gallifreyc.types       | TypeSystem and Type object overrides                          |
+| gallifreyc.visit       | TypeChecker                                                   |
 
 
 TODOs:

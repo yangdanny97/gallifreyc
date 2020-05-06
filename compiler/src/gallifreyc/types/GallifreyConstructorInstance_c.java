@@ -1,5 +1,6 @@
 package gallifreyc.types;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import gallifreyc.ast.MoveRef;
@@ -17,7 +18,7 @@ public class GallifreyConstructorInstance_c extends JL5ConstructorInstance_c imp
     private static final long serialVersionUID = SerialVersionUID.generate();
 
     public GallifreyType gallifreyReturnType;
-    public List<GallifreyType> gallifreyInputs;
+    public List<GallifreyType> gallifreyInputs = new ArrayList<>();
 
     public GallifreyConstructorInstance_c(GallifreyTypeSystem ts, Position pos, ClassType container, Flags flags,
             List<? extends Type> argTypes, List<? extends Type> excTypes, List<? extends TypeVariable> typeParams,

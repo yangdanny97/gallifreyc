@@ -25,6 +25,19 @@ public class GallifreyScheduler extends JL7Scheduler {
      * PASS ORDERING: Validated <<RewriteFieldInitPass>> <<ANormalizePass>>
      * <<FinalRewritePass>> CodeGenerated
      */
+    
+    @Override
+    public Goal TypesInitialized(Job job) {
+        TypeSystem ts = extInfo.typeSystem();
+        NodeFactory nf = extInfo.nodeFactory();
+        Goal g = new VisitorGoal(job, new GallifreyTypeBuilder(job, ts, nf));
+        try {
+            g.addPrerequisiteGoal(Parsed(job), this);
+        } catch (CyclicDependencyException e) {
+            throw new InternalCompilerError(e);
+        }
+        return internGoal(g);
+    }
 
     @Override
     public Goal TypeChecked(Job job) {

@@ -181,6 +181,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         boolean allMoves = true;
         List<GallifreyType> params = pi.gallifreyInputTypes();
         List<GallifreyType> argTypes = new ArrayList<>();
+        
         //TODO check owners
         
         for (Expr e : args) {
@@ -199,6 +200,11 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
                 // the last (variable) argument can consume 0 or more of the actual arguments.
                 throw new SemanticException("invalid number of arguments");
             }
+        }
+        
+        // HACK: assume imported functions take in all-locals
+        if (params.size() == 0) {
+            params.add(new GallifreyType(new LocalRef(Position.COMPILER_GENERATED)));
         }
         
         for (int i = 0; i < argTypes.size(); i++) {

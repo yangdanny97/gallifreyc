@@ -6,17 +6,21 @@ import polyglot.frontend.Job;
 import polyglot.translate.ExtensionRewriter;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
+import polyglot.util.ErrorInfo;
 import polyglot.util.Position;
 import polyglot.visit.NodeVisitor;
 import gallifreyc.ast.*;
 import gallifreyc.extension.GallifreyExprExt;
+import gallifreyc.extension.GallifreyExt;
+import gallifreyc.extension.GallifreyFieldDeclExt;
 import gallifreyc.extension.GallifreyLang;
+import gallifreyc.extension.GallifreyLocalDeclExt;
 import gallifreyc.types.GallifreyTypeSystem;
 
 import java.util.*;
 
 // move a-normalization to earlier pass, translations for transition and match
-public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
+public class GallifreyRewriter extends GRewriter_c implements GRewriter {
     final String VALUE = "VALUE";
     final String RES = "RESTRICTION";
     final String TEMP = "TEMP";
@@ -24,6 +28,11 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
     @Override
     public GallifreyLang lang() {
         return (GallifreyLang) super.lang();
+    }
+    
+    @Override
+    public GallifreyNodeFactory nodeFactory() {
+        return (GallifreyNodeFactory) super.nodeFactory();
     }
 
     public GallifreyRewriter(Job job, ExtensionInfo from_ext, ExtensionInfo to_ext) {
@@ -39,12 +48,7 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
     private Node wrapExpr(Expr e) {
         GallifreyExprExt ext = GallifreyExprExt.ext(e);
         RefQualification q;
-        try {
-            q = ext.gallifreyType.qualification();
-        } catch (Exception ex) {
-            System.out.println(e.toString());
-            throw ex;
-        }
+        q = ext.gallifreyType.qualification();
         if (q instanceof SharedRef || q instanceof UniqueRef) {
             Expr new_e = qq().parseExpr("(%E)." + VALUE, e);
             return new_e;
@@ -53,7 +57,7 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
     }
 
     private Node rewriteExpr(Node n) throws SemanticException {
-        NodeFactory nf = nodeFactory();
+        GallifreyNodeFactory nf = nodeFactory();
 
         // unwrap Moves
         if (n instanceof Move) {
@@ -61,6 +65,7 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
             Move m = (Move) n;
             Position p = n.position();
             Expr e = m.expr();
+            GallifreyExprExt ext = GallifreyExprExt.ext(e);
 
             // HACK: re-wrap unique exprs inside of Moves
             if (e instanceof Field) {
@@ -79,9 +84,10 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
             FieldAssign fa1 = nf.FieldAssign(p, tempField, Assign.ASSIGN, valueField);
             FieldAssign fa2 = nf.FieldAssign(p, valueField2, Assign.ASSIGN, nf.NullLit(p));
 
-            Expr cond = nf.Binary(p, fa1, Binary.EQ, fa2);
-            Expr conditional = nf.Conditional(p, cond, tempField2, tempField3);
-
+            Expr condition = nf.Binary(p, fa1, Binary.EQ, fa2);
+            Expr conditional = nf.Conditional(p, condition, tempField2, tempField3);
+            GallifreyExprExt condExt = GallifreyExprExt.ext(conditional);
+            condExt.gallifreyType(ext.gallifreyType());
             return conditional;
         }
         return n;
@@ -91,8 +97,9 @@ public class GallifreyRewriter extends ExtensionRewriter implements GRewriter {
         if (n instanceof LocalDecl) {
             // rewrite RHS of decls
             LocalDecl l = (LocalDecl) n;
+            GallifreyLocalDeclExt lde = (GallifreyLocalDeclExt) GallifreyExt.ext(l);
             Expr rhs = l.init();
-            RefQualification q = GallifreyExprExt.ext(rhs).gallifreyType().qualification();
+            RefQualification q = lde.qualification();
             if (q instanceof SharedRef) {
                 SharedRef s = (SharedRef) q;
                 RestrictionId rid = s.restriction();

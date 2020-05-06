@@ -3,6 +3,6 @@ package gallifrey;
 public class Hello {
     public static void main(local String[] args) {
         unique String phrase = "Hello world!";
-        System.out.println(phrase);
+        System.out.println(move(phrase));
     }
 }

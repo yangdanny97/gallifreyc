@@ -70,4 +70,9 @@ public class GallifreyType implements Serializable {
     public boolean isLocal() {
         return qualification instanceof LocalRef;
     }
+
+    @Override
+    public String toString() {
+        return "GallifreyType<" + qualification.toString() + ">";
+    }
 }

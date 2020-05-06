@@ -9,6 +9,7 @@ import gallifreyc.translate.GRewriter;
 import gallifreyc.types.GallifreyConstructorInstance;
 import gallifreyc.types.GallifreyProcedureInstance;
 import gallifreyc.types.GallifreyType;
+import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.ConstructorDecl;
 import polyglot.ast.Formal;
 import polyglot.ast.Node;
@@ -50,11 +51,11 @@ public class GallifreyConstructorDeclExt extends GallifreyExt implements Gallifr
         List<GallifreyType> inputTypes = new ArrayList<>();
 
         for (Formal f : cd.formals()) {
-            if (!(f.type() instanceof RefQualifiedTypeNode) && (f.declType() == null || !f.declType().isPrimitive())) {
+            if (!(f.type() instanceof RefQualifiedTypeNode) && !(f.type() instanceof CanonicalTypeNode)) {
                 throw new SemanticException("param types must be ref qualified: " + f.name(), f.position());
             }
-            //TODO check this...
-            GallifreyType fQ = (f.declType() == null && f.declType().isPrimitive())
+
+            GallifreyType fQ = (f.type() instanceof CanonicalTypeNode)
                     ? new GallifreyType(new MoveRef(Position.COMPILER_GENERATED))
                     : new GallifreyType(((RefQualifiedTypeNode) f.type()).qualification());
             inputTypes.add(fQ);
