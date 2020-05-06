@@ -48,4 +48,6 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
 
     // check qualifications as if we were doing an assignment of toType = fromType
     public boolean checkQualifications(GallifreyType fromType, GallifreyType toType);
+    
+    public List<RefQualification> normalizeLocals(List<RefQualification> qualifications);
 }

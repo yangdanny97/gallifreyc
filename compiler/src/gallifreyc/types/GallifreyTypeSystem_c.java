@@ -10,6 +10,7 @@ import polyglot.types.*;
 import polyglot.util.*;
 
 public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyTypeSystem {
+
     public Map<String, String> restrictionMap;
     public Map<String, List<String>> restrictionUnionMap;
 
@@ -247,5 +248,25 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
             }
         }
         return super.isCastValidFromArray(arrayType, toType);
+    }
+    
+    public List<RefQualification> normalizeLocals(List<RefQualification> qualifications) {
+        int counter = 0;
+        Map<String, Integer> ownerMap = new HashMap<>();
+        List<RefQualification> result = new ArrayList<>();
+        for (RefQualification q : qualifications) {
+            if (q instanceof LocalRef) {
+                LocalRef l = (LocalRef) q;
+                if (!ownerMap.containsKey(l.ownerAnnotation)) {
+                    counter++;
+                    ownerMap.put(l.ownerAnnotation, counter);
+                }
+                String ownerName = "OWNER_"+ownerMap.get(l.ownerAnnotation);
+                result.add(new LocalRef(l.position(), ownerName));
+            } else {
+                result.add(q);
+            }
+        }
+        return result;
     }
 }

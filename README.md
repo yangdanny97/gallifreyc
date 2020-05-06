@@ -26,5 +26,4 @@ va_cup.jar, and JFlex.jar or add these jar files to the gallifreyc/lib directory
 TODOs:
 - debug test cases
 - default qualifications for stdlib
-- inheritance - qualfication checking/method override
 

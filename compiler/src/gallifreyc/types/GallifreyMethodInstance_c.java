@@ -1,6 +1,8 @@
 package gallifreyc.types;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import gallifreyc.ast.RefQualification;
@@ -9,6 +11,7 @@ import polyglot.ext.jl5.types.TypeVariable;
 import polyglot.types.Flags;
 import polyglot.types.MethodInstance;
 import polyglot.types.ReferenceType;
+import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
@@ -24,6 +27,7 @@ public class GallifreyMethodInstance_c extends JL5MethodInstance_c implements Ga
             List<? extends TypeVariable> typeParams, List<RefQualification> in, RefQualification out) {
         super(ts, pos, container, flags, returnType, name, argTypes, excTypes, typeParams);
         this.gallifreyInputs = new ArrayList<>();
+        in = ts.normalizeLocals(in);
         for (RefQualification i : in) {
             gallifreyInputs.add(new GallifreyType(i));
         }
@@ -69,4 +73,41 @@ public class GallifreyMethodInstance_c extends JL5MethodInstance_c implements Ga
         return super.isSameMethodImpl(mi);
     }
 
+    @Override
+    public boolean canOverrideImpl(MethodInstance mj_, boolean quiet) throws SemanticException {
+        GallifreyMethodInstance g = (GallifreyMethodInstance) mj_;
+        if (!g.gallifreyInputTypes().equals(gallifreyInputs)) {
+            return false;
+        }
+        return super.canOverrideImpl(mj_, quiet);
+    }
+
+    @Override
+    protected List<MethodInstance> implementedImplAux(ReferenceType rt) {
+        if (rt == null) {
+            return Collections.<MethodInstance> emptyList();
+        }
+
+        List<MethodInstance> l = new LinkedList<>();
+        List<MethodInstance> methods = new ArrayList<>();
+        for (MethodInstance mi : rt.methods(name, formalTypes)) {
+            GallifreyMethodInstance g = (GallifreyMethodInstance) mi;
+            if (g.gallifreyInputTypes().equals(gallifreyInputs)) {
+                methods.add(mi);
+            }
+        }
+        l.addAll(methods);
+
+        Type superType = rt.superType();
+        if (superType != null) {
+            l.addAll(implementedImplAux(superType.toReference()));
+        }
+
+        List<? extends ReferenceType> ints = rt.interfaces();
+        for (ReferenceType rt2 : ints) {
+            l.addAll(implementedImplAux(rt2));
+        }
+
+        return l;
+    }
 }

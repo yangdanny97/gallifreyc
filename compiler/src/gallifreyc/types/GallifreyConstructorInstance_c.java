@@ -25,6 +25,7 @@ public class GallifreyConstructorInstance_c extends JL5ConstructorInstance_c imp
             List<RefQualification> in) {
         super(ts, pos, container, flags, argTypes, excTypes, typeParams);
         this.gallifreyReturnType = new GallifreyType(new MoveRef(Position.COMPILER_GENERATED));
+        in = ts.normalizeLocals(in);
         for (RefQualification i : in) {
             gallifreyInputs.add(new GallifreyType(i));
         }
