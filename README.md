@@ -24,9 +24,7 @@ va_cup.jar, and JFlex.jar or add these jar files to the gallifreyc/lib directory
 
 
 TODOs:
-- debug test cases - imports, unexpected failure messages
+- debug test cases
 - default qualifications for stdlib
 - inheritance - qualfication checking/method override
-- handling primitive types (canonical type nodes before typebuilding, no qualifiers needed)
-- AnyRef semantics
 

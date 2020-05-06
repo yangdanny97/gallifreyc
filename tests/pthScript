@@ -37,7 +37,7 @@ gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out" {
     RefQualification2a.gal;
     RefQualification2b.gal;
     RefQualification3.gal;
-    RefQualification4.gal;
+    RefQualification4.gal (Semantic);
     RefQualification5.gal;
     RefQualification6.gal (Semantic);
     RefQualification7.gal;

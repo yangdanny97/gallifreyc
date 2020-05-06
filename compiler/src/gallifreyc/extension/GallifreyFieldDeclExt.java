@@ -6,6 +6,7 @@ import polyglot.util.SerialVersionUID;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
+import gallifreyc.ast.LocalRef;
 import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
@@ -13,6 +14,7 @@ import gallifreyc.ast.UnknownRef;
 import gallifreyc.types.GallifreyFieldInstance;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
+import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.FieldDecl;
 import polyglot.ast.Node;
 import polyglot.ast.TypeNode;
@@ -30,10 +32,11 @@ public class GallifreyFieldDeclExt extends GallifreyExt implements GallifreyOps 
     @Override
     public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
         TypeNode t = node().type();
-        if (!(t instanceof RefQualifiedTypeNode)) {
-            throw new SemanticException("cannot declare unqualified field");
+        if (t instanceof RefQualifiedTypeNode
+                || (t instanceof CanonicalTypeNode && ((CanonicalTypeNode) t).type().isPrimitive())) {
+            return superLang().buildTypesEnter(node(), tb);
         }
-        return super.buildTypesEnter(tb);
+        throw new SemanticException("cannot declare unqualified field", node().position());
     }
 
     @Override
@@ -44,8 +47,8 @@ public class GallifreyFieldDeclExt extends GallifreyExt implements GallifreyOps 
         if (t instanceof RefQualifiedTypeNode) {
             q = ((RefQualifiedTypeNode) t).qualification();
         } else {
-            // for primitives - placeholder
-            q = new MoveRef(Position.COMPILER_GENERATED);
+            // for primitives
+            q = new LocalRef(Position.COMPILER_GENERATED);
         }
         qualification = q;
         GallifreyFieldInstance fi = (GallifreyFieldInstance) node.fieldInstance();

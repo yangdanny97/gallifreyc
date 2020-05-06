@@ -1,5 +1,6 @@
 package gallifreyc.extension;
 
+import gallifreyc.ast.LocalRef;
 import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
@@ -7,6 +8,7 @@ import gallifreyc.ast.UnknownRef;
 import gallifreyc.types.GallifreyLocalInstance;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
+import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.LocalDecl;
 import polyglot.ast.Node;
 import polyglot.ast.TypeNode;
@@ -30,10 +32,11 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
     @Override
     public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
         TypeNode t = node().type();
-        if (!(t instanceof RefQualifiedTypeNode)) {
-            throw new SemanticException("cannot declare unqualified local");
+        if (t instanceof RefQualifiedTypeNode
+                || (t instanceof CanonicalTypeNode && ((CanonicalTypeNode) t).type().isPrimitive())) {
+            return superLang().buildTypesEnter(node(), tb);
         }
-        return super.buildTypesEnter(tb);
+        throw new SemanticException("cannot declare unqualified local", node().position());
     }
 
     @Override
@@ -44,8 +47,8 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
         if (t instanceof RefQualifiedTypeNode) {
             q = ((RefQualifiedTypeNode) t).qualification();
         } else {
-            // for primitives - placeholder
-            q = new MoveRef(Position.COMPILER_GENERATED);
+            // for primitives
+            q = new LocalRef(Position.COMPILER_GENERATED);
         }
         qualification = q;
         GallifreyLocalInstance li = (GallifreyLocalInstance) node.localInstance();

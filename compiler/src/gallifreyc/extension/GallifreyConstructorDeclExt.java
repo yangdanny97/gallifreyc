@@ -3,6 +3,7 @@ package gallifreyc.extension;
 import java.util.ArrayList;
 import java.util.List;
 
+import gallifreyc.ast.LocalRef;
 import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.translate.GRewriter;
@@ -13,6 +14,7 @@ import polyglot.ast.ConstructorDecl;
 import polyglot.ast.Formal;
 import polyglot.ast.Node;
 import polyglot.ast.ProcedureDeclOps;
+import polyglot.ast.TypeNode;
 import polyglot.translate.ExtensionRewriter;
 import polyglot.types.Flags;
 import polyglot.types.SemanticException;
@@ -42,6 +44,22 @@ public class GallifreyConstructorDeclExt extends GallifreyExt implements Gallifr
     public ConstructorDecl node() {
         return (ConstructorDecl) super.node();
     }
+    
+    @Override
+    public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
+        ConstructorDecl cd = node();
+
+        for (Formal f : cd.formals()) {
+            TypeNode t = f.type();
+            if (t instanceof RefQualifiedTypeNode
+                    || (t instanceof CanonicalTypeNode && ((CanonicalTypeNode) t).type().isPrimitive())) {
+                continue;
+            }
+            throw new SemanticException("cannot declare unqualified argument", f.position());
+        }
+        
+        return superLang().buildTypesEnter(node(), tb);
+    }
 
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
@@ -50,14 +68,15 @@ public class GallifreyConstructorDeclExt extends GallifreyExt implements Gallifr
         List<GallifreyType> inputTypes = new ArrayList<>();
 
         for (Formal f : cd.formals()) {
-            if (!(f.type() instanceof RefQualifiedTypeNode) && !(f.type() instanceof CanonicalTypeNode)) {
-                throw new SemanticException("param types must be ref qualified: " + f.name(), f.position());
+            TypeNode t = f.type();
+            if (t instanceof RefQualifiedTypeNode) {
+                GallifreyType fQ = new GallifreyType(((RefQualifiedTypeNode) f.type()).qualification());
+                inputTypes.add(fQ);
+            } else {
+             // primitive param types = take in LOCAL
+                GallifreyType fQ = new GallifreyType(new LocalRef(Position.COMPILER_GENERATED));
+                inputTypes.add(fQ);
             }
-
-            GallifreyType fQ = (f.type() instanceof CanonicalTypeNode)
-                    ? new GallifreyType(new MoveRef(Position.COMPILER_GENERATED))
-                    : new GallifreyType(((RefQualifiedTypeNode) f.type()).qualification());
-            inputTypes.add(fQ);
         }
 
         GallifreyProcedureInstance ci = (GallifreyProcedureInstance) cd.constructorInstance();
