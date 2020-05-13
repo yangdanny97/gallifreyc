@@ -1,9 +1,0 @@
-class C {
-    void m(Integer i) {
-	switch (i) {
-	case 5:
-	case 7:
-	    ;
-	}
-    }
-}

@@ -1,5 +1,0 @@
-class C {
-  public void test(int a) {
-    Integer[][] bar = (a == 0) ? new int[1][] : new Integer[1][];
-  }
-}

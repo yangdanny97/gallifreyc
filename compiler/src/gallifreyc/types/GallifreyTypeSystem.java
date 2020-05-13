@@ -1,8 +1,10 @@
 package gallifreyc.types;
 
 import java.util.List;
+import java.util.Set;
 
 import gallifreyc.ast.RefQualification;
+import gallifreyc.ast.RestrictionId;
 import polyglot.ast.Expr;
 import polyglot.ext.jl5.types.TypeVariable;
 import polyglot.ext.jl7.types.JL7TypeSystem;
@@ -19,11 +21,15 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
 
     public String getClassNameForRestriction(String restriction);
 
-    public void addUnionRestriction(String union, List<String> restrictions);
+    public void addUnionRestriction(String union, Set<String> restrictions);
 
-    public List<String> getVariantRestrictions(String restriction);
+    public Set<String> getVariantRestrictions(String restriction);
 
     public boolean isUnionRestriction(String restriction);
+    
+    public void addAllowedMethod(String restriction, String method);
+    
+    public Set<String> getAllowedMethods(RestrictionId restriction);
 
     public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
             String name, List<? extends Type> argTypes, List<? extends Type> excTypes, List<RefQualification> inputQ,

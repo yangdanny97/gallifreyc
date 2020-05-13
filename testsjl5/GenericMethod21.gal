@@ -1,4 +1,0 @@
-class C {
-    <X> void t(X x) {}
-    <Y> void t(Y x) {}
-}

@@ -34,18 +34,17 @@ public class RestrictionId_c extends Node_c implements RestrictionId {
     }
 
     public boolean isRvQualified() {
-        return wildcard || rv != null;
+        return wildcard || (rv != null);
     }
 
     @Override
     public String toString() {
         String s = "";
         if (rv != null) {
-            s = rv.toString();
+            s = rv.toString() + "::";
         } else if (wildcard) {
-            s = "*";
+            s = "*::";
         }
-        s = (isRvQualified()) ? s + "::" : s;
         s = s + restriction.toString();
         return s;
     }

@@ -1,17 +1,12 @@
 package gallifrey;
 
-class C {
-	public C() {}
-	
-	public void testFun() {}
-	
-}
+import gallifrey.ClassC;
 
-restriction R for C {
+restriction R for ClassC {
 	allows testFun;
 }
 
-restriction R2 for C {
+restriction R2 for ClassC {
 	allows testFun;
 }
 
@@ -21,8 +16,8 @@ class D {
 	public D(){}
 	
 	public void test2() {
-		unique C  c = new C();
-		shared[R] C c2 = move(c);
+		unique ClassC  c = new ClassC();
+		shared[R] ClassC c2 = move(c);
 		transition(c2, R2);
 	}
 }

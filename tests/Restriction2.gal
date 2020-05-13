@@ -1,5 +1,10 @@
 package gallifrey;
 
+restriction AddWins for Library {
+    allows addItem;
+    allows removeCollection contingent RemoveCollectionLost;
+}
+
 public class Library {
     Library() {}
     
@@ -8,10 +13,4 @@ public class Library {
     public void removeCollection() {}
     
     public int numItems() {return 0;}
-}
-
-
-restriction AddWins for Library {
-	allows addItem;
-	allows removeCollection contingent RemoveCollectionLost;
 }

@@ -3,6 +3,7 @@ package gallifreyc.ast;
 import java.util.List;
 
 import gallifreyc.types.GallifreyTypeSystem;
+import gallifreyc.visit.GallifreyTypeBuilder;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.*;
 import polyglot.types.ClassType;
@@ -84,39 +85,44 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
     }
 
     @Override
-    public NodeVisitor typeCheckEnter(TypeChecker tc) throws SemanticException {
-        if (tc instanceof GallifreyTypeChecker) {
-            GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
-            gtc.currentRestriction = id.id();
-            gtc.currentRestrictionClass = for_id.id();
-        }
-        return super.typeCheckEnter(tc);
-    }
-
-    @Override
-    public Node buildTypes(TypeBuilder tb) throws SemanticException {
+    public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
         TypeSystem ts = tb.typeSystem();
-        if (ts instanceof GallifreyTypeSystem) {
-            GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
-            gts.addRestrictionMapping(id.id(), for_id.id());
-        }
-        return super.buildTypes(tb);
+        GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
+        gts.addRestrictionMapping(id.id(), for_id.id());
+        
+        GallifreyTypeBuilder gtb = (GallifreyTypeBuilder) tb;
+        gtb.currentRestriction = id.id();
+        gtb.currentRestrictionClass = for_id.id();
+        
+        return super.buildTypesEnter(tb);
     }
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+    
+    @Override
+    public NodeVisitor typeCheckEnter(TypeChecker tc) throws SemanticException {
+        GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
+        gtc.currentRestriction = id.id();
+        gtc.currentRestrictionClass = for_id.id();
+        return super.typeCheckEnter(tc);
+    }
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         TypeSystem ts = tc.typeSystem();
-        if (tc instanceof GallifreyTypeChecker) {
-            GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
+        GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
+        try {
             if (!(ts.typeForName(for_id.id()) instanceof ClassType)) {
-                throw new SemanticException("Restriction " + gtc.currentRestrictionClass + " must be for a valid class",
+                throw new SemanticException("Restriction " + for_id.id() + " must be for a valid class",
                         this.position);
             }
+        } catch (SemanticException e) {
+            //TODO
+            System.out.println(gtc.currentRestrictionClass + "|" + for_id.id());
+            System.out.println("exn in R DECL");
         }
         body.typeCheck(tc);
         return this;

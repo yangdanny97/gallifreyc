@@ -6,6 +6,7 @@ import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
 import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualification;
+import gallifreyc.ast.SharedRef;
 import gallifreyc.types.GallifreyFieldInstance;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.Field;
@@ -27,6 +28,9 @@ public class GallifreyFieldExt extends GallifreyExprExt {
         // HACK: for things like java.lang
         if (q == null) {
             q = new MoveRef(Position.COMPILER_GENERATED);
+        }
+        if (q instanceof SharedRef) {
+            throw new SemanticException("cannot access a field of a shared object", node().position());
         }
         gallifreyType = new GallifreyType(q);
         return f;

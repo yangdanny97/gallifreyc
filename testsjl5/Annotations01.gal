@@ -1,6 +1,0 @@
-@interface DocumentedD {}
-@interface TargetT { int value(); }
-@DocumentedD
-@TargetT(5)
-@interface InheritedI {
-}

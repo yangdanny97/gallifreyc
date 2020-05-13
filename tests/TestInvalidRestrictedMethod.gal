@@ -1,0 +1,14 @@
+package gallifrey;
+
+import gallifrey.ClassC;
+
+restriction R for ClassC {
+    allows f1;
+}
+
+class D {
+    public D() {
+        shared[R] ClassC c = new ClassC();
+        c.f2();
+    }
+}

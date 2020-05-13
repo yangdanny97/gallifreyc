@@ -1,7 +1,0 @@
-import java.util.Map;
-
-class C<E extends C<E>> {
-	static void addToEnumDirectory(Map<String, C<?>> map, String name, C<?> object) {
-		map.put(name, object);
-	}
-}

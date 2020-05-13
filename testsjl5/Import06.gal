@@ -1,9 +1,0 @@
-import static java.lang.Math.cos;
-
-class A {
-    void m() {
-	double r = cos(0.0f);
-    }
-}
-
-

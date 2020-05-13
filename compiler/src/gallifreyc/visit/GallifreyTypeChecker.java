@@ -1,5 +1,8 @@
 package gallifreyc.visit;
 
+import java.util.List;
+
+import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.UnknownRef;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyExt;

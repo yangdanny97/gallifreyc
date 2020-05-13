@@ -1,5 +1,0 @@
-import java.lang.annotation.Annotation;
-
-@interface DefaultAnnotation {
-    Class<? extends Integer>[] value();
-}

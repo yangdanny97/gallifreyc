@@ -4,8 +4,11 @@ import java.util.*;
 
 import gallifreyc.ast.RestrictionDecl;
 import polyglot.ast.*;
+import polyglot.ast.Import.Kind;
+import polyglot.ext.jl5.ast.JL5Import;
 import polyglot.types.*;
 import polyglot.util.*;
+import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
 
@@ -43,31 +46,95 @@ public class GallifreySourceFileExt extends GallifreyExt {
         newDecls.addAll(newRDecls);
         return n.decls(newDecls);
     }
+    
 
     @Override
+    public NodeVisitor typeCheckEnter(TypeChecker tc) throws SemanticException {
+        NodeVisitor nv = superLang().typeCheckEnter(node(), tc);
+        return nv;
+    }
+    
+    @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        // remove restriction decls before passing to superlang typecheck
-        SourceFile n = node();
-        List<TopLevelDecl> cd = new ArrayList<>();
-        List<RestrictionDecl> rd = new ArrayList<>();
-        for (TopLevelDecl d : n.decls()) {
-            if (d instanceof ClassDecl)
-                cd.add(d);
-            if (d instanceof RestrictionDecl)
-                rd.add((RestrictionDecl) d);
+        Map<String, Named> declaredTypes = new HashMap<>();
+        boolean hasPublic = false;
+
+        for (TopLevelDecl d : node().decls()) {
+            if (d instanceof ClassDecl) {
+                String s = d.name();
+    
+                if (declaredTypes.containsKey(s)) {
+                    throw new SemanticException("Duplicate declaration: \"" + s
+                            + "\".", d.position());
+                }
+    
+                declaredTypes.put(s, ((ClassDecl) d).type());
+    
+                if (d.flags().isPublic()) {
+                    if (hasPublic) {
+                        throw new SemanticException("The source contains more than one public declaration.",
+                                                    d.position());
+                    }
+    
+                    hasPublic = true;
+                }
+            } else {
+                lang().typeCheck((RestrictionDecl) d, tc);
+            }
         }
-        n = n.decls(cd);
-        n = (SourceFile) superLang().typeCheck(n, tc);
-        
-        List<TopLevelDecl> newDecls = new ArrayList<>();
-        List<RestrictionDecl> newRDecls = new ArrayList<>();
-        
-        for (RestrictionDecl r : rd) {
-            RestrictionDecl newRDecl = (RestrictionDecl) lang().typeCheck(r, tc);
-            newRDecls.add(newRDecl);
+
+        TypeSystem ts = tc.typeSystem();
+        Map<String, Named> importedTypes = new HashMap<>();
+        Map<String, Named> staticImportedTypes = new HashMap<>();
+
+        for (Import i : node().imports()) {
+            Kind kind = i.kind();
+            if (kind == Import.SINGLE_TYPE) {
+                String s = i.name();
+                Named named = ts.forName(s);
+                String name = named.name();
+                importedTypes.put(name, named);
+            }
+            if (kind != JL5Import.SINGLE_STATIC_MEMBER) continue;
+
+            String s = i.name();
+            Named named;
+            try {
+                named = ts.forName(s);
+            }
+            catch (SemanticException e) {
+                // static import is not a type; further checks unnecessary.
+                continue;
+            }
+            String name = named.name();
+
+            // See JLS 3rd Ed. | 7.5.3.
+
+            // If a compilation unit contains both a single-static-import
+            // declaration that imports a type whose simple name is n, and a
+            // single-type-import declaration that imports a type whose simple
+            // name is n, a compile-time error occurs. 
+            if (importedTypes.containsKey(name)) {
+                Named importedType = importedTypes.get(name);
+                throw new SemanticException(name
+                                                    + " is already defined in a single-type import as type "
+                                                    + importedType + ".",
+                                            i.position());
+            }
+            else staticImportedTypes.put(name, named);
+
+            // If a single-static-import declaration imports a type whose simple
+            // name is n, and the compilation unit also declares a top level
+            // type whose simple name is n, a compile-time error occurs.
+            if (declaredTypes.containsKey(name)) {
+                Named declaredType = declaredTypes.get(name);
+                throw new SemanticException("The static import " + s
+                        + " conflicts with type " + declaredType
+                        + " defined in the same file.", i.position());
+            }
+
         }
-        newDecls.addAll(n.decls());
-        newDecls.addAll(newRDecls);
-        return n.decls(newDecls);
+
+        return node();
     }
 }

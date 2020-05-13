@@ -1,4 +1,0 @@
-class C {
-  @Override // BAD, inappropriate target
-  int f = 4;
-}

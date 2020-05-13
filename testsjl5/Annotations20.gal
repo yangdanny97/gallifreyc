@@ -1,5 +1,0 @@
-class C {
-
-  @SuppressWarnings("unchecked")
-    void m() { };
-}

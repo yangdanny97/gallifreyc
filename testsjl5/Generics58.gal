@@ -1,4 +1,0 @@
-interface I1<T> {}
-interface I2 extends I1<String> {}
-class C1 implements I1 { }
-class C2<T> extends C1 implements I2 { }

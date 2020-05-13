@@ -1,5 +1,9 @@
 package gallifrey;
 
+restriction AddOnly for Library {
+    allows addItem;
+}
+
 public class Library {
     Library() {}
     
@@ -8,8 +12,4 @@ public class Library {
     public void removeCollection() {}
     
     public int numItems() {return 0;}
-}
-
-restriction AddOnly for Library {
-	allows addItem;
 }

@@ -1,5 +1,7 @@
 package gallifreyc.ast;
 
+import gallifreyc.types.GallifreyTypeSystem;
+import gallifreyc.visit.GallifreyTypeBuilder;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.*;
 import polyglot.types.ClassType;
@@ -11,6 +13,7 @@ import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
+import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
 
 public class AllowsStmt_c extends Node_c implements AllowsStmt {
@@ -51,12 +54,20 @@ public class AllowsStmt_c extends Node_c implements AllowsStmt {
     public Node visitChildren(NodeVisitor v) {
         return this;
     }
+    
+    @Override
+    public Node buildTypes(TypeBuilder tb) throws SemanticException {
+        GallifreyTypeBuilder gtb = (GallifreyTypeBuilder) tb;
+        GallifreyTypeSystem ts = (GallifreyTypeSystem) tb.typeSystem();
+        ts.addAllowedMethod(gtb.currentRestriction, id.id());
+        return this;
+    }
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         TypeSystem ts = tc.typeSystem();
-        if (tc instanceof GallifreyTypeChecker) {
-            GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
+        GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
+        try {
             Type t = ts.typeForName(gtc.currentRestrictionClass);
             if (!(t instanceof ClassType)) {
                 throw new SemanticException("Restriction " + gtc.currentRestrictionClass + " must be for a valid class",
@@ -67,6 +78,10 @@ public class AllowsStmt_c extends Node_c implements AllowsStmt {
                 throw new SemanticException(
                         "Unable to find method named " + id.id() + " in " + gtc.currentRestrictionClass, this.position);
             }
+        } catch (SemanticException e) {
+            //TODO
+            System.out.println(gtc.currentRestrictionClass);
+            System.out.println("exn in ALLOW");
         }
         return this;
     }

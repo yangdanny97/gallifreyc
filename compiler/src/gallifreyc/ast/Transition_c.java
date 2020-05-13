@@ -76,7 +76,7 @@ public class Transition_c extends Stmt_c implements Transition {
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         GallifreyExprExt ext = GallifreyExprExt.ext(this.expr);
-        TypeSystem ts = tc.typeSystem();
+        GallifreyTypeSystem gts = (GallifreyTypeSystem) tc.typeSystem();
         Type t = expr.type();
 
         RefQualification q = ext.gallifreyType.qualification();
@@ -84,16 +84,15 @@ public class Transition_c extends Stmt_c implements Transition {
         if (q instanceof SharedRef) {
             throw new SemanticException("Can only transition restrictions for Shared types", this.position);
         }
-        if (ts instanceof GallifreyTypeSystem) {
-            GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
-            String restrictionClass = gts.getClassNameForRestriction(restriction.restriction().id());
-            if (restrictionClass == null) {
-                throw new SemanticException("Unknown Restriction " + restriction.restriction().id(), this.position());
-            }
-            // requires equality between expr type and restriction's "for" type
-            if (!ts.typeEquals(t, ts.typeForName(restrictionClass))) {
-                throw new SemanticException("Invalid restriction for class " + restrictionClass, this.position());
-            }
+        
+        String restrictionClass = gts.getClassNameForRestriction(restriction.restriction().id());
+        if (restrictionClass == null) {
+            throw new SemanticException("Unknown Restriction " + restriction.restriction().id(), this.position());
+        }
+        
+        // requires equality between expr type and restriction's "for" type
+        if (!gts.typeEquals(t, gts.typeForName(restrictionClass))) {
+            throw new SemanticException("Invalid restriction for class " + restrictionClass, this.position());
         }
         return this;
     }

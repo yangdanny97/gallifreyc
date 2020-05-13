@@ -1,5 +1,0 @@
-class C {
-  void m() { 
-    Object[] a = {4, 5};
-  }
-}

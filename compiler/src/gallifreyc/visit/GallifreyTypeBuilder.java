@@ -15,9 +15,13 @@ import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
 
 public class GallifreyTypeBuilder extends TypeBuilder {
+    public String currentRestrictionClass;
+    public String currentRestriction;
 
     public GallifreyTypeBuilder(Job job, TypeSystem ts, NodeFactory nf) {
         super(job, ts, nf);
+        currentRestriction = null;
+        currentRestrictionClass = null;
     }
     
     @Override

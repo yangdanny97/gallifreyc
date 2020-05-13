@@ -1,9 +1,11 @@
 package gallifrey;
 
+import gallifrey.ClassC;
+
 class D {
-    public local Integer y;
+    public local ClassC y;
     
-    public D(Integer x){
-        this.y = x;
+    public D(ClassC x){
+        y = x;
     }
 }

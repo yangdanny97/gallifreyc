@@ -1,8 +1,0 @@
-class C<T> {
-	class D {
-		void foo(Object o) {
-			if (o instanceof C<?>.D) {
-			}
-		}
-	}
-}

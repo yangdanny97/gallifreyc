@@ -1,0 +1,13 @@
+package gallifrey;
+
+public class ClassC {
+    public local String s;
+
+    public ClassC() {}
+    
+    public void testFun() {}
+    
+    public void f1() {}
+    
+    public void f2() {}
+}

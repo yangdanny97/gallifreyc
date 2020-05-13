@@ -188,18 +188,21 @@ public class GallifreyRewriter extends GRewriter_c implements GRewriter {
         if (n instanceof SourceFile) {
             NodeFactory nf = nodeFactory();
             SourceFile sf = (SourceFile) n;
-            // HACK: don't add imports if the source file is Unique or Shared wrappers
-            for (TopLevelDecl d : sf.decls()) {
-                if (d.name().equals("Unique") || d.name().equals("Shared")) {
-                    return sf;
-                }
-            }
+
             Import unique = nf.Import(n.position(), Import.SINGLE_TYPE, "gallifrey.Unique");
-            Import shared = nf.Import(n.position(), Import.SINGLE_TYPE, "gallifrey.Shared");
+            Import shared = nf.Import(n.position(), Import.SINGLE_TYPE, "gallifrey.SharedObject");
+            Import frontend = nf.Import(n.position(), Import.SINGLE_TYPE, "gallifrey.Frontend");
+            Import key = nf.Import(n.position(), Import.SINGLE_TYPE, "gallifrey.GenericKey");
             List<Import> imports = new ArrayList<>(sf.imports());
+            imports.add(0, frontend);
+            imports.add(0, key);
             imports.add(0, unique);
             imports.add(0, shared);
             return sf.imports(imports);
+        }
+        
+        if (n instanceof RestrictionDecl) {
+            //TODO
         }
 
         return n;

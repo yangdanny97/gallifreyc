@@ -1,6 +1,0 @@
-class G {
-	<X,Y> G() {}
-	void f() {
-		new<Integer> G();
-	}
-}

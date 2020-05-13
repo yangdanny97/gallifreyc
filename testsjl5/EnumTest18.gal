@@ -1,3 +1,0 @@
-class ProtectedEnumTest {
-    protected enum e {}
-}

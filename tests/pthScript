@@ -29,6 +29,12 @@
 javac "-d java-out -cp ." {
     Shared.java;
     Unique.java;
+    GenericKey.java;
+    Frontend.java;
+}
+
+javac "-d java-out -classpath java-out" {
+    SharedObject.java;
 }
 
 // old tests
@@ -57,18 +63,20 @@ gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out" {
 
 // new tests
 gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out" {
-    TestFieldAssign.gal;
+    TestFieldAssign.gal ClassC.gal;
     TestHoist.gal;
     TestInitializer.gal;
     TestInvalidAllows.gal (Semantic);
     TestInvalidFieldAssign.gal (Semantic);
-    TestInvalidMissingQualifierArg.gal (Semantic);
-    TestInvalidMissingQualifierField.gal (Semantic);
+    TestInvalidMissingQualifierArg.gal ClassC.gal (Semantic);
+    TestInvalidMissingQualifierField.gal ClassC.gal (Semantic);
     TestInvalidNestedQualifier.gal (Semantic);
     TestInvalidRestrictionClass.gal (Semantic);
     TestInvalidRestrictionUnion.gal (Semantic);
     TestInvalidTransition.gal (Semantic);
     TestInvariantSubtyping.gal (Semantic);
     TestRewrite.gal;
-    TestRewrite2.gal;
+    TestRewrite2.gal ClassC.gal;
+    TestInvalidRestrictedMethod.gal ClassC.gal (Semantic);
+    TestInvalidSharedFieldAccess.gal ClassC.gal (Semantic);
 }

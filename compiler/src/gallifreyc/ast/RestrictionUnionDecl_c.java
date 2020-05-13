@@ -11,7 +11,9 @@ import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.visit.GallifreyTypeChecker;
@@ -65,7 +67,7 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
         if (ts instanceof GallifreyTypeSystem) {
             GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
             List<String> restrictionClasses = new ArrayList<>();
-            List<String> variants = new ArrayList<>();
+            Set<String> variants = new HashSet<>();
             for (Id r : restrictions) {
                 String forClass = gts.getClassNameForRestriction(r.id());
                 if (forClass == null) {
@@ -88,14 +90,17 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        TypeSystem ts = tc.typeSystem();
-        if (tc instanceof GallifreyTypeChecker) {
-            if (ts instanceof GallifreyTypeSystem) {
-                GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
-                if (!(ts.typeForName(gts.getClassNameForRestriction(id.id())) instanceof ClassType)) {
-                    throw new SemanticException("Restriction " + id.id() + " must be for a valid class", this.position);
-                }
+        GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
+        GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
+        try {
+            if (!(ts.typeForName(ts.getClassNameForRestriction(id.id())) instanceof ClassType)) {
+                throw new SemanticException("Restriction " + ts.getClassNameForRestriction(id.id()) + " must be for a valid class",
+                        this.position);
             }
+        } catch (SemanticException e) {
+            //TODO
+            System.out.println(ts.getClassNameForRestriction(id.id()));
+            System.out.println("exn in RU DECL");
         }
         return this;
     }

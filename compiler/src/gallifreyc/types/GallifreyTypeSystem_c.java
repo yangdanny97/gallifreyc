@@ -12,12 +12,14 @@ import polyglot.util.*;
 public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyTypeSystem {
 
     public Map<String, String> restrictionMap;
-    public Map<String, List<String>> restrictionUnionMap;
+    public Map<String, Set<String>> allowedMethodsMap;
+    public Map<String, Set<String>> restrictionUnionMap;
 
     public GallifreyTypeSystem_c() {
         super();
         restrictionMap = new HashMap<>();
         restrictionUnionMap = new HashMap<>();
+        allowedMethodsMap = new HashMap<>();
     }
 
     // ARRAY TYPES
@@ -145,6 +147,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     @Override
     public void addRestrictionMapping(String restriction, String cls) {
         restrictionMap.put(restriction, cls);
+        allowedMethodsMap.put(restriction, new HashSet<String>());
     }
 
     @Override
@@ -156,12 +159,12 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     }
 
     @Override
-    public void addUnionRestriction(String union, List<String> restrictions) {
+    public void addUnionRestriction(String union, Set<String> restrictions) {
         restrictionUnionMap.put(union, restrictions);
     }
 
     @Override
-    public List<String> getVariantRestrictions(String restriction) {
+    public Set<String> getVariantRestrictions(String restriction) {
         if (!restrictionUnionMap.containsKey(restriction)) {
             return null;
         }
@@ -171,6 +174,33 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     @Override
     public boolean isUnionRestriction(String restriction) {
         return restrictionUnionMap.containsKey(restriction);
+    }
+    
+    @Override 
+    public void addAllowedMethod(String restriction, String method) {
+        allowedMethodsMap.get(restriction).add(method);
+    }
+    
+    @Override
+    public Set<String> getAllowedMethods(RestrictionId restriction) {
+        String rName = restriction.restriction().id();
+        if (restriction.rv() != null) {
+            rName = restriction.rv().id();
+        }
+        if (restrictionUnionMap.containsKey(rName)) {
+            // currently union restrictions allow the intersection of the variants' allowed methods
+            Set<String> restrictions = restrictionUnionMap.get(rName);
+            Set<String> methods = null;
+            for (String r : restrictions) {
+                if (methods == null) {
+                    methods = allowedMethodsMap.get(r);
+                } else {
+                    methods.retainAll(allowedMethodsMap.get(r));
+                }
+            }
+            return methods;
+        }
+        return allowedMethodsMap.get(rName);
     }
 
     // checking qualifications
