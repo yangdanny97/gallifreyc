@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gallifreyc.ast.LocalRef;
-import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.translate.GRewriter;
 import gallifreyc.types.GallifreyProcedureInstance;

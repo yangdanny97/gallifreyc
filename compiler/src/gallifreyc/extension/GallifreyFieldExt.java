@@ -9,6 +9,7 @@ import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.SharedRef;
 import gallifreyc.types.GallifreyFieldInstance;
 import gallifreyc.types.GallifreyType;
+import polyglot.ast.Expr;
 import polyglot.ast.Field;
 import polyglot.ast.Node;
 
@@ -25,12 +26,16 @@ public class GallifreyFieldExt extends GallifreyExprExt {
         Field f = (Field) superLang().typeCheck(node(), tc);
         GallifreyFieldInstance fi = (GallifreyFieldInstance) f.fieldInstance();
         RefQualification q = fi.gallifreyType().qualification();
-        // HACK: for things like java.lang
+        // HACK: fill in a Field Instance qualification for things like java.lang
         if (q == null) {
             q = new MoveRef(Position.COMPILER_GENERATED);
         }
-        if (q instanceof SharedRef) {
-            throw new SemanticException("cannot access a field of a shared object", node().position());
+        
+        if (f.target() instanceof Expr) {
+            RefQualification targetQ = GallifreyExprExt.ext(f.target()).gallifreyType().qualification();
+            if (targetQ instanceof SharedRef) {
+                throw new SemanticException("cannot access a field of a shared object", node().position());
+            }
         }
         gallifreyType = new GallifreyType(q);
         return f;

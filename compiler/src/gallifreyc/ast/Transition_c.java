@@ -7,7 +7,6 @@ import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.*;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
-import polyglot.types.TypeSystem;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
@@ -75,6 +74,7 @@ public class Transition_c extends Stmt_c implements Transition {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
+        //TODO fix
         GallifreyExprExt ext = GallifreyExprExt.ext(this.expr);
         GallifreyTypeSystem gts = (GallifreyTypeSystem) tc.typeSystem();
         Type t = expr.type();

@@ -1,5 +1,7 @@
 package gallifrey;
 
+restriction MyRestriction for Integer {}
+
 class C {
 	public C() {}
 	

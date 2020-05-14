@@ -1,7 +1,6 @@
 package gallifreyc.extension;
 
 import gallifreyc.ast.LocalRef;
-import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.ast.UnknownRef;

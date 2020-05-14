@@ -144,4 +144,12 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
         v.visitCFG(body(), this, EXIT);
         return succs;
     }
+    
+    @Override
+    public Node visitChildren(NodeVisitor v) {
+        // this breaks immutability, maybe revisit
+        this.forClass = (TypeNode) visitChild(this.forClass, v);
+        this.body = (RestrictionBody) visitChild(this.body, v);
+        return this;
+    }
 }

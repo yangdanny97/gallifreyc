@@ -2,6 +2,8 @@
 /bin
 compiler/classes/gallifreyc
 tests/out/*
+tests/java-out/*
+tests/*.class
 tests/*.results
 .DS_Store
 *.DS_Store

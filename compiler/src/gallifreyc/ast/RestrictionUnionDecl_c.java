@@ -1,7 +1,6 @@
 package gallifreyc.ast;
 
 import polyglot.ast.*;
-import polyglot.types.ClassType;
 import polyglot.types.Flags;
 import polyglot.types.SemanticException;
 import polyglot.types.TypeSystem;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.Set;
 
 import gallifreyc.types.GallifreyTypeSystem;
-import gallifreyc.visit.GallifreyTypeChecker;
 
 public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDecl {
     private static final long serialVersionUID = SerialVersionUID.generate();

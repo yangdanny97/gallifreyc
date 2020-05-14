@@ -7,7 +7,6 @@ import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
 import gallifreyc.ast.LocalRef;
-import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.ast.UnknownRef;

@@ -1,15 +1,16 @@
 package gallifrey;
 
-restriction AddOnly for Library {
+restriction R for Library {
     allows addItem;
+    allows numItems;
 }
 
 public class Library {
     Library() {}
     
-    public void addItem() {}
+    public void addItem(int x, int y) {}
     
     public void removeCollection() {}
     
-    public int numItems() {return 0;}
+    public int numItems(int x) {return 0;}
 }

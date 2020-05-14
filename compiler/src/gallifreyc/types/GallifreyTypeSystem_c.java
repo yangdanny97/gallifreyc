@@ -188,6 +188,11 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         if (restriction.rv() != null) {
             rName = restriction.rv().id();
         }
+        return getAllowedMethods(rName);
+    }
+    
+    @Override
+    public Set<String> getAllowedMethods(String rName) {
         if (restrictionUnionMap.containsKey(rName)) {
             // currently union restrictions allow the intersection of the variants' allowed methods
             Set<String> restrictions = restrictionUnionMap.get(rName);

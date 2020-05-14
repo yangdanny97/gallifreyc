@@ -9,6 +9,6 @@ restriction R for ClassC {
 class D {
     public D() {
         shared[R] ClassC c = new ClassC();
-        local String s = c.s;
+        System.out.println(c.s);
     }
 }

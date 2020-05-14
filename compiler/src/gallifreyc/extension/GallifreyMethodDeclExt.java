@@ -9,10 +9,8 @@ import gallifreyc.ast.PostCondition;
 import gallifreyc.ast.PreCondition;
 import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.types.GallifreyMethodInstance;
-import gallifreyc.types.GallifreyProcedureInstance;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.CanonicalTypeNode;
-import polyglot.ast.ConstructorDecl;
 import polyglot.ast.Formal;
 import polyglot.ast.MethodDecl;
 import polyglot.ast.Node;
@@ -76,7 +74,7 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
 
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
-        MethodDecl md = (MethodDecl) superLang().buildTypes(this.node, tb);
+        MethodDecl md = (MethodDecl) superLang().buildTypes(node(), tb);
 
         List<GallifreyType> inputTypes = new ArrayList<>();
 

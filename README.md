@@ -25,5 +25,8 @@ va_cup.jar, and JFlex.jar or add these jar files to the gallifreyc/lib directory
 
 TODOs:
 - debug test cases
-- default qualifications for stdlib
+- default qualifications for stdlib (field and method instances)
+- fix translations for transition/match, typechecking for transition
+- typing hierarchy and usage of union restrictions vs restriction names
+- test methods currently break
 

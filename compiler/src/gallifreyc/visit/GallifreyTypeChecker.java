@@ -1,8 +1,5 @@
 package gallifreyc.visit;
 
-import java.util.List;
-
-import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.UnknownRef;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyExt;
@@ -15,7 +12,6 @@ import polyglot.ast.Formal;
 import polyglot.ast.LocalDecl;
 import polyglot.ast.Node;
 import polyglot.ast.NodeFactory;
-import polyglot.ast.TypeNode;
 import polyglot.frontend.Job;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;

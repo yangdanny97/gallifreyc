@@ -6,6 +6,7 @@ import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.CFGBuilder;
+import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeChecker;
 
@@ -67,5 +68,12 @@ public class RestrictionBody_c extends Term_c implements RestrictionBody {
     @Override
     public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
         return succs;
+    }
+    
+    @Override
+    public Node visitChildren(NodeVisitor v) {
+        // this breaks immutability, maybe revisit
+        this.members = visitList(this.members, v);
+        return this;
     }
 }

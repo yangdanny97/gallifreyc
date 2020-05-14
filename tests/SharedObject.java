@@ -2,25 +2,27 @@ package gallifrey;
 
 import gallifrey.Frontend;
 import gallifrey.GenericKey;
+
 import java.util.List;
+import java.io.Serializable;
 
 
 // this is a stubbed shared object purely for test cases
-public class SharedObject {
+public class SharedObject implements Serializable {
+    
+    private static final long serialVersionUID = 1;
 
     Frontend frontend;
     GenericKey key;
     String rmiBackend;
     Object crdt;
 
-    public SharedObject(Frontend frontend, Object crdt, String backend) {
+    public SharedObject(Object crdt) {
         this.crdt = crdt;
-        this.frontend = frontend;
         this.key = new GenericKey();
     }
 
-    public SharedObject(Frontend frontend, GenericKey key) {
-        this.frontend = frontend;
+    public SharedObject(GenericKey key) {
         this.key = key;
     }
 

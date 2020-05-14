@@ -4,10 +4,12 @@ import polyglot.types.SemanticException;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeBuilder;
+import gallifreyc.ast.LocalRef;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.ast.UnknownRef;
 import gallifreyc.types.GallifreyLocalInstance;
+import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.Formal;
 import polyglot.ast.Node;
 import polyglot.ast.TypeNode;
@@ -30,13 +32,20 @@ public class GallifreyFormalExt extends GallifreyExt {
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         Formal n = (Formal) superLang().buildTypes(this.node, tb);
         TypeNode t = n.type();
-        if (!(t instanceof RefQualifiedTypeNode)) {
+        if (!(t instanceof RefQualifiedTypeNode
+                || (t instanceof CanonicalTypeNode && ((CanonicalTypeNode) t).type().isPrimitive()))) {
             throw new SemanticException("declaration must have qualification", n.position());
         }
-        RefQualifiedTypeNode rt = (RefQualifiedTypeNode) t;
-        GallifreyLocalInstance li = (GallifreyLocalInstance) n.localInstance();
-        li.gallifreyType().qualification = rt.qualification();
-        qualification = rt.qualification();
+        GallifreyLocalInstance li;
+        if (t instanceof RefQualifiedTypeNode) {
+            RefQualifiedTypeNode rt = (RefQualifiedTypeNode) t;
+            li = (GallifreyLocalInstance) n.localInstance();
+            li.gallifreyType().qualification = rt.qualification();
+        } else {
+            li = (GallifreyLocalInstance) n.localInstance();
+            li.gallifreyType().qualification = new LocalRef(Position.COMPILER_GENERATED);
+        }
+        qualification = li.gallifreyType().qualification;
         return n;
     }
 }

@@ -7,6 +7,7 @@ import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.types.TypeSystem;
 import polyglot.util.CodeWriter;
+import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeChecker;
@@ -14,12 +15,12 @@ import polyglot.visit.TypeChecker;
 import java.util.List;
 import java.util.Set;
 
+import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.SharedRef;
 import gallifreyc.types.GallifreyMethodInstance;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
-import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.Call;
 import polyglot.ast.CallOps;
 import polyglot.ast.Expr;
@@ -36,24 +37,30 @@ public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         Call node = (Call) superLang().typeCheck(this.node, tc);
-        
+
         if (node.target() instanceof Expr) {
             GallifreyType receiverType = GallifreyExprExt.ext(node.target()).gallifreyType();
             if (receiverType.qualification() instanceof SharedRef) {
                 RestrictionId restriction = ((SharedRef) receiverType.qualification()).restriction();
                 Set<String> allowedMethods = ((GallifreyTypeSystem) tc.typeSystem()).getAllowedMethods(restriction);
                 if (!allowedMethods.contains(node.name())) {
-                    throw new SemanticException("cannot call method " + node.name() + 
-                            " under restriction " + restriction, node.position());
+                    throw new SemanticException(
+                            "cannot call method " + node.name() + " under restriction " + restriction, node.position());
                 }
             }
         }
-        
+
         GallifreyMethodInstance mi = (GallifreyMethodInstance) node.methodInstance();
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
         GallifreyType returnType = ts.checkArgs(mi, node().arguments());
         if (mi.flags().contains(Flags.STATIC)) {
             this.gallifreyType = returnType;
+            // TODO revisit for default stdlib qualifications
+        } else if (mi.returnType().isVoid() || mi.returnType().isPrimitive()
+                || mi.gallifreyReturnType().qualification() == null) {
+            // HACK: fill in qualification if the return qualification isn't present in
+            // method instance
+            this.gallifreyType = new GallifreyType(new MoveRef(Position.COMPILER_GENERATED));
         } else {
             this.gallifreyType = new GallifreyType(mi.gallifreyReturnType());
         }
