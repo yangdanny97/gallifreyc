@@ -172,11 +172,10 @@ override type_declarations ::=
 
 restriction_declaration ::=
     // RestrictionDecl
-    RESTRICTION:a IDENTIFIER:b FOR IDENTIFIER:c restriction_body:d
+    RESTRICTION:a IDENTIFIER:b FOR class_or_interface_type:c restriction_body:d
 	    {: RESULT = parser.nf.RestrictionDecl(parser.pos(a, d),
 	                                          parser.nf.Id(parser.pos(b), b.getIdentifier()),
-	                                          parser.nf.Id(parser.pos(c), c.getIdentifier()),
-	                                          d); :}
+	                                          c, d); :}
 	//Restriction Union Decl
    	| RESTRICTION:a IDENTIFIER:b EQ restriction_variant:u 
    		{: RESULT = parser.nf.RestrictionUnionDecl(

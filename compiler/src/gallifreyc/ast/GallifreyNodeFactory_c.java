@@ -87,7 +87,7 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     }
 
     @Override
-    public RestrictionDecl RestrictionDecl(Position pos, Id id, Id for_id, RestrictionBody body) {
+    public RestrictionDecl RestrictionDecl(Position pos, Id id, TypeNode for_id, RestrictionBody body) {
         RestrictionDecl d = new RestrictionDecl_c(pos, id, for_id, body);
         d = ext(d, extFactory().extRestrictionDecl());
         return d;

@@ -67,21 +67,10 @@ public class AllowsStmt_c extends Node_c implements AllowsStmt {
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         TypeSystem ts = tc.typeSystem();
         GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
-        try {
-            Type t = ts.typeForName(gtc.currentRestrictionClass);
-            if (!(t instanceof ClassType)) {
-                throw new SemanticException("Restriction " + gtc.currentRestrictionClass + " must be for a valid class",
-                        this.position);
-            }
-            ClassType ct = (ClassType) t;
-            if (ct.methodsNamed(id.id()).size() == 0) {
-                throw new SemanticException(
-                        "Unable to find method named " + id.id() + " in " + gtc.currentRestrictionClass, this.position);
-            }
-        } catch (SemanticException e) {
-            //TODO
-            System.out.println(gtc.currentRestrictionClass);
-            System.out.println("exn in ALLOW");
+        ClassType ct = (ClassType) gtc.currentRestrictionClass;
+        if (ct.methodsNamed(id.id()).size() == 0) {
+            throw new SemanticException(
+                    "Unable to find method named " + id.id() + " in " + gtc.currentRestrictionClass, this.position);
         }
         return this;
     }

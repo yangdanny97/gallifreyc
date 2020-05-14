@@ -15,15 +15,17 @@ import polyglot.ast.Formal;
 import polyglot.ast.LocalDecl;
 import polyglot.ast.Node;
 import polyglot.ast.NodeFactory;
+import polyglot.ast.TypeNode;
 import polyglot.frontend.Job;
 import polyglot.types.SemanticException;
+import polyglot.types.Type;
 import polyglot.types.TypeSystem;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeChecker;
 
 // overwrite any typechecker operations
 public class GallifreyTypeChecker extends TypeChecker {
-    public String currentRestrictionClass;
+    public Type currentRestrictionClass;
     public String currentRestriction;
 
     public GallifreyTypeChecker(Job job, TypeSystem ts, NodeFactory nf) {
