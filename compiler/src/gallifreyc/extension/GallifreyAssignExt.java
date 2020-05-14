@@ -28,7 +28,7 @@ public class GallifreyAssignExt extends GallifreyExprExt {
                     node().position());
         }
 
-        this.gallifreyType = new GallifreyType(lt.qualification);
+        this.gallifreyType = new GallifreyType(lt);
         return a;
     }
 }

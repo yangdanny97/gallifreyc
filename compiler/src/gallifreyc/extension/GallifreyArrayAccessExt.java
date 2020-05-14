@@ -20,7 +20,7 @@ public class GallifreyArrayAccessExt extends GallifreyExprExt {
         // array contents and container have same qualification
         ArrayAccess aa = (ArrayAccess) superLang().typeCheck(this.node(), tc);
         GallifreyType arrayType = GallifreyExprExt.ext(aa.array()).gallifreyType;
-        this.gallifreyType = new GallifreyType(arrayType.qualification());
+        this.gallifreyType = new GallifreyType(arrayType);
         return aa;
     }
 }

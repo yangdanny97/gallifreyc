@@ -22,7 +22,7 @@ public class GallifreyNewArrayExt extends GallifreyExprExt {
         NewArray node = (NewArray) superLang().typeCheck(this.node(), tc);
         if (node.init() != null) {
             GallifreyType initType = GallifreyExprExt.ext(node.init()).gallifreyType;
-            this.gallifreyType = new GallifreyType(initType.qualification());
+            this.gallifreyType = new GallifreyType(initType);
         } else {
             this.gallifreyType = new GallifreyType(new MoveRef(Position.COMPILER_GENERATED));
         }

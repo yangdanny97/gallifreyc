@@ -22,7 +22,7 @@ public class GallifreyLocalExt extends GallifreyExprExt {
         Local node = node();
         Context c = tc.context();
         GallifreyLocalInstance li = (GallifreyLocalInstance) c.findLocal(node.name());
-        this.gallifreyType = new GallifreyType(li.gallifreyType().qualification);
+        this.gallifreyType = new GallifreyType(li.gallifreyType());
         return superLang().typeCheck(this.node(), tc);
     }
 }

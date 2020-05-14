@@ -58,6 +58,12 @@ public class GallifreySourceFileExt extends GallifreyExt {
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         Map<String, Named> declaredTypes = new HashMap<>();
         boolean hasPublic = false;
+        
+        for (TopLevelDecl d : node().decls()) {
+            if (d instanceof RestrictionDecl) {
+                lang().typeCheck((RestrictionDecl) d, tc);
+            }
+        }
 
         for (TopLevelDecl d : node().decls()) {
             if (d instanceof ClassDecl) {
@@ -78,8 +84,6 @@ public class GallifreySourceFileExt extends GallifreyExt {
     
                     hasPublic = true;
                 }
-            } else {
-                lang().typeCheck((RestrictionDecl) d, tc);
             }
         }
 

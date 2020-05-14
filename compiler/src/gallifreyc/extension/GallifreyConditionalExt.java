@@ -23,7 +23,7 @@ public class GallifreyConditionalExt extends GallifreyExprExt {
         if (!trueType.qualification().equals(falseType.qualification())) {
             throw new SemanticException("branches of ternary must have same qualification", c.position());
         }
-        this.gallifreyType = new GallifreyType(trueType.qualification());
+        this.gallifreyType = new GallifreyType(trueType);
         return c;
     }
 }

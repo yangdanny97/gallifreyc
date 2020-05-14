@@ -10,6 +10,7 @@ import polyglot.visit.NodeVisitor;
 import gallifreyc.ast.*;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyExt;
+import gallifreyc.extension.GallifreyFieldDeclExt;
 import gallifreyc.extension.GallifreyFormalExt;
 import gallifreyc.extension.GallifreyLang;
 import gallifreyc.extension.GallifreyLocalDeclExt;
@@ -183,6 +184,18 @@ public class GallifreyRewriter extends GRewriter_c implements GRewriter {
             }
             return f;
         }
+        
+        if (n instanceof FieldDecl) {
+            FieldDecl f = (FieldDecl) n;
+            GallifreyFieldDeclExt fde = (GallifreyFieldDeclExt) GallifreyExt.ext(f);
+            RefQualification q = fde.qualification();
+            if (q instanceof SharedRef) {
+                return f.type(nf.TypeNodeFromQualifiedName(f.position(), "Shared<" + f.type().type().toString() + ">"));
+            }
+            if (q instanceof UniqueRef) {
+                return f.type(nf.TypeNodeFromQualifiedName(f.position(), "Unique<" + f.type().type().toString() + ">"));
+            }
+        }
 
         // add Unique and Shared decls
         if (n instanceof SourceFile) {
@@ -198,11 +211,23 @@ public class GallifreyRewriter extends GRewriter_c implements GRewriter {
             imports.add(0, key);
             imports.add(0, unique);
             imports.add(0, shared);
-            return sf.imports(imports);
-        }
-        
-        if (n instanceof RestrictionDecl) {
-            //TODO
+            
+            // remove restriction decls
+            List<TopLevelDecl> classDecls = new ArrayList<>();
+            List<RestrictionDecl> restrictionDecls = new ArrayList<>();
+            for (TopLevelDecl d : sf.decls()) {
+                if (d instanceof ClassDecl) {
+                    classDecls.add(d);
+                } else {
+                    restrictionDecls.add((RestrictionDecl) d);
+                }
+            }
+            
+            for (RestrictionDecl rd : restrictionDecls) {
+                //TODO
+            }
+            
+            return sf.imports(imports).decls(classDecls);
         }
 
         return n;

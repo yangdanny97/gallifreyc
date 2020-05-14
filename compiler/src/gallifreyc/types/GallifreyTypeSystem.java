@@ -17,7 +17,7 @@ import polyglot.util.Position;
 
 public interface GallifreyTypeSystem extends JL7TypeSystem {
 
-    public void addRestrictionMapping(String restriction, String cls);
+    public void addRestrictionMapping(String restriction, String cls) throws SemanticException;
 
     public String getClassNameForRestriction(String restriction);
 
@@ -30,6 +30,10 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
     public void addAllowedMethod(String restriction, String method);
     
     public Set<String> getAllowedMethods(RestrictionId restriction);
+    
+    public void addRestrictionClassType(String restriction, ClassType cls);
+    
+    public ClassType getRestrictionClassType(String restriction);
 
     public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
             String name, List<? extends Type> argTypes, List<? extends Type> excTypes, List<RefQualification> inputQ,

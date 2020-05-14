@@ -27,6 +27,12 @@ public class GallifreyType implements Serializable {
     public GallifreyType(RefQualification q) {
         this.qualification = q;
     }
+    
+    public GallifreyType(GallifreyType t) {
+        this.qualification = t.qualification();
+        this.capability = t.capability();
+        this.path = t.path();
+    }
 
     public RefQualification qualification() {
         return qualification;

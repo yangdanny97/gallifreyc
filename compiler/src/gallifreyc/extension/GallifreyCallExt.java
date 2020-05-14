@@ -55,7 +55,7 @@ public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
         if (mi.flags().contains(Flags.STATIC)) {
             this.gallifreyType = returnType;
         } else {
-            this.gallifreyType = new GallifreyType(mi.gallifreyReturnType().qualification());
+            this.gallifreyType = new GallifreyType(mi.gallifreyReturnType());
         }
         return node;
     }

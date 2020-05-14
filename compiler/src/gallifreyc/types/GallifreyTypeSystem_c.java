@@ -11,15 +11,13 @@ import polyglot.util.*;
 
 public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyTypeSystem {
 
-    public Map<String, String> restrictionMap;
-    public Map<String, Set<String>> allowedMethodsMap;
-    public Map<String, Set<String>> restrictionUnionMap;
+    public Map<String, String> restrictionClassNameMap = new HashMap<>();
+    public Map<String, ClassType> restrictionClassTypeMap = new HashMap<>();
+    public Map<String, Set<String>> allowedMethodsMap = new HashMap<>();
+    public Map<String, Set<String>> restrictionUnionMap = new HashMap<>();
 
     public GallifreyTypeSystem_c() {
         super();
-        restrictionMap = new HashMap<>();
-        restrictionUnionMap = new HashMap<>();
-        allowedMethodsMap = new HashMap<>();
     }
 
     // ARRAY TYPES
@@ -145,17 +143,20 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     // RESTRICTIONS
 
     @Override
-    public void addRestrictionMapping(String restriction, String cls) {
-        restrictionMap.put(restriction, cls);
+    public void addRestrictionMapping(String restriction, String cls) throws SemanticException {
+        if (restrictionClassNameMap.containsKey(restriction)) {
+            throw new SemanticException("restriction "+ restriction + " already exists!");
+        }
+        restrictionClassNameMap.put(restriction, cls);
         allowedMethodsMap.put(restriction, new HashSet<String>());
     }
 
     @Override
     public String getClassNameForRestriction(String restriction) {
-        if (!restrictionMap.containsKey(restriction)) {
+        if (!restrictionClassNameMap.containsKey(restriction)) {
             return null;
         }
-        return restrictionMap.get(restriction);
+        return restrictionClassNameMap.get(restriction);
     }
 
     @Override
@@ -201,6 +202,16 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
             return methods;
         }
         return allowedMethodsMap.get(rName);
+    }
+    
+    @Override
+    public void addRestrictionClassType(String restriction, ClassType cls) {
+        restrictionClassTypeMap.put(restriction, cls);
+    }
+    
+    @Override
+    public ClassType getRestrictionClassType(String restriction) {
+        return restrictionClassTypeMap.get(restriction);
     }
 
     // checking qualifications
