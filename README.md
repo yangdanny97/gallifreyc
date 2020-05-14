@@ -5,8 +5,7 @@ This is the Polyglot extension for Gallifrey.
 **To build:** run build.xml
 
 Building the generated extension requires that Polyglot be installed and in your
-classpath.  Adjust the classpath to include polyglot.jar, ja-
-va_cup.jar, and JFlex.jar or add these jar files to the gallifreyc/lib directory.
+classpath.  Adjust the classpath to include polyglot.jar, java_cup.jar, and JFlex.jar or add these jar files to the gallifreyc/lib directory.
 
 **To run:** invoke gallifreyc.Main (see Polyglot documentation for list of arguments/flags)
 
