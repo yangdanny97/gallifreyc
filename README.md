@@ -16,12 +16,16 @@ va_cup.jar, and JFlex.jar or add these jar files to the gallifreyc/lib directory
 |------------------------|---------------------------------------------------------------|
 | gallifreyc             | Scheduler                                                     |
 | gallifreyc.ast         | NodeFactory, new AST nodes                                    |
-| gallifreyc.extension   | ExtFactory, Language dispatcher, exts for existing AST nodes  |
+| gallifreyc.extension   | ExtFactory, GallifreyLang dispatcher, exts for existing AST nodes  |
 | gallifreyc.parse       | Lexer (.flex) and Parser (.ppg compiles to .cup)              |
 | gallifreyc.translate   | Rewriters                                                     |
 | gallifreyc.types       | TypeSystem and Type object overrides                          |
 | gallifreyc.visit       | TypeChecker                                                   |
 
+This extension follows a similar structure as other Polyglot extensions except for a few areas:
+- the singleton language dispatcher is used (not present in older polyglot examples)
+- AST nodes and extension objects are in separate packages
+- a custom ExtRewriter interface GRewriter to allow multiple rewriting passes
 
 TODOs:
 - debug test cases
