@@ -54,22 +54,13 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
     @Override
     public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
         MethodDecl md = node();
-
-        for (Formal f : md.formals()) {
-            TypeNode t = f.type();
-            if (t instanceof RefQualifiedTypeNode
-                    || (t instanceof CanonicalTypeNode && ((CanonicalTypeNode) t).type().isPrimitive())) {
-                continue;
-            }
-            throw new SemanticException("cannot declare unqualified argument", f.position());
-        }
         
         TypeNode rt = md.returnType();
         if (rt instanceof RefQualifiedTypeNode
                 || (rt instanceof CanonicalTypeNode && ((CanonicalTypeNode) rt).type().isPrimitive())) {
             return superLang().buildTypesEnter(node(), tb);
         }
-        throw new SemanticException("cannot declare unqualified argument", rt.position());
+        throw new SemanticException("cannot declare unqualified return type", rt.position());
     }
 
     @Override

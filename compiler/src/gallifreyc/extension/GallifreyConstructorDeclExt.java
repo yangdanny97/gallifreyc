@@ -47,16 +47,6 @@ public class GallifreyConstructorDeclExt extends GallifreyExt implements Gallifr
     @Override
     public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
         ConstructorDecl cd = node();
-
-        for (Formal f : cd.formals()) {
-            TypeNode t = f.type();
-            if (t instanceof RefQualifiedTypeNode
-                    || (t instanceof CanonicalTypeNode && ((CanonicalTypeNode) t).type().isPrimitive())) {
-                continue;
-            }
-            throw new SemanticException("cannot declare unqualified argument", f.position());
-        }
-        
         return superLang().buildTypesEnter(node(), tb);
     }
 
