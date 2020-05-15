@@ -36,6 +36,8 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
     public void addRestrictionClassType(String restriction, ClassType cls);
     
     public ClassType getRestrictionClassType(String restriction);
+    
+    public boolean canBeShared(String className);
 
     public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
             String name, List<? extends Type> argTypes, List<? extends Type> excTypes, List<RefQualification> inputQ,

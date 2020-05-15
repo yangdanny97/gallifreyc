@@ -1,6 +1,8 @@
 package gallifreyc.types;
 
 import java.util.*;
+import java.util.Map.Entry;
+
 import gallifreyc.ast.*;
 import gallifreyc.extension.GallifreyExprExt;
 import polyglot.ast.Expr;
@@ -217,6 +219,16 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     @Override
     public ClassType getRestrictionClassType(String restriction) {
         return restrictionClassTypeMap.get(restriction);
+    }
+    
+    @Override
+    public boolean canBeShared(String className) {
+        for (Entry<String, String> pair : restrictionClassNameMap.entrySet()) {
+            if (pair.getValue().equals(className)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // checking qualifications

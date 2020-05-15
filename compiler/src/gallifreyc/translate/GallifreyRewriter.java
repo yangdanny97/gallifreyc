@@ -59,6 +59,69 @@ public class GallifreyRewriter extends GRewriter_c implements GRewriter {
         return super.leaveCall(old, n, v);
     }
 
+    // add CRDT fields and serialVersionUID to class decls
+    private ClassDecl rewriteDecl(ClassDecl cd) throws SemanticException {
+        GallifreyTypeSystem ts = (GallifreyTypeSystem) typeSystem();
+        if (!ts.canBeShared(cd.name())) {
+            return cd;
+        }
+        ClassBody body = cd.body();
+        List<ClassMember> members = new ArrayList<>(body.members());
+        Position p = Position.COMPILER_GENERATED;
+
+        // check for presence of serialVersionUID field
+        boolean serializable = false;
+        for (ClassMember m : body.members()) {
+            if (m instanceof FieldDecl) {
+                if (((FieldDecl) m).name().equals("serialVersionUID")) {
+                    serializable = true;
+                }
+            }
+            if (m instanceof MethodDecl) {
+                MethodDecl md = (MethodDecl) m;
+                if (md.formals().size() == 0) {
+                    continue;
+                }
+                List<Expr> elements = new ArrayList<>();
+                for (Formal f : md.formals()) {
+                    TypeNode t = f.type();
+                    if (t instanceof ParamTypeNode) {
+                        elements.add(nf.Field(p, nf.TypeNodeFromQualifiedName(p, "Object"), nf.Id(p, "class")));
+                    } else if (t instanceof ArrayTypeNode) {
+                        elements.add(nf.Field(p, nf.TypeNodeFromQualifiedName(p, t.name()), nf.Id(p, "class")));
+                    } else if (t instanceof CanonicalTypeNode) {
+                        Type ctype = ((CanonicalTypeNode) t).type();
+                        // use wrapper types for primitives
+                        if (ctype.isPrimitive()) {
+                            elements.add(nf.Field(p,
+                                    nf.CanonicalTypeNode(p, ts.wrapperClassOfPrimitive((PrimitiveType) ctype)),
+                                    nf.Id(p, "class")));
+                        } else {
+                            elements.add(nf.Field(p, nf.TypeNodeFromQualifiedName(p, t.name()), nf.Id(p, "class")));
+                        }
+
+                    } else {
+                        elements.add(nf.Field(p, nf.TypeNodeFromQualifiedName(p, "Object"), nf.Id(p, "class")));
+                    }
+                }
+                Expr rhs = nf.NewArray(p, nf.TypeNodeFromQualifiedName(p, "Class"), 1, nf.ArrayInit(p, elements));
+                members.add(nf.FieldDecl(p, Flags.PUBLIC.Final(), nf.TypeNodeFromQualifiedName(p, "Class<?>[]"),
+                        nf.Id(p, md.name()), rhs));
+            }
+        }
+
+        // make sure that the class is serializable
+        if (!serializable) {
+            members.add(nf.FieldDecl(p, Flags.PRIVATE.Static().Final(), nf.CanonicalTypeNode(p, ts.Long()),
+                    nf.Id(p, "serialVersionUID"), nf.IntLit(p, IntLit.INT, 1)));
+            List<TypeNode> interfaces = new ArrayList<>(cd.interfaces());
+            interfaces.add(nf.TypeNodeFromQualifiedName(p, "Serializable"));
+            cd = cd.interfaces(interfaces);
+        }
+        body = body.members(members);
+        return cd.body(body);
+    }
+
     private MethodDecl genRestrictionMethod(MethodInstance i) {
         GallifreyNodeFactory nf = (GallifreyNodeFactory) nodeFactory();
         GallifreyTypeSystem ts = (GallifreyTypeSystem) typeSystem();
@@ -343,13 +406,12 @@ public class GallifreyRewriter extends GRewriter_c implements GRewriter {
             imports.add(nf.Import(n.position(), Import.SINGLE_TYPE, "java.io.Serializable"));
             imports.add(nf.Import(n.position(), Import.SINGLE_TYPE, "java.util.Arrays"));
             imports.add(nf.Import(n.position(), Import.SINGLE_TYPE, "java.util.ArrayList"));
-
             // remove restriction decls
             List<TopLevelDecl> classDecls = new ArrayList<>();
             List<RestrictionDecl> restrictionDecls = new ArrayList<>();
             for (TopLevelDecl d : sf.decls()) {
                 if (d instanceof ClassDecl) {
-                    classDecls.add(d);
+                    classDecls.add(rewriteDecl((ClassDecl) d));
                 } else {
                     restrictionDecls.add((RestrictionDecl) d);
                 }
