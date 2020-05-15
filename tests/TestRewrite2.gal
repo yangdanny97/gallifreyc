@@ -1,7 +1,3 @@
-package gallifrey;
-
-import gallifrey.ClassC;
-
 restriction R for ClassC {
 	allows testFun;
 }

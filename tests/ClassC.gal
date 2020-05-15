@@ -1,5 +1,3 @@
-package gallifrey;
-
 public class ClassC {
     public local String s;
 
@@ -10,4 +8,8 @@ public class ClassC {
     public void f1() {}
     
     public void f2() {}
+    
+    public int f3() {
+        return 0;
+    }
 }

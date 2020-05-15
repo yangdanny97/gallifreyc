@@ -1,5 +1,3 @@
-package gallifrey;
-
 restriction MyRestriction for String {}
 
 public class Hello {

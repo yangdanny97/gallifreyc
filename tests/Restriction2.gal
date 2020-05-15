@@ -1,5 +1,3 @@
-package gallifrey;
-
 restriction AddWins for Library {
     allows addItem;
     allows removeCollection contingent RemoveCollectionLost;

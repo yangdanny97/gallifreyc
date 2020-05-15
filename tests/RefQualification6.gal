@@ -1,5 +1,3 @@
-package gallifrey;
-
 public class Hello {
     public static void main(local String[] args) {
         local String phrase1 = "Hello world!";

@@ -1,5 +1,3 @@
-package gallifrey;
-
 class Foo {
     public int x;
     public Foo() {

@@ -1,0 +1,13 @@
+restriction R for ClassC {
+    allows testFun;
+    allows f3;
+}
+
+class D {
+    public D(){}
+    
+    public void testAAA() {
+        shared[R] ClassC c = new ClassC();
+        local Integer x = c.f3();
+    }
+}

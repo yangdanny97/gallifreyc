@@ -1,5 +1,3 @@
-package gallifrey;
-
 restriction R for Library {
     allows addItem;
     allows numItems;

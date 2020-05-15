@@ -1,5 +1,3 @@
-package gallifrey;
-
 class D {
     public D(){
         local local Integer x = 5;

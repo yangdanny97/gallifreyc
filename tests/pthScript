@@ -29,12 +29,10 @@
 javac "-d java-out -cp ." {
     Shared.java;
     Unique.java;
-    GenericKey.java;
-    Frontend.java;
 }
 
 // old tests
-gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out:../../gallifrey-antidote/build/classes/java/test" {
+gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out:../../gallifrey-antidote/frontend/build/classes/java/main" {
     RefQualification1.gal;
     RefQualification2a.gal;
     RefQualification2b.gal;
@@ -58,7 +56,7 @@ gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out:../../gallifrey-an
 }
 
 // new tests
-gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out:../../gallifrey-antidote/build/classes/java/test" {
+gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out:../../gallifrey-antidote/frontend/build/classes/java/main" {
     TestFieldAssign.gal ClassC.gal;
     TestHoist.gal;
     TestInitializer.gal;
@@ -69,9 +67,10 @@ gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out:../../gallifrey-an
     TestInvalidNestedQualifier.gal (Semantic);
     TestInvalidRestrictionClass.gal (Semantic);
     TestInvalidRestrictionUnion.gal (Semantic);
-    TestInvalidTransition.gal (Semantic);
+    TestInvalidTransition.gal ClassC.gal (Semantic);
     TestInvariantSubtyping.gal (Semantic);
     TestRewrite.gal;
+    TestShared.gal ClassC.gal;
     TestRewrite2.gal ClassC.gal;
     ClassC.gal TestInvalidRestrictedMethod.gal (Semantic);
     ClassC.gal TestInvalidSharedFieldAccess.gal (Semantic);

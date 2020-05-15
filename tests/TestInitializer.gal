@@ -1,5 +1,3 @@
-package gallifrey;
-
 class C {
 	public final local Integer a = 5;
 	public local Integer b = 6;
