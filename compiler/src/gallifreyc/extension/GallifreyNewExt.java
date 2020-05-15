@@ -8,6 +8,11 @@ import polyglot.util.SerialVersionUID;
 import polyglot.visit.AmbiguityRemover;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeChecker;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import gallifreyc.translate.ANormalizer;
 import gallifreyc.types.GallifreyConstructorInstance;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.Expr;
@@ -31,6 +36,16 @@ public class GallifreyNewExt extends GallifreyExprExt implements NewOps {
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
         this.gallifreyType = ts.checkArgs(ci, node().arguments());
         return node;
+    }
+
+    @Override
+    public Node aNormalize(ANormalizer rw) throws SemanticException {
+        List<Expr> args = new ArrayList<>(node().arguments());
+        List<Expr> hoistedArgs = new ArrayList<>();
+        for (Expr arg : args) {
+            hoistedArgs.add(rw.hoist(arg));
+        }
+        return node().arguments(hoistedArgs);
     }
 
     @Override

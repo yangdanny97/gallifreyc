@@ -6,10 +6,13 @@ import polyglot.util.SerialVersionUID;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
+import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.LocalRef;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
+import gallifreyc.ast.UniqueRef;
 import gallifreyc.ast.UnknownRef;
+import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyFieldInstance;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
@@ -26,6 +29,17 @@ public class GallifreyFieldDeclExt extends GallifreyExt implements GallifreyOps 
     @Override
     public FieldDecl node() {
         return (FieldDecl) super.node();
+    }
+
+    @Override
+    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+        FieldDecl f = node();
+        GallifreyNodeFactory nf = rw.nodeFactory();
+        RefQualification q = this.qualification;
+        if (q instanceof UniqueRef) {
+            return f.type(nf.TypeNodeFromQualifiedName(f.position(), "Unique<" + f.type().type().toString() + ">"));
+        }
+        return f;
     }
 
     @Override
@@ -54,7 +68,7 @@ public class GallifreyFieldDeclExt extends GallifreyExt implements GallifreyOps 
         fi.gallifreyType(new GallifreyType(q));
         return node;
     }
-    
+
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         FieldDecl node = (FieldDecl) superLang().typeCheck(node(), tc);

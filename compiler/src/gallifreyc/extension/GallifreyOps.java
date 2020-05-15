@@ -1,6 +1,11 @@
 package gallifreyc.extension;
 
+import gallifreyc.translate.ANormalizer;
+import gallifreyc.translate.FieldInitRewriter;
+import gallifreyc.translate.GallifreyRewriter;
+import polyglot.ast.Node;
 import polyglot.ast.NodeOps;
+import polyglot.types.SemanticException;
 
 /**
  * Define a collection of operations that any Gallifrey node must implement.
@@ -8,4 +13,9 @@ import polyglot.ast.NodeOps;
  * GallifreyExt (i think).
  */
 public interface GallifreyOps extends NodeOps {
+    public Node aNormalize(ANormalizer rw) throws SemanticException;
+
+    public Node rewriteFieldInits(FieldInitRewriter rw) throws SemanticException;
+
+    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException;
 }

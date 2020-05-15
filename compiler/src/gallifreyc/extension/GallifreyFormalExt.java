@@ -4,10 +4,13 @@ import polyglot.types.SemanticException;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeBuilder;
+import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.LocalRef;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
+import gallifreyc.ast.UniqueRef;
 import gallifreyc.ast.UnknownRef;
+import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyLocalInstance;
 import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.Formal;
@@ -16,9 +19,9 @@ import polyglot.ast.TypeNode;
 
 public class GallifreyFormalExt extends GallifreyExt {
     private static final long serialVersionUID = SerialVersionUID.generate();
-    
+
     public RefQualification qualification;
-    
+
     {
         qualification = new UnknownRef(Position.COMPILER_GENERATED);
     }
@@ -48,4 +51,16 @@ public class GallifreyFormalExt extends GallifreyExt {
         qualification = li.gallifreyType().qualification;
         return n;
     }
+
+    @Override
+    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+        Formal f = node();
+        GallifreyNodeFactory nf = rw.nodeFactory();
+        RefQualification q = qualification;
+        if (q instanceof UniqueRef) {
+            f = f.type(nf.TypeNodeFromQualifiedName(f.position(), "Unique<" + f.type().type().toString() + ">"));
+        }
+        return f;
+    }
+
 }

@@ -3,10 +3,10 @@ package gallifreyc.extension;
 import polyglot.ast.*;
 import polyglot.util.InternalCompilerError;
 import polyglot.util.SerialVersionUID;
-import polyglot.visit.NodeVisitor;
 import polyglot.types.SemanticException;
-import polyglot.translate.ExtensionRewriter;
-import gallifreyc.translate.GRewriter;
+import gallifreyc.translate.ANormalizer;
+import gallifreyc.translate.FieldInitRewriter;
+import gallifreyc.translate.GallifreyRewriter;
 
 public class GallifreyExt extends Ext_c implements GallifreyOps {
     private static final long serialVersionUID = SerialVersionUID.generate();
@@ -29,14 +29,20 @@ public class GallifreyExt extends Ext_c implements GallifreyOps {
     }
 
     @Override
-    public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
-        GRewriter crw = (GRewriter) rw;
-        return crw.rewrite(node);
+    public Node aNormalize(ANormalizer rw) throws SemanticException {
+        if (node() instanceof Stmt && !(node() instanceof Block)) {
+            return rw.addHoistedDecls((Stmt) node());
+        }
+        return node();
     }
 
     @Override
-    public NodeVisitor extRewriteEnter(ExtensionRewriter rw) throws SemanticException {
-        GRewriter crw = (GRewriter) rw;
-        return crw.rewriteEnter(node);
+    public Node rewriteFieldInits(FieldInitRewriter rw) throws SemanticException {
+        return node();
+    }
+
+    @Override
+    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+        return node();
     }
 }

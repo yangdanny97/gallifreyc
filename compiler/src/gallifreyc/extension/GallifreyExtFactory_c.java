@@ -34,6 +34,21 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
         return new GallifreySourceFileExt();
     }
 
+    @Override
+    protected Ext extTransitionImpl() {
+        return new GallifreyTransitionExt();
+    }
+
+    @Override
+    protected Ext extMoveImpl() {
+        return new GallifreyMoveExt();
+    }
+
+    @Override
+    protected Ext extMatchRestrictionImpl() {
+        return new GallifreyMatchRestrictionExt();
+    }
+
     // Decls
 
     @Override

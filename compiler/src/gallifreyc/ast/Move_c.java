@@ -11,8 +11,6 @@ import polyglot.visit.CFGBuilder;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeChecker;
-import gallifreyc.extension.GallifreyExprExt;
-import gallifreyc.types.GallifreyType;
 
 public class Move_c extends Expr_c implements Move {
     private static final long serialVersionUID = SerialVersionUID.generate();
@@ -65,15 +63,6 @@ public class Move_c extends Expr_c implements Move {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        GallifreyExprExt ext = GallifreyExprExt.ext(this.expr);
-        tc.nodeFactory();
-        RefQualification q = ext.gallifreyType.qualification();
-        if (q instanceof UniqueRef) {
-            ext.gallifreyType.qualification = new MoveRef(q.position());
-            GallifreyExprExt thisExt = GallifreyExprExt.ext(this);
-            thisExt.gallifreyType = new GallifreyType(new MoveRef(q.position()));
-            return type(this.expr.type());
-        }
-        throw new SemanticException("cannot move non-unique!", this.position());
+        return this.type(this.expr().type());
     }
 }

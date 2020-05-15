@@ -53,7 +53,7 @@ public class AllowsStmt_c extends Node_c implements AllowsStmt {
     public Node visitChildren(NodeVisitor v) {
         return this;
     }
-    
+
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         GallifreyTypeBuilder gtb = (GallifreyTypeBuilder) tb;
@@ -64,12 +64,12 @@ public class AllowsStmt_c extends Node_c implements AllowsStmt {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        TypeSystem ts = tc.typeSystem();
+        tc.typeSystem();
         GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
         ClassType ct = (ClassType) gtc.currentRestrictionClass;
         if (ct.methodsNamed(id.id()).size() == 0) {
-            throw new SemanticException(
-                    "Unable to find method named " + id.id() + " in " + gtc.currentRestrictionClass, this.position);
+            throw new SemanticException("Unable to find method named " + id.id() + " in " + gtc.currentRestrictionClass,
+                    this.position);
         }
         return this;
     }

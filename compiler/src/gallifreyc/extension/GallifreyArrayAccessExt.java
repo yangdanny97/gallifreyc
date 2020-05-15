@@ -3,6 +3,7 @@ package gallifreyc.extension;
 import polyglot.types.SemanticException;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
+import gallifreyc.translate.ANormalizer;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.ArrayAccess;
 import polyglot.ast.Node;
@@ -23,4 +24,13 @@ public class GallifreyArrayAccessExt extends GallifreyExprExt {
         this.gallifreyType = new GallifreyType(arrayType);
         return aa;
     }
+
+    @Override
+    public Node aNormalize(ANormalizer rw) throws SemanticException {
+        ArrayAccess a = node();
+        a = a.array(rw.hoist(a.array()));
+        a = a.index(rw.hoist(a.index()));
+        return a;
+    }
+
 }

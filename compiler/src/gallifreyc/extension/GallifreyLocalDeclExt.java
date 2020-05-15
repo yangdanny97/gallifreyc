@@ -1,13 +1,22 @@
 package gallifreyc.extension;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.LocalRef;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
+import gallifreyc.ast.RestrictionId;
+import gallifreyc.ast.SharedRef;
+import gallifreyc.ast.UniqueRef;
 import gallifreyc.ast.UnknownRef;
+import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyLocalInstance;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.CanonicalTypeNode;
+import polyglot.ast.Expr;
 import polyglot.ast.LocalDecl;
 import polyglot.ast.Node;
 import polyglot.ast.TypeNode;
@@ -27,7 +36,7 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
     public LocalDecl node() {
         return (LocalDecl) super.node();
     }
-    
+
     @Override
     public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
         TypeNode t = node().type();
@@ -54,7 +63,7 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
         li.gallifreyType(new GallifreyType(q));
         return node;
     }
-    
+
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         LocalDecl node = (LocalDecl) superLang().typeCheck(node(), tc);
@@ -69,6 +78,32 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
             }
         }
         return node;
+    }
+
+    @Override
+    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+        // rewrite RHS of decls
+        GallifreyNodeFactory nf = rw.nodeFactory();
+        LocalDecl l = node();
+        Expr rhs = l.init();
+        RefQualification q = this.qualification();
+        // shared[R] C x = e ----> R x = new R(e);
+        if (q instanceof SharedRef) {
+            SharedRef s = (SharedRef) q;
+            RestrictionId rid = s.restriction();
+            Expr new_rhs = rw.qq().parseExpr("new " + rid.toString() + "(%E)", rhs);
+            l = l.type(nf.TypeNodeFromQualifiedName(l.position(), "Shared"));
+            l = l.init(new_rhs);
+            return l;
+        }
+        if (q instanceof UniqueRef) {
+            Expr new_rhs = nf.New(rhs.position(), nf.TypeNodeFromQualifiedName(l.position(), "Unique<>"),
+                    new ArrayList<Expr>(Arrays.asList(rhs)));
+            l = l.type(nf.TypeNodeFromQualifiedName(l.position(), "Unique<" + l.type().type().toString() + ">"));
+            l = l.init(new_rhs);
+            return l;
+        }
+        return l;
     }
 
     public RefQualification qualification() {

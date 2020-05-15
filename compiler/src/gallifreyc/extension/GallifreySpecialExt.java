@@ -17,7 +17,7 @@ public class GallifreySpecialExt extends GallifreyExprExt {
     public Special node() {
         return (Special) super.node();
     }
-    
+
     {
         gallifreyType = new GallifreyType(new LocalRef(Position.COMPILER_GENERATED));
     }

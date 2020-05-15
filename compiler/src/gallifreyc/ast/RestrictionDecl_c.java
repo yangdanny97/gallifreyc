@@ -69,12 +69,12 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
     public Javadoc javadoc() {
         return this.javadoc;
     }
-    
+
     @Override
     public boolean isDisambiguated() {
         return forClass.type() != null && forClass.type().isCanonical() && super.isDisambiguated();
     }
-    
+
     @Override
     public Node disambiguate(AmbiguityRemover ar) throws SemanticException {
         this.forClass = (TypeNode) lang().disambiguate(forClass, ar);
@@ -101,11 +101,11 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
         TypeSystem ts = tb.typeSystem();
         GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
         gts.addRestrictionMapping(id.id(), forClass.name());
-        
+
         GallifreyTypeBuilder gtb = (GallifreyTypeBuilder) tb;
         gtb.currentRestriction = id.id();
         gtb.currentRestrictionClass = forClass.name();
-        
+
         return super.buildTypesEnter(tb);
     }
 
@@ -113,20 +113,20 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
-    
+
     @Override
     public NodeVisitor typeCheckEnter(TypeChecker tc) throws SemanticException {
         GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
-        
+
         this.forClass = (TypeNode) lang().typeCheck(forClass, gtc);
         gtc.currentRestriction = id.id();
         gtc.currentRestrictionClass = forClass.type();
-        
+
         if (!(forClass.type() != null && forClass.type() instanceof ClassType)) {
-            throw new SemanticException("Restriction " + id.id() + " for " + forClass.type() + " must be for a valid class",
-                    this.position);
+            throw new SemanticException(
+                    "Restriction " + id.id() + " for " + forClass.type() + " must be for a valid class", this.position);
         }
-        
+
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
         ts.addRestrictionClassType(id.id(), (ClassType) forClass.type());
         return super.typeCheckEnter(tc);
@@ -144,7 +144,7 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
         v.visitCFG(body(), this, EXIT);
         return succs;
     }
-    
+
     @Override
     public Node visitChildren(NodeVisitor v) {
         // this breaks immutability, maybe revisit

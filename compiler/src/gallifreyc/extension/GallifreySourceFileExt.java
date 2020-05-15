@@ -2,7 +2,9 @@ package gallifreyc.extension;
 
 import java.util.*;
 
+import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.RestrictionDecl;
+import gallifreyc.translate.GallifreyRewriter;
 import polyglot.ast.*;
 import polyglot.ast.Import.Kind;
 import polyglot.ext.jl5.ast.JL5Import;
@@ -20,7 +22,7 @@ public class GallifreySourceFileExt extends GallifreyExt {
     public SourceFile node() {
         return (SourceFile) super.node();
     }
-    
+
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         SourceFile n = node();
@@ -34,10 +36,10 @@ public class GallifreySourceFileExt extends GallifreyExt {
         }
         n = n.decls(cd);
         n = (SourceFile) superLang().buildTypes(n, tb);
-        
+
         List<TopLevelDecl> newDecls = new ArrayList<>();
         List<RestrictionDecl> newRDecls = new ArrayList<>();
-        
+
         for (RestrictionDecl r : rd) {
             RestrictionDecl newRDecl = (RestrictionDecl) lang().buildTypes(r, tb);
             newRDecls.add(newRDecl);
@@ -46,19 +48,48 @@ public class GallifreySourceFileExt extends GallifreyExt {
         newDecls.addAll(newRDecls);
         return n.decls(newDecls);
     }
-    
+
+    @Override
+    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+        GallifreyNodeFactory nf = rw.nodeFactory();
+        SourceFile sf = node();
+        Position p = Position.COMPILER_GENERATED;
+
+        List<Import> imports = new ArrayList<>(sf.imports());
+        imports.add(0, nf.Import(p, Import.SINGLE_TYPE, "gallifrey.Unique"));
+        imports.add(0, nf.Import(p, Import.SINGLE_TYPE, "gallifrey.Shared"));
+        imports.add(0, nf.Import(p, Import.SINGLE_TYPE, "gallifrey.SharedObject"));
+        imports.add(nf.Import(p, Import.SINGLE_TYPE, "java.io.Serializable"));
+        imports.add(nf.Import(p, Import.SINGLE_TYPE, "java.util.Arrays"));
+        imports.add(nf.Import(p, Import.SINGLE_TYPE, "java.util.ArrayList"));
+        // remove restriction decls
+        List<TopLevelDecl> classDecls = new ArrayList<>();
+        List<RestrictionDecl> restrictionDecls = new ArrayList<>();
+        for (TopLevelDecl d : sf.decls()) {
+            if (d instanceof ClassDecl) {
+                classDecls.add(rw.rewriteDecl((ClassDecl) d));
+            } else {
+                restrictionDecls.add((RestrictionDecl) d);
+            }
+        }
+
+        for (RestrictionDecl rd : restrictionDecls) {
+            classDecls.add(rw.genRestrictionClass(rd));
+        }
+        return sf.imports(imports).decls(classDecls);
+    }
 
     @Override
     public NodeVisitor typeCheckEnter(TypeChecker tc) throws SemanticException {
         NodeVisitor nv = superLang().typeCheckEnter(node(), tc);
         return nv;
     }
-    
+
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         Map<String, Named> declaredTypes = new HashMap<>();
         boolean hasPublic = false;
-        
+
         for (TopLevelDecl d : node().decls()) {
             if (d instanceof RestrictionDecl) {
                 lang().typeCheck((RestrictionDecl) d, tc);
@@ -68,20 +99,19 @@ public class GallifreySourceFileExt extends GallifreyExt {
         for (TopLevelDecl d : node().decls()) {
             if (d instanceof ClassDecl) {
                 String s = d.name();
-    
+
                 if (declaredTypes.containsKey(s)) {
-                    throw new SemanticException("Duplicate declaration: \"" + s
-                            + "\".", d.position());
+                    throw new SemanticException("Duplicate declaration: \"" + s + "\".", d.position());
                 }
-    
+
                 declaredTypes.put(s, ((ClassDecl) d).type());
-    
+
                 if (d.flags().isPublic()) {
                     if (hasPublic) {
                         throw new SemanticException("The source contains more than one public declaration.",
-                                                    d.position());
+                                d.position());
                     }
-    
+
                     hasPublic = true;
                 }
             }
@@ -99,14 +129,14 @@ public class GallifreySourceFileExt extends GallifreyExt {
                 String name = named.name();
                 importedTypes.put(name, named);
             }
-            if (kind != JL5Import.SINGLE_STATIC_MEMBER) continue;
+            if (kind != JL5Import.SINGLE_STATIC_MEMBER)
+                continue;
 
             String s = i.name();
             Named named;
             try {
                 named = ts.forName(s);
-            }
-            catch (SemanticException e) {
+            } catch (SemanticException e) {
                 // static import is not a type; further checks unnecessary.
                 continue;
             }
@@ -117,23 +147,21 @@ public class GallifreySourceFileExt extends GallifreyExt {
             // If a compilation unit contains both a single-static-import
             // declaration that imports a type whose simple name is n, and a
             // single-type-import declaration that imports a type whose simple
-            // name is n, a compile-time error occurs. 
+            // name is n, a compile-time error occurs.
             if (importedTypes.containsKey(name)) {
                 Named importedType = importedTypes.get(name);
-                throw new SemanticException(name
-                                                    + " is already defined in a single-type import as type "
-                                                    + importedType + ".",
-                                            i.position());
-            }
-            else staticImportedTypes.put(name, named);
+                throw new SemanticException(
+                        name + " is already defined in a single-type import as type " + importedType + ".",
+                        i.position());
+            } else
+                staticImportedTypes.put(name, named);
 
             // If a single-static-import declaration imports a type whose simple
             // name is n, and the compilation unit also declares a top level
             // type whose simple name is n, a compile-time error occurs.
             if (declaredTypes.containsKey(name)) {
                 Named declaredType = declaredTypes.get(name);
-                throw new SemanticException("The static import " + s
-                        + " conflicts with type " + declaredType
+                throw new SemanticException("The static import " + s + " conflicts with type " + declaredType
                         + " defined in the same file.", i.position());
             }
 

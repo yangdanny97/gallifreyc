@@ -7,6 +7,7 @@ import polyglot.visit.TypeChecker;
 import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.SharedRef;
+import gallifreyc.translate.ANormalizer;
 import gallifreyc.types.GallifreyFieldInstance;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.Expr;
@@ -30,7 +31,7 @@ public class GallifreyFieldExt extends GallifreyExprExt {
         if (q == null) {
             q = new MoveRef(Position.COMPILER_GENERATED);
         }
-        
+
         if (f.target() instanceof Expr) {
             RefQualification targetQ = GallifreyExprExt.ext(f.target()).gallifreyType().qualification();
             if (targetQ instanceof SharedRef) {
@@ -40,4 +41,13 @@ public class GallifreyFieldExt extends GallifreyExprExt {
         gallifreyType = new GallifreyType(q);
         return f;
     }
+
+    @Override
+    public Node aNormalize(ANormalizer rw) throws SemanticException {
+        if (node().target() instanceof Expr) {
+            return node().target(rw.hoist((Expr) (node().target())));
+        }
+        return node();
+    }
+
 }

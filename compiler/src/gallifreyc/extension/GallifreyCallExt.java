@@ -12,12 +12,16 @@ import polyglot.util.SerialVersionUID;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeChecker;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.SharedRef;
+import gallifreyc.translate.ANormalizer;
+import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyMethodInstance;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
@@ -65,6 +69,32 @@ public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
             this.gallifreyType = new GallifreyType(mi.gallifreyReturnType());
         }
         return node;
+    }
+
+    @Override
+    public Node aNormalize(ANormalizer rw) throws SemanticException {
+        List<Expr> args = new ArrayList<>(node().arguments());
+        List<Expr> hoistedArgs = new ArrayList<>();
+        for (Expr arg : args) {
+            hoistedArgs.add(rw.hoist(arg));
+        }
+        return node().arguments(hoistedArgs);
+    }
+
+    @Override
+    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+        GallifreyNodeFactory nf = rw.nodeFactory();
+        Call c = node();
+        if (c.target() instanceof Expr) {
+            GallifreyType t = GallifreyExprExt.ext(c.target()).gallifreyType();
+            if (t.qualification() instanceof SharedRef) {
+                String restriction = ((SharedRef) t.qualification()).restriction().restriction().id();
+                Expr newTarget = nf.Cast(node().position(),
+                        nf.TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, restriction), (Expr) c.target());
+                return c.target(newTarget);
+            }
+        }
+        return c;
     }
 
     @Override

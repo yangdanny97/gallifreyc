@@ -69,7 +69,7 @@ public class RestrictionBody_c extends Term_c implements RestrictionBody {
     public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
         return succs;
     }
-    
+
     @Override
     public Node visitChildren(NodeVisitor v) {
         // this breaks immutability, maybe revisit

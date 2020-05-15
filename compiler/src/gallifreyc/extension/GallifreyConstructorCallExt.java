@@ -1,8 +1,13 @@
 package gallifreyc.extension;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import gallifreyc.translate.ANormalizer;
 import gallifreyc.types.GallifreyProcedureInstance;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.ConstructorCall;
+import polyglot.ast.Expr;
 import polyglot.ast.Node;
 import polyglot.ast.ProcedureCallOps;
 import polyglot.types.SemanticException;
@@ -26,6 +31,16 @@ public class GallifreyConstructorCallExt extends GallifreyExt implements Procedu
     @Override
     public void printArgs(CodeWriter w, PrettyPrinter tr) {
         superLang().printArgs(node(), w, tr);
+    }
+
+    @Override
+    public Node aNormalize(ANormalizer rw) throws SemanticException {
+        List<Expr> args = new ArrayList<>(node().arguments());
+        List<Expr> hoistedArgs = new ArrayList<>();
+        for (Expr arg : args) {
+            hoistedArgs.add(rw.hoist(arg));
+        }
+        return node().arguments(hoistedArgs);
     }
 
     @Override

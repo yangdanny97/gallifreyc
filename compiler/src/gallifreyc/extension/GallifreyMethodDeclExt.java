@@ -50,11 +50,11 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
     public MethodDecl node() {
         return (MethodDecl) super.node();
     }
-    
+
     @Override
     public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
         MethodDecl md = node();
-        
+
         TypeNode rt = md.returnType();
         if (rt instanceof RefQualifiedTypeNode
                 || (rt instanceof CanonicalTypeNode && ((CanonicalTypeNode) rt).type().isPrimitive())) {

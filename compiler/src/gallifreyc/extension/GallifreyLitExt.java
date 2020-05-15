@@ -11,7 +11,7 @@ import polyglot.ast.Node;
 
 public class GallifreyLitExt extends GallifreyExprExt {
     private static final long serialVersionUID = SerialVersionUID.generate();
-    
+
     {
         gallifreyType = new GallifreyType(new MoveRef(Position.COMPILER_GENERATED));
     }

@@ -4,10 +4,12 @@ import polyglot.types.SemanticException;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualification;
+import gallifreyc.translate.ANormalizer;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.ArrayInit;
 import polyglot.ast.Expr;
@@ -19,6 +21,16 @@ public class GallifreyArrayInitExt extends GallifreyExprExt {
     @Override
     public ArrayInit node() {
         return (ArrayInit) super.node();
+    }
+
+    @Override
+    public Node aNormalize(ANormalizer rw) throws SemanticException {
+        List<Expr> elems = new ArrayList<>(node().elements());
+        List<Expr> hoistedElems = new ArrayList<>();
+        for (Expr arg : elems) {
+            hoistedElems.add(rw.hoist(arg));
+        }
+        return node().elements(hoistedElems);
     }
 
     @Override

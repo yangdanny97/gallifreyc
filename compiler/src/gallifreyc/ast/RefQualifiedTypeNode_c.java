@@ -53,8 +53,8 @@ public class RefQualifiedTypeNode_c extends TypeNode_c implements RefQualifiedTy
         }
         return super.buildTypes(tb);
     }
-    
-    @Override 
+
+    @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         return type(base.type());
     }

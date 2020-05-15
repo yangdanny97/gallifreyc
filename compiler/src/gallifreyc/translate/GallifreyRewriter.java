@@ -2,8 +2,6 @@ package gallifreyc.translate;
 
 import polyglot.ast.*;
 import polyglot.ext.jl5.ast.AnnotationElem;
-import polyglot.ext.jl5.ast.JL5Ext;
-import polyglot.ext.jl5.ast.JL5FormalExt;
 import polyglot.ext.jl5.ast.ParamTypeNode;
 import polyglot.frontend.ExtensionInfo;
 import polyglot.frontend.Job;
@@ -14,36 +12,20 @@ import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.types.PrimitiveType;
 import polyglot.util.Position;
-import polyglot.visit.NodeVisitor;
 import gallifreyc.ast.*;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyExt;
-import gallifreyc.extension.GallifreyFieldDeclExt;
-import gallifreyc.extension.GallifreyFormalExt;
-import gallifreyc.extension.GallifreyLang;
-import gallifreyc.extension.GallifreyLocalDeclExt;
 import gallifreyc.types.GallifreyMethodInstance;
-import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
 
 import java.util.*;
 
 // move a-normalization to earlier pass, translations for transition and match
-public class GallifreyRewriter extends GRewriter_c implements GRewriter {
-    final String VALUE = "VALUE";
-    final String RES = "RESTRICTION";
-    final String TEMP = "TEMP";
-    final String SHARED = "sharedObj";
-
-    @Override
-    public GallifreyLang lang() {
-        return (GallifreyLang) super.lang();
-    }
-
-    @Override
-    public GallifreyNodeFactory nodeFactory() {
-        return (GallifreyNodeFactory) super.nodeFactory();
-    }
+public class GallifreyRewriter extends GRewriter {
+    public final String VALUE = "VALUE";
+    public final String RES = "RESTRICTION";
+    public final String TEMP = "TEMP";
+    public final String SHARED = "sharedObj";
 
     public GallifreyRewriter(Job job, ExtensionInfo from_ext, ExtensionInfo to_ext) {
         super(job, from_ext, to_ext);
@@ -54,13 +36,8 @@ public class GallifreyRewriter extends GRewriter_c implements GRewriter {
         return super.typeToJava(t, pos);
     }
 
-    @Override
-    public Node leaveCall(Node old, Node n, NodeVisitor v) throws SemanticException {
-        return super.leaveCall(old, n, v);
-    }
-
     // add CRDT fields and serialVersionUID to class decls
-    private ClassDecl rewriteDecl(ClassDecl cd) throws SemanticException {
+    public ClassDecl rewriteDecl(ClassDecl cd) throws SemanticException {
         GallifreyTypeSystem ts = (GallifreyTypeSystem) typeSystem();
         if (!ts.canBeShared(cd.name())) {
             return cd;
@@ -122,9 +99,9 @@ public class GallifreyRewriter extends GRewriter_c implements GRewriter {
         return cd.body(body);
     }
 
-    private MethodDecl genRestrictionMethod(MethodInstance i) {
+    public MethodDecl genRestrictionMethod(MethodInstance i) {
         GallifreyNodeFactory nf = (GallifreyNodeFactory) nodeFactory();
-        GallifreyTypeSystem ts = (GallifreyTypeSystem) typeSystem();
+        typeSystem();
         GallifreyMethodInstance mi = (GallifreyMethodInstance) i;
 
         Position p = Position.COMPILER_GENERATED;
@@ -177,7 +154,7 @@ public class GallifreyRewriter extends GRewriter_c implements GRewriter {
                 nf.Id(p, mi.name()), formals, throwTypes, nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, ""));
     }
 
-    private ClassDecl genRestrictionClass(RestrictionDecl r) {
+    public ClassDecl genRestrictionClass(RestrictionDecl r) {
         // restriction R for C
         GallifreyNodeFactory nf = (GallifreyNodeFactory) nodeFactory();
         GallifreyTypeSystem ts = (GallifreyTypeSystem) typeSystem();
@@ -234,7 +211,7 @@ public class GallifreyRewriter extends GRewriter_c implements GRewriter {
     }
 
     // wrap unique/shared refs with .value, AFTER rewriting
-    private Node wrapExpr(Expr e) {
+    public Node wrapExpr(Expr e) {
         GallifreyExprExt ext = GallifreyExprExt.ext(e);
         RefQualification q;
         q = ext.gallifreyType.qualification();
@@ -245,190 +222,11 @@ public class GallifreyRewriter extends GRewriter_c implements GRewriter {
         return e;
     }
 
-    private Node rewriteExpr(Node n) throws SemanticException {
-        GallifreyNodeFactory nf = nodeFactory();
-
-        // unwrap Moves
-        if (n instanceof Move) {
-            // move(a) ---> ((a.TEMP = a.value) == (a.value = null)) ? a.TEMP : a.TEMP
-            Move m = (Move) n;
-            Position p = n.position();
-            Expr e = m.expr();
-            GallifreyExprExt ext = GallifreyExprExt.ext(e);
-
-            // HACK: re-wrap unique exprs inside of Moves
-            if (e instanceof Field) {
-                Field f = (Field) e;
-                if (f.name().toString().equals(VALUE)) {
-                    e = (Expr) f.target();
-                }
-            }
-
-            Field tempField = nf.Field(p, e, nf.Id(p, TEMP));
-            Field tempField2 = nf.Field(p, e, nf.Id(p, TEMP));
-            Field tempField3 = nf.Field(p, e, nf.Id(p, TEMP));
-            Field valueField = nf.Field(p, e, nf.Id(p, VALUE));
-            Field valueField2 = nf.Field(p, e, nf.Id(p, VALUE));
-
-            FieldAssign fa1 = nf.FieldAssign(p, tempField, Assign.ASSIGN, valueField);
-            FieldAssign fa2 = nf.FieldAssign(p, valueField2, Assign.ASSIGN, nf.NullLit(p));
-
-            Expr condition = nf.Binary(p, fa1, Binary.EQ, fa2);
-            Expr conditional = nf.Conditional(p, condition, tempField2, tempField3);
-            GallifreyExprExt condExt = GallifreyExprExt.ext(conditional);
-            condExt.gallifreyType(ext.gallifreyType());
-            return conditional;
-        }
-
-        // add explicit casts to restriction class for Shared objects
-        if (n instanceof Call) {
-            Call c = (Call) n;
-            if (c.target() instanceof Expr) {
-                GallifreyType t = GallifreyExprExt.ext(c.target()).gallifreyType();
-                if (t.qualification() instanceof SharedRef) {
-                    String restriction = ((SharedRef) t.qualification()).restriction().restriction().id();
-                    Expr newTarget = nf.Cast(n.position(),
-                            nf.TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, restriction), (Expr) c.target());
-                    return c.target(newTarget);
-                }
-            }
-            return c;
-        }
-        return n;
-    }
-
-    private Node rewriteStmt(Node n) throws SemanticException {
-        if (n instanceof LocalDecl) {
-            // rewrite RHS of decls
-            LocalDecl l = (LocalDecl) n;
-            GallifreyLocalDeclExt lde = (GallifreyLocalDeclExt) GallifreyExt.ext(l);
-            Expr rhs = l.init();
-            RefQualification q = lde.qualification();
-            // shared[R] C x = e ----> R x = new R(e);
-            if (q instanceof SharedRef) {
-                SharedRef s = (SharedRef) q;
-                RestrictionId rid = s.restriction();
-                Expr new_rhs = qq().parseExpr("new " + rid.toString() + "(%E)", rhs);
-                l = l.type(nf.TypeNodeFromQualifiedName(l.position(), "Shared"));
-                l = l.init(new_rhs);
-                return l;
-            }
-            if (q instanceof UniqueRef) {
-                Expr new_rhs = nf.New(rhs.position(), nf.TypeNodeFromQualifiedName(l.position(), "Unique<>"),
-                        new ArrayList<Expr>(Arrays.asList(rhs)));
-                l = l.type(nf.TypeNodeFromQualifiedName(l.position(), "Unique<" + l.type().type().toString() + ">"));
-                l = l.init(new_rhs);
-                return l;
-            }
-            return l;
-        }
-        // translate Transition to java
-        if (n instanceof Transition) {
-            Transition t = (Transition) n;
-            Position p = t.position();
-            // transition(c, R) ------> c = new R(c.SHARED);
-            Assign fa = nf.Assign(p, (Local) t.expr().copy(), Assign.ASSIGN, nf.New(p,
-                    nf.TypeNodeFromQualifiedName(p, t.restriction().restriction().id()),
-                    new ArrayList<Expr>(Arrays.asList(nf.Field(p, (Local) t.expr().copy(), nf.Id(p, SHARED))))));
-            return nf.Eval(p, fa);
-        }
-        // translate MatchRestriction to java
-        if (n instanceof MatchRestriction) {
-            MatchRestriction m = (MatchRestriction) n;
-            Expr e = m.expr();
-            Position p = m.position();
-            If currentif = null;
-            List<MatchBranch> branches = new ArrayList<>(m.branches());
-            Collections.reverse(branches);
-
-            for (MatchBranch b : branches) {
-                LocalDecl d = b.pattern();
-                RefQualifiedTypeNode t = (RefQualifiedTypeNode) d.type();
-                RestrictionId restriction = ((SharedRef) t.qualification()).restriction();
-
-                Expr field = nf.Field(p, e, nf.Id(p, RES));
-                Expr cond = nf.Binary(p, field, Binary.EQ, nf.StringLit(p, restriction.restriction().toString()));
-
-                Block block = nf.Block(p, d.init(e), b.stmt());
-
-                if (currentif != null) {
-                    If i = nf.If(p, cond, block, currentif);
-                    currentif = i;
-                } else {
-                    If i = nf.If(p, cond, block);
-                    currentif = i;
-                }
-            }
-            return currentif;
-        }
-        return n;
-    }
-
-    public Node rewrite(Node n) throws SemanticException {
+    @Override
+    public Node extRewrite(Node n) throws SemanticException {
         if (n instanceof Expr) {
-            Expr e = (Expr) rewriteExpr(n);
-            return wrapExpr(e);
+            return wrapExpr((Expr) GallifreyExt.ext(n).gallifreyRewrite(this));
         }
-
-        if (n instanceof Stmt && !(n instanceof Block)) {
-            Stmt s = (Stmt) rewriteStmt(n);
-            return s;
-        }
-
-        if (n instanceof Formal) {
-            Formal f = (Formal) n;
-            GallifreyFormalExt ext = (GallifreyFormalExt) GallifreyExt.ext(n);
-            RefQualification q = ext.qualification;
-            if (q instanceof UniqueRef) {
-                f = f.type(nf.TypeNodeFromQualifiedName(f.position(), "Unique<" + f.type().type().toString() + ">"));
-            }
-            return f;
-        }
-
-        if (n instanceof FieldDecl) {
-            FieldDecl f = (FieldDecl) n;
-            GallifreyFieldDeclExt fde = (GallifreyFieldDeclExt) GallifreyExt.ext(f);
-            RefQualification q = fde.qualification();
-            if (q instanceof UniqueRef) {
-                return f.type(nf.TypeNodeFromQualifiedName(f.position(), "Unique<" + f.type().type().toString() + ">"));
-            }
-        }
-
-        // add Unique and Shared decls
-        if (n instanceof SourceFile) {
-            NodeFactory nf = nodeFactory();
-            SourceFile sf = (SourceFile) n;
-
-            List<Import> imports = new ArrayList<>(sf.imports());
-            imports.add(0, nf.Import(n.position(), Import.SINGLE_TYPE, "gallifrey.Unique"));
-            imports.add(0, nf.Import(n.position(), Import.SINGLE_TYPE, "gallifrey.Shared"));
-            imports.add(0, nf.Import(n.position(), Import.SINGLE_TYPE, "gallifrey.SharedObject"));
-            imports.add(nf.Import(n.position(), Import.SINGLE_TYPE, "java.io.Serializable"));
-            imports.add(nf.Import(n.position(), Import.SINGLE_TYPE, "java.util.Arrays"));
-            imports.add(nf.Import(n.position(), Import.SINGLE_TYPE, "java.util.ArrayList"));
-            // remove restriction decls
-            List<TopLevelDecl> classDecls = new ArrayList<>();
-            List<RestrictionDecl> restrictionDecls = new ArrayList<>();
-            for (TopLevelDecl d : sf.decls()) {
-                if (d instanceof ClassDecl) {
-                    classDecls.add(rewriteDecl((ClassDecl) d));
-                } else {
-                    restrictionDecls.add((RestrictionDecl) d);
-                }
-            }
-
-            for (RestrictionDecl rd : restrictionDecls) {
-                // TODO
-                classDecls.add(genRestrictionClass(rd));
-            }
-
-            return sf.imports(imports).decls(classDecls);
-        }
-
-        return n;
-    }
-
-    public NodeVisitor rewriteEnter(Node n) throws SemanticException {
-        return n.extRewriteEnter(this);
+        return GallifreyExt.ext(n).gallifreyRewrite(this);
     }
 }

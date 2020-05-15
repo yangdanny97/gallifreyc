@@ -16,7 +16,7 @@ public class GallifreyBinaryExt extends GallifreyExprExt {
     {
         gallifreyType = new GallifreyType(new LocalRef(Position.COMPILER_GENERATED));
     }
-    
+
     @Override
     public Binary node() {
         return (Binary) super.node();
