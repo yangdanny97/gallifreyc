@@ -24,12 +24,12 @@ classpath.  Adjust the classpath to include polyglot.jar, java_cup.jar, and JFle
 This extension follows a similar structure as other Polyglot extensions except for a few areas:
 - the singleton language dispatcher is used (not present in older polyglot examples)
 - AST nodes and extension objects are in separate packages
-- a custom ExtRewriter interface GRewriter to allow multiple rewriting passes
+- multiple rewriting passes post-typechecking, right before codegen
 
 TODOs:
-- debug test cases
+- add more test cases
 - default qualifications for stdlib (field and method instances)
 - fix translations for transition/match, typechecking for transition
 - typing hierarchy and usage of union restrictions vs restriction names
-- test methods currently break
+- test methods (inside restrictions) do not work
 
