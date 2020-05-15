@@ -33,12 +33,8 @@ javac "-d java-out -cp ." {
     Frontend.java;
 }
 
-javac "-d java-out -classpath java-out" {
-    SharedObject.java;
-}
-
 // old tests
-gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out" {
+gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out:../../gallifrey-antidote/build/classes/java/test" {
     RefQualification1.gal;
     RefQualification2a.gal;
     RefQualification2b.gal;
@@ -62,7 +58,7 @@ gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out" {
 }
 
 // new tests
-gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out" {
+gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out:../../gallifrey-antidote/build/classes/java/test" {
     TestFieldAssign.gal ClassC.gal;
     TestHoist.gal;
     TestInitializer.gal;
