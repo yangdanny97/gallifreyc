@@ -33,6 +33,8 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
     protected Ext extSourceFileImpl() {
         return new GallifreySourceFileExt();
     }
+    
+    // New Nodes
 
     @Override
     protected Ext extTransitionImpl() {
@@ -49,8 +51,14 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
         return new GallifreyMatchRestrictionExt();
     }
 
+    @Override
+    protected Ext extRestrictionDeclImpl() {
+        return new GallifreyRestrictionDeclExt();
+    }
+    
     // Decls
-
+    
+    
     @Override
     protected Ext extClassDeclImpl() {
         return new GallifreyClassDeclExt();

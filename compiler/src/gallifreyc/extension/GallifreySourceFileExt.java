@@ -62,21 +62,8 @@ public class GallifreySourceFileExt extends GallifreyExt {
         imports.add(nf.Import(p, Import.SINGLE_TYPE, "java.io.Serializable"));
         imports.add(nf.Import(p, Import.SINGLE_TYPE, "java.util.Arrays"));
         imports.add(nf.Import(p, Import.SINGLE_TYPE, "java.util.ArrayList"));
-        // remove restriction decls
-        List<TopLevelDecl> classDecls = new ArrayList<>();
-        List<RestrictionDecl> restrictionDecls = new ArrayList<>();
-        for (TopLevelDecl d : sf.decls()) {
-            if (d instanceof ClassDecl) {
-                classDecls.add(rw.rewriteDecl((ClassDecl) d));
-            } else {
-                restrictionDecls.add((RestrictionDecl) d);
-            }
-        }
 
-        for (RestrictionDecl rd : restrictionDecls) {
-            classDecls.add(rw.genRestrictionClass(rd));
-        }
-        return sf.imports(imports).decls(classDecls);
+        return sf.imports(imports);
     }
 
     @Override

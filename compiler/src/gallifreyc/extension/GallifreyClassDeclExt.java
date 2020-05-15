@@ -2,10 +2,14 @@ package gallifreyc.extension;
 
 import polyglot.ast.ClassDeclOps;
 import polyglot.ast.ClassMember;
+import polyglot.ast.Expr;
 import polyglot.ast.Field;
 import polyglot.ast.FieldAssign;
 import polyglot.ast.FieldDecl;
+import polyglot.ast.Formal;
 import polyglot.ast.Initializer;
+import polyglot.ast.IntLit;
+import polyglot.ast.MethodDecl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,18 +17,26 @@ import java.util.List;
 import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.translate.FieldInitRewriter;
+import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyFieldInstance;
 import gallifreyc.types.GallifreyType;
+import gallifreyc.types.GallifreyTypeSystem;
+import polyglot.ast.ArrayTypeNode;
 import polyglot.ast.Assign;
+import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.ClassBody;
 import polyglot.ast.ClassDecl;
 import polyglot.ast.Node;
 import polyglot.ast.NodeFactory;
 import polyglot.ast.Stmt;
+import polyglot.ast.TypeNode;
+import polyglot.ext.jl5.ast.ParamTypeNode;
 import polyglot.types.ConstructorInstance;
 import polyglot.types.Flags;
 import polyglot.types.InitializerInstance;
+import polyglot.types.PrimitiveType;
 import polyglot.types.SemanticException;
+import polyglot.types.Type;
 import polyglot.types.TypeSystem;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
@@ -107,4 +119,66 @@ public class GallifreyClassDeclExt extends GallifreyExt implements ClassDeclOps 
         return node();
     }
 
+    @Override
+    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+        // add CRDT fields and serialVersionUID to class decls
+        ClassDecl cd = node();
+        GallifreyTypeSystem ts = rw.typeSystem();
+        GallifreyNodeFactory nf = rw.nodeFactory();
+        if (!ts.canBeShared(cd.name())) {
+            return cd;
+        }
+        ClassBody body = cd.body();
+        List<ClassMember> members = new ArrayList<>(body.members());
+        Position p = Position.COMPILER_GENERATED;
+
+        // check for presence of serialVersionUID field
+        boolean serializable = false;
+        for (ClassMember m : body.members()) {
+            if (m instanceof FieldDecl) {
+                if (((FieldDecl) m).name().equals("serialVersionUID")) {
+                    serializable = true;
+                }
+            }
+            if (m instanceof MethodDecl) {
+                MethodDecl md = (MethodDecl) m;
+                List<Expr> elements = new ArrayList<>();
+                for (Formal f : md.formals()) {
+                    TypeNode t = f.type();
+                    if (t instanceof ParamTypeNode) {
+                        elements.add(nf.Field(p, nf.TypeNodeFromQualifiedName(p, "Object"), nf.Id(p, "class")));
+                    } else if (t instanceof ArrayTypeNode) {
+                        elements.add(nf.Field(p, nf.TypeNodeFromQualifiedName(p, t.name()), nf.Id(p, "class")));
+                    } else if (t instanceof CanonicalTypeNode) {
+                        Type ctype = ((CanonicalTypeNode) t).type();
+                        // use wrapper types for primitives
+                        if (ctype.isPrimitive()) {
+                            elements.add(nf.Field(p,
+                                    nf.CanonicalTypeNode(p, ts.wrapperClassOfPrimitive((PrimitiveType) ctype)),
+                                    nf.Id(p, "class")));
+                        } else {
+                            elements.add(nf.Field(p, nf.TypeNodeFromQualifiedName(p, t.name()), nf.Id(p, "class")));
+                        }
+
+                    } else {
+                        elements.add(nf.Field(p, nf.TypeNodeFromQualifiedName(p, "Object"), nf.Id(p, "class")));
+                    }
+                }
+                Expr rhs = nf.NewArray(p, nf.TypeNodeFromQualifiedName(p, "Class"), 1, nf.ArrayInit(p, elements));
+                members.add(nf.FieldDecl(p, Flags.PUBLIC.Final(), nf.TypeNodeFromQualifiedName(p, "Class<?>[]"),
+                        nf.Id(p, md.name()), rhs));
+            }
+        }
+
+        // make sure that the class is serializable
+        if (!serializable) {
+            members.add(nf.FieldDecl(p, Flags.PRIVATE.Static().Final(), nf.CanonicalTypeNode(p, ts.Long()),
+                    nf.Id(p, "serialVersionUID"), nf.IntLit(p, IntLit.INT, 1)));
+            List<TypeNode> interfaces = new ArrayList<>(cd.interfaces());
+            interfaces.add(nf.TypeNodeFromQualifiedName(p, "Serializable"));
+            cd = cd.interfaces(interfaces);
+        }
+        body = body.members(members);
+        return cd.body(body);
+    }
 }
