@@ -6,5 +6,5 @@
 	<classpathentry kind="lib" path="lib/polyglot.jar"/>
 	<classpathentry kind="lib" path="lib/ppg.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="output" path="bin_"/>
+	<classpathentry kind="output" path="compiler/classes"/>
 </classpath>
