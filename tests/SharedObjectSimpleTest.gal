@@ -1,0 +1,36 @@
+class Counter {
+
+    local Integer count;
+
+    public Counter(local Integer val) {
+        count = val;
+    }
+
+    public local Integer value() {
+        return count;
+    }
+
+    public void increment(local Integer val) {
+        count += val;
+    }
+
+    public void decrement(local Integer val) {
+        count -= val;
+    }
+}
+
+restriction RCounter for Counter {
+    allows increment;
+    allows decrement;
+    allows value;
+}
+
+public class SharedObjectSimpleTest {
+    public void runtest() {
+        shared[RCounter] Counter counter = new Counter(0);
+        for (int i = 1; i <= 10; i++) {
+            counter.increment(2);
+            counter.decrement(1);
+        }
+    }
+}
