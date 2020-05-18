@@ -4,6 +4,7 @@
 compiler/classes/gallifreyc
 tests/out/*
 tests/java-out/*
+!tests/java-out/.keep
 tests/*.class
 tests/*.results
 .DS_Store
