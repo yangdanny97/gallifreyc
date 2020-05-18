@@ -17,7 +17,6 @@ import polyglot.types.SemanticException;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
-import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeBuilder;
 
@@ -27,11 +26,6 @@ public class GallifreyConstructorDeclExt extends GallifreyExt implements Gallifr
     @Override
     public ConstructorDecl node() {
         return (ConstructorDecl) super.node();
-    }
-
-    @Override
-    public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
-        return superLang().buildTypesEnter(node(), tb);
     }
 
     @Override

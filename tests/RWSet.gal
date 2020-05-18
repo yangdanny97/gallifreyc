@@ -1,0 +1,56 @@
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashSet;
+
+/**
+ * Remove Wins Set
+ */
+public class RWSet<T> {
+    private local Set<T> addset;
+    private local Set<T> removeset;
+
+    public RWSet(local Class<T> cls) {
+        addset = new HashSet<T>();
+        removeset = new HashSet<T>();
+    }
+
+    public local Set<T> value() {
+        local Set<T> currentset = new HashSet<T>();
+        for (local T elem : new ArrayList<T>(addset)) {
+            if (!removeset.contains(elem)) {
+                currentset.add(elem);
+            }
+        }
+        return currentset;
+    }
+
+    public void add(local T elem) {
+        addset.add(elem);
+        System.out.println("did add");
+    }
+
+    public void addSet(local Set<T> elems) {
+        for (local T elem : new ArrayList<T>(elems)) {
+            addset.add(elem);
+        }
+    }
+
+    public void remove(local T elem) {
+        removeset.add(elem);
+        System.out.println("did remove");
+    }
+
+    public void removeSet(local Set<T> elems) {
+        for (local T elem : new ArrayList<T>(elems)) {
+            addset.add(elem);
+        }
+    }
+}
+
+restriction RRWSet for RWSet {
+    allows value;
+    allows add;
+    allows addSet;
+    allows remove;
+    allows removeSet;
+}

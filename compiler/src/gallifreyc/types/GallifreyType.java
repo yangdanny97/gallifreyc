@@ -17,7 +17,7 @@ public class GallifreyType implements Serializable {
 
     public RefQualification qualification;
     public String capability = DEFAULT_CAPABILITY;
-    public String path;
+    public String path = "";
 
     /* for serialization */
     protected GallifreyType() {

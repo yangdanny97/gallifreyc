@@ -5,22 +5,17 @@ import polyglot.ext.jl5.ast.AnnotationElem;
 import polyglot.ext.jl5.ast.ParamTypeNode;
 import polyglot.frontend.ExtensionInfo;
 import polyglot.frontend.Job;
-import polyglot.types.ClassType;
 import polyglot.types.Flags;
 import polyglot.types.MethodInstance;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
-import polyglot.types.PrimitiveType;
 import polyglot.util.Position;
 import gallifreyc.ast.*;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyExt;
 import gallifreyc.types.GallifreyMethodInstance;
-import gallifreyc.types.GallifreyTypeSystem;
-
 import java.util.*;
 
-// move a-normalization to earlier pass, translations for transition and match
 public class GallifreyRewriter extends GRewriter {
     public final String VALUE = "VALUE";
     public final String RES = "RESTRICTION";
@@ -91,13 +86,13 @@ public class GallifreyRewriter extends GRewriter {
                 nf.Id(p, mi.name()), formals, throwTypes, nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, ""));
     }
 
-    // wrap unique/shared refs with .value, AFTER rewriting
+    // wrap unique refs with .value, AFTER rewriting
     public Node wrapExpr(Expr e) {
+        GallifreyNodeFactory nf = this.nodeFactory();
         GallifreyExprExt ext = GallifreyExprExt.ext(e);
-        RefQualification q;
-        q = ext.gallifreyType.qualification();
+        RefQualification q = ext.gallifreyType.qualification();
         if (q instanceof UniqueRef) {
-            Expr new_e = qq().parseExpr("(%E)." + VALUE, e);
+            Expr new_e = nf.Field(Position.COMPILER_GENERATED, e, nf.Id(Position.COMPILER_GENERATED, VALUE));
             return new_e;
         }
         return e;
@@ -107,6 +102,20 @@ public class GallifreyRewriter extends GRewriter {
     public Node extRewrite(Node n) throws SemanticException {
         if (n instanceof Expr) {
             return wrapExpr((Expr) GallifreyExt.ext(n).gallifreyRewrite(this));
+        }
+        // no need to wrap Eval-ed expressions w/ .VALUE
+        if (n instanceof Eval) {
+            Eval e = (Eval) n;
+            if (e.expr() instanceof Field) {
+                Field f = (Field) e.expr();
+                if (f.target() instanceof Expr && 
+                        GallifreyExprExt.ext(f.target()).gallifreyType.qualification() instanceof UniqueRef
+                        && f.name().equals(VALUE)) {
+                            n = nf.Eval(n.position(), (Expr) f.target());
+                            return GallifreyExt.ext(n).gallifreyRewrite(this);
+                }
+            }
+
         }
         return GallifreyExt.ext(n).gallifreyRewrite(this);
     }

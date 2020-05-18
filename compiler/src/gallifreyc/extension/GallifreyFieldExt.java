@@ -38,7 +38,7 @@ public class GallifreyFieldExt extends GallifreyExprExt {
                 throw new SemanticException("cannot access a field of a shared object", node().position());
             }
         }
-        gallifreyType = new GallifreyType(q);
+        this.gallifreyType = new GallifreyType(q);
         return f;
     }
 

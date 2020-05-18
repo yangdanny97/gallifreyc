@@ -21,13 +21,21 @@ import polyglot.frontend.Job;
 import polyglot.types.Flags;
 import polyglot.types.SemanticException;
 import polyglot.util.Position;
+import polyglot.visit.NodeVisitor;
 
 public class ANormalizer extends GRewriter {
-    List<Stmt> hoisted;
+    public List<Stmt> hoisted;
 
     public ANormalizer(Job job, ExtensionInfo from_ext, ExtensionInfo to_ext) {
         super(job, from_ext, to_ext);
         hoisted = new ArrayList<>();
+    }
+    
+    @Override
+    public NodeVisitor enterCall(Node n) throws SemanticException {
+        ANormalizer v = (ANormalizer) super.enterCall(n);
+        v.hoisted = new ArrayList<>();
+        return v;
     }
 
     @Override

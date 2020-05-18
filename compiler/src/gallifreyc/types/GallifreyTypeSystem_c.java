@@ -237,6 +237,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         boolean allMoves = true;
         List<GallifreyType> params = pi.gallifreyInputTypes();
         List<GallifreyType> argTypes = new ArrayList<>();
+        int nParams = params.size();
         
         //TODO check owners
         
@@ -259,13 +260,13 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         }
         
         // HACK: assume imported functions take in all-locals
-        if (params.size() == 0) {
+        if (nParams == 0) {
             params.add(new GallifreyType(new LocalRef(Position.COMPILER_GENERATED)));
         }
         
         for (int i = 0; i < argTypes.size(); i++) {
             GallifreyType argType = argTypes.get(i);
-            GallifreyType paramType = params.get(Math.max(i, params.size() - 1));
+            GallifreyType paramType = params.get(Math.min(i, params.size() - 1));
             
             if (!checkQualifications(argType, paramType)) {
                 throw new SemanticException("invalid argument qualification - expected: " + paramType.qualification + 
@@ -273,7 +274,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
             }
         }
         
-        if (allMoves) {
+        if (allMoves || (args.size() == 0 && nParams == 0)) {
             return new GallifreyType(new MoveRef(Position.COMPILER_GENERATED));
         } else {
             return new GallifreyType(new LocalRef(Position.COMPILER_GENERATED));
@@ -281,6 +282,9 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     }
 
     public boolean checkQualifications(GallifreyType fromType, GallifreyType toType) {
+        if (fromType == null || toType == null) {
+            throw new IllegalArgumentException("null GallifreyType");
+        }
         if (fromType.qualification instanceof MoveRef || toType.qualification instanceof AnyRef) {
             return true;
         }

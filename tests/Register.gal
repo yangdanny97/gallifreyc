@@ -1,0 +1,23 @@
+/**
+ * Register
+ */
+public class Register<T> {
+    private unique T val;
+
+    public Register(unique T val) {
+        this.val = move(val);
+    }
+
+    public unique T value() {
+        return val;
+    }
+
+    public void assign(unique T val) {
+        this.val = move(val);
+    }
+}
+
+restriction RRegister for Register {
+    allows value;
+    allows assign;
+}

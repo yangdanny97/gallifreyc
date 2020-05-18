@@ -1,0 +1,29 @@
+/**
+ * Counter
+ */
+public class Counter {
+
+    local Integer count;
+
+    public Counter(local Integer val) {
+        count = val;
+    }
+
+    public local Integer value() {
+        return count;
+    }
+
+    public void increment(local Integer val) {
+        count += val;
+    }
+
+    public void decrement(local Integer val) {
+        count -= val;
+    }
+}
+
+restriction RCounter for Counter {
+    allows increment;
+    allows decrement;
+    allows value;
+}

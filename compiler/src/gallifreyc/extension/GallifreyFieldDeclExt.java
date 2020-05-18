@@ -63,7 +63,7 @@ public class GallifreyFieldDeclExt extends GallifreyExt implements GallifreyOps 
             // for primitives
             q = new LocalRef(Position.COMPILER_GENERATED);
         }
-        qualification = q;
+        this.qualification = q;
         GallifreyFieldInstance fi = (GallifreyFieldInstance) node.fieldInstance();
         fi.gallifreyType(new GallifreyType(q));
         return node;

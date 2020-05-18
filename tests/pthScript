@@ -74,4 +74,10 @@ gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out:../../gallifrey-an
     TestRewrite2.gal ClassC.gal;
     ClassC.gal TestInvalidRestrictedMethod.gal (Semantic);
     ClassC.gal TestInvalidSharedFieldAccess.gal (Semantic);
+    Counter.gal;
+    PositiveCounter.gal;
+    Register.gal;
+    RWSet.gal;
+    GrowthMap.gal;
+    SharedMap.gal;
 }

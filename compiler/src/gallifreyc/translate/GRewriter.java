@@ -58,7 +58,6 @@ public abstract class GRewriter extends ExtensionRewriter {
             }
 
             errorQueue().enqueue(ErrorInfo.SEMANTIC_ERROR, e.getMessage(), position);
-
             m = n;
         }
 

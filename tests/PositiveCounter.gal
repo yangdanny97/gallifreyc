@@ -1,0 +1,30 @@
+/**
+ * An always Positive Counter
+ */
+public class PositiveCounter {
+    local Integer count;
+
+    public PositiveCounter(local Integer val) {
+        count = val;
+    }
+
+    public local Integer value() {
+        return count;
+    }
+
+    public void increment(local Integer val) {
+        count += val;
+    }
+
+    public void decrement(local Integer val) {
+        if (count > val) {
+            count -= val;
+        }
+    }
+}
+
+restriction RCounter for PositiveCounter {
+    allows increment;
+    allows decrement;
+    allows value;
+}

@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="compiler/src"/>
 	<classpathentry kind="lib" path="lib/java_cup.jar"/>
 	<classpathentry kind="lib" path="lib/jflex.jar"/>
-	<classpathentry kind="lib" path="lib/polyglot.jar"/>
+	<classpathentry kind="lib" path="lib/polyglot.jar" sourcepath="/polyglot-master"/>
 	<classpathentry kind="lib" path="lib/ppg.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="compiler/classes"/>

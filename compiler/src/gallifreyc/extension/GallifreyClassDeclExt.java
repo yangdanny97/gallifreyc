@@ -31,6 +31,7 @@ import polyglot.ast.NodeFactory;
 import polyglot.ast.Stmt;
 import polyglot.ast.TypeNode;
 import polyglot.ext.jl5.ast.ParamTypeNode;
+import polyglot.ext.jl5.types.TypeVariable;
 import polyglot.types.ConstructorInstance;
 import polyglot.types.Flags;
 import polyglot.types.InitializerInstance;
@@ -156,6 +157,8 @@ public class GallifreyClassDeclExt extends GallifreyExt implements ClassDeclOps 
                             elements.add(nf.Field(p,
                                     nf.CanonicalTypeNode(p, ts.wrapperClassOfPrimitive((PrimitiveType) ctype)),
                                     nf.Id(p, "class")));
+                        } else if (ctype instanceof TypeVariable) {
+                            elements.add(nf.Field(p, nf.TypeNodeFromQualifiedName(p, "Object"), nf.Id(p, "class")));
                         } else {
                             elements.add(nf.Field(p, nf.TypeNodeFromQualifiedName(p, t.name()), nf.Id(p, "class")));
                         }
