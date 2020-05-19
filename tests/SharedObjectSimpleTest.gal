@@ -1,3 +1,6 @@
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+
 class Counter {
 
     local Integer count;
@@ -6,7 +9,7 @@ class Counter {
         count = val;
     }
 
-    public local Integer value() {
+    public int value() {
         return count;
     }
 
@@ -30,7 +33,9 @@ public class SharedObjectSimpleTest {
         shared[RCounter] Counter counter = new Counter(0);
         for (int i = 1; i <= 10; i++) {
             counter.increment(2);
+            assertEquals(i + 1, counter.value());
             counter.decrement(1);
+            assertEquals(i, counter.value());
         }
     }
 }

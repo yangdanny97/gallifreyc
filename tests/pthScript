@@ -80,5 +80,8 @@ gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out:../../gallifrey-an
     RWSet.gal;
     GrowthMap.gal;
     SharedMap.gal;
+}
+
+gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out:../../gallifrey-antidote/frontend/build/classes/java/main:../lib/junit-4.13.jar:../lib/hamcrest-2.2.jar" {
     SharedObjectSimpleTest.gal;
 }
