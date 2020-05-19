@@ -29,7 +29,8 @@ restriction RCounter for Counter {
 }
 
 public class SharedObjectSimpleTest {
-    public void runtest() {
+    @Test
+    public void runtest() { // can't use test because that's a keyword in gallifrey
         shared[RCounter] Counter counter = new Counter(0);
         for (int i = 1; i <= 10; i++) {
             counter.increment(2);
