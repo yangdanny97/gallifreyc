@@ -292,6 +292,11 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         if (fromType.qualification instanceof LocalRef && toType.qualification instanceof LocalRef) {
             return true;
         }
+        
+        // is this correct?
+        if (fromType.qualification instanceof SharedRef && toType.qualification instanceof SharedRef) {
+            return fromType.qualification.equals(toType.qualification);
+        }
 
         return false;
     }

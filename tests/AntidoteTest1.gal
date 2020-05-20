@@ -1,6 +1,3 @@
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-
 class Counter {
 
     local Integer count;
@@ -28,15 +25,14 @@ restriction RCounter for Counter {
     allows value;
 }
 
-public class SharedObjectSimpleTest {
-    @Test
-    public void runtest() { // can't use test because that's a keyword in gallifrey
+public class AntidoteTest1 {
+    public static void main(local String[] args) {
         shared[RCounter] Counter counter = new Counter(0);
         for (int i = 1; i <= 10; i++) {
             counter.increment(2);
-            assertEquals(i + 1, counter.value());
+            assert (i + 1 == counter.value());
             counter.decrement(1);
-            assertEquals(i, counter.value());
+            assert (i == counter.value());
         }
     }
 }

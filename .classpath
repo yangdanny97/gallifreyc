@@ -5,6 +5,7 @@
 	<classpathentry kind="lib" path="lib/jflex.jar"/>
 	<classpathentry kind="lib" path="lib/polyglot.jar" sourcepath="/polyglot-master"/>
 	<classpathentry kind="lib" path="lib/ppg.jar"/>
+	<classpathentry kind="lib" path="lib/gallifrey-antidote-all.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/Users/dannyyang/Documents/GitHub/gallifreyc/lib/junit-4.13.jar"/>
 	<classpathentry kind="lib" path="/Users/dannyyang/Documents/GitHub/gallifreyc/lib/hamcrest-2.2.jar"/>

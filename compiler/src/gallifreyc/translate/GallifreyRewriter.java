@@ -3,6 +3,7 @@ package gallifreyc.translate;
 import polyglot.ast.*;
 import polyglot.ext.jl5.ast.AnnotationElem;
 import polyglot.ext.jl5.ast.ParamTypeNode;
+import polyglot.ext.jl5.types.TypeVariable;
 import polyglot.frontend.ExtensionInfo;
 import polyglot.frontend.Job;
 import polyglot.types.Flags;
@@ -51,6 +52,12 @@ public class GallifreyRewriter extends GRewriter {
 
         List<Stmt> methodStmts = new ArrayList<>();
         Type returnType = mi.returnType();
+        TypeNode genReturnType = nf.CanonicalTypeNode(p, returnType);
+        
+        // don't allow type vars
+        if (returnType instanceof TypeVariable) {
+            genReturnType = nf.TypeNodeFromQualifiedName(p, "Object");
+        }
 
         // void f(T1 x, T2 y) -----> this.sharedObject.void_call("f", new
         // ArrayList<Object>(Arrays.asList(x))
@@ -82,7 +89,7 @@ public class GallifreyRewriter extends GRewriter {
         List<ParamTypeNode> paramTypes = new ArrayList<>();
         // TODO unsure how to handle these
 
-        return nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(), nf.CanonicalTypeNode(p, returnType),
+        return nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(), genReturnType,
                 nf.Id(p, mi.name()), formals, throwTypes, nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, ""));
     }
 

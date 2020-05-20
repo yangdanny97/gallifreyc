@@ -53,8 +53,10 @@ public class RestrictionId_c extends Node_c implements RestrictionId {
     public boolean equals(Object other) {
         if (other instanceof RestrictionId) {
             RestrictionId otherrid = (RestrictionId) other;
-            return rv.id().equals(otherrid.rv().id()) && restriction.id().equals(otherrid.restriction().id())
-                    && wildcard == otherrid.wildcardRv();
+            if ((rv == null && otherrid.rv() == null) || rv.id().equals(otherrid.rv().id()))  {
+                return restriction.id().equals(otherrid.restriction().id())
+                        && wildcard == otherrid.wildcardRv();
+            }
         }
         return false;
     }

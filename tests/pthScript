@@ -32,7 +32,7 @@ javac "-d java-out -cp ." {
 }
 
 // old tests
-gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out:../../gallifrey-antidote/frontend/build/classes/java/main" {
+gallifreyc.GallifreyExtensionInfo "-assert -d out -classpath java-out:../lib/gallifrey-antidote-all.jar" {
     RefQualification1.gal;
     RefQualification2a.gal;
     RefQualification2b.gal;
@@ -56,7 +56,7 @@ gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out:../../gallifrey-an
 }
 
 // new tests
-gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out:../../gallifrey-antidote/frontend/build/classes/java/main" {
+gallifreyc.GallifreyExtensionInfo "-assert -d out -classpath java-out:../lib/gallifrey-antidote-all.jar" {
     TestFieldAssign.gal ClassC.gal;
     TestHoist.gal;
     TestInitializer.gal;
@@ -80,8 +80,8 @@ gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out:../../gallifrey-an
     RWSet.gal;
     GrowthMap.gal;
     SharedMap.gal;
-}
-
-gallifreyc.GallifreyExtensionInfo "-d out -classpath java-out:../../gallifrey-antidote/frontend/build/classes/java/main:../lib/junit-4.13.jar:../lib/hamcrest-2.2.jar" {
-    SharedObjectSimpleTest.gal;
+    // SharedLinkedList.gal;
+    AntidoteTest1.gal;
+    AntidoteTest2.gal;
+    // AntidoteTest3.gal;
 }

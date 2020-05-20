@@ -20,17 +20,10 @@ public class GallifreyCastExt extends GallifreyExprExt {
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         Cast node = (Cast) superLang().typeCheck(this.node(), tc);
-        if (!(node.castType() instanceof RefQualifiedTypeNode)) {
-            throw new SemanticException("missing ref qualification for cast!", node.position());
+        if (node.castType() instanceof RefQualifiedTypeNode) {
+            throw new SemanticException("cannot cast to different qualification", node.position());
         }
-
-        GallifreyType exprT = GallifreyExprExt.ext(node.expr()).gallifreyType;
-        RefQualifiedTypeNode castT = (RefQualifiedTypeNode) node.castType();
-
-        if (!castT.qualification().equals(exprT.qualification())) {
-            throw new SemanticException("qualifications do not match for casting!", node.position());
-        }
-        this.gallifreyType = new GallifreyType(new MoveRef(node.position()));
+        this.gallifreyType = new GallifreyType(GallifreyExprExt.ext(node.expr()).gallifreyType);
         return node;
     }
 }

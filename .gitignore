@@ -10,4 +10,5 @@ tests/*.results
 *.DS_Store
 */.DS_Store
 lib/gallifreyc.jar
+lib/gallifrey-antidote-all.jar
 

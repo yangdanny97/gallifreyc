@@ -1,0 +1,33 @@
+// TODO check qualifications on these
+
+public class SharedLinkedList<T> {
+    public local T data;
+    public local SharedLinkedList<T> next;
+
+    public SharedLinkedList(local T data) {
+        this.data = data;
+    }
+
+    public local T getData() {
+        return this.data;
+    }
+
+    public local T setData(local T data) {
+        return this.data = data;
+    }
+
+    public local SharedLinkedList<T> getNext() {
+        return this.next;
+    }
+
+    public void setNext(local SharedLinkedList<T> next) {
+        this.next = next;
+    }
+}
+
+restriction RList for SharedLinkedList {
+    allows getData;
+    allows setData;
+    allows getNext;
+    allows setNext;
+}
