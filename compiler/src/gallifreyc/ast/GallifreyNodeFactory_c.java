@@ -71,6 +71,13 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
         m = ext(m, extFactory().extLocalRef());
         return m;
     }
+    
+    @Override
+    public LocalRef LocalRef(Position pos, String owner, boolean borrow) {
+        LocalRef m = new LocalRef(pos, owner, borrow);
+        m = ext(m, extFactory().extLocalRef());
+        return m;
+    }
 
     @Override
     public SharedRef SharedRef(Position pos, RestrictionId restriction) {

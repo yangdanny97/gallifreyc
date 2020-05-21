@@ -1,0 +1,6 @@
+public class C {
+    public void test1(local String w, local<a> String x, local<&b> String y, local<c> String z, 
+        local<d> String[] a, local<d> String ...b) {
+        System.out.println(w + x + y + z);
+    }
+}

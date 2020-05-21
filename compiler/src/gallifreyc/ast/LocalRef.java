@@ -10,6 +10,7 @@ public class LocalRef extends Node_c implements RefQualification {
     public static final String DEFAULT_OWNER = "DEFAULT";
 
     public String ownerAnnotation = DEFAULT_OWNER;
+    public boolean borrow = false;
 
     public LocalRef(Position pos) {
         super(pos);
@@ -18,6 +19,12 @@ public class LocalRef extends Node_c implements RefQualification {
     public LocalRef(Position pos, String owner) {
         super(pos);
         ownerAnnotation = owner;
+    }
+    
+    public LocalRef(Position pos, String owner, boolean borrow) {
+        super(pos);
+        ownerAnnotation = owner;
+        this.borrow = borrow;
     }
 
     @Override

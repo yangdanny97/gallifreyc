@@ -12,6 +12,7 @@ import gallifreyc.ast.UniqueRef;
 import gallifreyc.ast.UnknownRef;
 import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyLocalInstance;
+import polyglot.ast.ArrayTypeNode;
 import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.Formal;
 import polyglot.ast.Node;
@@ -36,12 +37,17 @@ public class GallifreyFormalExt extends GallifreyExt {
         Formal n = (Formal) superLang().buildTypes(this.node, tb);
         TypeNode t = n.type();
         if (!(t instanceof RefQualifiedTypeNode
-                || (t instanceof CanonicalTypeNode && ((CanonicalTypeNode) t).type().isPrimitive()))) {
+                || (t instanceof CanonicalTypeNode && ((CanonicalTypeNode) t).type().isPrimitive())
+                || (t instanceof ArrayTypeNode && ((ArrayTypeNode) t).base() instanceof RefQualifiedTypeNode))) {
             throw new SemanticException("declaration must have qualification", n.position());
         }
         GallifreyLocalInstance li;
         if (t instanceof RefQualifiedTypeNode) {
             RefQualifiedTypeNode rt = (RefQualifiedTypeNode) t;
+            li = (GallifreyLocalInstance) n.localInstance();
+            li.gallifreyType().qualification = rt.qualification();
+        } else if (t instanceof ArrayTypeNode && ((ArrayTypeNode) t).base() instanceof RefQualifiedTypeNode) {
+            RefQualifiedTypeNode rt = (RefQualifiedTypeNode) ((ArrayTypeNode) t).base();
             li = (GallifreyLocalInstance) n.localInstance();
             li.gallifreyType().qualification = rt.qualification();
         } else {
