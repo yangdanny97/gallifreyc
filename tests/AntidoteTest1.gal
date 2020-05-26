@@ -1,25 +1,4 @@
-class Counter {
-
-    local Integer count;
-
-    public Counter(local Integer val) {
-        count = val;
-    }
-
-    public int value() {
-        return count;
-    }
-
-    public void increment(local Integer val) {
-        count += val;
-    }
-
-    public void decrement(local Integer val) {
-        count -= val;
-    }
-}
-
-restriction RCounter for Counter {
+restriction RCounter2 for Counter {
     allows increment;
     allows decrement;
     allows value;
@@ -27,12 +6,13 @@ restriction RCounter for Counter {
 
 public class AntidoteTest1 {
     public static void main(local String[] args) {
-        shared[RCounter] Counter counter = new Counter(0);
+        shared[RCounter2] Counter counter = new Counter(0);
         for (int i = 1; i <= 10; i++) {
             counter.increment(2);
             assert (i + 1 == counter.value());
             counter.decrement(1);
             assert (i == counter.value());
         }
+        System.out.println("Success!");
     }
 }

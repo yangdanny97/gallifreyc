@@ -81,7 +81,7 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -classpath java-out:../lib/*:.
     GrowthMap.gal;
     SharedMap.gal;
     // SharedLinkedList.gal;
-    AntidoteTest1.gal;
+    Counter.gal AntidoteTest1.gal;
     AntidoteTest2.gal;
     // AntidoteTest3.gal;
     OwnerAnnotatedLocals.gal;
