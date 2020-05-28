@@ -2,6 +2,7 @@ package gallifreyc.ast;
 
 import java.util.List;
 
+import gallifreyc.extension.GallifreyExt;
 import polyglot.ast.*;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
@@ -26,7 +27,8 @@ public class Transition_c extends Stmt_c implements Transition {
     }
 
     public Transition expr(Expr e) {
-        return new Transition_c(this.position, e, this.restriction);
+        this.expr = e;
+        return this;
     }
 
     public RestrictionId restriction() {
@@ -62,8 +64,9 @@ public class Transition_c extends Stmt_c implements Transition {
     @Override
     public Node visitChildren(NodeVisitor v) {
         Expr e = visitChild(this.expr, v);
-        Transition_c n = copyIfNeeded(this);
-        n.expr = e;
-        return n;
+        this.expr = e;
+        return this;
     }
+    
+    
 }

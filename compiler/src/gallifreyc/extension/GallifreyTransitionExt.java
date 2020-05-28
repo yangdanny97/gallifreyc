@@ -9,12 +9,14 @@ import gallifreyc.ast.SharedRef;
 import gallifreyc.ast.Transition;
 import gallifreyc.translate.ANormalizer;
 import gallifreyc.translate.GallifreyRewriter;
+import gallifreyc.types.GallifreyLocalInstance;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.Assign;
 import polyglot.ast.Expr;
 import polyglot.ast.Local;
 import polyglot.ast.Node;
 import polyglot.ast.Stmt;
+import polyglot.types.LocalInstance;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.util.Position;
@@ -44,24 +46,28 @@ public class GallifreyTransitionExt extends GallifreyExt {
         Transition t = node();
         GallifreyNodeFactory nf = rw.nodeFactory();
         Position p = t.position();
-        // transition(c, R) ------> c = new R(c.SHARED);
+        // transition(c, R) ------> c = new R(c.sharedObject());
         Assign fa = nf.Assign(p, (Local) t.expr().copy(), Assign.ASSIGN,
                 nf.New(p, nf.TypeNodeFromQualifiedName(p, t.restriction().restriction().id()),
-                        new ArrayList<Expr>(Arrays.asList(nf.Field(p, (Local) t.expr().copy(), nf.Id(p, rw.SHARED))))));
+                        new ArrayList<Expr>(Arrays.asList(
+                                nf.Call(p, (Local) t.expr().copy(), nf.Id(p, rw.SHARED), new ArrayList<Expr>())
+                                ))));
         return nf.Eval(p, fa);
     }
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        //TODO revisit this
         Transition node = (Transition) superLang().typeCheck(node(), tc);
+        if (!(node.expr() instanceof Local)) {
+            throw new SemanticException("Transition is only supported for variables");
+        }
         GallifreyExprExt ext = GallifreyExprExt.ext(node.expr());
         GallifreyTypeSystem gts = (GallifreyTypeSystem) tc.typeSystem();
         Type t = node.expr().type();
 
         RefQualification q = ext.gallifreyType.qualification();
 
-        if (q instanceof SharedRef) {
+        if (!(q instanceof SharedRef)) {
             throw new SemanticException("Can only transition restrictions for Shared types", node.position());
         }
 
@@ -75,6 +81,10 @@ public class GallifreyTransitionExt extends GallifreyExt {
         if (!gts.typeEquals(t, gts.typeForName(restrictionClass))) {
             throw new SemanticException("Invalid restriction for class " + restrictionClass, node.position());
         }
+        // update local instance
+        Local local = (Local) node.expr();
+        GallifreyLocalInstance li = (GallifreyLocalInstance) local.localInstance();
+        ((SharedRef) li.gallifreyType().qualification).restriction = node.restriction();
         return node;
     }
 

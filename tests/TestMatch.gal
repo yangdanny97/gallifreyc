@@ -1,0 +1,24 @@
+// unused
+
+restriction R for ClassC {
+    allows f1;
+}
+
+restriction R2 for ClassC {
+    allows f2;
+}
+
+restriction R3 = R | R2
+
+public class D {
+    public D() {
+        shared[R3] c = new ClassC();
+        match c with
+        | shared[R3::R] c2 {
+            c2.f1();
+        }
+        | shared[R3::R2] c3 {
+            c3.f2();
+        }
+    }
+}

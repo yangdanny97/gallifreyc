@@ -3,7 +3,7 @@ restriction R for ClassC {
 }
 
 restriction R2 for D {
-	allows testAAA;
+    allows testAAA;
 }
 
 class D {

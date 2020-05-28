@@ -26,9 +26,9 @@
 #      CmdLineArgs  :   additional command line args for the Polyglot 
 #                       compiler; is always enclosed in quotes.
 
-javac "-d java-out -cp ." {
-    Shared.java;
+javac "-d java-out -cp .:../../gallifrey-antidote/gallifrey/frontend/build/classes/java/main" {
     Unique.java;
+    Shared.java;
 }
 
 // old tests
@@ -82,7 +82,8 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -classpath java-out:../lib/*:.
     SharedMap.gal;
     // SharedLinkedList.gal;
     Counter.gal AntidoteTest1.gal;
-    AntidoteTest2.gal;
+    SharedMap.gal AntidoteTest2.gal;
     // AntidoteTest3.gal;
     OwnerAnnotatedLocals.gal;
+    TestTransition.gal;
 }

@@ -1,0 +1,17 @@
+restriction R for ClassC {
+    allows f1;
+}
+
+restriction R2 for ClassC {
+    allows f2;
+}
+
+public class D {
+    public D(){}
+    
+    public void testAAA() {
+        shared[R] ClassC c2 = new ClassC();
+        transition(c2, R2);
+        c2.f2();
+    }
+}

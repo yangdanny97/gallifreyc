@@ -6,6 +6,7 @@ import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.*;
 import polyglot.types.ClassType;
 import polyglot.types.SemanticException;
+import polyglot.types.Type;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
@@ -19,6 +20,7 @@ public class AllowsStmt_c extends Node_c implements AllowsStmt {
 
     protected Id id;
     protected Id contingent_id;
+    protected Type currentRestrictionClass;
 
     public AllowsStmt_c(Position pos, Id id, Id contingent_id) {
         super(pos);
@@ -60,14 +62,21 @@ public class AllowsStmt_c extends Node_c implements AllowsStmt {
         ts.addAllowedMethod(gtb.currentRestriction, id.id());
         return this;
     }
+    
+    
+
+    @Override
+    public NodeVisitor typeCheckEnter(TypeChecker tc) throws SemanticException {
+        GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
+        this.currentRestrictionClass = gtc.currentRestrictionClass;
+        return super.typeCheckEnter(tc);
+    }
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        tc.typeSystem();
-        GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
-        ClassType ct = (ClassType) gtc.currentRestrictionClass;
+        ClassType ct = (ClassType) this.currentRestrictionClass;
         if (ct.methodsNamed(id.id()).size() == 0) {
-            throw new SemanticException("Unable to find method named " + id.id() + " in " + gtc.currentRestrictionClass,
+            throw new SemanticException("Unable to find method named " + id.id() + " in " + this.currentRestrictionClass,
                     this.position);
         }
         return this;

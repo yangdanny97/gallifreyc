@@ -37,8 +37,7 @@ This extension follows a similar structure as other Polyglot extensions except f
 - useful flags: -d (set output directory), -c (don't run javac; emit .java instead of .class), -stdout (dump java AST to stdout)
 
 TODOs:
-- add more test cases
 - default qualifications for stdlib (field and method instances)
-- fix translations for transition/match, typechecking for transition
+- fix translations & typechecking for match, add test cases
 - typing hierarchy and usage of union restrictions vs restriction names
-- test methods (inside restrictions) do not work
+- ownership typechecking
