@@ -132,8 +132,8 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
                     "Restriction " + id.id() + " for " + forClass.type() + " must be for a valid class", this.position);
         }
 
-//        GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
-//        ts.addRestrictionClassType(id.id(), (ClassType) forClass.type());
+        GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
+        ts.addRestrictionClassType(id.id(), (ClassType) forClass.type());
         return super.typeCheckEnter(tc);
     }
 

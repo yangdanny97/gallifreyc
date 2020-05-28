@@ -181,14 +181,15 @@ public class GallifreyRewriter extends GRewriter {
                 nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, "")));
 
         List<TypeNode> interfaces = new ArrayList<>();
-        interfaces.add(nf.TypeNodeFromQualifiedName(p, "Serializable"));
-        interfaces.add(nf.TypeNodeFromQualifiedName(p, "Shared"));
-        // TODO add more restrictions
-
+        interfaces.add(nf.TypeNodeFromQualifiedName(p, rName));
+        for (String rv : typeSystem().getRVsForRestriction(rName)) {
+            interfaces.add(nf.TypeNodeFromQualifiedName(p, rv + "_" + rName));
+        }
+        
         ClassBody sharedBody = nf.ClassBody(p, sharedMembers);
 
         // class R extends Shared implements Serializable (flags are same as C)
-        ClassDecl sharedDecl = nf.ClassDecl(p, Flags.NONE, nf.Id(p, rName), null, interfaces, sharedBody,
+        ClassDecl sharedDecl = nf.ClassDecl(p, Flags.NONE, nf.Id(p, rName + "_impl"), null, interfaces, sharedBody,
                 nf.Javadoc(p, "// Concrete restriction class for " + rName));
 
         return sharedDecl;
@@ -196,22 +197,104 @@ public class GallifreyRewriter extends GRewriter {
 
     // interface R extends Shared {...}
     public ClassDecl genRestrictionInterface(RestrictionDecl d) {
-        return null;
+        GallifreyNodeFactory nf = this.nodeFactory();
+        GallifreyTypeSystem ts = this.typeSystem();
+
+        TypeNode CTypeNode = d.forClass();
+        String rName = d.name();
+
+        Position p = Position.COMPILER_GENERATED;
+
+        List<ClassMember> members = new ArrayList<>();
+
+        // signatures for allowed methods
+        Set<String> allowedMethods = ts.getAllowedMethods(rName);
+        ClassType CType = (ClassType) CTypeNode.type();
+        
+        for (String name : allowedMethods) {
+            for (MethodInstance method : CType.methodsNamed(name)) {
+                members.add(this.genRestrictionMethodSignature(method));
+            }
+        }
+
+        // getter for sharedObj field
+        List<Formal> formals = new ArrayList<>();
+        List<TypeNode> throwTypes = new ArrayList<>();
+        List<ParamTypeNode> paramTypes = new ArrayList<>();
+        members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(),
+                nf.TypeNodeFromQualifiedName(p, "SharedObject"), nf.Id(p, "sharedObj"), formals, throwTypes,
+                null, paramTypes, nf.Javadoc(p, "")));
+
+        List<TypeNode> interfaces = new ArrayList<>();
+        interfaces.add(nf.TypeNodeFromQualifiedName(p, "Serializable"));
+        interfaces.add(nf.TypeNodeFromQualifiedName(p, "Shared"));
+        // TODO add more restrictions
+
+        ClassBody body = nf.ClassBody(p, members);
+
+        ClassDecl RInterface = nf.ClassDecl(p, Flags.INTERFACE, nf.Id(p, rName), null, interfaces, body,
+                nf.Javadoc(p, "// Restriction interface class for " + rName));
+
+        return RInterface;
     }
 
     // interface RV_holder {...}
-    public ClassDecl genRVHolderInterface(RestrictionDecl d) {
-        return null;
+    public ClassDecl genRVHolderInterface(RestrictionUnionDecl d) {
+        Position p = Position.COMPILER_GENERATED;
+        List<TypeNode> interfaces = new ArrayList<>();
+        ClassBody body = nf.ClassBody(p, new ArrayList<ClassMember>());
+        ClassDecl rvHolder = nf.ClassDecl(p, Flags.INTERFACE, nf.Id(p, d.name()+"_holder"), null, interfaces, body,
+                nf.Javadoc(p, "// RV holder interface class for " + d.name()));
+        // add to generated classes
+        this.generatedClasses.add(rvHolder);
+        return rvHolder;
     }
 
     // class RV {...}
-    public ClassDecl genRVClass(RestrictionDecl d) {
+    public ClassDecl genRVClass(RestrictionUnionDecl d) {
+        //TODO
         return null;
     }
 
     // class RV_R extends RV_holder, Shared {...}
-    public ClassDecl genRVSubrestrictionInterface(RestrictionDecl d) {
-        return null;
+    public ClassDecl genRVSubrestrictionInterface(String rv, String restriction) {
+        GallifreyNodeFactory nf = this.nodeFactory();
+        GallifreyTypeSystem ts = this.typeSystem();
+
+        Position p = Position.COMPILER_GENERATED;
+
+        List<ClassMember> members = new ArrayList<>();
+
+        // signatures for allowed methods
+        Set<String> allowedMethods = ts.getAllowedMethods(restriction);
+        ClassType CType = (ClassType) ts.getRestrictionClassType(restriction);
+        for (String name : allowedMethods) {
+            for (MethodInstance method : CType.methodsNamed(name)) {
+                members.add(this.genRestrictionMethodSignature(method));
+            }
+        }
+
+        // getter for sharedObj field
+        List<Formal> formals = new ArrayList<>();
+        List<TypeNode> throwTypes = new ArrayList<>();
+        List<ParamTypeNode> paramTypes = new ArrayList<>();
+        members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(),
+                nf.TypeNodeFromQualifiedName(p, "SharedObject"), nf.Id(p, "sharedObj"), formals, throwTypes,
+                null, paramTypes, nf.Javadoc(p, "")));
+
+        List<TypeNode> interfaces = new ArrayList<>();
+        interfaces.add(nf.TypeNodeFromQualifiedName(p, "Serializable"));
+        interfaces.add(nf.TypeNodeFromQualifiedName(p, "Shared"));
+        interfaces.add(nf.TypeNodeFromQualifiedName(p, rv+"_holder"));
+
+        ClassBody body = nf.ClassBody(p, members);
+
+        ClassDecl RVInterface = nf.ClassDecl(p, Flags.INTERFACE, nf.Id(p, rv + "_" + restriction), 
+                null, interfaces, body,
+                nf.Javadoc(p, "// Restriction interface class for " + rv + "::"+ restriction));
+
+        this.generatedClasses.add(RVInterface);
+        return RVInterface;
     }
 
     // wrap unique refs with .value, AFTER rewriting

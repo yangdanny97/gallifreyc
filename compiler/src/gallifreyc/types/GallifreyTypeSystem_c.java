@@ -17,7 +17,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     public Map<String, String> restrictionClassNameMap = new HashMap<>();
 
     // restriction name -> class type
-//    public Map<String, ClassType> restrictionClassTypeMap = new HashMap<>();
+    public Map<String, ClassType> restrictionClassTypeMap = new HashMap<>();
 
     // restriction name -> allowed methods
     public Map<String, Set<String>> allowedMethodsMap = new HashMap<>();
@@ -229,15 +229,15 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         return restrictionClassNameMap.containsKey(name) || restrictionUnionMap.containsKey(name);
     }
 
-//    @Override
-//    public void addRestrictionClassType(String restriction, ClassType cls) {
-//        restrictionClassTypeMap.put(restriction, cls);
-//    }
-//    
-//    @Override
-//    public ClassType getRestrictionClassType(String restriction) {
-//        return restrictionClassTypeMap.get(restriction);
-//    }
+    @Override
+    public void addRestrictionClassType(String restriction, ClassType cls) {
+        restrictionClassTypeMap.put(restriction, cls);
+    }
+    
+    @Override
+    public ClassType getRestrictionClassType(String restriction) {
+        return restrictionClassTypeMap.get(restriction);
+    }
 
     @Override
     public boolean canBeShared(String className) {

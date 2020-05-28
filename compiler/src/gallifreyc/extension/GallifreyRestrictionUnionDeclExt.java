@@ -7,6 +7,7 @@ import java.util.Set;
 
 import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.RestrictionDecl;
+import gallifreyc.ast.RestrictionUnionDecl;
 import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.Assign;
@@ -30,22 +31,26 @@ import polyglot.types.SemanticException;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
-public class GallifreyRestrictionDeclExt extends GallifreyExt {
+public class GallifreyRestrictionUnionDeclExt extends GallifreyExt {
 
     private static final long serialVersionUID = SerialVersionUID.generate();
 
-    public GallifreyRestrictionDeclExt() {
+    public GallifreyRestrictionUnionDeclExt() {
     }
 
     @Override
-    public RestrictionDecl node() {
-        return (RestrictionDecl) super.node();
+    public RestrictionUnionDecl node() {
+        return (RestrictionUnionDecl) super.node();
     }
 
     @Override
     public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
-        rw.genRestrictionInterface(node());
-        return rw.genRestrictionImplClass(node());
+        rw.genRVHolderInterface(node());
+        GallifreyTypeSystem ts = (GallifreyTypeSystem) rw.typeSystem();
+        for (String subRestriction : ts.getRestrictionsForRV(node().name())) {
+            rw.genRVSubrestrictionInterface(node().name(), subRestriction);
+        }
+        return rw.genRVClass(node());
     }
 
 }

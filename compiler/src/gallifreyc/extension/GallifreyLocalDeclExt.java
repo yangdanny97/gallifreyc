@@ -91,7 +91,7 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
         if (q instanceof SharedRef) {
             SharedRef s = (SharedRef) q;
             RestrictionId rid = s.restriction();
-            Expr new_rhs = rw.qq().parseExpr("new " + rid.toString() + "(%E)", rhs);
+            Expr new_rhs = rw.qq().parseExpr("new " + rid.toString() + "_impl(%E)", rhs);
             l = l.type(nf.TypeNodeFromQualifiedName(l.position(), "Shared"));
             l = l.init(new_rhs);
             return l;
