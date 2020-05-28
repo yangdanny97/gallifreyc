@@ -26,7 +26,7 @@
 #      CmdLineArgs  :   additional command line args for the Polyglot 
 #                       compiler; is always enclosed in quotes.
 
-javac "-d java-out -cp .:../../gallifrey-antidote/gallifrey/frontend/build/classes/java/main" {
+javac "-d java-out -cp ../lib/full-runtime.jar:java-out:." {
     Unique.java;
     Shared.java;
 }

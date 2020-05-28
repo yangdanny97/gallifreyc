@@ -17,15 +17,23 @@ import polyglot.util.Position;
 
 public interface GallifreyTypeSystem extends JL7TypeSystem {
 
+    // restriction name -> class name
+    
     public void addRestrictionMapping(String restriction, String cls) throws SemanticException;
 
     public String getClassNameForRestriction(String restriction);
 
-    public void addUnionRestriction(String union, Set<String> restrictions);
+    // RVs
+    
+    public void addRV(String union, Set<String> restrictions);
 
-    public Set<String> getVariantRestrictions(String restriction);
+    public Set<String> getRestrictionsForRV(String rv);
 
-    public boolean isUnionRestriction(String restriction);
+    public boolean isRV(String restriction);
+    
+    public Set<String> getRVsForRestriction(String restriction);
+    
+    // restriction name -> allowed methods
     
     public void addAllowedMethod(String restriction, String method);
     
@@ -33,11 +41,13 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
     
     public Set<String> getAllowedMethods(String rName);
     
+    // restriction name -> class type
+    
     public void addRestrictionClassType(String restriction, ClassType cls);
     
     public ClassType getRestrictionClassType(String restriction);
     
-    public boolean canBeShared(String className);
+    // instances
 
     public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
             String name, List<? extends Type> argTypes, List<? extends Type> excTypes, List<RefQualification> inputQ,
@@ -56,6 +66,8 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
             List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams,
             List<RefQualification> inputQ);
 
+    //utils
+    
     // check args of a function call, calculate the qualification of the returned
     // value
     public GallifreyType checkArgs(GallifreyProcedureInstance pi, List<Expr> args) throws SemanticException;
@@ -64,4 +76,6 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
     public boolean checkQualifications(GallifreyType fromType, GallifreyType toType);
     
     public List<RefQualification> normalizeLocals(List<RefQualification> qualifications);
+    
+    public boolean canBeShared(String className);
 }

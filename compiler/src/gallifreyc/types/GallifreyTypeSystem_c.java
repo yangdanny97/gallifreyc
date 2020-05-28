@@ -13,9 +13,13 @@ import polyglot.util.*;
 
 public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyTypeSystem {
 
+    // restriction name -> class name
     public Map<String, String> restrictionClassNameMap = new HashMap<>();
+    // restriction name -> class type
     public Map<String, ClassType> restrictionClassTypeMap = new HashMap<>();
+    // restriction name -> allowed methods
     public Map<String, Set<String>> allowedMethodsMap = new HashMap<>();
+    // restriction variant names -> governed restriction names
     public Map<String, Set<String>> restrictionUnionMap = new HashMap<>();
 
     public GallifreyTypeSystem_c() {
@@ -162,20 +166,31 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     }
 
     @Override
-    public void addUnionRestriction(String union, Set<String> restrictions) {
+    public void addRV(String union, Set<String> restrictions) {
         restrictionUnionMap.put(union, restrictions);
     }
-
+    
     @Override
-    public Set<String> getVariantRestrictions(String restriction) {
-        if (!restrictionUnionMap.containsKey(restriction)) {
-            return null;
+    public Set<String> getRVsForRestriction(String restriction) {
+        Set<String> rvs = new HashSet<>();
+        for (Entry<String, Set<String>> pair : restrictionUnionMap.entrySet()) {
+            if (pair.getValue().contains(restriction)) {
+                rvs.add(pair.getKey());
+            }
         }
-        return restrictionUnionMap.get(restriction);
+        return rvs;
     }
 
     @Override
-    public boolean isUnionRestriction(String restriction) {
+    public Set<String> getRestrictionsForRV(String rv) {
+        if (!restrictionUnionMap.containsKey(rv)) {
+            return null;
+        }
+        return restrictionUnionMap.get(rv);
+    }
+
+    @Override
+    public boolean isRV(String restriction) {
         return restrictionUnionMap.containsKey(restriction);
     }
     
@@ -281,6 +296,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         }
     }
 
+    // checkQualifications(from,to) returns if b:to = a:from is legal
     public boolean checkQualifications(GallifreyType fromType, GallifreyType toType) {
         if (fromType == null || toType == null) {
             throw new IllegalArgumentException("null GallifreyType");

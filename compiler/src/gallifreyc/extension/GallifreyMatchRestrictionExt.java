@@ -90,7 +90,7 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
             throw new SemanticException("Can only match restrictions for Shared types", node.position());
         }
         String thisRV = ((SharedRef) q).restriction().restriction().id();
-        if (!gts.isUnionRestriction(thisRV)) {
+        if (!gts.isRV(thisRV)) {
             throw new SemanticException("Can only match on union restrictions", node.position());
         }
         for (MatchBranch b : node.branches()) {
@@ -110,7 +110,7 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
                         b.position());
             }
             String variant = rid.restriction().id();
-            if (!gts.getVariantRestrictions(thisRV).contains(variant)) {
+            if (!gts.getRestrictionsForRV(thisRV).contains(variant)) {
                 throw new SemanticException("Variant is not part of matched union restriction", b.position());
             }
         }

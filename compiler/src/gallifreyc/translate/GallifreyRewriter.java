@@ -22,6 +22,8 @@ public class GallifreyRewriter extends GRewriter {
     public final String RES = "RESTRICTION";
     public final String TEMP = "TEMP";
     public final String SHARED = "sharedObj";
+    
+    public List<ClassDecl> generatedClasses = new ArrayList<>();
 
     public GallifreyRewriter(Job job, ExtensionInfo from_ext, ExtensionInfo to_ext) {
         super(job, from_ext, to_ext);
@@ -30,6 +32,10 @@ public class GallifreyRewriter extends GRewriter {
     @Override
     public TypeNode typeToJava(Type t, Position pos) {
         return super.typeToJava(t, pos);
+    }
+    
+    public MethodDecl genRestrictionMethodSignature(MethodInstance i) {
+        return (MethodDecl) this.genRestrictionMethod(i).body(null);
     }
 
     public MethodDecl genRestrictionMethod(MethodInstance i) {
@@ -91,6 +97,31 @@ public class GallifreyRewriter extends GRewriter {
 
         return nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(), genReturnType,
                 nf.Id(p, mi.name()), formals, throwTypes, nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, ""));
+    }
+    
+    // class R_impl extends ... {...}
+    public ClassDecl genRestrictionImplClass(RestrictionDecl d) {
+        return null;
+    }
+    
+    // interface R extends Shared {...}
+    public ClassDecl genRestrictionInterface(RestrictionDecl d) {
+        return null;
+    }
+    
+    // interface RV_holder {...}
+    public ClassDecl genRVHolderInterface(RestrictionDecl d) {
+        return null;
+    }
+    
+    // class RV {...}
+    public ClassDecl genRVClass(RestrictionDecl d) {
+        return null;
+    }
+    
+    // class RV_R extends RV_holder, Shared {...}
+    public ClassDecl genRVSubrestrictionInterface(RestrictionDecl d) {
+        return null;
     }
 
     // wrap unique refs with .value, AFTER rewriting
