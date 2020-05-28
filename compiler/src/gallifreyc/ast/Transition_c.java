@@ -2,7 +2,6 @@ package gallifreyc.ast;
 
 import java.util.List;
 
-import gallifreyc.extension.GallifreyExt;
 import polyglot.ast.*;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;

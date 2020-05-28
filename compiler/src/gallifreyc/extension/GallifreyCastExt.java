@@ -3,7 +3,6 @@ package gallifreyc.extension;
 import polyglot.types.SemanticException;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
-import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.Cast;

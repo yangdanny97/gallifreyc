@@ -16,7 +16,6 @@ import polyglot.ast.Expr;
 import polyglot.ast.Local;
 import polyglot.ast.Node;
 import polyglot.ast.Stmt;
-import polyglot.types.LocalInstance;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.util.Position;
