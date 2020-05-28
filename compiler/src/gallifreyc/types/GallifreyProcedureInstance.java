@@ -8,6 +8,6 @@ public interface GallifreyProcedureInstance extends JL5ProcedureInstance {
     public List<GallifreyType> gallifreyInputTypes();
 
     public GallifreyProcedureInstance gallifreyInputTypes(List<GallifreyType> in);
-    
+
     public GallifreyType gallifreyReturnType();
 }

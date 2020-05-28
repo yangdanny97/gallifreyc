@@ -47,7 +47,7 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
 
     @Override
     public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
-        //TODO revisit this
+        // TODO revisit this
         MatchRestriction m = node();
         GallifreyNodeFactory nf = rw.nodeFactory();
         Expr e = m.expr();
@@ -79,7 +79,7 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        //TODO revisit this
+        // TODO revisit this
         MatchRestriction node = (MatchRestriction) superLang().typeCheck(node(), tc);
 
         GallifreyTypeSystem gts = (GallifreyTypeSystem) tc.typeSystem();

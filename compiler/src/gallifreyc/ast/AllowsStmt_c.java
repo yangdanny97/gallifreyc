@@ -62,8 +62,6 @@ public class AllowsStmt_c extends Node_c implements AllowsStmt {
         ts.addAllowedMethod(gtb.currentRestriction, id.id());
         return this;
     }
-    
-    
 
     @Override
     public NodeVisitor typeCheckEnter(TypeChecker tc) throws SemanticException {
@@ -76,8 +74,8 @@ public class AllowsStmt_c extends Node_c implements AllowsStmt {
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         ClassType ct = (ClassType) this.currentRestrictionClass;
         if (ct.methodsNamed(id.id()).size() == 0) {
-            throw new SemanticException("Unable to find method named " + id.id() + " in " + this.currentRestrictionClass,
-                    this.position);
+            throw new SemanticException(
+                    "Unable to find method named " + id.id() + " in " + this.currentRestrictionClass, this.position);
         }
         return this;
     }

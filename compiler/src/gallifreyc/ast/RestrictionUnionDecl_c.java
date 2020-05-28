@@ -61,28 +61,31 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
 
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
-        TypeSystem ts = tb.typeSystem();
-        if (ts instanceof GallifreyTypeSystem) {
-            GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
-            List<String> restrictionClasses = new ArrayList<>();
-            Set<String> variants = new HashSet<>();
-            for (Id r : restrictions) {
-                String forClass = gts.getClassNameForRestriction(r.id());
-                if (forClass == null) {
-                    throw new SemanticException("Unknown restriction " + r.id(), this.position());
-                }
-                // requires all variant restrictions to be for the same class
-                if (restrictionClasses.size() > 0 && !forClass.contentEquals(restrictionClasses.get(0))) {
-                    throw new SemanticException(
-                            "Restriction classes in union do not match: " + forClass + ", " + restrictionClasses.get(0),
-                            this.position());
-                }
-                restrictionClasses.add(0, forClass);
-                variants.add(r.id());
-            }
-            gts.addRestrictionMapping(id.id(), restrictionClasses.get(0));
-            gts.addUnionRestriction(id.id(), variants);
+        GallifreyTypeSystem ts = (GallifreyTypeSystem) tb.typeSystem();
+        List<String> restrictionClasses = new ArrayList<>();
+        Set<String> variants = new HashSet<>();
+
+        if (ts.restrictionExists(id.id())) {
+            throw new SemanticException("Restriction with name " + id.id() + "has already been declared",
+                    this.position());
         }
+
+        for (Id r : restrictions) {
+            String forClass = ts.getClassNameForRestriction(r.id());
+            if (forClass == null) {
+                throw new SemanticException("Unknown restriction " + r.id(), this.position());
+            }
+            // requires all variant restrictions to be for the same class
+            if (restrictionClasses.size() > 0 && !forClass.contentEquals(restrictionClasses.get(0))) {
+                throw new SemanticException(
+                        "Restriction classes in union do not match: " + forClass + ", " + restrictionClasses.get(0),
+                        this.position());
+            }
+            restrictionClasses.add(0, forClass);
+            variants.add(r.id());
+        }
+        ts.addRestrictionMapping(id.id(), restrictionClasses.get(0));
+        ts.addRV(id.id(), variants);
         return super.buildTypes(tb);
     }
 

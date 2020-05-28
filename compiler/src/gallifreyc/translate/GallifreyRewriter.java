@@ -6,6 +6,7 @@ import polyglot.ext.jl5.ast.ParamTypeNode;
 import polyglot.ext.jl5.types.TypeVariable;
 import polyglot.frontend.ExtensionInfo;
 import polyglot.frontend.Job;
+import polyglot.types.ClassType;
 import polyglot.types.Flags;
 import polyglot.types.MethodInstance;
 import polyglot.types.SemanticException;
@@ -15,6 +16,8 @@ import gallifreyc.ast.*;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyExt;
 import gallifreyc.types.GallifreyMethodInstance;
+import gallifreyc.types.GallifreyTypeSystem;
+
 import java.util.*;
 
 public class GallifreyRewriter extends GRewriter {
@@ -22,7 +25,7 @@ public class GallifreyRewriter extends GRewriter {
     public final String RES = "RESTRICTION";
     public final String TEMP = "TEMP";
     public final String SHARED = "sharedObj";
-    
+
     public List<ClassDecl> generatedClasses = new ArrayList<>();
 
     public GallifreyRewriter(Job job, ExtensionInfo from_ext, ExtensionInfo to_ext) {
@@ -33,7 +36,7 @@ public class GallifreyRewriter extends GRewriter {
     public TypeNode typeToJava(Type t, Position pos) {
         return super.typeToJava(t, pos);
     }
-    
+
     public MethodDecl genRestrictionMethodSignature(MethodInstance i) {
         return (MethodDecl) this.genRestrictionMethod(i).body(null);
     }
@@ -59,7 +62,7 @@ public class GallifreyRewriter extends GRewriter {
         List<Stmt> methodStmts = new ArrayList<>();
         Type returnType = mi.returnType();
         TypeNode genReturnType = nf.CanonicalTypeNode(p, returnType);
-        
+
         // don't allow type vars
         if (returnType instanceof TypeVariable) {
             genReturnType = nf.TypeNodeFromQualifiedName(p, "Object");
@@ -95,30 +98,117 @@ public class GallifreyRewriter extends GRewriter {
         List<ParamTypeNode> paramTypes = new ArrayList<>();
         // TODO unsure how to handle these
 
-        return nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(), genReturnType,
-                nf.Id(p, mi.name()), formals, throwTypes, nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, ""));
+        return nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(), genReturnType, nf.Id(p, mi.name()),
+                formals, throwTypes, nf.Block(p, methodStmts), paramTypes,
+                nf.Javadoc(p, "// Wrapper method for " + mi.container().toString() + "." + mi.name()));
     }
-    
+
     // class R_impl extends ... {...}
     public ClassDecl genRestrictionImplClass(RestrictionDecl d) {
-        return null;
+        // generate a classDecl for each restrictionDecl
+        // restriction R for C
+        GallifreyNodeFactory nf = this.nodeFactory();
+        GallifreyTypeSystem ts = this.typeSystem();
+
+        TypeNode CTypeNode = d.forClass();
+        String rName = d.name();
+
+        Position p = Position.COMPILER_GENERATED;
+        TypeNode sharedT = nf.TypeNodeFromQualifiedName(p, "SharedObject");
+
+        List<ClassMember> sharedMembers = new ArrayList<>();
+        // public SharedObject SHARED;
+        FieldDecl f = nf.FieldDecl(p, Flags.PUBLIC, sharedT, nf.Id(p, this.SHARED));
+
+        // private static final long serialVersionUID = 1;
+        FieldDecl f2 = nf.FieldDecl(p, Flags.PRIVATE.Static().Final(), nf.CanonicalTypeNode(p, ts.Long()),
+                nf.Id(p, "serialVersionUID"), nf.IntLit(p, IntLit.INT, 1));
+
+        // FIRST CONSTRUCTOR
+
+        List<Formal> constructorFormals = new ArrayList<>();
+        // public R(C obj)
+        constructorFormals.add(nf.Formal(p, Flags.NONE, (TypeNode) CTypeNode.copy(), nf.Id(p, "obj")));
+
+        List<Stmt> constructorStmts = new ArrayList<>();
+        // this.SHARED = new SharedObject(obj);
+        Expr constructorRHS = nf.New(p, (TypeNode) sharedT.copy(),
+                new ArrayList<Expr>(Arrays.asList(nf.AmbExpr(p, nf.Id(p, "obj")))));
+        constructorStmts.add(nf.Eval(p,
+                nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, this.SHARED)), Assign.ASSIGN, constructorRHS)));
+
+        ConstructorDecl c = nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, rName), constructorFormals,
+                new ArrayList<TypeNode>(), nf.Block(p, constructorStmts), nf.Javadoc(p, ""));
+
+        // SECOND CONSTRUCTOR (FOR TRANSITIONS)
+
+        List<Formal> constructorFormals2 = new ArrayList<>();
+        // public R(SharedObject obj)
+        constructorFormals2
+                .add(nf.Formal(p, Flags.NONE, nf.TypeNodeFromQualifiedName(p, "SharedObject"), nf.Id(p, "obj")));
+
+        List<Stmt> constructorStmts2 = new ArrayList<>();
+        // this.SHARED = obj;
+        constructorStmts2.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, this.SHARED)),
+                Assign.ASSIGN, nf.AmbExpr(p, nf.Id(p, "obj")))));
+
+        ConstructorDecl c2 = nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, rName), constructorFormals2,
+                new ArrayList<TypeNode>(), nf.Block(p, constructorStmts2), nf.Javadoc(p, ""));
+
+        sharedMembers.add(f2);
+        sharedMembers.add(f);
+        sharedMembers.add(c);
+        sharedMembers.add(c2);
+
+        // generate overrides for all the allowed methods
+        Set<String> allowedMethods = ts.getAllowedMethods(rName);
+        ClassType CType = (ClassType) CTypeNode.type();
+        for (String name : allowedMethods) {
+            for (MethodInstance method : CType.methodsNamed(name)) {
+                sharedMembers.add(this.genRestrictionMethod(method));
+            }
+        }
+
+        // getter for sharedObj field
+        List<Formal> formals = new ArrayList<>();
+        List<TypeNode> throwTypes = new ArrayList<>();
+        List<ParamTypeNode> paramTypes = new ArrayList<>();
+        List<Stmt> methodStmts = new ArrayList<>();
+        methodStmts.add(nf.Return(p, nf.Field(p, nf.This(p), nf.Id(p, "sharedObj"))));
+
+        sharedMembers.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(),
+                nf.TypeNodeFromQualifiedName(p, "SharedObject"), nf.Id(p, "sharedObj"), formals, throwTypes,
+                nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, "")));
+
+        List<TypeNode> interfaces = new ArrayList<>();
+        interfaces.add(nf.TypeNodeFromQualifiedName(p, "Serializable"));
+        interfaces.add(nf.TypeNodeFromQualifiedName(p, "Shared"));
+        // TODO add more restrictions
+
+        ClassBody sharedBody = nf.ClassBody(p, sharedMembers);
+
+        // class R extends Shared implements Serializable (flags are same as C)
+        ClassDecl sharedDecl = nf.ClassDecl(p, Flags.NONE, nf.Id(p, rName), null, interfaces, sharedBody,
+                nf.Javadoc(p, "// Concrete restriction class for " + rName));
+
+        return sharedDecl;
     }
-    
+
     // interface R extends Shared {...}
     public ClassDecl genRestrictionInterface(RestrictionDecl d) {
         return null;
     }
-    
+
     // interface RV_holder {...}
     public ClassDecl genRVHolderInterface(RestrictionDecl d) {
         return null;
     }
-    
+
     // class RV {...}
     public ClassDecl genRVClass(RestrictionDecl d) {
         return null;
     }
-    
+
     // class RV_R extends RV_holder, Shared {...}
     public ClassDecl genRVSubrestrictionInterface(RestrictionDecl d) {
         return null;
@@ -146,11 +236,11 @@ public class GallifreyRewriter extends GRewriter {
             Eval e = (Eval) n;
             if (e.expr() instanceof Field) {
                 Field f = (Field) e.expr();
-                if (f.target() instanceof Expr && 
-                        GallifreyExprExt.ext(f.target()).gallifreyType.qualification() instanceof UniqueRef
+                if (f.target() instanceof Expr
+                        && GallifreyExprExt.ext(f.target()).gallifreyType.qualification() instanceof UniqueRef
                         && f.name().equals(VALUE)) {
-                            n = nf.Eval(n.position(), (Expr) f.target());
-                            return GallifreyExt.ext(n).gallifreyRewrite(this);
+                    n = nf.Eval(n.position(), (Expr) f.target());
+                    return GallifreyExt.ext(n).gallifreyRewrite(this);
                 }
             }
 

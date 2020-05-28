@@ -67,6 +67,5 @@ public class Transition_c extends Stmt_c implements Transition {
         this.expr = e;
         return this;
     }
-    
-    
+
 }

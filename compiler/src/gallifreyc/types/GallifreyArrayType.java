@@ -63,7 +63,7 @@ public class GallifreyArrayType extends JL5ArrayType_c implements ArrayType {
     @Override
     protected MethodInstance createCloneMethodInstance() {
         GallifreyTypeSystem ts = (GallifreyTypeSystem) this.ts;
-        //TODO
+        // TODO
         return ts.methodInstance(position(), this, ts.Public(), this, // clone returns this type
                 "clone", Collections.<Type>emptyList(), Collections.<Type>emptyList());
     }
@@ -71,7 +71,7 @@ public class GallifreyArrayType extends JL5ArrayType_c implements ArrayType {
     @Override
     protected FieldInstance createLengthFieldInstance() {
         GallifreyTypeSystem ts = (GallifreyTypeSystem) this.ts;
-        FieldInstance fi = ts.fieldInstance(position(), this, ts.Public().Final(), ts.Int(), "length", 
+        FieldInstance fi = ts.fieldInstance(position(), this, ts.Public().Final(), ts.Int(), "length",
                 new MoveRef(Position.COMPILER_GENERATED));
         fi.setNotConstant();
         return fi;

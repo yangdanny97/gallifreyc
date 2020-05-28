@@ -15,10 +15,13 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 
     // restriction name -> class name
     public Map<String, String> restrictionClassNameMap = new HashMap<>();
+
     // restriction name -> class type
-    public Map<String, ClassType> restrictionClassTypeMap = new HashMap<>();
+//    public Map<String, ClassType> restrictionClassTypeMap = new HashMap<>();
+
     // restriction name -> allowed methods
     public Map<String, Set<String>> allowedMethodsMap = new HashMap<>();
+
     // restriction variant names -> governed restriction names
     public Map<String, Set<String>> restrictionUnionMap = new HashMap<>();
 
@@ -92,10 +95,9 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
             List<RefQualification> inputQ) {
         return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, typeParams, inputQ);
     }
-    
+
     @Override
-    public ConstructorInstance defaultConstructor(Position pos,
-            ClassType container) {
+    public ConstructorInstance defaultConstructor(Position pos, ClassType container) {
         assert_(container);
 
         // access for the default constructor is determined by the
@@ -110,13 +112,8 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         if (container.flags().isPublic()) {
             access = access.Public();
         }
-        return constructorInstance(pos,
-                                   container,
-                                   access,
-                                   Collections.<Type> emptyList(),
-                                   Collections.<Type> emptyList(),
-                                   Collections.<TypeVariable> emptyList(),
-                                   Collections.<RefQualification> emptyList());
+        return constructorInstance(pos, container, access, Collections.<Type>emptyList(), Collections.<Type>emptyList(),
+                Collections.<TypeVariable>emptyList(), Collections.<RefQualification>emptyList());
     }
 
     // LOCAL INSTANCE
@@ -151,7 +148,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     @Override
     public void addRestrictionMapping(String restriction, String cls) throws SemanticException {
         if (restrictionClassNameMap.containsKey(restriction)) {
-            throw new SemanticException("restriction "+ restriction + " already exists!");
+            throw new SemanticException("restriction " + restriction + " already exists!");
         }
         restrictionClassNameMap.put(restriction, cls);
         allowedMethodsMap.put(restriction, new HashSet<String>());
@@ -169,7 +166,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     public void addRV(String union, Set<String> restrictions) {
         restrictionUnionMap.put(union, restrictions);
     }
-    
+
     @Override
     public Set<String> getRVsForRestriction(String restriction) {
         Set<String> rvs = new HashSet<>();
@@ -193,12 +190,12 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     public boolean isRV(String restriction) {
         return restrictionUnionMap.containsKey(restriction);
     }
-    
-    @Override 
+
+    @Override
     public void addAllowedMethod(String restriction, String method) {
         allowedMethodsMap.get(restriction).add(method);
     }
-    
+
     @Override
     public Set<String> getAllowedMethods(RestrictionId restriction) {
         String rName = restriction.restriction().id();
@@ -207,11 +204,12 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         }
         return getAllowedMethods(rName);
     }
-    
+
     @Override
     public Set<String> getAllowedMethods(String rName) {
         if (restrictionUnionMap.containsKey(rName)) {
-            // currently union restrictions allow the intersection of the variants' allowed methods
+            // currently union restrictions allow the intersection of the variants' allowed
+            // methods
             Set<String> restrictions = restrictionUnionMap.get(rName);
             Set<String> methods = null;
             for (String r : restrictions) {
@@ -225,17 +223,22 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         }
         return allowedMethodsMap.get(rName);
     }
-    
+
     @Override
-    public void addRestrictionClassType(String restriction, ClassType cls) {
-        restrictionClassTypeMap.put(restriction, cls);
+    public boolean restrictionExists(String name) {
+        return restrictionClassNameMap.containsKey(name) || restrictionUnionMap.containsKey(name);
     }
-    
-    @Override
-    public ClassType getRestrictionClassType(String restriction) {
-        return restrictionClassTypeMap.get(restriction);
-    }
-    
+
+//    @Override
+//    public void addRestrictionClassType(String restriction, ClassType cls) {
+//        restrictionClassTypeMap.put(restriction, cls);
+//    }
+//    
+//    @Override
+//    public ClassType getRestrictionClassType(String restriction) {
+//        return restrictionClassTypeMap.get(restriction);
+//    }
+
     @Override
     public boolean canBeShared(String className) {
         for (Entry<String, String> pair : restrictionClassNameMap.entrySet()) {
@@ -253,9 +256,9 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         List<GallifreyType> params = pi.gallifreyInputTypes();
         List<GallifreyType> argTypes = new ArrayList<>();
         int nParams = params.size();
-        
-        //TODO check owners
-        
+
+        // TODO check owners
+
         for (Expr e : args) {
             GallifreyType gt = GallifreyExprExt.ext(e).gallifreyType();
             if (!(gt.qualification() instanceof MoveRef)) {
@@ -263,32 +266,31 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
             }
             argTypes.add(gt);
         }
-        
+
         // First check that the number of arguments is reasonable
         if (argTypes.size() != pi.formalTypes().size()) {
             // the actual args don't match the number of the formal args.
-            if (!(pi.isVariableArity() && argTypes.size() >= pi.formalTypes()
-                                                               .size() - 1)) {
+            if (!(pi.isVariableArity() && argTypes.size() >= pi.formalTypes().size() - 1)) {
                 // the last (variable) argument can consume 0 or more of the actual arguments.
                 throw new SemanticException("invalid number of arguments");
             }
         }
-        
+
         // HACK: assume imported functions take in all-locals
         if (nParams == 0) {
             params.add(new GallifreyType(new LocalRef(Position.COMPILER_GENERATED)));
         }
-        
+
         for (int i = 0; i < argTypes.size(); i++) {
             GallifreyType argType = argTypes.get(i);
             GallifreyType paramType = params.get(Math.min(i, params.size() - 1));
-            
+
             if (!checkQualifications(argType, paramType)) {
-                throw new SemanticException("invalid argument qualification - expected: " + paramType.qualification + 
-                        ", got: " + argType.qualification);
+                throw new SemanticException("invalid argument qualification - expected: " + paramType.qualification
+                        + ", got: " + argType.qualification);
             }
         }
-        
+
         if (allMoves || (args.size() == 0 && nParams == 0)) {
             return new GallifreyType(new MoveRef(Position.COMPILER_GENERATED));
         } else {
@@ -308,7 +310,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         if (fromType.qualification instanceof LocalRef && toType.qualification instanceof LocalRef) {
             return true;
         }
-        
+
         // is this correct?
         if (fromType.qualification instanceof SharedRef && toType.qualification instanceof SharedRef) {
             return fromType.qualification.equals(toType.qualification);
@@ -332,7 +334,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         }
         return super.isCastValidFromArray(arrayType, toType);
     }
-    
+
     public List<RefQualification> normalizeLocals(List<RefQualification> qualifications) {
         int counter = 0;
         Map<String, Integer> ownerMap = new HashMap<>();
@@ -344,7 +346,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
                     counter++;
                     ownerMap.put(l.ownerAnnotation, counter);
                 }
-                String ownerName = "OWNER_"+ownerMap.get(l.ownerAnnotation);
+                String ownerName = "OWNER_" + ownerMap.get(l.ownerAnnotation);
                 result.add(new LocalRef(l.position(), ownerName));
             } else {
                 result.add(q);

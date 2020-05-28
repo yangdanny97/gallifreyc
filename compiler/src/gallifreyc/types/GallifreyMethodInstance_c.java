@@ -85,7 +85,7 @@ public class GallifreyMethodInstance_c extends JL5MethodInstance_c implements Ga
     @Override
     protected List<MethodInstance> implementedImplAux(ReferenceType rt) {
         if (rt == null) {
-            return Collections.<MethodInstance> emptyList();
+            return Collections.<MethodInstance>emptyList();
         }
 
         List<MethodInstance> l = new LinkedList<>();

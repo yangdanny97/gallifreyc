@@ -52,7 +52,7 @@ public class GallifreyConstructorInstance_c extends JL5ConstructorInstance_c imp
         gallifreyInputs = in;
         return this;
     }
-    
+
     @Override
     public boolean isSameConstructorImpl(ConstructorInstance mi) {
         if (!(mi instanceof GallifreyConstructorInstance)) {

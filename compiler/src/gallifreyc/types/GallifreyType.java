@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 public class GallifreyType implements Serializable {
     private static final long serialVersionUID = SerialVersionUID.generate();
-    
+
     public static final String DEFAULT_CAPABILITY = "DEFAULT";
 
     public RefQualification qualification;
@@ -27,7 +27,7 @@ public class GallifreyType implements Serializable {
     public GallifreyType(RefQualification q) {
         this.qualification = q;
     }
-    
+
     public GallifreyType(GallifreyType t) {
         this.qualification = t.qualification();
         this.capability = t.capability();

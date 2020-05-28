@@ -30,7 +30,7 @@ public class ANormalizer extends GRewriter {
         super(job, from_ext, to_ext);
         hoisted = new ArrayList<>();
     }
-    
+
     @Override
     public NodeVisitor enterCall(Node n) throws SemanticException {
         ANormalizer v = (ANormalizer) super.enterCall(n);

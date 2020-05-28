@@ -42,7 +42,7 @@ public class GallifreyAssignExt extends GallifreyExprExt {
         this.gallifreyType = new GallifreyType(lt);
         return a;
     }
-    
+
     @Override
     public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
         // rewrite RHS of assignments

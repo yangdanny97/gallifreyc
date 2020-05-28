@@ -98,9 +98,14 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
 
     @Override
     public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
-        TypeSystem ts = tb.typeSystem();
-        GallifreyTypeSystem gts = (GallifreyTypeSystem) ts;
-        gts.addRestrictionMapping(id.id(), forClass.name());
+        GallifreyTypeSystem ts = (GallifreyTypeSystem) tb.typeSystem();
+
+        if (ts.restrictionExists(id.id())) {
+            throw new SemanticException("Restriction with name " + id.id() + "has already been declared",
+                    this.position());
+        }
+
+        ts.addRestrictionMapping(id.id(), forClass.name());
 
         GallifreyTypeBuilder gtb = (GallifreyTypeBuilder) tb;
         gtb.currentRestriction = id.id();
@@ -127,8 +132,8 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
                     "Restriction " + id.id() + " for " + forClass.type() + " must be for a valid class", this.position);
         }
 
-        GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
-        ts.addRestrictionClassType(id.id(), (ClassType) forClass.type());
+//        GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
+//        ts.addRestrictionClassType(id.id(), (ClassType) forClass.type());
         return super.typeCheckEnter(tc);
     }
 

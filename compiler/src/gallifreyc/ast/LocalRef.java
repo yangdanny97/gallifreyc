@@ -20,7 +20,7 @@ public class LocalRef extends Node_c implements RefQualification {
         super(pos);
         ownerAnnotation = owner;
     }
-    
+
     public LocalRef(Position pos, String owner, boolean borrow) {
         super(pos);
         ownerAnnotation = owner;

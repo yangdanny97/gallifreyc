@@ -47,11 +47,9 @@ public class GallifreyTransitionExt extends GallifreyExt {
         GallifreyNodeFactory nf = rw.nodeFactory();
         Position p = t.position();
         // transition(c, R) ------> c = new R(c.sharedObject());
-        Assign fa = nf.Assign(p, (Local) t.expr().copy(), Assign.ASSIGN,
-                nf.New(p, nf.TypeNodeFromQualifiedName(p, t.restriction().restriction().id()),
-                        new ArrayList<Expr>(Arrays.asList(
-                                nf.Call(p, (Local) t.expr().copy(), nf.Id(p, rw.SHARED), new ArrayList<Expr>())
-                                ))));
+        Assign fa = nf.Assign(p, (Local) t.expr().copy(), Assign.ASSIGN, nf.New(p,
+                nf.TypeNodeFromQualifiedName(p, t.restriction().restriction().id()), new ArrayList<Expr>(Arrays
+                        .asList(nf.Call(p, (Local) t.expr().copy(), nf.Id(p, rw.SHARED), new ArrayList<Expr>())))));
         return nf.Eval(p, fa);
     }
 
