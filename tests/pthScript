@@ -32,7 +32,7 @@ javac "-d java-out -cp .:../../gallifrey-antidote/gallifrey/frontend/build/class
 }
 
 // old tests
-gallifreyc.GallifreyExtensionInfo "-assert -d out -classpath java-out:../../gallifrey-antidote/gallifrey/frontend/build/classes/java/main" {
+gallifreyc.GallifreyExtensionInfo "-assert -d out -classpath ../lib/full-runtime.jar:java-out:." {
     RefQualification1.gal;
     RefQualification2a.gal;
     RefQualification2b.gal;
@@ -56,7 +56,7 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -classpath java-out:../../gall
 }
 
 // new tests
-gallifreyc.GallifreyExtensionInfo "-assert -d out -classpath java-out:../lib/*:../../gallifrey-antidote/gallifrey/frontend/build/classes/java/main" {
+gallifreyc.GallifreyExtensionInfo "-assert -d out -classpath ../lib/full-runtime.jar:java-out:../lib/*" {
     TestFieldAssign.gal ClassC.gal;
     TestHoist.gal;
     TestInitializer.gal;
