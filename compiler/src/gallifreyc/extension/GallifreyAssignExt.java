@@ -47,6 +47,7 @@ public class GallifreyAssignExt extends GallifreyExprExt {
     public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
         // rewrite RHS of assignments
         GallifreyNodeFactory nf = rw.nodeFactory();
+        GallifreyTypeSystem ts = rw.typeSystem();
         Assign a = node();
         Expr lhs = a.left();
         Expr rhs = a.right();
@@ -57,8 +58,7 @@ public class GallifreyAssignExt extends GallifreyExprExt {
         if (q instanceof SharedRef) {
             SharedRef s = (SharedRef) q;
             RestrictionId rid = s.restriction();
-            Expr new_rhs = rw.qq().parseExpr("new " + rid.toString() + "_impl(%E)", rhs);
-            a = a.right(new_rhs);
+            a = a.right(rw.rewriteRHS(rid, rhs));
         } else if (q instanceof UniqueRef) {
             Expr new_rhs = nf.New(rhs.position(), nf.TypeNodeFromQualifiedName(a.position(), "Unique<>"),
                     new ArrayList<Expr>(Arrays.asList(rhs)));

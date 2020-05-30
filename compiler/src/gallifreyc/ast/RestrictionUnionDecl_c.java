@@ -5,6 +5,7 @@ import polyglot.types.Flags;
 import polyglot.types.SemanticException;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
+import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import gallifreyc.types.GallifreyTypeSystem;
+import gallifreyc.visit.GallifreyTypeBuilder;
 
 public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDecl {
     private static final long serialVersionUID = SerialVersionUID.generate();
@@ -62,12 +64,7 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tb.typeSystem();
         List<String> restrictionClasses = new ArrayList<>();
-        Set<String> variants = new HashSet<>();
-
-        if (ts.restrictionExists(id.id())) {
-            throw new SemanticException("Restriction with name " + id.id() + "has already been declared",
-                    this.position());
-        }
+        List<String> variants = new ArrayList<>();
 
         for (Id r : restrictions) {
             String forClass = ts.getClassNameForRestriction(r.id());
@@ -80,10 +77,13 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
                         "Restriction classes in union do not match: " + forClass + ", " + restrictionClasses.get(0),
                         this.position());
             }
+            if (ts.isRV(r.id())) {
+                throw new SemanticException("Cannot have RV containing other RVs",  this.position());
+            }
             restrictionClasses.add(0, forClass);
             variants.add(r.id());
         }
-        ts.addRestrictionMapping(id.id(), restrictionClasses.get(0));
+//        ts.addRestrictionMapping(id.id(), restrictionClasses.get(0));
         ts.addRV(id.id(), variants);
         return super.buildTypes(tb);
     }

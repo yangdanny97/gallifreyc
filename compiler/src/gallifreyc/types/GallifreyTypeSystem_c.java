@@ -23,7 +23,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     public Map<String, Set<String>> allowedMethodsMap = new HashMap<>();
 
     // restriction variant names -> governed restriction names
-    public Map<String, Set<String>> restrictionUnionMap = new HashMap<>();
+    public Map<String, List<String>> restrictionUnionMap = new HashMap<>();
 
     public GallifreyTypeSystem_c() {
         super();
@@ -163,14 +163,14 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     }
 
     @Override
-    public void addRV(String union, Set<String> restrictions) {
+    public void addRV(String union, List<String> restrictions) {
         restrictionUnionMap.put(union, restrictions);
     }
 
     @Override
     public Set<String> getRVsForRestriction(String restriction) {
         Set<String> rvs = new HashSet<>();
-        for (Entry<String, Set<String>> pair : restrictionUnionMap.entrySet()) {
+        for (Entry<String, List<String>> pair : restrictionUnionMap.entrySet()) {
             if (pair.getValue().contains(restriction)) {
                 rvs.add(pair.getKey());
             }
@@ -179,7 +179,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     }
 
     @Override
-    public Set<String> getRestrictionsForRV(String rv) {
+    public List<String> getRestrictionsForRV(String rv) {
         if (!restrictionUnionMap.containsKey(rv)) {
             return null;
         }
@@ -199,27 +199,13 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     @Override
     public Set<String> getAllowedMethods(RestrictionId restriction) {
         String rName = restriction.restriction().id();
-        if (restriction.rv() != null) {
-            rName = restriction.rv().id();
-        }
         return getAllowedMethods(rName);
     }
 
     @Override
     public Set<String> getAllowedMethods(String rName) {
         if (restrictionUnionMap.containsKey(rName)) {
-            // currently union restrictions allow the intersection of the variants' allowed
-            // methods
-            Set<String> restrictions = restrictionUnionMap.get(rName);
-            Set<String> methods = null;
-            for (String r : restrictions) {
-                if (methods == null) {
-                    methods = allowedMethodsMap.get(r);
-                } else {
-                    methods.retainAll(allowedMethodsMap.get(r));
-                }
-            }
-            return methods;
+            return new HashSet<String>();
         }
         return allowedMethodsMap.get(rName);
     }
@@ -236,6 +222,10 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     
     @Override
     public ClassType getRestrictionClassType(String restriction) {
+        if (isRV(restriction)) {
+            return getRestrictionClassType(
+                    restrictionUnionMap.get(restriction).iterator().next());
+        }
         return restrictionClassTypeMap.get(restriction);
     }
 

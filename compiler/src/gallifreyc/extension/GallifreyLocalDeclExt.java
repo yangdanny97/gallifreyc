@@ -84,6 +84,8 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
     public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
         // rewrite RHS of decls
         GallifreyNodeFactory nf = rw.nodeFactory();
+        GallifreyTypeSystem ts = rw.typeSystem();
+        
         LocalDecl l = node();
         Expr rhs = l.init();
         RefQualification q = this.qualification();
@@ -91,9 +93,8 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
         if (q instanceof SharedRef) {
             SharedRef s = (SharedRef) q;
             RestrictionId rid = s.restriction();
-            Expr new_rhs = rw.qq().parseExpr("new " + rid.toString() + "_impl(%E)", rhs);
-            l = l.type(nf.TypeNodeFromQualifiedName(l.position(), "Shared"));
-            l = l.init(new_rhs);
+            l = l.type(nf.TypeNodeFromQualifiedName(l.position(), rid.toString()));
+            l = l.init(rw.rewriteRHS(rid, rhs));
             return l;
         }
         if (q instanceof UniqueRef) {

@@ -25,9 +25,9 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
 
     // RVs
 
-    public void addRV(String union, Set<String> restrictions);
+    public void addRV(String union, List<String> restrictions);
 
-    public Set<String> getRestrictionsForRV(String rv);
+    public List<String> getRestrictionsForRV(String rv);
 
     public boolean isRV(String restriction);
 

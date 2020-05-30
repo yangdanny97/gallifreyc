@@ -12,4 +12,6 @@ public interface RestrictionId extends Node {
     public boolean wildcardRv();
 
     public boolean isRvQualified();
+    
+    public String getInterfaceName();
 }

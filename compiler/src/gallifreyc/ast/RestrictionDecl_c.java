@@ -100,7 +100,7 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tb.typeSystem();
 
         if (ts.restrictionExists(id.id())) {
-            throw new SemanticException("Restriction with name " + id.id() + "has already been declared",
+            throw new SemanticException("Restriction with name " + id.id() + " has already been declared",
                     this.position());
         }
 

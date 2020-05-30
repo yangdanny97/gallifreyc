@@ -59,4 +59,12 @@ public class RestrictionId_c extends Node_c implements RestrictionId {
         }
         return false;
     }
+    
+    @Override
+    public String getInterfaceName() {
+        if (rv != null) {
+            return rv.toString() + "_" + restriction.toString();
+        }
+        return restriction.toString();
+    }
 }

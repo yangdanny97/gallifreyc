@@ -49,7 +49,7 @@ public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
                 Set<String> allowedMethods = ((GallifreyTypeSystem) tc.typeSystem()).getAllowedMethods(restriction);
                 if (!allowedMethods.contains(node.name())) {
                     throw new SemanticException(
-                            "cannot call method " + node.name() + " under restriction " + restriction, node.position());
+                            "Cannot call method " + node.name() + " under restriction " + restriction, node.position());
                 }
             }
         }
@@ -88,9 +88,10 @@ public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
         if (c.target() instanceof Expr) {
             GallifreyType t = GallifreyExprExt.ext(c.target()).gallifreyType();
             if (t.qualification() instanceof SharedRef) {
-                String restriction = ((SharedRef) t.qualification()).restriction().restriction().id();
+                RestrictionId restriction = ((SharedRef) t.qualification()).restriction();
                 Expr newTarget = nf.Cast(node().position(),
-                        nf.TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, restriction), (Expr) c.target());
+                        nf.TypeNodeFromQualifiedName(node().position(), 
+                                restriction.getInterfaceName()), (Expr) c.target());
                 return c.target(newTarget);
             }
         }

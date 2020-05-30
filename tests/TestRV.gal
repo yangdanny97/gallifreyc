@@ -1,0 +1,18 @@
+restriction R for ClassC {
+    allows testFun;
+}
+
+restriction R2 for ClassC {
+    allows f3;
+}
+
+restriction RV = R | R2;
+
+class D {
+    public D() {
+        shared[RV] ClassC c = new ClassC();
+        shared[R] ClassC c2 = new ClassC();
+        shared[R] ClassC c3 = c2;
+        shared[RV] ClassC c4 = c;
+    }
+}

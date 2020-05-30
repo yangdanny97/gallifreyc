@@ -25,6 +25,7 @@ public class GallifreyRewriter extends GRewriter {
     public final String RES = "RESTRICTION";
     public final String TEMP = "TEMP";
     public final String SHARED = "sharedObj";
+    public final String HOLDER = "holder";
 
     public List<ClassDecl> generatedClasses = new ArrayList<>();
 
@@ -137,7 +138,7 @@ public class GallifreyRewriter extends GRewriter {
         constructorStmts.add(nf.Eval(p,
                 nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, this.SHARED)), Assign.ASSIGN, constructorRHS)));
 
-        ConstructorDecl c = nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, rName), constructorFormals,
+        ConstructorDecl c = nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, rName + "_impl"), constructorFormals,
                 new ArrayList<TypeNode>(), nf.Block(p, constructorStmts), nf.Javadoc(p, ""));
 
         // SECOND CONSTRUCTOR (FOR TRANSITIONS)
@@ -152,7 +153,7 @@ public class GallifreyRewriter extends GRewriter {
         constructorStmts2.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, this.SHARED)),
                 Assign.ASSIGN, nf.AmbExpr(p, nf.Id(p, "obj")))));
 
-        ConstructorDecl c2 = nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, rName), constructorFormals2,
+        ConstructorDecl c2 = nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, rName + "_impl"), constructorFormals2,
                 new ArrayList<TypeNode>(), nf.Block(p, constructorStmts2), nf.Javadoc(p, ""));
 
         sharedMembers.add(f2);
@@ -174,10 +175,10 @@ public class GallifreyRewriter extends GRewriter {
         List<TypeNode> throwTypes = new ArrayList<>();
         List<ParamTypeNode> paramTypes = new ArrayList<>();
         List<Stmt> methodStmts = new ArrayList<>();
-        methodStmts.add(nf.Return(p, nf.Field(p, nf.This(p), nf.Id(p, "sharedObj"))));
+        methodStmts.add(nf.Return(p, nf.Field(p, nf.This(p), nf.Id(p, this.SHARED))));
 
         sharedMembers.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(),
-                nf.TypeNodeFromQualifiedName(p, "SharedObject"), nf.Id(p, "sharedObj"), formals, throwTypes,
+                nf.TypeNodeFromQualifiedName(p, "SharedObject"), nf.Id(p, this.SHARED), formals, throwTypes,
                 nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, "")));
 
         List<TypeNode> interfaces = new ArrayList<>();
@@ -222,29 +223,36 @@ public class GallifreyRewriter extends GRewriter {
         List<TypeNode> throwTypes = new ArrayList<>();
         List<ParamTypeNode> paramTypes = new ArrayList<>();
         members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(),
-                nf.TypeNodeFromQualifiedName(p, "SharedObject"), nf.Id(p, "sharedObj"), formals, throwTypes,
+                nf.TypeNodeFromQualifiedName(p, "SharedObject"), nf.Id(p, this.SHARED), formals, throwTypes,
                 null, paramTypes, nf.Javadoc(p, "")));
 
         List<TypeNode> interfaces = new ArrayList<>();
         interfaces.add(nf.TypeNodeFromQualifiedName(p, "Serializable"));
         interfaces.add(nf.TypeNodeFromQualifiedName(p, "Shared"));
-        // TODO add more restrictions
 
         ClassBody body = nf.ClassBody(p, members);
 
         ClassDecl RInterface = nf.ClassDecl(p, Flags.INTERFACE, nf.Id(p, rName), null, interfaces, body,
                 nf.Javadoc(p, "// Restriction interface class for " + rName));
 
+        this.generatedClasses.add(RInterface);
         return RInterface;
     }
 
-    // interface RV_holder {...}
+    // interface RV_holder extends Shared {...}
     public ClassDecl genRVHolderInterface(RestrictionUnionDecl d) {
+        GallifreyNodeFactory nf = this.nodeFactory();
         Position p = Position.COMPILER_GENERATED;
+        List<ClassMember> members = new ArrayList<>();
+        
         List<TypeNode> interfaces = new ArrayList<>();
-        ClassBody body = nf.ClassBody(p, new ArrayList<ClassMember>());
+        interfaces.add(nf.TypeNodeFromQualifiedName(p, "Serializable"));
+        interfaces.add(nf.TypeNodeFromQualifiedName(p, "Shared"));
+        
+        ClassBody body = nf.ClassBody(p, members);
         ClassDecl rvHolder = nf.ClassDecl(p, Flags.INTERFACE, nf.Id(p, d.name()+"_holder"), null, interfaces, body,
                 nf.Javadoc(p, "// RV holder interface class for " + d.name()));
+        
         // add to generated classes
         this.generatedClasses.add(rvHolder);
         return rvHolder;
@@ -252,8 +260,89 @@ public class GallifreyRewriter extends GRewriter {
 
     // class RV {...}
     public ClassDecl genRVClass(RestrictionUnionDecl d) {
-        //TODO
-        return null;
+        GallifreyNodeFactory nf = this.nodeFactory();
+        GallifreyTypeSystem ts = this.typeSystem();
+
+        String name = d.name();
+
+        Position p = Position.COMPILER_GENERATED;
+        TypeNode holderT = nf.TypeNodeFromQualifiedName(p, name + "_holder");
+        List<ClassMember> members = new ArrayList<>();
+        
+        ClassType CType = ts.getRestrictionClassType(d.name());
+        TypeNode CTypeNode = nf.CanonicalTypeNode(p, CType);
+        String defaultRimpl = ts.getRestrictionsForRV(name).iterator().next() + "_impl";
+
+        // public RV_holder holder;
+        members.add(nf.FieldDecl(p, Flags.PUBLIC, holderT, nf.Id(p, this.HOLDER), nf.NullLit(p)));
+        
+        // FIRST CONSTRUCTOR
+        List<Formal> constructorFormals = new ArrayList<>();
+        // public RV(C obj)
+        constructorFormals.add(nf.Formal(p, Flags.NONE, (TypeNode) CTypeNode.copy(), nf.Id(p, "obj")));
+
+        List<Stmt> constructorStmts = new ArrayList<>();
+        // this.holder = defaultR(obj)
+        constructorStmts.add(nf.Eval(p,
+           nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, this.HOLDER)), Assign.ASSIGN,
+                nf.New(p, nf.TypeNodeFromQualifiedName(p, defaultRimpl),
+                        Arrays.asList(nf.AmbExpr(p, nf.Id(p, "obj")))
+                )
+           )));
+
+        members.add(nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, name), constructorFormals,
+                new ArrayList<TypeNode>(), nf.Block(p, constructorStmts), nf.Javadoc(p, "")));
+
+        // SECOND CONSTRUCTOR (FOR ASSIGNMENTS)
+        constructorFormals = new ArrayList<>();
+        // public RV(RV rv)
+        constructorFormals.add(nf.Formal(p, Flags.NONE, 
+                nf.TypeNodeFromQualifiedName(p, name), nf.Id(p, "rv")));
+
+        constructorStmts = new ArrayList<>();
+        // this.holder = rv.holder;
+        constructorStmts.add(nf.Eval(p,
+                nf.FieldAssign(p, 
+                        nf.Field(p, nf.This(p), nf.Id(p, this.HOLDER)), 
+                        Assign.ASSIGN, 
+                        nf.Field(p, nf.AmbExpr(p, nf.Id(p, "rv")), nf.Id(p, this.HOLDER)))));
+        members.add(nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, name), constructorFormals,
+                new ArrayList<TypeNode>(), nf.Block(p, constructorStmts), nf.Javadoc(p, "")));
+        
+        // transition
+        // TODO
+
+        // getter for holder field
+        List<Formal> formals = new ArrayList<>();
+        List<TypeNode> throwTypes = new ArrayList<>();
+        List<ParamTypeNode> paramTypes = new ArrayList<>();
+        List<Stmt> methodStmts = new ArrayList<>();
+        methodStmts.add(nf.Return(p, nf.Field(p, nf.This(p), nf.Id(p, this.HOLDER))));
+        members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(),
+                holderT, nf.Id(p, this.HOLDER), formals, throwTypes, 
+                nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, "")));
+
+        List<TypeNode> interfaces = new ArrayList<>();
+        interfaces.add(nf.TypeNodeFromQualifiedName(p, "Serializable"));
+        interfaces.add(nf.TypeNodeFromQualifiedName(p, "Shared"));
+        
+        // getter for sharedObj field
+        methodStmts = new ArrayList<>();
+        formals = new ArrayList<>();
+        throwTypes = new ArrayList<>();
+        paramTypes = new ArrayList<>();
+        methodStmts.add(nf.Return(p, nf.Call(p, nf.Field(p, nf.This(p), nf.Id(p, this.HOLDER)), nf.Id(p, this.SHARED))));
+
+        members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(),
+                nf.TypeNodeFromQualifiedName(p, "SharedObject"), nf.Id(p, this.SHARED), formals, throwTypes,
+                nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, "")));
+
+        ClassBody body = nf.ClassBody(p, members);
+
+        ClassDecl RInterface = nf.ClassDecl(p, Flags.NONE, nf.Id(p, name), null, interfaces, body,
+                nf.Javadoc(p, "// Restriction interface class for " + name));
+
+        return RInterface;
     }
 
     // class RV_R extends RV_holder, Shared {...}
@@ -279,7 +368,7 @@ public class GallifreyRewriter extends GRewriter {
         List<TypeNode> throwTypes = new ArrayList<>();
         List<ParamTypeNode> paramTypes = new ArrayList<>();
         members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(),
-                nf.TypeNodeFromQualifiedName(p, "SharedObject"), nf.Id(p, "sharedObj"), formals, throwTypes,
+                nf.TypeNodeFromQualifiedName(p, "SharedObject"), nf.Id(p, this.SHARED), formals, throwTypes,
                 null, paramTypes, nf.Javadoc(p, "")));
 
         List<TypeNode> interfaces = new ArrayList<>();
@@ -295,6 +384,23 @@ public class GallifreyRewriter extends GRewriter {
 
         this.generatedClasses.add(RVInterface);
         return RVInterface;
+    }
+    
+    // rewrite RHS of assign & 
+    public Expr rewriteRHS(RestrictionId rid, Expr rhs) {
+        if (GallifreyExprExt.ext(rhs).gallifreyType.qualification instanceof SharedRef) {
+            if (typeSystem().isRV(rid.restriction().id())) {
+                return this.qq().parseExpr("new " + rid.toString() + "(%E)", rhs);
+            } else {
+                return this.qq().parseExpr("new " + rid.toString() + "_impl(%E.sharedObj())", rhs);
+            }
+        } else {
+            if (typeSystem().isRV(rid.restriction().id())) {
+                return this.qq().parseExpr("new " + rid.toString() + "(%E)", rhs);
+            } else {
+                return this.qq().parseExpr("new " + rid.toString() + "_impl(%E)", rhs);
+            }
+        }
     }
 
     // wrap unique refs with .value, AFTER rewriting
