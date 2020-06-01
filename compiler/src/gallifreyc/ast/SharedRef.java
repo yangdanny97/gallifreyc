@@ -30,4 +30,9 @@ public class SharedRef extends Node_c implements RefQualification {
         }
         return false;
     }
+    
+    @Override
+    public RefQualification copy() {
+        return new SharedRef(this.position, restriction.copy());
+    }
 }

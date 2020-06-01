@@ -67,4 +67,11 @@ public class RestrictionId_c extends Node_c implements RestrictionId {
         }
         return restriction.toString();
     }
+    
+    @Override
+    public RestrictionId copy() {
+        Id rv = (this.rv != null) ? (Id) this.rv.copy() : null;
+        Id restriction = (this.restriction != null) ? (Id) this.restriction.copy() : null;
+        return new RestrictionId_c(this.position, rv, restriction, this.wildcard);
+    }
 }

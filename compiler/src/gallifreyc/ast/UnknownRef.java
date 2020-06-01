@@ -21,4 +21,9 @@ public class UnknownRef extends Node_c implements RefQualification {
     public boolean equals(Object other) {
         return other instanceof UnknownRef;
     }
+    
+    @Override
+    public RefQualification copy() {
+        return new UnknownRef(this.position);
+    }
 }

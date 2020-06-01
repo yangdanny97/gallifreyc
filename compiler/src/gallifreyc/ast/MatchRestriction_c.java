@@ -2,12 +2,15 @@ package gallifreyc.ast;
 
 import java.util.List;
 
+import gallifreyc.visit.GallifreyTypeBuilder;
+
 import java.util.ArrayList;
 
 import polyglot.ast.Expr;
 import polyglot.ast.Node;
 import polyglot.ast.Stmt_c;
 import polyglot.ast.Term;
+import polyglot.types.SemanticException;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
@@ -15,6 +18,7 @@ import polyglot.visit.CFGBuilder;
 import polyglot.visit.FlowGraph;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
+import polyglot.visit.TypeBuilder;
 
 public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
     private static final long serialVersionUID = SerialVersionUID.generate();
@@ -34,7 +38,8 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
 
     @Override
     public MatchRestriction expr(Expr e) {
-        return new MatchRestriction_c(this.position(), e, this.branches());
+        this.expr = e;
+        return this;
     }
 
     @Override
@@ -44,7 +49,8 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
 
     @Override
     public MatchRestriction branches(List<MatchBranch> b) {
-        return new MatchRestriction_c(this.position(), this.expr(), b);
+        this.branches = b;
+        return this;
     }
 
     @Override
@@ -57,15 +63,11 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
     @Override
     public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
         List<Term> t_branches = new ArrayList<>();
-        List<Integer> entry = new ArrayList<>();
         for (MatchBranch b : branches()) {
             t_branches.add(b);
-            entry.add(new Integer(ENTRY));
         }
-        t_branches.add(this);
-        entry.add(EXIT);
-        v.visitCFG(expr, FlowGraph.EDGE_KEY_OTHER, t_branches, entry);
-        v.push(this).visitCFGList(branches, this, EXIT);
+        v.visitCFG(expr, FlowGraph.EDGE_KEY_OTHER, t_branches, new Integer(ENTRY));
+        v.visitCFGList(branches, this, EXIT);
         return succs;
     }
 
@@ -94,9 +96,9 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
         for (MatchBranch b : this.branches) {
             brs.add(visitChild(b, v));
         }
-        MatchRestriction_c mr = (MatchRestriction_c) this.copy();
-        mr.expr = e;
-        mr.branches = brs;
-        return mr;
+        // not reconstructed
+        this.expr = e;
+        this.branches = brs;
+        return this;
     }
 }

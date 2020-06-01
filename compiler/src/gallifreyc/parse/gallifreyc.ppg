@@ -296,9 +296,9 @@ test_header ::=
 ;
 
 match_branch ::=
-	OR type:a variable_declarator_id:b ARROW LBRACE statement:c RBRACE {:
+	OR type:a variable_declarator_id:b ARROW block:d {:
 		LocalDecl ld = parser.nf.LocalDecl(parser.pos(a,b), Flags.NONE, a, b.name()); 
-		RESULT = parser.nf.MatchBranch(parser.pos(a, c), ld, c); 
+		RESULT = parser.nf.MatchBranch(parser.pos(a, d), ld, d); 
 	:}
 ;
 

@@ -1,11 +1,13 @@
 package gallifreyc.visit;
 
 import gallifreyc.ast.GallifreyNodeFactory;
+import gallifreyc.ast.MatchRestriction;
 import gallifreyc.extension.GallifreyExt;
 import gallifreyc.extension.GallifreyFieldDeclExt;
 import gallifreyc.extension.GallifreyFormalExt;
 import gallifreyc.extension.GallifreyLang;
 import gallifreyc.extension.GallifreyLocalDeclExt;
+import gallifreyc.extension.GallifreyMatchRestrictionExt;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.FieldDecl;
 import polyglot.ast.Formal;
@@ -20,6 +22,7 @@ import polyglot.visit.TypeBuilder;
 public class GallifreyTypeBuilder extends TypeBuilder {
     public String currentRestrictionClass;
     public String currentRestriction;
+    public int matchNesting = 0;
 
     public GallifreyTypeBuilder(Job job, TypeSystem ts, NodeFactory nf) {
         super(job, ts, nf);

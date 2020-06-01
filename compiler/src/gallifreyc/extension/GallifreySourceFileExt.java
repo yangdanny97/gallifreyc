@@ -26,37 +26,7 @@ public class GallifreySourceFileExt extends GallifreyExt {
 
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
-        SourceFile n = node();
-        List<TopLevelDecl> cd = new ArrayList<>();
-        List<RestrictionDecl> rd = new ArrayList<>();
-        List<RestrictionUnionDecl> rud = new ArrayList<>();
-        for (TopLevelDecl d : n.decls()) {
-            if (d instanceof ClassDecl)
-                cd.add(d);
-            if (d instanceof RestrictionDecl)
-                rd.add((RestrictionDecl) d);
-            if (d instanceof RestrictionUnionDecl)
-                rud.add((RestrictionUnionDecl) d);
-        }
-        n = n.decls(cd);
-        n = (SourceFile) superLang().buildTypes(n, tb);
-
-        List<TopLevelDecl> newDecls = new ArrayList<>();
-        List<RestrictionDecl> newRDecls = new ArrayList<>();
-        List<RestrictionUnionDecl> newRUDecls = new ArrayList<>();
-
-        for (RestrictionDecl r : rd) {
-            RestrictionDecl newRDecl = (RestrictionDecl) lang().buildTypes(r, tb);
-            newRDecls.add(newRDecl);
-        }
-        for (RestrictionUnionDecl r : rud) {
-            RestrictionUnionDecl newRUDecl = (RestrictionUnionDecl) lang().buildTypes(r, tb);
-            newRUDecls.add(newRUDecl);
-        }
-        newDecls.addAll(n.decls());
-        newDecls.addAll(newRDecls);
-        newDecls.addAll(newRUDecls);
-        return n.decls(newDecls);
+        return superLang().buildTypes(node(), tb);
     }
 
     @Override

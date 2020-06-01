@@ -89,9 +89,18 @@ public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
             GallifreyType t = GallifreyExprExt.ext(c.target()).gallifreyType();
             if (t.qualification() instanceof SharedRef) {
                 RestrictionId restriction = ((SharedRef) t.qualification()).restriction();
-                Expr newTarget = nf.Cast(node().position(),
-                        nf.TypeNodeFromQualifiedName(node().position(), 
-                                restriction.getInterfaceName()), (Expr) c.target());
+                Expr newTarget;
+                if (restriction.rv() != null) { // RV::R is represented as RV type, cast the holder
+                    newTarget = nf.Cast(node().position(),
+                            nf.TypeNodeFromQualifiedName(node().position(), 
+                                    restriction.getInterfaceName()), 
+                            nf.Field(node().position(), c.target(), 
+                                    nf.Id(node().position(), rw.HOLDER)));
+                } else { // R
+                   newTarget = nf.Cast(node().position(),
+                            nf.TypeNodeFromQualifiedName(node().position(), 
+                                    restriction.getInterfaceName()), (Expr) c.target());
+                }
                 return c.target(newTarget);
             }
         }

@@ -1,0 +1,23 @@
+restriction R for ClassC {
+	allows testFun;
+}
+
+restriction R2 for ClassC {
+	allows testFun;
+}
+
+restriction R3 = R | R2
+
+class D {
+	public D(){}
+	
+	public void test2() {
+	    shared[R3] ClassC c_ = new ClassC();
+		shared[R3] ClassC c = new ClassC();
+		match_restriction c with
+        | shared[R3::R] ClassC  c1 -> {
+            transition(c_, R3::R2);
+        }
+        | shared[R3::R2] ClassC  c2 -> {}
+	}
+}

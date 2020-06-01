@@ -1,4 +1,4 @@
-restriction R for ClassC {
+restriction R1 for ClassC {
     allows f1;
 }
 
@@ -6,12 +6,21 @@ restriction R2 for ClassC {
     allows f2;
 }
 
+restriction R3 = R1 | R2
+
 public class D {
-    public D(){}
-    
-    public void testAAA() {
-        shared[R] ClassC c2 = new ClassC();
-        transition(c2, R2);
-        c2.f2();
+    public D() {
+        shared[R3] ClassC c = new ClassC();
+        match_restriction c with
+        | shared[R3::R1] ClassC c1 -> {
+            c1.f1();
+            transition(c1, R3::R2);
+            c1.f2();
+        }
+        | shared[R3::R2] ClassC c2 -> {
+            c2.f2();
+            transition(c2, R3::R1);
+            c2.f1();
+        }
     }
 }

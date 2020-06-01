@@ -1,6 +1,7 @@
 package gallifreyc.visit;
 
 import gallifreyc.ast.GallifreyNodeFactory;
+import gallifreyc.ast.MatchRestriction;
 import gallifreyc.ast.UnknownRef;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyExt;
@@ -8,6 +9,7 @@ import gallifreyc.extension.GallifreyFieldDeclExt;
 import gallifreyc.extension.GallifreyFormalExt;
 import gallifreyc.extension.GallifreyLang;
 import gallifreyc.extension.GallifreyLocalDeclExt;
+import gallifreyc.extension.GallifreyMatchRestrictionExt;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.Expr;
 import polyglot.ast.FieldDecl;
@@ -69,8 +71,7 @@ public class GallifreyTypeChecker extends TypeChecker {
                     throw new IllegalArgumentException("invalid qualification " + m);
                 }
 
-            }
-            if (m instanceof FieldDecl) {
+            } else if (m instanceof FieldDecl) {
                 GallifreyFieldDeclExt extM = (GallifreyFieldDeclExt) GallifreyExt.ext(m);
 
                 GallifreyFieldDeclExt extN = (GallifreyFieldDeclExt) GallifreyExt.ext(n);
@@ -79,8 +80,7 @@ public class GallifreyTypeChecker extends TypeChecker {
                 if (extM.qualification == null || extM.qualification() instanceof UnknownRef) {
                     throw new IllegalArgumentException("invalid qualification " + m);
                 }
-            }
-            if (m instanceof LocalDecl) {
+            } else if (m instanceof LocalDecl) {
                 GallifreyLocalDeclExt extM = (GallifreyLocalDeclExt) GallifreyExt.ext(m);
 
                 GallifreyLocalDeclExt extN = (GallifreyLocalDeclExt) GallifreyExt.ext(n);
@@ -89,8 +89,7 @@ public class GallifreyTypeChecker extends TypeChecker {
                 if (extM.qualification == null || extM.qualification() instanceof UnknownRef) {
                     throw new IllegalArgumentException("invalid qualification " + m);
                 }
-            }
-            if (m instanceof Formal) {
+            } else if (m instanceof Formal) {
                 GallifreyFormalExt extM = (GallifreyFormalExt) GallifreyExt.ext(m);
 
                 GallifreyFormalExt extN = (GallifreyFormalExt) GallifreyExt.ext(n);

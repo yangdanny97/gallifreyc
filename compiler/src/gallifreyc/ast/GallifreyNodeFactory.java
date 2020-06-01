@@ -39,7 +39,7 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
 
     MatchRestriction MatchRestriction(Position pos, Expr expr, List<MatchBranch> branches);
 
-    MatchBranch MatchBranch(Position pos, LocalDecl pattern, Stmt stmt);
+    MatchBranch MatchBranch(Position pos, LocalDecl pattern, Block body);
 
     // Restrictions
     RestrictionDecl RestrictionDecl(Position pos, Id id, TypeNode for_id, RestrictionBody body);

@@ -14,4 +14,6 @@ public interface RestrictionId extends Node {
     public boolean isRvQualified();
     
     public String getInterfaceName();
+    
+    public RestrictionId copy();
 }

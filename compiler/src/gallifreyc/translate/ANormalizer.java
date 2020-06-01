@@ -77,11 +77,11 @@ public class ANormalizer extends GRewriter {
         return newLocal;
     }
 
-    // replace statements with blocks of hoisted decls, if any
+    // replace statements with blocks of hoisted decls (if any) + original statement
     public Stmt addHoistedDecls(Stmt s) {
         if (hoisted.size() > 0) {
-            hoisted.add(s);
-            List<Stmt> blockBody = hoisted;
+            List<Stmt> blockBody = new ArrayList<>(hoisted);
+            blockBody.add(s);
             hoisted = new ArrayList<>();
             return nf.Block(s.position(), blockBody);
         }

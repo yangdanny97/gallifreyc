@@ -1,6 +1,7 @@
 package gallifreyc.translate;
 
 import gallifreyc.ast.GallifreyNodeFactory;
+import gallifreyc.ast.MatchRestriction;
 import gallifreyc.ast.UnknownRef;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyExt;
@@ -8,6 +9,7 @@ import gallifreyc.extension.GallifreyFieldDeclExt;
 import gallifreyc.extension.GallifreyFormalExt;
 import gallifreyc.extension.GallifreyLang;
 import gallifreyc.extension.GallifreyLocalDeclExt;
+import gallifreyc.extension.GallifreyMatchRestrictionExt;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.Expr;
 import polyglot.ast.FieldDecl;

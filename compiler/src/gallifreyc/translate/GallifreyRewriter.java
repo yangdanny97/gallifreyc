@@ -309,14 +309,39 @@ public class GallifreyRewriter extends GRewriter {
         members.add(nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, name), constructorFormals,
                 new ArrayList<TypeNode>(), nf.Block(p, constructorStmts), nf.Javadoc(p, "")));
         
-        // transition
-        // TODO
-
-        // getter for holder field
+        // transition void transition(Class<?> cls) {...}
         List<Formal> formals = new ArrayList<>();
+        formals.add(nf.Formal(p, Flags.NONE, nf.TypeNodeFromQualifiedName(p, "Class<?>"), nf.Id(p, "cls")));
         List<TypeNode> throwTypes = new ArrayList<>();
         List<ParamTypeNode> paramTypes = new ArrayList<>();
         List<Stmt> methodStmts = new ArrayList<>();
+//        try {
+//            this.HOLDER = (RV_holder) cls.getConstructor(SharedObject.class)
+//                .newInstance(new Object[] {this.HOLDER.sharedObject()});
+//         } catch (Exception e) {}
+        Expr constructor = nf.Call(p, nf.Local(p, nf.Id(p, "cls")), nf.Id(p, "getConstructor"), 
+                this.qq().parseExpr("SharedObject.class"));
+        Expr newInstance = nf.Call(p, constructor, nf.Id(p, "newInstance"), 
+                this.qq().parseExpr("new Object[] {%E.sharedObj()}", 
+                        nf.Field(p, nf.This(p), nf.Id(p, this.HOLDER))));
+        Stmt assign = nf.Eval(p, nf.Assign(p, 
+              nf.Field(p, nf.This(p), nf.Id(p, this.HOLDER)), 
+              Assign.ASSIGN, 
+              nf.Cast(p, nf.TypeNodeFromQualifiedName(p, name + "_holder"), newInstance)
+              ));
+        List<Catch> catches = new ArrayList<>();
+        // currently transitions fail silently
+        catches.add(nf.Catch(p, nf.Formal(p, Flags.NONE, nf.TypeNodeFromQualifiedName(p, "Exception"), nf.Id(p, "e")), nf.Block(p)));
+        methodStmts.add(nf.Try(p, nf.Block(p, assign), catches));
+        members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(),
+                nf.CanonicalTypeNode(p, typeSystem().Void()), nf.Id(p, "transition"), formals, throwTypes, 
+                nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, "")));
+
+        // getter for holder field
+        formals = new ArrayList<>();
+        throwTypes = new ArrayList<>();
+        paramTypes = new ArrayList<>();
+        methodStmts = new ArrayList<>();
         methodStmts.add(nf.Return(p, nf.Field(p, nf.This(p), nf.Id(p, this.HOLDER))));
         members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(),
                 holderT, nf.Id(p, this.HOLDER), formals, throwTypes, 
@@ -386,19 +411,19 @@ public class GallifreyRewriter extends GRewriter {
         return RVInterface;
     }
     
-    // rewrite RHS of assign & 
-    public Expr rewriteRHS(RestrictionId rid, Expr rhs) {
-        if (GallifreyExprExt.ext(rhs).gallifreyType.qualification instanceof SharedRef) {
-            if (typeSystem().isRV(rid.restriction().id())) {
-                return this.qq().parseExpr("new " + rid.toString() + "(%E)", rhs);
-            } else {
-                return this.qq().parseExpr("new " + rid.toString() + "_impl(%E.sharedObj())", rhs);
-            }
+    // rewrite RHS of assign & localDecl when LHS is shared[r]
+    public Expr rewriteRHS(RestrictionId r, Expr rhs) {
+        GallifreyExprExt ext = GallifreyExprExt.ext(rhs);
+        // r is RV
+        // RHS is guaranteed to be shared[RV] as well
+        if (typeSystem().isRV(r.restriction().id())) {
+            return this.qq().parseExpr("new " + r.toString() + "(%E)", rhs);
         } else {
-            if (typeSystem().isRV(rid.restriction().id())) {
-                return this.qq().parseExpr("new " + rid.toString() + "(%E)", rhs);
-            } else {
-                return this.qq().parseExpr("new " + rid.toString() + "_impl(%E)", rhs);
+            if (ext.gallifreyType.qualification instanceof SharedRef) { // if rhs is shared
+                // rhs is guaranteed to be shared[r]
+                return this.qq().parseExpr("new " + r.restriction().toString() + "_impl(%E.sharedObj())", rhs);
+            } else { // if rhs is not shared (regular object)
+                return this.qq().parseExpr("new " + r.restriction().toString() + "_impl(%E)", rhs);
             }
         }
     }

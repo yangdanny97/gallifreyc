@@ -67,11 +67,9 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -classpath ../lib/full-runtime
     TestInvalidNestedQualifier.gal (Semantic);
     TestInvalidRestrictionClass.gal (Semantic);
     TestInvalidRestrictionUnion.gal (Semantic);
-    TestInvalidTransition.gal ClassC.gal (Semantic);
     TestInvariantSubtyping.gal (Semantic);
     TestRewrite.gal;
     TestShared.gal ClassC.gal;
-    // TestRewrite2.gal ClassC.gal;
     ClassC.gal TestInvalidRestrictedMethod.gal (Semantic);
     ClassC.gal TestInvalidSharedFieldAccess.gal (Semantic);
     Counter.gal;
@@ -85,7 +83,10 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -classpath ../lib/full-runtime
     SharedMap.gal AntidoteTest2.gal;
     // AntidoteTest3.gal;
     OwnerAnnotatedLocals.gal;
-    // TestTransition.gal;
-    // TestMatch.gal;
-    TestRV.gal;
-}
+    ClassC.gal TestTransition.gal;
+    ClassC.gal TestMatch.gal;
+    ClassC.gal TestRV.gal;
+    ClassC.gal TestInvalidTransitionRes.gal (Semantic);
+    ClassC.gal TestInvalidTransitionLoc.gal (Semantic);
+    
+} 

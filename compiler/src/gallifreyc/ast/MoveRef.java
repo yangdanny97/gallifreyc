@@ -20,4 +20,9 @@ public class MoveRef extends Node_c implements RefQualification {
     public boolean equals(Object other) {
         return other instanceof MoveRef;
     }
+    
+    @Override
+    public RefQualification copy() {
+        return new MoveRef(this.position);
+    }
 }

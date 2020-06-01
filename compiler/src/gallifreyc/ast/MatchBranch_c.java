@@ -15,13 +15,13 @@ import polyglot.ast.LocalDecl;
 public class MatchBranch_c extends AbstractBlock_c implements MatchBranch {
     private static final long serialVersionUID = SerialVersionUID.generate();
     private LocalDecl pattern;
-    private Stmt stmt;
+    private Block body;
 
-    public MatchBranch_c(Position pos, LocalDecl pattern, Stmt stmt) {
-        super(pos, Collections.singletonList(stmt));
+    public MatchBranch_c(Position pos, LocalDecl pattern, Block body) {
+        super(pos, body.statements());
         assert pattern.init() == null;
         this.pattern = pattern;
-        this.stmt = stmt;
+        this.body = body;
     }
 
     // pushing scope and TC are handled by AbstractBlock_c
@@ -29,14 +29,19 @@ public class MatchBranch_c extends AbstractBlock_c implements MatchBranch {
     public LocalDecl pattern() {
         return pattern;
     }
+    
+    public MatchBranch pattern(LocalDecl d) {
+        pattern = d;
+        return this;
+    }
 
-    public Stmt stmt() {
-        return stmt;
+    public Block body() {
+        return body;
     }
 
     @Override
     public String toString() {
-        return "| " + pattern.toString() + " -> { " + stmt.toString() + "}";
+        return "| " + pattern.toString() + " -> " + body.toString();
     }
 
     @Override
@@ -48,8 +53,8 @@ public class MatchBranch_c extends AbstractBlock_c implements MatchBranch {
 
     @Override
     public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
-        v.visitCFG(pattern, stmt, ENTRY);
-        v.visitCFG(stmt, this, EXIT);
+        v.visitCFG(pattern, body, ENTRY);
+        v.visitCFG(body, this, EXIT);
         return succs;
     }
 
@@ -57,19 +62,17 @@ public class MatchBranch_c extends AbstractBlock_c implements MatchBranch {
     public void prettyPrint(CodeWriter w, PrettyPrinter pp) {
         w.write("|");
         print(pattern, w, pp);
-        w.write(" -> {");
-        print(stmt, w, pp);
-        w.write("}");
+        w.write(" -> ");
+        print(body, w, pp);
     }
 
     @Override
     public Node visitChildren(NodeVisitor v) {
         LocalDecl pattern = visitChild(this.pattern, v);
-        Stmt stmt = visitChild(this.stmt, v);
-        MatchBranch_c mb = (MatchBranch_c) this.copy();
-        mb.pattern = pattern;
-        mb.stmt = stmt;
-        return mb;
+        Block body = visitChild(this.body, v);
+        this.pattern = pattern;
+        this.body = body;
+        return this;
     }
 
     @Override

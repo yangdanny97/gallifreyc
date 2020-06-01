@@ -38,6 +38,5 @@ This extension follows a similar structure as other Polyglot extensions except f
 
 TODOs:
 - default qualifications for stdlib (field and method instances)
-- fix translations & typechecking for match, add test cases
-- typing hierarchy and usage of union restrictions vs restriction names
+- bug: transitions currently modify ALL references to that LocalInstance (even the ones before the transition)
 - ownership typechecking

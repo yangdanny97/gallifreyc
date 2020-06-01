@@ -5,21 +5,25 @@ import java.util.Arrays;
 
 import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.RefQualification;
+import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.SharedRef;
 import gallifreyc.ast.Transition;
 import gallifreyc.translate.ANormalizer;
 import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyLocalInstance;
 import gallifreyc.types.GallifreyTypeSystem;
+import gallifreyc.visit.GallifreyTypeBuilder;
 import polyglot.ast.Assign;
 import polyglot.ast.Expr;
 import polyglot.ast.Local;
 import polyglot.ast.Node;
 import polyglot.ast.Stmt;
+import polyglot.types.Context;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
+import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
 
 public class GallifreyTransitionExt extends GallifreyExt {
@@ -45,11 +49,20 @@ public class GallifreyTransitionExt extends GallifreyExt {
         Transition t = node();
         GallifreyNodeFactory nf = rw.nodeFactory();
         Position p = t.position();
-        // transition(c, R) ------> c = new R(c.sharedObject());
-        Assign fa = nf.Assign(p, (Local) t.expr().copy(), Assign.ASSIGN, nf.New(p,
-                nf.TypeNodeFromQualifiedName(p, t.restriction().restriction().id()), new ArrayList<Expr>(Arrays
-                        .asList(nf.Call(p, (Local) t.expr().copy(), nf.Id(p, rw.SHARED), new ArrayList<Expr>())))));
-        return nf.Eval(p, fa);
+        // transition(c, R) ------> c.transition(R_impl.class)
+        ArrayList<Expr> args = new ArrayList<>();
+        args.add(rw.qq().parseExpr(t.restriction().restriction().id() + "_impl.class"));
+        return nf.Eval(p, nf.Call(p, (Local) t.expr().copy(), nf.Id(p, "transition"), args));
+    }
+    
+    @Override
+    public Node buildTypes(TypeBuilder tb) throws SemanticException {
+        Transition node = (Transition) superLang().buildTypes(node(), tb);
+        GallifreyTypeBuilder gtb = (GallifreyTypeBuilder) tb;
+        if (gtb.matchNesting == 0) {
+            throw new SemanticException("Cannot transition outside of match statement", node.position());
+        }
+        return node;
     }
 
     @Override
@@ -73,15 +86,27 @@ public class GallifreyTransitionExt extends GallifreyExt {
             throw new SemanticException("Unknown Restriction " + node.restriction().restriction().id(),
                     node.position());
         }
+        // check RV's match
+        RestrictionId exprId = ((SharedRef) q).restriction;
+        RestrictionId transitionId = node.restriction();
+        if (exprId.rv() == null || transitionId.rv() == null || !exprId.rv().id().equals(transitionId.rv().id())) {
+            throw new SemanticException("Cannot transition " + exprId + " to " + transitionId, node().position());
+        }
 
         // requires equality between expr type and restriction's "for" type
         if (!gts.typeEquals(t, gts.typeForName(restrictionClass))) {
             throw new SemanticException("Invalid restriction for class " + restrictionClass, node.position());
         }
-        // update local instance
+        // make a new local instance - effectively redeclaring the variable (normally not allowed)
         Local local = (Local) node.expr();
-        GallifreyLocalInstance li = (GallifreyLocalInstance) local.localInstance();
-        ((SharedRef) li.gallifreyType().qualification).restriction = node.restriction();
+        Context c = tc.context();
+        GallifreyLocalInstance li = (GallifreyLocalInstance) c.findLocal(local.name());
+        
+        // make a deep copy of qualification
+        GallifreyLocalInstance newLi = gts.localInstance(li.position(), 
+                li.flags(), li.type(), li.name(), li.gallifreyType().qualification().copy());
+        ((SharedRef) newLi.gallifreyType().qualification).restriction = node.restriction();
+        c.addVariable(newLi);
         return node;
     }
 

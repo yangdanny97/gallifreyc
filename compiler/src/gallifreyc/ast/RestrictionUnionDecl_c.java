@@ -63,7 +63,7 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tb.typeSystem();
-        List<String> restrictionClasses = new ArrayList<>();
+        Set<String> restrictionClasses = new HashSet<>();
         List<String> variants = new ArrayList<>();
 
         for (Id r : restrictions) {
@@ -71,18 +71,17 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
             if (forClass == null) {
                 throw new SemanticException("Unknown restriction " + r.id(), this.position());
             }
-            // requires all variant restrictions to be for the same class
-            if (restrictionClasses.size() > 0 && !forClass.contentEquals(restrictionClasses.get(0))) {
-                throw new SemanticException(
-                        "Restriction classes in union do not match: " + forClass + ", " + restrictionClasses.get(0),
-                        this.position());
-            }
             if (ts.isRV(r.id())) {
                 throw new SemanticException("Cannot have RV containing other RVs",  this.position());
             }
-            restrictionClasses.add(0, forClass);
+            restrictionClasses.add(forClass);
             variants.add(r.id());
         }
+        
+        if (restrictionClasses.size() > 1) {
+            throw new SemanticException("RV sub-restriction classes do not match",  this.position());
+        }
+        
 //        ts.addRestrictionMapping(id.id(), restrictionClasses.get(0));
         ts.addRV(id.id(), variants);
         return super.buildTypes(tb);

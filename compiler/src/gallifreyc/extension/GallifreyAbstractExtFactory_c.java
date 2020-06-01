@@ -234,7 +234,7 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         if (nextEF instanceof GallifreyExtFactory) {
             e2 = ((GallifreyExtFactory) nextEF).extMatchBranch();
         } else {
-            e2 = nextEF.extNode();
+            e2 = nextEF.extStmt();
         }
 
         e = composeExts(e, e2);
@@ -315,7 +315,7 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     }
 
     protected Ext extMatchBranchImpl() {
-        return extNode();
+        return extStmt();
     }
 
     protected Ext extMatchRestrictionImpl() {

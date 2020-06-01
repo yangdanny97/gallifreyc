@@ -160,8 +160,8 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     }
 
     @Override
-    public MatchBranch MatchBranch(Position pos, LocalDecl pattern, Stmt stmt) {
-        MatchBranch b = new MatchBranch_c(pos, pattern, stmt);
+    public MatchBranch MatchBranch(Position pos, LocalDecl pattern, Block body) {
+        MatchBranch b = new MatchBranch_c(pos, pattern, body);
         b = ext(b, extFactory().extMatchBranch());
         return b;
     }

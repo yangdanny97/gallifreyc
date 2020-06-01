@@ -20,4 +20,8 @@ public class AnyRef extends Node_c implements RefQualification {
     public boolean equals(Object other) {
         return other instanceof AnyRef;
     }
+    
+    public RefQualification copy() {
+        return new AnyRef(this.position);
+    }
 }
