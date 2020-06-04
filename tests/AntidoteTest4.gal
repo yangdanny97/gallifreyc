@@ -10,7 +10,7 @@ restriction RCounter2 for Counter {
 
 restriction RCounter3 = RCounter1 | RCounter2;
 
-public class CounterRV {
+public class AntidoteTest4 {
     public static void main(local String[] args) {
         shared[RCounter3] Counter counter = new Counter(0);
         local Integer count;
