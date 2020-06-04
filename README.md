@@ -38,6 +38,6 @@ This extension follows a similar structure as other Polyglot extensions except f
 
 TODOs:
 - default qualifications for stdlib (field and method instances)
-- check transition behavior (changing type of variable in current scope)
+- check transition runtime behavior matches TS
 - ownership typechecking
-- issue with fields that are shared
+
