@@ -1,6 +1,7 @@
 package gallifreyc.extension;
 
 import polyglot.types.SemanticException;
+import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
 
@@ -15,8 +16,10 @@ import gallifreyc.ast.UniqueRef;
 import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
+import polyglot.ast.ArrayInit;
 import polyglot.ast.Assign;
 import polyglot.ast.Expr;
+import polyglot.ast.Lit;
 import polyglot.ast.Node;
 
 public class GallifreyAssignExt extends GallifreyExprExt {
@@ -58,11 +61,17 @@ public class GallifreyAssignExt extends GallifreyExprExt {
         if (q instanceof SharedRef) {
             SharedRef s = (SharedRef) q;
             RestrictionId rid = s.restriction();
-            a = a.right(rw.rewriteRHS(rid, rhs));
+            a = a.right(nf.Cast(rhs.position(), 
+                    nf.TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, 
+                            rid.getInterfaceName()), rw.rewriteRHS(rid, rhs)));
         } else if (q instanceof UniqueRef) {
             Expr new_rhs = nf.New(rhs.position(), nf.TypeNodeFromQualifiedName(a.position(), "Unique<>"),
                     new ArrayList<Expr>(Arrays.asList(rhs)));
             a = a.right(new_rhs);
+        } else if (rhs != null && rhs.type() != null &&
+                lhs.type() != null && ts.isCastValid(rhs.type(), lhs.type())) {
+            a = a.right(nf.Cast(rhs.position(), nf.CanonicalTypeNode(Position.COMPILER_GENERATED, 
+                    lhs.type()), rhs));
         }
         return a;
     }

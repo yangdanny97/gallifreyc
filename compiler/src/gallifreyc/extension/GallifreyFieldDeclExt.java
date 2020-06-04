@@ -10,6 +10,8 @@ import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.LocalRef;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
+import gallifreyc.ast.RestrictionId;
+import gallifreyc.ast.SharedRef;
 import gallifreyc.ast.UniqueRef;
 import gallifreyc.ast.UnknownRef;
 import gallifreyc.translate.GallifreyRewriter;
@@ -38,6 +40,11 @@ public class GallifreyFieldDeclExt extends GallifreyExt implements GallifreyOps 
         RefQualification q = this.qualification;
         if (q instanceof UniqueRef) {
             return f.type(nf.TypeNodeFromQualifiedName(f.position(), "Unique<" + f.type().type().toString() + ">"));
+        }
+        if (q instanceof SharedRef) {
+            SharedRef s = (SharedRef) q;
+            RestrictionId rid = s.restriction();
+            return f.type(nf.TypeNodeFromQualifiedName(f.position(), rid.getInterfaceName()));
         }
         return f;
     }

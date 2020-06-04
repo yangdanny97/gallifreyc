@@ -39,23 +39,36 @@ public class GallifreyRewriter extends GRewriter {
     }
 
     public MethodDecl genRestrictionMethodSignature(MethodInstance i) {
-        return (MethodDecl) this.genRestrictionMethod(i).body(null);
+        return (MethodDecl) this.genRestrictionMethod(i, false).body(null);
     }
 
-    public MethodDecl genRestrictionMethod(MethodInstance i) {
+    public MethodDecl genRestrictionMethod(MethodInstance inst, boolean suppressUnchecked) {
         GallifreyNodeFactory nf = (GallifreyNodeFactory) nodeFactory();
         typeSystem();
-        GallifreyMethodInstance mi = (GallifreyMethodInstance) i;
+        GallifreyMethodInstance mi = (GallifreyMethodInstance) inst;
 
         Position p = Position.COMPILER_GENERATED;
 
         List<Expr> args = new ArrayList<>();
         List<Formal> formals = new ArrayList<>();
-        for (Type t : mi.formalTypes()) {
+        for (int i = 0; i < mi.formalTypes().size(); i++) {
+            Type t = mi.formalTypes().get(i);
+            RefQualification q = mi.gallifreyInputTypes().get(i).qualification;
             String fresh = lang().freshVar();
             Id name = nf.Id(p, fresh);
-            Formal f = nf.Formal(p, Flags.NONE, nf.CanonicalTypeNode(p, t), (Id) name.copy());
-            formals.add(f);
+            // wrappers for shared and unique
+            if (q instanceof UniqueRef) {
+                TypeNode tn = nf.TypeNodeFromQualifiedName(p, "Unique<" + t.toString() + ">");
+                formals.add(nf.Formal(p, Flags.NONE, tn, (Id) name.copy()));
+            }
+            else if (q instanceof SharedRef) {
+                SharedRef s = (SharedRef) q;
+                RestrictionId rid = s.restriction();
+                TypeNode tn = nf.TypeNodeFromQualifiedName(p, rid.getInterfaceName());
+                formals.add(nf.Formal(p, Flags.NONE, tn, (Id) name.copy()));
+            } else {
+                formals.add(nf.Formal(p, Flags.NONE, nf.CanonicalTypeNode(p, t), (Id) name.copy()));
+            }
             // TODO varargs
             args.add(nf.Local(p, (Id) name.copy()));
         }
@@ -67,6 +80,16 @@ public class GallifreyRewriter extends GRewriter {
         // don't allow type vars
         if (returnType instanceof TypeVariable) {
             genReturnType = nf.TypeNodeFromQualifiedName(p, "Object");
+        }
+        // wrappers for shared and unique
+        RefQualification q = mi.gallifreyReturnType().qualification;
+        if (q instanceof UniqueRef) {
+            genReturnType = nf.TypeNodeFromQualifiedName(p, "Unique<" + genReturnType.toString() + ">");
+        }
+        if (q instanceof SharedRef) {
+            SharedRef s = (SharedRef) q;
+            RestrictionId rid = s.restriction();
+            genReturnType = nf.TypeNodeFromQualifiedName(p, rid.getInterfaceName());
         }
 
         // void f(T1 x, T2 y) -----> this.sharedObject.void_call("f", new
@@ -88,7 +111,7 @@ public class GallifreyRewriter extends GRewriter {
             methodStmts.add(nf.Return(p));
         } else {
             // cast return bc const_call returns Object
-            methodStmts.add(nf.Return(p, nf.Cast(p, nf.CanonicalTypeNode(p, returnType), call)));
+            methodStmts.add(nf.Return(p, nf.Cast(p, genReturnType, call)));
         }
 
         List<TypeNode> throwTypes = new ArrayList<>();
@@ -96,10 +119,15 @@ public class GallifreyRewriter extends GRewriter {
             throwTypes.add(nf.CanonicalTypeNode(p, t));
         }
 
-        List<ParamTypeNode> paramTypes = new ArrayList<>();
-        // TODO unsure how to handle these
-
-        return nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(), genReturnType, nf.Id(p, mi.name()),
+        List<ParamTypeNode> paramTypes = new ArrayList<>(); //TODO
+        
+        List<AnnotationElem> annotations = new ArrayList<AnnotationElem>();
+        if (suppressUnchecked) {
+            annotations.add(nf.SingleElementAnnotationElem(p, 
+                    nf.TypeNodeFromQualifiedName(p, "SuppressWarnings"), 
+                    nf.StringLit(p, "unchecked")));
+        }
+        return nf.MethodDecl(p, Flags.PUBLIC, annotations, genReturnType, nf.Id(p, mi.name()),
                 formals, throwTypes, nf.Block(p, methodStmts), paramTypes,
                 nf.Javadoc(p, "// Wrapper method for " + mi.container().toString() + "." + mi.name()));
     }
@@ -166,7 +194,7 @@ public class GallifreyRewriter extends GRewriter {
         ClassType CType = (ClassType) CTypeNode.type();
         for (String name : allowedMethods) {
             for (MethodInstance method : CType.methodsNamed(name)) {
-                sharedMembers.add(this.genRestrictionMethod(method));
+                sharedMembers.add(this.genRestrictionMethod(method, true));
             }
         }
 
@@ -315,10 +343,7 @@ public class GallifreyRewriter extends GRewriter {
         List<TypeNode> throwTypes = new ArrayList<>();
         List<ParamTypeNode> paramTypes = new ArrayList<>();
         List<Stmt> methodStmts = new ArrayList<>();
-//        try {
-//            this.HOLDER = (RV_holder) cls.getConstructor(SharedObject.class)
-//                .newInstance(new Object[] {this.HOLDER.sharedObject()});
-//         } catch (Exception e) {}
+        
         Expr constructor = nf.Call(p, nf.Local(p, nf.Id(p, "cls")), nf.Id(p, "getConstructor"), 
                 this.qq().parseExpr("SharedObject.class"));
         Expr newInstance = nf.Call(p, constructor, nf.Id(p, "newInstance"), 
@@ -454,6 +479,19 @@ public class GallifreyRewriter extends GRewriter {
                         && GallifreyExprExt.ext(f.target()).gallifreyType.qualification() instanceof UniqueRef
                         && f.name().equals(VALUE)) {
                     n = nf.Eval(n.position(), (Expr) f.target());
+                    return GallifreyExt.ext(n).gallifreyRewrite(this);
+                }
+            }
+
+        }
+        if (n instanceof Return) {
+            Return r = (Return) n;
+            if (r.expr() instanceof Field) {
+                Field f = (Field) r.expr();
+                if (f.target() instanceof Expr
+                        && GallifreyExprExt.ext(f.target()).gallifreyType.qualification() instanceof UniqueRef
+                        && f.name().equals(VALUE)) {
+                    n = nf.Return(n.position(), (Expr) f.target());
                     return GallifreyExt.ext(n).gallifreyRewrite(this);
                 }
             }

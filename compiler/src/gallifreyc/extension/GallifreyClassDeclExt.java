@@ -95,7 +95,7 @@ public class GallifreyClassDeclExt extends GallifreyExt implements ClassDeclOps 
                     GallifreyFieldInstance fi = (GallifreyFieldInstance) rw.typeSystem().fieldInstance(p, node().type(),
                             Flags.NONE, f.init().type(), f.name());
                     fi.gallifreyType(new GallifreyType(q));
-                    field = field.fieldInstance(fi);
+                    field = (Field) field.fieldInstance(fi).type(f.declType());
                     // add assignment
                     FieldAssign fa = nf.FieldAssign(p, field, Assign.ASSIGN, f.init());
                     GallifreyExprExt faExt = GallifreyExprExt.ext(fa);

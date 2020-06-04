@@ -8,6 +8,8 @@ import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.LocalRef;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
+import gallifreyc.ast.RestrictionId;
+import gallifreyc.ast.SharedRef;
 import gallifreyc.ast.UniqueRef;
 import gallifreyc.ast.UnknownRef;
 import gallifreyc.translate.GallifreyRewriter;
@@ -64,7 +66,12 @@ public class GallifreyFormalExt extends GallifreyExt {
         GallifreyNodeFactory nf = rw.nodeFactory();
         RefQualification q = qualification;
         if (q instanceof UniqueRef) {
-            f = f.type(nf.TypeNodeFromQualifiedName(f.position(), "Unique<" + f.type().type().toString() + ">"));
+            return f.type(nf.TypeNodeFromQualifiedName(f.position(), "Unique<" + f.type().type().toString() + ">"));
+        }
+        if (q instanceof SharedRef) {
+            SharedRef s = (SharedRef) q;
+            RestrictionId rid = s.restriction();
+            return f.type(nf.TypeNodeFromQualifiedName(f.position(), rid.getInterfaceName()));
         }
         return f;
     }

@@ -1,0 +1,42 @@
+restriction RCounter1 for Counter {
+    allows increment;
+    allows value;
+}
+
+restriction RCounter2 for Counter {
+    allows decrement;
+    allows value;
+}
+
+restriction RCounter3 = RCounter1 | RCounter2;
+
+public class CounterRV {
+    public static void main(local String[] args) {
+        shared[RCounter3] Counter counter = new Counter(0);
+        local Integer count;
+        for (int i = 1; i <= 10; i++) {
+            match_restriction counter with
+            |shared[RCounter3::RCounter1] Counter c1 -> {
+                count = c1.value();
+                if (count >= 5) {
+                    transition(c1, RCounter3::RCounter2);
+                    c1.decrement(1);
+                } else {
+                    c1.increment(1);
+                }
+                assert(count - 1 == c1.value());
+            }
+            |shared[RCounter3::RCounter2] Counter c2 -> {
+                count = c2.value();
+                if (count < 5) {
+                    transition(c2, RCounter3::RCounter1);
+                    c2.increment(1);
+                } else {
+                    c2.decrement(1);
+                }
+                assert(count + 1 == c2.value());
+            }
+        }
+        System.out.println("Success!");
+    }
+}

@@ -3,11 +3,17 @@ package gallifreyc.extension;
 import java.util.ArrayList;
 import java.util.List;
 
+import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.LocalRef;
 import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.PostCondition;
 import gallifreyc.ast.PreCondition;
+import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
+import gallifreyc.ast.RestrictionId;
+import gallifreyc.ast.SharedRef;
+import gallifreyc.ast.UniqueRef;
+import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyMethodInstance;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.CanonicalTypeNode;
@@ -94,6 +100,24 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
         mi = mi.gallifreyInputTypes(inputTypes);
         mi = mi.gallifreyReturnType(gReturn);
         return md;
+    }
+
+    @Override
+    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+        GallifreyMethodInstance mi = (GallifreyMethodInstance) node().methodInstance();
+        GallifreyNodeFactory nf = rw.nodeFactory();
+        RefQualification q = mi.gallifreyReturnType().qualification;
+        if (q instanceof UniqueRef) {
+            return node().returnType(nf.TypeNodeFromQualifiedName(node().position(), 
+                    "Unique<" + node().returnType().type().toString() + ">"));
+        }
+        if (q instanceof SharedRef) {
+            SharedRef s = (SharedRef) q;
+            RestrictionId rid = s.restriction();
+            return node().returnType(nf.TypeNodeFromQualifiedName(node().position(), 
+                    rid.getInterfaceName()));
+        }
+        return node();
     }
 
     @Override

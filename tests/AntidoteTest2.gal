@@ -1,7 +1,5 @@
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
 
 restriction RMap2 for SharedMap {
     allows value;
@@ -17,5 +15,6 @@ public class AntidoteTest2 {
         assert (map.containsKey("key1"));
         assert ((Integer) map.get("key1") == 1);
         assert ((Integer) map.get("key2") == null);
+        System.out.println("Success!");
     }
 }
