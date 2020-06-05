@@ -26,6 +26,7 @@ public class GallifreyRewriter extends GRewriter {
     public final String TEMP = "TEMP";
     public final String SHARED = "sharedObj";
     public final String HOLDER = "holder";
+    public final String LOCK = "lock";
 
     public List<ClassDecl> generatedClasses = new ArrayList<>();
 
@@ -301,8 +302,11 @@ public class GallifreyRewriter extends GRewriter {
         TypeNode CTypeNode = nf.CanonicalTypeNode(p, CType);
         String defaultRimpl = ts.getRestrictionsForRV(name).iterator().next() + "_impl";
 
-        // public RV_holder holder;
+        // public RV_holder holder = null;
         members.add(nf.FieldDecl(p, Flags.PUBLIC, holderT, nf.Id(p, this.HOLDER), nf.NullLit(p)));
+        // public int lock = 0;
+        members.add(nf.FieldDecl(p, Flags.PUBLIC, nf.CanonicalTypeNode(p, ts.Int()), 
+                nf.Id(p, this.LOCK), nf.IntLit(p, IntLit.INT, 0)));
         
         // FIRST CONSTRUCTOR
         List<Formal> constructorFormals = new ArrayList<>();
@@ -354,10 +358,14 @@ public class GallifreyRewriter extends GRewriter {
               Assign.ASSIGN, 
               nf.Cast(p, nf.TypeNodeFromQualifiedName(p, name + "_holder"), newInstance)
               ));
+        // if (this.lock > 0) return;
+        Stmt lockcheck = nf.If(p, 
+                nf.Binary(p, nf.Field(p, nf.This(p), nf.Id(p, this.LOCK)), Binary.GT, nf.IntLit(p, IntLit.INT, 0)),
+                nf.Return(p));
         List<Catch> catches = new ArrayList<>();
         // currently transitions fail silently
         catches.add(nf.Catch(p, nf.Formal(p, Flags.NONE, nf.TypeNodeFromQualifiedName(p, "Exception"), nf.Id(p, "e")), nf.Block(p)));
-        methodStmts.add(nf.Try(p, nf.Block(p, assign), catches));
+        methodStmts.add(nf.Try(p, nf.Block(p, lockcheck, assign), catches));
         members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(),
                 nf.CanonicalTypeNode(p, typeSystem().Void()), nf.Id(p, "transition"), formals, throwTypes, 
                 nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, "")));
@@ -450,6 +458,14 @@ public class GallifreyRewriter extends GRewriter {
             } else { // if rhs is not shared (regular object)
                 return this.qq().parseExpr("new " + r.restriction().toString() + "_impl(%E)", rhs);
             }
+        }
+    }
+    
+    public TypeNode getFormalTypeNode(RestrictionId rid) {
+        if (rid.rv() == null) {
+            return nodeFactory().TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, rid.getInterfaceName());
+        } else {
+            return nodeFactory().TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, rid.rv().id());
         }
     }
 

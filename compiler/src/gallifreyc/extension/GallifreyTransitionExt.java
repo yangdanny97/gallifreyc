@@ -58,10 +58,6 @@ public class GallifreyTransitionExt extends GallifreyExt {
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         Transition node = (Transition) superLang().buildTypes(node(), tb);
-        GallifreyTypeBuilder gtb = (GallifreyTypeBuilder) tb;
-        if (gtb.matchNesting == 0) {
-            throw new SemanticException("Cannot transition outside of match statement", node.position());
-        }
         return node;
     }
 
@@ -89,24 +85,27 @@ public class GallifreyTransitionExt extends GallifreyExt {
         // check RV's match
         RestrictionId exprId = ((SharedRef) q).restriction;
         RestrictionId transitionId = node.restriction();
-        if (exprId.rv() == null || transitionId.rv() == null || !exprId.rv().id().equals(transitionId.rv().id())) {
+        // expr must have either RV or RV::R qualification
+        if (exprId.rv() == null && !gts.isRV(exprId.restriction().id())) {
             throw new SemanticException("Cannot transition " + exprId + " to " + transitionId, node().position());
+        }
+        if (transitionId.rv() == null) {
+            throw new SemanticException("Cannot transition to unqualified restriction " + transitionId, node().position());
+        }
+        if (exprId.rv() == null) { // transition(RV, RV::R)
+            if (!exprId.restriction().id().equals(transitionId.rv().id())) {
+                throw new SemanticException("Cannot transition " + exprId + " to " + transitionId, node().position());
+            }
+        } else { // transition(RV::R, RV::R)
+            if (!exprId.restriction().id().equals(transitionId.rv().id())) {
+                throw new SemanticException("Cannot transition " + exprId + " to " + transitionId, node().position());
+            }
         }
 
         // requires equality between expr type and restriction's "for" type
         if (!gts.typeEquals(t, gts.typeForName(restrictionClass))) {
             throw new SemanticException("Invalid restriction for class " + restrictionClass, node.position());
         }
-        // make a new local instance - effectively redeclaring the variable (normally not allowed)
-        Local local = (Local) node.expr();
-        Context c = tc.context();
-        GallifreyLocalInstance li = (GallifreyLocalInstance) c.findLocal(local.name());
-        
-        // make a deep copy of qualification
-        GallifreyLocalInstance newLi = gts.localInstance(li.position(), 
-                li.flags(), li.type(), li.name(), li.gallifreyType().qualification().copy());
-        ((SharedRef) newLi.gallifreyType().qualification).restriction = node.restriction();
-        c.addVariable(newLi);
         return node;
     }
 

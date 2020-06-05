@@ -15,10 +15,12 @@ import gallifreyc.translate.ANormalizer;
 import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.visit.GallifreyTypeBuilder;
+import polyglot.ast.Assign;
 import polyglot.ast.Binary;
 import polyglot.ast.Block;
 import polyglot.ast.Expr;
 import polyglot.ast.If;
+import polyglot.ast.IntLit;
 import polyglot.ast.LocalDecl;
 import polyglot.ast.Node;
 import polyglot.ast.Stmt;
@@ -43,15 +45,11 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
     
     @Override
     public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
-        GallifreyTypeBuilder gtb = (GallifreyTypeBuilder) tb;
-        gtb.matchNesting++;
         return superLang().buildTypesEnter(node(), tb);
     }
 
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
-        GallifreyTypeBuilder gtb = (GallifreyTypeBuilder) tb;
-        gtb.matchNesting--;
         return superLang().buildTypes(node(), tb);
     }
 
@@ -68,6 +66,12 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
         GallifreyNodeFactory nf = rw.nodeFactory();
         // e is guaranteed to be a variable
         Expr e = m.expr();
+        Position p_ = Position.COMPILER_GENERATED;
+        
+        List<Stmt> matchStmts = new ArrayList<>();
+        //increment lock
+        matchStmts.add(nf.Eval(p_, nf.Assign(p_, nf.Field(p_, (Expr) e.copy(), nf.Id(p_, rw.LOCK)), 
+                Assign.ADD_ASSIGN, nf.IntLit(p_, IntLit.INT, 1))));
         
         If currentif = null;
         List<MatchBranch> branches = new ArrayList<>(m.branches());
@@ -100,7 +104,11 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
                 currentif = nf.If(p, cond, block);
             }
         }
-        return currentif;
+        matchStmts.add(currentif);
+        // decrement lock
+        matchStmts.add(nf.Eval(p_, nf.Assign(p_, nf.Field(p_, (Expr) e.copy(), nf.Id(p_, rw.LOCK)), 
+                Assign.SUB_ASSIGN, nf.IntLit(p_, IntLit.INT, 1))));
+        return nf.Block(node().position(), matchStmts);
     }
 
     @Override

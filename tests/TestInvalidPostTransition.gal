@@ -1,0 +1,19 @@
+restriction R1 for ClassC {
+    allows f3;
+}
+
+restriction R2 for ClassC {
+    allows testFun;
+}
+
+restriction R3 = R1 | R2
+
+class D {
+    public D(){}
+    
+    public void testAAA() {
+        shared[R3] ClassC c = new ClassC();
+        transition(c, R3::R2);
+        c.testFun();
+    }
+}

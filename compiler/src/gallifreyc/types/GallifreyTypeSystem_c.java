@@ -303,6 +303,12 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 
         // is this correct?
         if (fromType.qualification instanceof SharedRef && toType.qualification instanceof SharedRef) {
+            RestrictionId from = ((SharedRef) fromType.qualification).restriction();
+            RestrictionId to = ((SharedRef) toType.qualification).restriction();
+            // RV = RV::R is legal
+            if (to.rv() == null && from.rv() != null && to.restriction().id().equals(from.rv().id())) {
+                return true;
+            }
             return fromType.qualification.equals(toType.qualification);
         }
 

@@ -114,8 +114,7 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
         if (q instanceof SharedRef) {
             SharedRef s = (SharedRef) q;
             RestrictionId rid = s.restriction();
-            return node().returnType(nf.TypeNodeFromQualifiedName(node().position(), 
-                    rid.getInterfaceName()));
+            return node().returnType(rw.getFormalTypeNode(rid));
         }
         return node();
     }

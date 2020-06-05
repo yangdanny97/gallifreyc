@@ -1,13 +1,30 @@
-restriction R for ClassC {
+restriction R1 for ClassC {
     allows testFun;
     allows f3;
 }
 
+restriction R2 for ClassC {
+    allows testFun;
+}
+
+restriction R3 = R1 | R2
+
 class D {
     public D(){}
     
+    public void f1(shared[R1] ClassC x){}
+    
+    public void f2(shared[R3] ClassC x){}
+    
     public void testAAA() {
-        shared[R] ClassC c = new ClassC();
-        local Integer x = c.f3();
+        shared[R1] ClassC c = new ClassC();
+        shared[R1] ClassC c2 = c;
+        
+        c.f3();
+        this.f1(c);
+        
+        shared[R3] ClassC c3 = new ClassC();
+        shared[R3] ClassC c4 = c3;
+        this.f2(c3);
     }
 }
