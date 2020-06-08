@@ -1,8 +1,8 @@
-class SharedLinkedList<T> {
+class GSharedLinkedList<T> {
     public local T data;
-    public shared[RList] SharedLinkedList<T> next;
+    public shared[RList1] GSharedLinkedList<T> next;
 
-    public SharedLinkedList(local T data) {
+    public GSharedLinkedList(local T data) {
         this.data = data;
     }
 
@@ -14,16 +14,16 @@ class SharedLinkedList<T> {
         return this.data = data;
     }
 
-    public shared[RList] SharedLinkedList<T> getNext() {
+    public shared[RList1] GSharedLinkedList<T> getNext() {
         return this.next;
     }
 
-    public void setNext(shared[RList] SharedLinkedList<T> next) {
+    public void setNext(shared[RList1] GSharedLinkedList<T> next) {
         this.next = next;
     }
 }
 
-restriction RList for SharedLinkedList {
+restriction RList1 for GSharedLinkedList {
     allows getData;
     allows setData;
     allows getNext;
@@ -32,13 +32,13 @@ restriction RList for SharedLinkedList {
 
 public class AntidoteTest3 {
     public static void main(local String[] args) {
-        shared[RList] SharedLinkedList<String> node1 = new SharedLinkedList<String>("node1");
+        shared[RList1] GSharedLinkedList<String> node1 = new GSharedLinkedList<String>("node1");
 
         // Check node 1
         assert (node1.getData().equals("node1"));
         assert (node1.getNext() == null);
         
-        shared[RList] SharedLinkedList<String> node2 = new SharedLinkedList<String>("node2");
+        shared[RList1] GSharedLinkedList<String> node2 = new GSharedLinkedList<String>("node2");
 
         // Check node 2
         assert (node2.getData().equals("node2"));

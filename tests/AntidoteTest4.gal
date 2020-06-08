@@ -1,46 +1,46 @@
-restriction RCounter1 for Counter {
+restriction RCounterA for Counter {
     allows increment;
     allows value;
 }
 
-restriction RCounter2 for Counter {
+restriction RCounterB for Counter {
     allows decrement;
     allows value;
 }
 
-restriction RCounter3 = RCounter1 | RCounter2;
+restriction RCounterC = RCounterA | RCounterB;
 
 public class AntidoteTest4 {
 
-    public static void increment(shared[RCounter3] Counter x) {
-        transition(x, RCounter3::RCounter1);
+    public static void increment(shared[RCounterC] Counter x) {
+        transition(x, RCounterC::RCounterA);
         match_restriction x with
-        |shared[RCounter3::RCounter1] Counter x1 -> {
+        |shared[RCounterC::RCounterA] Counter x1 -> {
             x1.increment(1);
         }
-        |shared[RCounter3::RCounter2] Counter x2 -> {}
+        |shared[RCounterC::RCounterB] Counter x2 -> {}
     }
     
-    public static void decrement(shared[RCounter3] Counter x) {
-        transition(x, RCounter3::RCounter2);
+    public static void decrement(shared[RCounterC] Counter x) {
+        transition(x, RCounterC::RCounterB);
         match_restriction x with
-        |shared[RCounter3::RCounter1] Counter x1 -> {}
-        |shared[RCounter3::RCounter2] Counter x2 -> {
+        |shared[RCounterC::RCounterA] Counter x1 -> {}
+        |shared[RCounterC::RCounterB] Counter x2 -> {
             x2.decrement(1);
         }
     }
     
     public static void main(local String[] args) {
-        shared[RCounter3] Counter counter = new Counter(0);
+        shared[RCounterC] Counter counter = new Counter(0);
         local Integer count;
         for (int i = 1; i <= 10; i++) {
             AntidoteTest4.increment(counter);
             match_restriction counter with
-            |shared[RCounter3::RCounter1] Counter c1 -> {
+            |shared[RCounterC::RCounterA] Counter c1 -> {
                 count = c1.value();
                 assert(count == i);
             }
-            |shared[RCounter3::RCounter2] Counter c2 -> {
+            |shared[RCounterC::RCounterB] Counter c2 -> {
                 count = c2.value();
                 assert(count == i);
             }
@@ -48,11 +48,11 @@ public class AntidoteTest4 {
         for (int i = 1; i <= 10; i++) {
             AntidoteTest4.decrement(counter);
             match_restriction counter with
-            |shared[RCounter3::RCounter1] Counter c1 -> {
+            |shared[RCounterC::RCounterA] Counter c1 -> {
                 count = c1.value();
                 assert(10 - count == i);
             }
-            |shared[RCounter3::RCounter2] Counter c2 -> {
+            |shared[RCounterC::RCounterB] Counter c2 -> {
                 count = c2.value();
                 assert(10 - count == i);
             }
