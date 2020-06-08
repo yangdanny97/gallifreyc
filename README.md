@@ -31,9 +31,10 @@ This extension follows a similar structure as other Polyglot extensions except f
 - `lib/` should have `java_cup.jar`, `jflex.jar`, `polyglot.jar`, `ppg.jar`
 - to run the test suite, you must have `pth` (the polyglot test harness) in your classpath. the easiest way to get this is from the polyglot repo; clone it and add `polyglot/bin` to your path
 - the test suite requires `gallifrey-antidote` to be built; the directory containing this repo and the directory containing the `gallifrey-antidote` repo should be under the same parent directory
+- run `fatjar.sh` inside `gallifrey-antidote` and verify that `full-runtime.jar` was generated. There is an alias of `full-runtime.jar` inside `lib`
 - run test suite by executing `test.sh` inside `tests/`
 - to run from the command line:
-`java -jar lib/gallifreyc.jar -classpath tests/java-out:../gallifrey-antidote/frontend/build/classes/java/main <FILE_NAME>`
+`java -jar lib/gallifreyc.jar -classpath tests/out:lib/full-runtime.jar <FILE_NAME>`
 - useful flags: -d (set output directory), -c (don't run javac; emit .java instead of .class), -stdout (dump java AST to stdout)
 
 TODOs:

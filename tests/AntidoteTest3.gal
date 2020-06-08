@@ -33,27 +33,44 @@ restriction RList1 for GSharedLinkedList {
 public class AntidoteTest3 {
     public static void main(local String[] args) {
         shared[RList1] GSharedLinkedList<String> node1 = new GSharedLinkedList<String>("node1");
+        
+        System.out.println("1");
 
         // Check node 1
         assert (node1.getData().equals("node1"));
         assert (node1.getNext() == null);
         
+        System.out.println("2");
+        
         shared[RList1] GSharedLinkedList<String> node2 = new GSharedLinkedList<String>("node2");
+        
+        System.out.println("3");
 
         // Check node 2
         assert (node2.getData().equals("node2"));
         assert (node2.getNext() == null);
+        
+        System.out.println("4");
 
         // Add node 2 as the next node for node 1
         node1.setNext(node2);
+        
+        System.out.println("5");
+        
         // can't call .equals for now...
         assert (node1.getNext().getData().equals(node2.getData()));
+        
+        System.out.println("6");
 
         // Update node 2 on it's own
         node2.setData("CHANGED");
+        
+        System.out.println("7");
 
         // Follow the path of node 1 to node 2 and confirm that the value changed
         assert (node2.getData().equals("CHANGED"));
         assert (node1.getNext().getData().equals("CHANGED"));
+        
+        System.out.println("Success!");
     }
 }
