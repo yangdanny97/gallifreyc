@@ -43,7 +43,7 @@ public class GallifreySourceFileExt extends GallifreyExt {
         imports.add(nf.Import(p, Import.SINGLE_TYPE, "java.util.Arrays"));
         imports.add(nf.Import(p, Import.SINGLE_TYPE, "java.util.ArrayList"));
 
-        List<TopLevelDecl> decls = new ArrayList<>(rw.generatedClasses);
+        List<TopLevelDecl> decls = new ArrayList<TopLevelDecl>(rw.generatedClasses);
         decls.addAll(sf.decls());
 
         return sf.imports(imports).decls(decls);

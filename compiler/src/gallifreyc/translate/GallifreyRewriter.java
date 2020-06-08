@@ -318,7 +318,7 @@ public class GallifreyRewriter extends GRewriter {
         constructorStmts.add(nf.Eval(p,
            nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, this.HOLDER)), Assign.ASSIGN,
                 nf.New(p, nf.TypeNodeFromQualifiedName(p, defaultRimpl),
-                        Arrays.asList(nf.AmbExpr(p, nf.Id(p, "obj")))
+                        Arrays.<Expr>asList(nf.AmbExpr(p, nf.Id(p, "obj")))
                 )
            )));
 
