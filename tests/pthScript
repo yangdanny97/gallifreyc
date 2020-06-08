@@ -78,10 +78,9 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -classpath ../lib/full-runtime
     RWSet.gal;
     GrowthMap.gal;
     SharedMap.gal;
-    SharedLinkedList.gal;
     Counter.gal AntidoteTest1.gal;
     SharedMap.gal AntidoteTest2.gal;
-    AntidoteTest3.gal;
+    SharedLinkedList.gal AntidoteTest3.gal;
     OwnerAnnotatedLocals.gal;
     ClassC.gal TestTransition.gal;
     ClassC.gal TestMatch.gal;

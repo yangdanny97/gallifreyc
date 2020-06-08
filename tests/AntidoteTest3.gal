@@ -1,29 +1,4 @@
-class GSharedLinkedList<T> {
-    public local T data;
-    public shared[RList1] GSharedLinkedList<T> next;
-
-    public GSharedLinkedList(local T data) {
-        this.data = data;
-    }
-
-    public local T getData() {
-        return this.data;
-    }
-
-    public local T setData(local T data) {
-        return this.data = data;
-    }
-
-    public shared[RList1] GSharedLinkedList<T> getNext() {
-        return this.next;
-    }
-
-    public void setNext(shared[RList1] GSharedLinkedList<T> next) {
-        this.next = next;
-    }
-}
-
-restriction RList1 for GSharedLinkedList {
+restriction RList1 for SharedLinkedList {
     allows getData;
     allows setData;
     allows getNext;
@@ -32,7 +7,7 @@ restriction RList1 for GSharedLinkedList {
 
 public class AntidoteTest3 {
     public static void main(local String[] args) {
-        shared[RList1] GSharedLinkedList<String> node1 = new GSharedLinkedList<String>("node1");
+        shared[RList1] SharedLinkedList<String> node1 = new SharedLinkedList<String>("node1");
         
         System.out.println("1");
 
@@ -42,7 +17,7 @@ public class AntidoteTest3 {
         
         System.out.println("2");
         
-        shared[RList1] GSharedLinkedList<String> node2 = new GSharedLinkedList<String>("node2");
+        shared[RList1] SharedLinkedList<String> node2 = new SharedLinkedList<String>("node2");
         
         System.out.println("3");
 
