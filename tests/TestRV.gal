@@ -8,8 +8,8 @@ restriction R2 for ClassC {
 
 restriction RV = R | R2;
 
-class D {
-    public D() {
+class TestRV {
+    public TestRV() {
         shared[RV] ClassC c = new ClassC();
         shared[R] ClassC c2 = new ClassC();
         shared[R] ClassC c3 = c2;

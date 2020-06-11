@@ -94,13 +94,16 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
             SharedRef s = (SharedRef) q;
             RestrictionId rid = s.restriction();
             l = l.type(rw.getFormalTypeNode(rid));
-            l = l.init(nf.Cast(l.position(), l.type(), rw.rewriteRHS(rid, rhs)));
+            if (rhs != null) {
+                l = l.init(nf.Cast(l.position(), l.type(), rw.rewriteRHS(rid, rhs)));
+            }
             return l;
         } else if (q instanceof UniqueRef) {
-            Expr new_rhs = nf.New(rhs.position(), nf.TypeNodeFromQualifiedName(l.position(), "Unique<>"),
-                    new ArrayList<Expr>(Arrays.asList(rhs)));
             l = l.type(nf.TypeNodeFromQualifiedName(l.position(), "Unique<" + l.type().type().toString() + ">"));
-            l = l.init(new_rhs);
+            if (rhs != null) {
+            l = l.init(nf.New(rhs.position(), nf.TypeNodeFromQualifiedName(l.position(), "Unique<>"),
+                    new ArrayList<Expr>(Arrays.asList(rhs))));
+            }
             return l;
         } else if (rhs != null && rhs.type() != null && l.type().type() != null &&
                 ts.isCastValid(rhs.type(), l.type().type())) {

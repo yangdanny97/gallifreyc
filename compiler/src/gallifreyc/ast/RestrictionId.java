@@ -15,5 +15,7 @@ public interface RestrictionId extends Node {
     
     public String getInterfaceName();
     
+    public String getWrapperName();
+    
     public RestrictionId copy();
 }

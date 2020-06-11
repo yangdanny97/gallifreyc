@@ -8,8 +8,8 @@ restriction R2 for ClassC {
 
 restriction R3 = R1 | R2
 
-class D {
-    public D(){}
+class TestInvalidPostTransition {
+    public TestInvalidPostTransition(){}
     
     public void testAAA() {
         shared[R3] ClassC c = new ClassC();

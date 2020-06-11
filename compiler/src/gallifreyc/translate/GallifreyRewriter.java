@@ -9,6 +9,7 @@ import polyglot.frontend.Job;
 import polyglot.types.ClassType;
 import polyglot.types.Flags;
 import polyglot.types.MethodInstance;
+import polyglot.types.NullType;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.util.Position;
@@ -65,7 +66,7 @@ public class GallifreyRewriter extends GRewriter {
             else if (q instanceof SharedRef) {
                 SharedRef s = (SharedRef) q;
                 RestrictionId rid = s.restriction();
-                TypeNode tn = nf.TypeNodeFromQualifiedName(p, rid.getInterfaceName());
+                TypeNode tn = nf.TypeNodeFromQualifiedName(p, rid.getWrapperName());
                 formals.add(nf.Formal(p, Flags.NONE, tn, (Id) name.copy()));
             } else {
                 formals.add(nf.Formal(p, Flags.NONE, nf.CanonicalTypeNode(p, t), (Id) name.copy()));
@@ -446,24 +447,32 @@ public class GallifreyRewriter extends GRewriter {
     
     // rewrite RHS of assign & localDecl when LHS is shared[r]
     public Expr rewriteRHS(RestrictionId r, Expr rhs) {
+        if (rhs.type() instanceof NullType) {
+            return this.qq().parseExpr("(%T) %E", nf.TypeNodeFromQualifiedName(rhs.position(), r.getWrapperName()) ,rhs);
+        }
         GallifreyExprExt ext = GallifreyExprExt.ext(rhs);
-        // r is RV
-        // RHS is guaranteed to be shared[RV] as well
-        if (typeSystem().isRV(r.restriction().id())) {
-            return this.qq().parseExpr("new " + r.toString() + "(%E)", rhs);
-        } else {
-            if (ext.gallifreyType.qualification instanceof SharedRef) { // if rhs is shared
-                // rhs is guaranteed to be shared[r]
-                return this.qq().parseExpr("new " + r.restriction().toString() + "_impl(%E.sharedObj())", rhs);
-            } else { // if rhs is not shared (regular object)
-                return this.qq().parseExpr("new " + r.restriction().toString() + "_impl(%E)", rhs);
-            }
+        if (typeSystem().isRV(r.restriction().id())) { 
+            // lhs is shared[RV]
+            // rhs is guaranteed to be either shared[RV] or shared[RV::R]
+            return this.qq().parseExpr("new " + r.getWrapperName() + "(%E)", rhs);
+        } else if (r.isRvQualified()) {
+            // lhs is shared[RV::R]
+            // rhs is guaranteed to be shared[RV::R]
+            // handled the same as RV
+            return this.qq().parseExpr("new " + r.getWrapperName() + "(%E)", rhs);
+        } else if (ext.gallifreyType.qualification instanceof SharedRef) { 
+            // lhs is not RV, rhs is shared
+            // rhs is guaranteed to be shared[r]
+            return this.qq().parseExpr("new " + r.getWrapperName() + "_impl(%E.sharedObj())", rhs);
+        } else { 
+            // lhs is not RV, rhs is not shared (regular object)
+            return this.qq().parseExpr("new " + r.getWrapperName() + "_impl(%E)", rhs);
         }
     }
     
     public TypeNode getFormalTypeNode(RestrictionId rid) {
         if (rid.rv() == null) {
-            return nodeFactory().TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, rid.getInterfaceName());
+            return nodeFactory().TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, rid.getWrapperName());
         } else {
             return nodeFactory().TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, rid.rv().id());
         }

@@ -1,0 +1,26 @@
+restriction R1 for ClassC {
+    allows f3;
+}
+
+restriction R2 for ClassC {
+    allows testFun;
+}
+
+restriction R3 = R1 | R2
+
+public class TestSmuggle {
+    public TestSmuggle(){}
+    
+    public void main(local String[] args) {
+        shared[R3] ClassC init = new ClassC();
+        shared[R3::R1] ClassC smuggle = null;
+        
+        
+        match_restriction init with
+        |shared[R3::R1] ClassC x1 -> { smuggle = x1; }
+        |shared[R3::R2] ClassC x2 -> {}
+        
+        transition(init, R3::R2);
+        smuggle.f3();
+    }
+}

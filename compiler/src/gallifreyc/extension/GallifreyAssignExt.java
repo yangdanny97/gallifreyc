@@ -1,5 +1,6 @@
 package gallifreyc.extension;
 
+import polyglot.types.NullType;
 import polyglot.types.SemanticException;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
@@ -63,7 +64,7 @@ public class GallifreyAssignExt extends GallifreyExprExt {
             RestrictionId rid = s.restriction();
             a = a.right(nf.Cast(rhs.position(), 
                     nf.TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, 
-                            rid.getInterfaceName()), rw.rewriteRHS(rid, rhs)));
+                            rid.getWrapperName()), rw.rewriteRHS(rid, rhs)));
         } else if (q instanceof UniqueRef) {
             Expr new_rhs = nf.New(rhs.position(), nf.TypeNodeFromQualifiedName(a.position(), "Unique<>"),
                     new ArrayList<Expr>(Arrays.asList(rhs)));

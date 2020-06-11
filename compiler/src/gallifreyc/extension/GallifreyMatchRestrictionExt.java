@@ -86,6 +86,8 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
             RestrictionId rid = ((SharedRef) dExt.qualification()).restriction();
             // local decl is RV type (not holder type)
             d = d.type(nf.TypeNodeFromQualifiedName(p, rid.rv().id()));
+            // add final flag
+            d = d.flags(d.flags().Final());
             String rv = rid.rv().id();
             String restriction = rid.restriction().id();
 

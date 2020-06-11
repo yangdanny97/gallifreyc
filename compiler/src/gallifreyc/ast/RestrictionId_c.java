@@ -70,6 +70,14 @@ public class RestrictionId_c extends Node_c implements RestrictionId {
     }
     
     @Override
+    public String getWrapperName() {
+        if (rv != null) {
+            return rv.toString();
+        }
+        return restriction.toString();
+    }
+    
+    @Override
     public RestrictionId copy() {
         Id rv = (this.rv != null) ? (Id) this.rv.copy() : null;
         Id restriction = (this.restriction != null) ? (Id) this.restriction.copy() : null;

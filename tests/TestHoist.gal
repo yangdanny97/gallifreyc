@@ -1,6 +1,6 @@
-class C {
+class TestHoist {
 	
-	public C() {}
+	public TestHoist() {}
 	
 	public local Integer f() {
 		return 1;

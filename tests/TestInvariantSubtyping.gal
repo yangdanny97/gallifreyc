@@ -6,8 +6,8 @@ class E extends D {
     public E(){}
 }
 
-class C {
-    public C() {}
+class TestInvariantSubTyping {
+    public TestInvariantSubTyping() {}
     
     public void testFun() {
         local E[] e = new local E[]{new E(), new E()};

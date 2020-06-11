@@ -1,5 +1,5 @@
-class D {
-    public D(){
+class TestInvalidNestedQualifier {
+    public TestInvalidNestedQualifier(){
         local local Integer x = 5;
     }
 }

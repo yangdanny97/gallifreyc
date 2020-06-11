@@ -8,8 +8,8 @@ restriction R2 for ClassC {
 
 restriction R3 = R1 | R2
 
-class D {
-    public D(){}
+public class TestTransition {
+    public TestTransition(){}
     
     public void f1(shared[R1] ClassC x) {}
     
@@ -29,7 +29,7 @@ class D {
         this.f3(x);
     }
     
-    public void testAAA() {
+    public void main(local String[] args) {
         shared[R1] ClassC c = new ClassC();
         local Integer x = c.f3();
         

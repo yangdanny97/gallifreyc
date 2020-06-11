@@ -1,0 +1,19 @@
+restriction R1 for ClassC {
+    allows f3;
+}
+
+restriction R2 for ClassC {
+    allows testFun;
+}
+
+restriction R3 = R1 | R2
+
+public class TestNullAssign {
+    public TestNullAssign(shared[R3::R1] ClassC x){
+        shared[R3] ClassC a = null;
+        shared[R1] ClassC b = null;
+        x = null;
+    }
+    
+    public void main(local String[] args) {}
+}

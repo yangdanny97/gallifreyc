@@ -1,9 +1,7 @@
 restriction MyRestriction for Integer {}
 
-class C {
-	public C() {}
-	
-	public void testFun() {
+class TestRewrite {
+	public TestRewrite() {
 		unique Integer a = 5;
 		unique Integer b = move(a);
         shared[MyRestriction] Integer c = move(b);

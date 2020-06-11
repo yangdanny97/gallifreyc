@@ -1,7 +1,7 @@
-class D {
+class TestInvalidMissingQualifierArg {
     public local ClassC y;
     
-    public D(ClassC x){
+    public TestInvalidMissingQualifierArg(ClassC x){
         y = x;
     }
 }

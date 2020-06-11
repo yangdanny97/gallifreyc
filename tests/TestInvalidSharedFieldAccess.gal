@@ -2,8 +2,8 @@ restriction R for ClassC {
     allows f1;
 }
 
-class D {
-    public D() {
+class TestInvalidSharedFieldAccess {
+    public TestInvalidSharedFieldAccess() {
         shared[R] ClassC c = new ClassC();
         System.out.println(c.s);
     }

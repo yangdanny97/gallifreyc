@@ -8,8 +8,8 @@ restriction R2 for ClassC {
 
 restriction R3 = R1 | R2
 
-public class D {
-    public D() {
+public class TestMatch {
+    public TestMatch() {
         shared[R3] ClassC c = new ClassC();
         match_restriction c with
         | shared[R3::R1] ClassC c1 -> {
