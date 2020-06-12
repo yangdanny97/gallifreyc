@@ -1,6 +1,7 @@
 package gallifreyc.translate;
 
 import polyglot.ast.*;
+import polyglot.ast.ConstructorCall.Kind;
 import polyglot.ext.jl5.ast.AnnotationElem;
 import polyglot.ext.jl5.ast.ParamTypeNode;
 import polyglot.ext.jl5.types.TypeVariable;
@@ -44,6 +45,83 @@ public class GallifreyRewriter extends GRewriter {
         return (MethodDecl) this.genRestrictionMethod(i, false).body(null);
     }
 
+    public MethodDecl genRVForwardMethod(MethodInstance inst, String rv, String restriction, boolean suppressUnchecked) {
+        GallifreyNodeFactory nf = (GallifreyNodeFactory) nodeFactory();
+        typeSystem();
+        GallifreyMethodInstance mi = (GallifreyMethodInstance) inst;
+
+        Position p = Position.COMPILER_GENERATED;
+
+        List<Expr> args = new ArrayList<>();
+        List<Formal> formals = new ArrayList<>();
+        for (int i = 0; i < mi.formalTypes().size(); i++) {
+            Type t = mi.formalTypes().get(i);
+            RefQualification q = mi.gallifreyInputTypes().get(i).qualification;
+            String fresh = lang().freshVar();
+            Id name = nf.Id(p, fresh);
+            // wrappers for shared and unique
+            if (q instanceof UniqueRef) {
+                TypeNode tn = nf.TypeNodeFromQualifiedName(p, "Unique<" + t.toString() + ">");
+                formals.add(nf.Formal(p, Flags.NONE, tn, (Id) name.copy()));
+            } else if (q instanceof SharedRef) {
+                SharedRef s = (SharedRef) q;
+                RestrictionId rid = s.restriction();
+                TypeNode tn = nf.TypeNodeFromQualifiedName(p, rid.getWrapperName());
+                formals.add(nf.Formal(p, Flags.NONE, tn, (Id) name.copy()));
+            } else {
+                formals.add(nf.Formal(p, Flags.NONE, nf.CanonicalTypeNode(p, t), (Id) name.copy()));
+            }
+            // TODO varargs
+            args.add(nf.Local(p, (Id) name.copy()));
+        }
+
+        List<Stmt> methodStmts = new ArrayList<>();
+        Type returnType = mi.returnType();
+        TypeNode genReturnType = nf.CanonicalTypeNode(p, returnType);
+
+        // don't allow type vars
+        if (returnType instanceof TypeVariable) {
+            genReturnType = nf.TypeNodeFromQualifiedName(p, "Object");
+        }
+        // wrappers for shared and unique
+        RefQualification q = mi.gallifreyReturnType().qualification;
+        if (q instanceof UniqueRef) {
+            genReturnType = nf.TypeNodeFromQualifiedName(p, "Unique<" + genReturnType.toString() + ">");
+        }
+        if (q instanceof SharedRef) {
+            SharedRef s = (SharedRef) q;
+            RestrictionId rid = s.restriction();
+            genReturnType = nf.TypeNodeFromQualifiedName(p, rid.getInterfaceName());
+        }
+
+        // return ((RV_R) this.holder).method();
+        Expr call = nf.Call(p, nf.Cast(p, nf.TypeNodeFromQualifiedName(p, rv + "_" + restriction), 
+                nf.Field(p, nf.This(p), nf.Id(p, HOLDER))), 
+                nf.Id(p, inst.name()), args);
+        
+        if (returnType.isVoid()) {
+            methodStmts.add(nf.Eval(p, call));
+        } else {
+            methodStmts.add(nf.Return(p, call));
+        }
+
+        List<TypeNode> throwTypes = new ArrayList<>();
+        for (Type t : mi.throwTypes()) {
+            throwTypes.add(nf.CanonicalTypeNode(p, t));
+        }
+
+        List<ParamTypeNode> paramTypes = new ArrayList<>(); // TODO
+
+        List<AnnotationElem> annotations = new ArrayList<AnnotationElem>();
+        if (suppressUnchecked) {
+            annotations.add(nf.SingleElementAnnotationElem(p, nf.TypeNodeFromQualifiedName(p, "SuppressWarnings"),
+                    nf.StringLit(p, "unchecked")));
+        }
+        return nf.MethodDecl(p, Flags.PUBLIC, annotations, genReturnType, nf.Id(p, mi.name()), formals, throwTypes,
+                nf.Block(p, methodStmts), paramTypes,
+                nf.Javadoc(p, "// Wrapper method for " + mi.container().toString() + "." + mi.name()));
+    }
+    
     public MethodDecl genRestrictionMethod(MethodInstance inst, boolean suppressUnchecked) {
         GallifreyNodeFactory nf = (GallifreyNodeFactory) nodeFactory();
         typeSystem();
@@ -266,6 +344,79 @@ public class GallifreyRewriter extends GRewriter {
         this.generatedClasses.add(RInterface);
         return RInterface;
     }
+    
+    // class RV_R_impl extends RV implements RV_R {...}
+    public ClassDecl genRVSubrestrictionImpl(String rv, String restriction) {
+        GallifreyNodeFactory nf = this.nodeFactory();
+        GallifreyTypeSystem ts = this.typeSystem();
+        String forclass = ts.getClassNameForRestriction(restriction);
+
+        Position p = Position.COMPILER_GENERATED;
+
+        List<ClassMember> members = new ArrayList<>();
+        
+        // FIRST CONSTRUCTOR
+        List<Formal> constructorFormals = new ArrayList<>();
+        // public RV_R_impl(C obj)
+        constructorFormals.add(nf.Formal(p, Flags.NONE, nf.TypeNodeFromQualifiedName(p, forclass), nf.Id(p, "obj")));
+
+        List<Stmt> constructorStmts = new ArrayList<>();
+        List<Expr> args = new ArrayList<>();
+        args.add(nf.Local(p, nf.Id(p, "obj")));
+        // super(obj);
+        constructorStmts.add(nf.ConstructorCall(p, ConstructorCall.SUPER, args));
+
+        members.add(nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, rv + "_" + restriction + "_impl"), 
+                constructorFormals, new ArrayList<TypeNode>(),
+                nf.Block(p, constructorStmts), nf.Javadoc(p, "")));
+
+        // SECOND CONSTRUCTOR
+        constructorFormals = new ArrayList<>();
+        // public RV_R_impl(RV rv)
+        constructorFormals.add(nf.Formal(p, Flags.NONE, nf.TypeNodeFromQualifiedName(p, rv), nf.Id(p, "rv")));
+        args = new ArrayList<>();
+        args.add(nf.Local(p, nf.Id(p, "rv")));
+        // super(rv);
+        constructorStmts = new ArrayList<>();
+        constructorStmts.add(nf.ConstructorCall(p, ConstructorCall.SUPER, args));
+        members.add(nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, rv + "_" + restriction + "_impl"), 
+                constructorFormals, new ArrayList<TypeNode>(),
+                nf.Block(p, constructorStmts), nf.Javadoc(p, "")));
+
+        // forward for allowed methods
+        Set<String> allowedMethods = ts.getAllowedMethods(restriction);
+        ClassType CType = (ClassType) ts.getRestrictionClassType(restriction);
+        for (String name : allowedMethods) {
+            for (MethodInstance method : CType.methodsNamed(name)) {
+                members.add(this.genRVForwardMethod(method, rv, restriction, true));
+            }
+        }
+
+        // getter for sharedObj field
+        List<Formal> formals = new ArrayList<>();
+        List<TypeNode> throwTypes = new ArrayList<>();
+        List<ParamTypeNode> paramTypes = new ArrayList<>();
+        List<Stmt> methodStmts = new ArrayList<>();
+        methodStmts
+                .add(nf.Return(p, nf.Call(p, nf.Field(p, nf.This(p), nf.Id(p, this.HOLDER)), nf.Id(p, this.SHARED))));
+        members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(),
+                nf.TypeNodeFromQualifiedName(p, "SharedObject"), nf.Id(p, this.SHARED), formals, throwTypes, 
+                nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, "")));
+
+        List<TypeNode> interfaces = new ArrayList<>();
+        interfaces.add(nf.TypeNodeFromQualifiedName(p, "Serializable"));
+        interfaces.add(nf.TypeNodeFromQualifiedName(p, "Shared"));
+        interfaces.add(nf.TypeNodeFromQualifiedName(p, rv + "_" + restriction));
+
+        ClassBody body = nf.ClassBody(p, members);
+
+        ClassDecl RVImpl = nf.ClassDecl(p, Flags.NONE, nf.Id(p, rv + "_" + restriction + "_impl"), 
+                nf.TypeNodeFromQualifiedName(p, rv), interfaces,
+                body, nf.Javadoc(p, "// Restriction class for " + rv + "::" + restriction));
+
+        this.generatedClasses.add(RVImpl);
+        return RVImpl;
+    }
 
     // interface RV_holder extends Shared {...}
     public ClassDecl genRVHolderInterface(RestrictionUnionDecl d) {
@@ -331,6 +482,9 @@ public class GallifreyRewriter extends GRewriter {
         // this.holder = rv.holder;
         constructorStmts.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, this.HOLDER)), Assign.ASSIGN,
                 nf.Field(p, nf.AmbExpr(p, nf.Id(p, "rv")), nf.Id(p, this.HOLDER)))));
+        // this.lock = rv.lock;
+        constructorStmts.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(p, this.LOCK)), Assign.ASSIGN,
+                nf.Field(p, nf.AmbExpr(p, nf.Id(p, "rv")), nf.Id(p, this.LOCK)))));
         members.add(nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(p, name), constructorFormals, new ArrayList<TypeNode>(),
                 nf.Block(p, constructorStmts), nf.Javadoc(p, "")));
 
@@ -464,11 +618,7 @@ public class GallifreyRewriter extends GRewriter {
     }
 
     public TypeNode getFormalTypeNode(RestrictionId rid) {
-        if (rid.rv() == null) {
-            return nodeFactory().TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, rid.getWrapperName());
-        } else {
-            return nodeFactory().TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, rid.rv().id());
-        }
+        return nodeFactory().TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, rid.getWrapperName());
     }
 
     // wrap unique refs with .value, AFTER rewriting

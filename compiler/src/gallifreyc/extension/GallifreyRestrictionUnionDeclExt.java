@@ -25,6 +25,7 @@ public class GallifreyRestrictionUnionDeclExt extends GallifreyExt {
         GallifreyTypeSystem ts = (GallifreyTypeSystem) rw.typeSystem();
         for (String subRestriction : ts.getRestrictionsForRV(node().name())) {
             rw.genRVSubrestrictionInterface(node().name(), subRestriction);
+            rw.genRVSubrestrictionImpl(node().name(), subRestriction);
         }
         return rw.genRVClass(node());
     }

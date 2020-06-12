@@ -80,19 +80,21 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
             LocalDecl d = b.pattern();
             GallifreyLocalDeclExt dExt = (GallifreyLocalDeclExt) GallifreyExt.ext(d);
             RestrictionId rid = ((SharedRef) dExt.qualification()).restriction();
-            // local decl is RV type (not holder type)
-            d = d.type(nf.TypeNodeFromQualifiedName(p, rid.rv().id()));
-            // add final flag
-            d = d.flags(d.flags().Final());
             String rv = rid.rv().id();
             String restriction = rid.restriction().id();
+            // local decl is RV type (not holder type)
+            d = d.type(nf.TypeNodeFromQualifiedName(p, rv + "_" + restriction + "_impl"));
+            // add final flag
+            d = d.flags(d.flags().Final());
 
             // x.holder instanceof RV_restriction
             Expr cond = nf.Instanceof(p, nf.Field(p, (Expr) e.copy(), nf.Id(p, rw.HOLDER)),
                     nf.TypeNodeFromQualifiedName(p, rv + "_" + restriction));
 
             List<Stmt> blockStmts = new ArrayList<>();
-            blockStmts.add(d.init(e));
+            List<Expr> args = new ArrayList<>();
+            args.add(e);
+            blockStmts.add(d.init(nf.New(p, nf.TypeNodeFromQualifiedName(p, rv + "_" + restriction + "_impl"), args)));
             blockStmts.addAll(b.body().statements());
             Block block = nf.Block(p, blockStmts);
 

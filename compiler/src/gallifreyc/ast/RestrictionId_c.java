@@ -73,7 +73,7 @@ public class RestrictionId_c extends Node_c implements RestrictionId {
     @Override
     public String getWrapperName() {
         if (rv != null) {
-            return rv.toString();
+            return rv.toString() + "_" + restriction.toString() + "_impl";
         }
         return restriction.toString();
     }
