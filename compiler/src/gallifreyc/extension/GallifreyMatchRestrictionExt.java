@@ -8,15 +8,12 @@ import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.MatchBranch;
 import gallifreyc.ast.MatchRestriction;
 import gallifreyc.ast.RefQualification;
-import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.SharedRef;
 import gallifreyc.translate.ANormalizer;
 import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyTypeSystem;
-import gallifreyc.visit.GallifreyTypeBuilder;
 import polyglot.ast.Assign;
-import polyglot.ast.Binary;
 import polyglot.ast.Block;
 import polyglot.ast.Expr;
 import polyglot.ast.If;
@@ -24,7 +21,6 @@ import polyglot.ast.IntLit;
 import polyglot.ast.LocalDecl;
 import polyglot.ast.Node;
 import polyglot.ast.Stmt;
-import polyglot.ast.TypeNode;
 import polyglot.types.SemanticException;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
@@ -42,7 +38,7 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
     public MatchRestriction node() {
         return (MatchRestriction) super.node();
     }
-    
+
     @Override
     public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
         return superLang().buildTypesEnter(node(), tb);
@@ -67,12 +63,12 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
         // e is guaranteed to be a variable
         Expr e = m.expr();
         Position p_ = Position.COMPILER_GENERATED;
-        
+
         List<Stmt> matchStmts = new ArrayList<>();
-        //increment lock
-        matchStmts.add(nf.Eval(p_, nf.Assign(p_, nf.Field(p_, (Expr) e.copy(), nf.Id(p_, rw.LOCK)), 
-                Assign.ADD_ASSIGN, nf.IntLit(p_, IntLit.INT, 1))));
-        
+        // increment lock
+        matchStmts.add(nf.Eval(p_, nf.Assign(p_, nf.Field(p_, (Expr) e.copy(), nf.Id(p_, rw.LOCK)), Assign.ADD_ASSIGN,
+                nf.IntLit(p_, IntLit.INT, 1))));
+
         If currentif = null;
         List<MatchBranch> branches = new ArrayList<>(m.branches());
         Collections.reverse(branches);
@@ -92,7 +88,7 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
             String restriction = rid.restriction().id();
 
             // x.holder instanceof RV_restriction
-            Expr cond = nf.Instanceof(p, nf.Field(p, (Expr) e.copy(), nf.Id(p, rw.HOLDER)), 
+            Expr cond = nf.Instanceof(p, nf.Field(p, (Expr) e.copy(), nf.Id(p, rw.HOLDER)),
                     nf.TypeNodeFromQualifiedName(p, rv + "_" + restriction));
 
             List<Stmt> blockStmts = new ArrayList<>();
@@ -102,14 +98,14 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
 
             if (currentif != null) {
                 currentif = nf.If(p, cond, block, currentif);
-            } else { 
+            } else {
                 currentif = nf.If(p, cond, block);
             }
         }
         matchStmts.add(currentif);
         // decrement lock
-        matchStmts.add(nf.Eval(p_, nf.Assign(p_, nf.Field(p_, (Expr) e.copy(), nf.Id(p_, rw.LOCK)), 
-                Assign.SUB_ASSIGN, nf.IntLit(p_, IntLit.INT, 1))));
+        matchStmts.add(nf.Eval(p_, nf.Assign(p_, nf.Field(p_, (Expr) e.copy(), nf.Id(p_, rw.LOCK)), Assign.SUB_ASSIGN,
+                nf.IntLit(p_, IntLit.INT, 1))));
         return nf.Block(node().position(), matchStmts);
     }
 
@@ -141,22 +137,19 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
                 throw new SemanticException("Match branch restriction must be qualified", ld.position());
             }
             if (!rid.wildcardRv() && !rid.rv().id().equals(thisRV)) {
-                throw new SemanticException(
-                        "Match branch restriction qualification (" + rid.rv() + 
-                        ") does not match current restriction (" + thisRV + ")",
-                        ld.position());
+                throw new SemanticException("Match branch restriction qualification (" + rid.rv()
+                        + ") does not match current restriction (" + thisRV + ")", ld.position());
             }
             if (!rid.wildcardRv()) {
                 String variant = rid.restriction().id();
                 if (!gts.getRestrictionsForRV(thisRV).contains(variant)) {
-                    throw new SemanticException(
-                            "Variant " + variant + " is not part of matched RV " + thisRV, 
+                    throw new SemanticException("Variant " + variant + " is not part of matched RV " + thisRV,
                             ld.position());
                 }
             } else {
                 // fill in RV for wild cards
                 GallifreyNodeFactory nf = (GallifreyNodeFactory) tc.nodeFactory();
-                sharedQ.restriction = nf.RestrictionId(Position.COMPILER_GENERATED, 
+                sharedQ.restriction = nf.RestrictionId(Position.COMPILER_GENERATED,
                         nf.Id(Position.COMPILER_GENERATED, thisRV), rid.restriction(), false);
             }
         }

@@ -23,7 +23,7 @@ public class GallifreyScheduler extends JL7Scheduler {
      * PASS ORDERING: Validated <<RewriteFieldInitPass>> <<ANormalizePass>>
      * <<FinalRewritePass>> CodeGenerated
      */
-    
+
     @Override
     public Goal TypesInitialized(Job job) {
         TypeSystem ts = extInfo.typeSystem();
@@ -111,7 +111,7 @@ public class GallifreyScheduler extends JL7Scheduler {
         }
         return internGoal(g);
     }
-    
+
     @Override
     public Goal Serialized(Job job) {
         Goal g = new EmptyGoal(job, "Serialized");

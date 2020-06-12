@@ -50,7 +50,7 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
     protected Ext extMatchRestrictionImpl() {
         return new GallifreyMatchRestrictionExt();
     }
-    
+
     @Override
     protected Ext extMatchBranchImpl() {
         return new GallifreyMatchBranchExt();
@@ -60,7 +60,7 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
     protected Ext extRestrictionDeclImpl() {
         return new GallifreyRestrictionDeclExt();
     }
-    
+
     @Override
     protected Ext extRestrictionUnionDeclImpl() {
         return new GallifreyRestrictionUnionDeclExt();

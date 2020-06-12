@@ -36,7 +36,7 @@ public class LocalRef extends Node_c implements RefQualification {
     public boolean equals(Object other) {
         return other instanceof LocalRef;
     }
-    
+
     @Override
     public RefQualification copy() {
         return new LocalRef(this.position);

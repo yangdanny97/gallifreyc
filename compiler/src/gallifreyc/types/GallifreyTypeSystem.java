@@ -46,7 +46,7 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
     // restriction name -> class type
 
     public void addRestrictionClassType(String restriction, ClassType cls);
-    
+
     public ClassType getRestrictionClassType(String restriction);
 
     // instances

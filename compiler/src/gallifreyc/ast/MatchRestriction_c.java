@@ -2,15 +2,12 @@ package gallifreyc.ast;
 
 import java.util.List;
 
-import gallifreyc.visit.GallifreyTypeBuilder;
-
 import java.util.ArrayList;
 
 import polyglot.ast.Expr;
 import polyglot.ast.Node;
 import polyglot.ast.Stmt_c;
 import polyglot.ast.Term;
-import polyglot.types.SemanticException;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
@@ -18,7 +15,6 @@ import polyglot.visit.CFGBuilder;
 import polyglot.visit.FlowGraph;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
-import polyglot.visit.TypeBuilder;
 
 public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
     private static final long serialVersionUID = SerialVersionUID.generate();

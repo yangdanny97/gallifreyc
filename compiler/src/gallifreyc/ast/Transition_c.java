@@ -3,14 +3,12 @@ package gallifreyc.ast;
 import java.util.List;
 
 import polyglot.ast.*;
-import polyglot.types.SemanticException;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.CFGBuilder;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
-import polyglot.visit.TypeBuilder;
 
 public class Transition_c extends Stmt_c implements Transition {
     private static final long serialVersionUID = SerialVersionUID.generate();

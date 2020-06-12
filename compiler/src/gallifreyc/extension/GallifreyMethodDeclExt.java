@@ -108,7 +108,7 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
         GallifreyNodeFactory nf = rw.nodeFactory();
         RefQualification q = mi.gallifreyReturnType().qualification;
         if (q instanceof UniqueRef) {
-            return node().returnType(nf.TypeNodeFromQualifiedName(node().position(), 
+            return node().returnType(nf.TypeNodeFromQualifiedName(node().position(),
                     "Unique<" + node().returnType().type().toString() + ">"));
         }
         if (q instanceof SharedRef) {

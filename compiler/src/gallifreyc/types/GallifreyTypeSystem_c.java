@@ -219,12 +219,11 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     public void addRestrictionClassType(String restriction, ClassType cls) {
         restrictionClassTypeMap.put(restriction, cls);
     }
-    
+
     @Override
     public ClassType getRestrictionClassType(String restriction) {
         if (isRV(restriction)) {
-            return getRestrictionClassType(
-                    restrictionUnionMap.get(restriction).iterator().next());
+            return getRestrictionClassType(restrictionUnionMap.get(restriction).iterator().next());
         }
         return restrictionClassTypeMap.get(restriction);
     }

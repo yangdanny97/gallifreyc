@@ -1,13 +1,11 @@
 package gallifreyc.visit;
 
 import gallifreyc.ast.GallifreyNodeFactory;
-import gallifreyc.ast.MatchRestriction;
 import gallifreyc.extension.GallifreyExt;
 import gallifreyc.extension.GallifreyFieldDeclExt;
 import gallifreyc.extension.GallifreyFormalExt;
 import gallifreyc.extension.GallifreyLang;
 import gallifreyc.extension.GallifreyLocalDeclExt;
-import gallifreyc.extension.GallifreyMatchRestrictionExt;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.FieldDecl;
 import polyglot.ast.Formal;
@@ -28,22 +26,22 @@ public class GallifreyTypeBuilder extends TypeBuilder {
         currentRestriction = null;
         currentRestrictionClass = null;
     }
-    
+
     @Override
     public GallifreyLang lang() {
         return (GallifreyLang) super.lang();
     }
-    
+
     @Override
     public GallifreyNodeFactory nodeFactory() {
         return (GallifreyNodeFactory) super.nodeFactory();
     }
-    
+
     @Override
     public GallifreyTypeSystem typeSystem() {
         return (GallifreyTypeSystem) super.typeSystem();
     }
-    
+
     @Override
     public Node leave(Node old, Node n, NodeVisitor v) {
         // sanity checks

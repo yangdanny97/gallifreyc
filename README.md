@@ -27,15 +27,22 @@ This extension follows a similar structure as other Polyglot extensions except f
 - multiple rewriting passes post-typechecking, right before codegen
 
 ### Setup Notes: (this will become instructions later)
-- need to be using Java 8
-- `lib/` should have `java_cup.jar`, `jflex.jar`, `polyglot.jar`, `ppg.jar`
+- need to be using Java 8, with the ant build system
+- `lib/` should have `java_cup.jar`, `jflex.jar`, `polyglot.jar`, `ppg.jar`, `full-runtime.jar`
 - to run the test suite, you must have `pth` (the polyglot test harness) in your classpath. the easiest way to get this is from the polyglot repo; clone it and add `polyglot/bin` to your path
 - the test suite requires `gallifrey-antidote` to be built; the directory containing this repo and the directory containing the `gallifrey-antidote` repo should be under the same parent directory
-- run `fatjar.sh` inside `gallifrey-antidote` and verify that `full-runtime.jar` was generated. There is an alias of `full-runtime.jar` inside `lib`
+- run `fatjar.sh` inside `gallifrey-antidote` and verify that `full-runtime.jar` was generated in that directory. There is an alias of `full-runtime.jar` inside `gallifreyc/lib`
+- built using `ant`
 - run test suite by executing `test.sh` inside `tests/`
 - to run from the command line:
 `java -jar lib/gallifreyc.jar -classpath tests/out:lib/full-runtime.jar <FILE_NAME>`
 - useful flags: -d (set output directory), -c (don't run javac; emit .java instead of .class), -stdout (dump java AST to stdout)
+
+### Testing Notes:
+- the test cases check that 1) gallifreyc successfully compiles the code OR throws an expected error and 2) the generated java code can compile
+- output `.java` and `.class` files are in `tests/out`
+- antidote tests need to be manually run (make sure to `make clean` in `gallifrey-antidote` and `antidote`
+- to set up antidote tests: `make shell` in `antidote`; edit the makefile in `gallifrey-antidote` to include the directory where your `.class` files are (for test cases, `tests/out`), and `make backend`; then run the appropriate `.class` file
 
 TODOs:
 - default qualifications for stdlib (field and method instances)

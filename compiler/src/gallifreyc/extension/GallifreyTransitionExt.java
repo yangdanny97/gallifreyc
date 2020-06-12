@@ -1,8 +1,6 @@
 package gallifreyc.extension;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RestrictionId;
@@ -10,15 +8,11 @@ import gallifreyc.ast.SharedRef;
 import gallifreyc.ast.Transition;
 import gallifreyc.translate.ANormalizer;
 import gallifreyc.translate.GallifreyRewriter;
-import gallifreyc.types.GallifreyLocalInstance;
 import gallifreyc.types.GallifreyTypeSystem;
-import gallifreyc.visit.GallifreyTypeBuilder;
-import polyglot.ast.Assign;
 import polyglot.ast.Expr;
 import polyglot.ast.Local;
 import polyglot.ast.Node;
 import polyglot.ast.Stmt;
-import polyglot.types.Context;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.util.Position;
@@ -54,7 +48,7 @@ public class GallifreyTransitionExt extends GallifreyExt {
         args.add(rw.qq().parseExpr(t.restriction().restriction().id() + "_impl.class"));
         return nf.Eval(p, nf.Call(p, (Local) t.expr().copy(), nf.Id(p, "transition"), args));
     }
-    
+
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         Transition node = (Transition) superLang().buildTypes(node(), tb);
@@ -90,7 +84,8 @@ public class GallifreyTransitionExt extends GallifreyExt {
             throw new SemanticException("Cannot transition " + exprId + " to " + transitionId, node().position());
         }
         if (transitionId.rv() == null) {
-            throw new SemanticException("Cannot transition to unqualified restriction " + transitionId, node().position());
+            throw new SemanticException("Cannot transition to unqualified restriction " + transitionId,
+                    node().position());
         }
         if (exprId.rv() == null) { // transition(RV, RV::R)
             if (!exprId.restriction().id().equals(transitionId.rv().id())) {

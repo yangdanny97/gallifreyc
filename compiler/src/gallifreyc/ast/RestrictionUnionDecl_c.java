@@ -5,7 +5,6 @@ import polyglot.types.Flags;
 import polyglot.types.SemanticException;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
-import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
 
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Set;
 
 import gallifreyc.types.GallifreyTypeSystem;
-import gallifreyc.visit.GallifreyTypeBuilder;
 
 public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDecl {
     private static final long serialVersionUID = SerialVersionUID.generate();
@@ -72,16 +70,16 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
                 throw new SemanticException("Unknown restriction " + r.id(), this.position());
             }
             if (ts.isRV(r.id())) {
-                throw new SemanticException("Cannot have RV containing other RVs",  this.position());
+                throw new SemanticException("Cannot have RV containing other RVs", this.position());
             }
             restrictionClasses.add(forClass);
             variants.add(r.id());
         }
-        
+
         if (restrictionClasses.size() > 1) {
-            throw new SemanticException("RV sub-restriction classes do not match",  this.position());
+            throw new SemanticException("RV sub-restriction classes do not match", this.position());
         }
-        
+
 //        ts.addRestrictionMapping(id.id(), restrictionClasses.get(0));
         ts.addRV(id.id(), variants);
         return super.buildTypes(tb);

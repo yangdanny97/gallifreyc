@@ -85,7 +85,7 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
         // rewrite RHS of decls
         GallifreyNodeFactory nf = rw.nodeFactory();
         GallifreyTypeSystem ts = rw.typeSystem();
-        
+
         LocalDecl l = node();
         Expr rhs = l.init();
         RefQualification q = this.qualification();
@@ -101,12 +101,12 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
         } else if (q instanceof UniqueRef) {
             l = l.type(nf.TypeNodeFromQualifiedName(l.position(), "Unique<" + l.type().type().toString() + ">"));
             if (rhs != null) {
-            l = l.init(nf.New(rhs.position(), nf.TypeNodeFromQualifiedName(l.position(), "Unique<>"),
-                    new ArrayList<Expr>(Arrays.asList(rhs))));
+                l = l.init(nf.New(rhs.position(), nf.TypeNodeFromQualifiedName(l.position(), "Unique<>"),
+                        new ArrayList<Expr>(Arrays.asList(rhs))));
             }
             return l;
-        } else if (rhs != null && rhs.type() != null && l.type().type() != null &&
-                ts.isCastValid(rhs.type(), l.type().type())) {
+        } else if (rhs != null && rhs.type() != null && l.type().type() != null
+                && ts.isCastValid(rhs.type(), l.type().type())) {
             l = l.init(nf.Cast(l.position(), l.type(), rhs));
         }
         return l;

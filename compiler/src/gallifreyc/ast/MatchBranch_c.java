@@ -29,7 +29,7 @@ public class MatchBranch_c extends AbstractBlock_c implements MatchBranch {
     public LocalDecl pattern() {
         return pattern;
     }
-    
+
     public MatchBranch pattern(LocalDecl d) {
         pattern = d;
         return this;

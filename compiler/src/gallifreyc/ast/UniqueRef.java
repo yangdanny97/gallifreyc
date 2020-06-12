@@ -20,7 +20,7 @@ public class UniqueRef extends Node_c implements RefQualification {
     public boolean equals(Object other) {
         return other instanceof UniqueRef;
     }
-    
+
     @Override
     public RefQualification copy() {
         return new UniqueRef(this.position);
