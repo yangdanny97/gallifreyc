@@ -85,8 +85,10 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -classpath ../lib/full-runtime
     ClassC.gal TestTransition.gal;
     ClassC.gal TestMatch.gal;
     ClassC.gal TestRV.gal;
+    ClassC.gal TestAlias.gal;
     ClassC.gal TestSmuggle.gal;
     ClassC.gal TestNullAssign.gal;
+    ClassC.gal TestFailedTransition.gal;
     ClassC.gal TestInvalidTransitionRes.gal (Semantic);
     Counter.gal AntidoteTest4.gal;
     ClassC.gal TestInvalidPostTransition.gal (Semantic);

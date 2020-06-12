@@ -1,0 +1,37 @@
+restriction R1 for ClassC {
+    allows f3;
+}
+
+restriction R2 for ClassC {
+    allows testFun;
+}
+
+restriction R3 = R1 | R2
+
+public class TestFailedTransition {
+    public TestFailedTransition(){}
+    
+    public static void transitionFail(shared[R3] ClassC x) {
+        transition(x, R3::R2);
+    }
+    
+    public void main(local String[] args) {
+        shared[R3] ClassC init = new ClassC();
+        
+        match_restriction init with
+        |shared[R3::R1] ClassC x1 -> { TestFailedTransition.transitionFail(init); }
+        |shared[R3::R2] ClassC x2 -> { TestFailedTransition.transitionFail(init); }
+        
+        match_restriction init with
+        |shared[R3::R1] ClassC x1 -> { System.out.println("Success #1 of 2"); }
+        |shared[R3::R2] ClassC x2 -> { System.out.println("Failed #1 of 2"); }
+
+        match_restriction init with
+        |shared[R3::R1] ClassC x1 -> { TestFailedTransition.transitionFail(x1); }
+        |shared[R3::R2] ClassC x2 -> { TestFailedTransition.transitionFail(x2); }
+        
+        match_restriction init with
+        |shared[R3::R1] ClassC x1 -> { System.out.println("Success #2 of 2"); }
+        |shared[R3::R2] ClassC x2 -> { System.out.println("Failed #2 of 2"); }
+    }
+}

@@ -442,21 +442,25 @@ public class GallifreyRewriter extends GRewriter {
         GallifreyExprExt ext = GallifreyExprExt.ext(rhs);
         if (typeSystem().isRV(r.restriction().id())) {
             // lhs is shared[RV]
-            // rhs is guaranteed to be either shared[RV] or shared[RV::R]
-            return this.qq().parseExpr("new " + r.getWrapperName() + "(%E)", rhs);
+            // rhs is guaranteed to be either shared[RV] or shared[RV::R] or nonshared
+            if (!(ext.gallifreyType.qualification instanceof SharedRef)) {
+                rhs = this.qq().parseExpr("new " + r.getWrapperName() + "(%E)", rhs);
+            }
         } else if (r.isRvQualified()) {
             // lhs is shared[RV::R]
-            // rhs is guaranteed to be shared[RV::R]
+            // rhs is guaranteed to be shared[RV::R] or nonshared
             // handled the same as RV
-            return this.qq().parseExpr("new " + r.getWrapperName() + "(%E)", rhs);
-        } else if (ext.gallifreyType.qualification instanceof SharedRef) {
-            // lhs is not RV, rhs is shared
-            // rhs is guaranteed to be shared[r]
-            return this.qq().parseExpr("new " + r.getWrapperName() + "_impl(%E.sharedObj())", rhs);
+            if (!(ext.gallifreyType.qualification instanceof SharedRef)) {
+                rhs = this.qq().parseExpr("new " + r.getWrapperName() + "(%E)", rhs);
+            }
         } else {
-            // lhs is not RV, rhs is not shared (regular object)
-            return this.qq().parseExpr("new " + r.getWrapperName() + "_impl(%E)", rhs);
+            // lhs is shared[R] (not RV)
+            // rhs is guaranteed to be shared[R] or nonshared
+            if (!(ext.gallifreyType.qualification instanceof SharedRef)) {
+                rhs = this.qq().parseExpr("new " + r.getWrapperName() + "_impl(%E)", rhs);
+            }
         }
+        return rhs;
     }
 
     public TypeNode getFormalTypeNode(RestrictionId rid) {

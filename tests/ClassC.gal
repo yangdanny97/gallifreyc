@@ -1,3 +1,5 @@
+// utility class for other test cases
+
 public class ClassC {
     public local String s;
 

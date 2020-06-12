@@ -58,12 +58,15 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
 
     @Override
     public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
-        List<Term> t_branches = new ArrayList<>();
+        List<Term> t_branches = new ArrayList<>(branches);
         for (MatchBranch b : branches()) {
             t_branches.add(b);
         }
         v.visitCFG(expr, FlowGraph.EDGE_KEY_OTHER, t_branches, new Integer(ENTRY));
-        v.visitCFGList(branches, this, EXIT);
+        v = v.push(this);
+        for (MatchBranch b : branches()) {
+           v.visitCFG(b, this, EXIT); 
+        }
         return succs;
     }
 
