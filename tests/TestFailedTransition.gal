@@ -8,6 +8,8 @@ restriction R2 for ClassC {
 
 restriction R3 = R1 | R2
 
+// runnable
+
 public class TestFailedTransition {
     public TestFailedTransition(){}
     
@@ -15,7 +17,7 @@ public class TestFailedTransition {
         transition(x, R3::R2);
     }
     
-    public void main(local String[] args) {
+    public static void main(local String[] args) {
         shared[R3] ClassC init = new ClassC();
         
         match_restriction init with
