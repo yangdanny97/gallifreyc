@@ -89,11 +89,11 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
     
     public RegionMap currentMap();
     
-    public boolean isValidRegion(String r);
+    public boolean isValidRegion(Region r);
     
-    public String trueNew();
+    public Region trueNew();
     
-    public void regionAssign(Expr lhs, String lhsRegion, String rhsRegion);
+    public void regionAssign(Expr lhs, Region lhsRegion, Region rhsRegion);
     
-    public String regionApply(GallifreyMethodInstance mi, String...inputRegions);
+    public Region regionApply(GallifreyMethodInstance mi, Region...inputRegions);
 }

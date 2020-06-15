@@ -5,7 +5,7 @@ import java.util.*;
 // map of variables to region
 public class RegionMap {
     private List<RegionMap> children_maps;
-    private Map<String, String> m;
+    private Map<Region, Region> m;
     final RegionMap parent;
 
     public RegionMap(RegionMap parent) {
@@ -14,7 +14,7 @@ public class RegionMap {
         this.m = new HashMap<>();
     }
 
-    public String lookup(String var) {
+    public Region lookup(Region var) {
         if (!m.containsKey(var)) {
             if (parent != null) {
                 return parent.lookup(var);

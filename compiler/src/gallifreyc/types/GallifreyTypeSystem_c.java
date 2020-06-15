@@ -372,19 +372,19 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         return this.currentMap;
     }
     
-    public boolean isValidRegion(String r) {
+    public boolean isValidRegion(Region r) {
         return this.heapctx.isValidRegion(r);
     }
     
-    public String trueNew() {
+    public Region trueNew() {
         return this.heapctx.trueNew();
     }
     
-    public void regionAssign(Expr lhs, String lhsRegion, String rhsRegion) {
+    public void regionAssign(Expr lhs, Region lhsRegion, Region rhsRegion) {
         this.heapctx.regionAssign(lhs, lhsRegion, rhsRegion);
     }
     
-    public String regionApply(GallifreyMethodInstance mi, String...inputRegions) {
+    public Region regionApply(GallifreyMethodInstance mi, Region...inputRegions) {
         return this.heapctx.regionApply(mi, inputRegions);
     }
 }
