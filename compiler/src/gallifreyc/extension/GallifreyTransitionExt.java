@@ -67,7 +67,7 @@ public class GallifreyTransitionExt extends GallifreyExt {
 
         RefQualification q = ext.gallifreyType.qualification();
 
-        if (!(q instanceof SharedRef)) {
+        if (!(q.isShared())) {
             throw new SemanticException("Can only transition restrictions for Shared types", node.position());
         }
 

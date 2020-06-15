@@ -4,7 +4,7 @@ import polyglot.ast.Node_c;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
-public class UniqueRef extends Node_c implements RefQualification {
+public class UniqueRef extends RefQualification {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
     public UniqueRef(Position pos) {
@@ -24,5 +24,9 @@ public class UniqueRef extends Node_c implements RefQualification {
     @Override
     public RefQualification copy() {
         return new UniqueRef(this.position);
+    }
+    
+    public boolean isUnique() {
+        return true;
     }
 }

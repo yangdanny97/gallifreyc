@@ -250,7 +250,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 
         for (Expr e : args) {
             GallifreyType gt = GallifreyExprExt.ext(e).gallifreyType();
-            if (!(gt.qualification() instanceof MoveRef)) {
+            if (!(gt.isMove())) {
                 allMoves = false;
             }
             argTypes.add(gt);
@@ -292,16 +292,16 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         if (fromType == null || toType == null) {
             throw new IllegalArgumentException("null GallifreyType");
         }
-        if (fromType.qualification instanceof MoveRef || toType.qualification instanceof AnyRef) {
+        if (fromType.isMove() || toType.qualification.isAny()) {
             return true;
         }
 
-        if (fromType.qualification instanceof LocalRef && toType.qualification instanceof LocalRef) {
+        if (fromType.isLocal() && toType.isLocal()) {
             return true;
         }
 
         // is this correct?
-        if (fromType.qualification instanceof SharedRef && toType.qualification instanceof SharedRef) {
+        if (fromType.isShared() && toType.isShared()) {
             RestrictionId from = ((SharedRef) fromType.qualification).restriction();
             RestrictionId to = ((SharedRef) toType.qualification).restriction();
             // RV = RV::R is legal
@@ -335,7 +335,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         Map<String, Integer> ownerMap = new HashMap<>();
         List<RefQualification> result = new ArrayList<>();
         for (RefQualification q : qualifications) {
-            if (q instanceof LocalRef) {
+            if (q.isLocal()) {
                 LocalRef l = (LocalRef) q;
                 if (!ownerMap.containsKey(l.ownerAnnotation)) {
                     counter++;

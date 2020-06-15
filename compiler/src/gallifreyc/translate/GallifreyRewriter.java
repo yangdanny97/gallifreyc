@@ -1,7 +1,6 @@
 package gallifreyc.translate;
 
 import polyglot.ast.*;
-import polyglot.ast.ConstructorCall.Kind;
 import polyglot.ext.jl5.ast.AnnotationElem;
 import polyglot.ext.jl5.ast.ParamTypeNode;
 import polyglot.ext.jl5.types.TypeVariable;
@@ -60,10 +59,10 @@ public class GallifreyRewriter extends GRewriter {
             String fresh = lang().freshVar();
             Id name = nf.Id(p, fresh);
             // wrappers for shared and unique
-            if (q instanceof UniqueRef) {
+            if (q.isUnique()) {
                 TypeNode tn = nf.TypeNodeFromQualifiedName(p, "Unique<" + t.toString() + ">");
                 formals.add(nf.Formal(p, Flags.NONE, tn, (Id) name.copy()));
-            } else if (q instanceof SharedRef) {
+            } else if (q.isShared()) {
                 SharedRef s = (SharedRef) q;
                 RestrictionId rid = s.restriction();
                 TypeNode tn = nf.TypeNodeFromQualifiedName(p, rid.getWrapperName());
@@ -85,10 +84,10 @@ public class GallifreyRewriter extends GRewriter {
         }
         // wrappers for shared and unique
         RefQualification q = mi.gallifreyReturnType().qualification;
-        if (q instanceof UniqueRef) {
+        if (q.isUnique()) {
             genReturnType = nf.TypeNodeFromQualifiedName(p, "Unique<" + genReturnType.toString() + ">");
         }
-        if (q instanceof SharedRef) {
+        if (q.isShared()) {
             SharedRef s = (SharedRef) q;
             RestrictionId rid = s.restriction();
             genReturnType = nf.TypeNodeFromQualifiedName(p, rid.getInterfaceName());
@@ -137,10 +136,10 @@ public class GallifreyRewriter extends GRewriter {
             String fresh = lang().freshVar();
             Id name = nf.Id(p, fresh);
             // wrappers for shared and unique
-            if (q instanceof UniqueRef) {
+            if (q.isUnique()) {
                 TypeNode tn = nf.TypeNodeFromQualifiedName(p, "Unique<" + t.toString() + ">");
                 formals.add(nf.Formal(p, Flags.NONE, tn, (Id) name.copy()));
-            } else if (q instanceof SharedRef) {
+            } else if (q.isShared()) {
                 SharedRef s = (SharedRef) q;
                 RestrictionId rid = s.restriction();
                 TypeNode tn = nf.TypeNodeFromQualifiedName(p, rid.getWrapperName());
@@ -162,10 +161,10 @@ public class GallifreyRewriter extends GRewriter {
         }
         // wrappers for shared and unique
         RefQualification q = mi.gallifreyReturnType().qualification;
-        if (q instanceof UniqueRef) {
+        if (q.isUnique()) {
             genReturnType = nf.TypeNodeFromQualifiedName(p, "Unique<" + genReturnType.toString() + ">");
         }
-        if (q instanceof SharedRef) {
+        if (q.isShared()) {
             SharedRef s = (SharedRef) q;
             RestrictionId rid = s.restriction();
             genReturnType = nf.TypeNodeFromQualifiedName(p, rid.getInterfaceName());
@@ -597,20 +596,20 @@ public class GallifreyRewriter extends GRewriter {
         if (typeSystem().isRV(r.restriction().id())) {
             // lhs is shared[RV]
             // rhs is guaranteed to be either shared[RV] or shared[RV::R] or nonshared
-            if (!(ext.gallifreyType.qualification instanceof SharedRef)) {
+            if (!(ext.gallifreyType.isShared())) {
                 rhs = this.qq().parseExpr("new " + r.getWrapperName() + "(%E)", rhs);
             }
         } else if (r.isRvQualified()) {
             // lhs is shared[RV::R]
             // rhs is guaranteed to be shared[RV::R] or nonshared
             // handled the same as RV
-            if (!(ext.gallifreyType.qualification instanceof SharedRef)) {
+            if (!(ext.gallifreyType.isShared())) {
                 rhs = this.qq().parseExpr("new " + r.getWrapperName() + "(%E)", rhs);
             }
         } else {
             // lhs is shared[R] (not RV)
             // rhs is guaranteed to be shared[R] or nonshared
-            if (!(ext.gallifreyType.qualification instanceof SharedRef)) {
+            if (!(ext.gallifreyType.isShared())) {
                 rhs = this.qq().parseExpr("new " + r.getWrapperName() + "_impl(%E)", rhs);
             }
         }
@@ -626,7 +625,7 @@ public class GallifreyRewriter extends GRewriter {
         GallifreyNodeFactory nf = this.nodeFactory();
         GallifreyExprExt ext = GallifreyExprExt.ext(e);
         RefQualification q = ext.gallifreyType.qualification();
-        if (q instanceof UniqueRef) {
+        if (q.isUnique()) {
             Expr new_e = nf.Field(Position.COMPILER_GENERATED, e, nf.Id(Position.COMPILER_GENERATED, VALUE));
             return new_e;
         }
@@ -644,7 +643,7 @@ public class GallifreyRewriter extends GRewriter {
             if (e.expr() instanceof Field) {
                 Field f = (Field) e.expr();
                 if (f.target() instanceof Expr
-                        && GallifreyExprExt.ext(f.target()).gallifreyType.qualification() instanceof UniqueRef
+                        && GallifreyExprExt.ext(f.target()).gallifreyType.qualification().isUnique()
                         && f.name().equals(VALUE)) {
                     n = nf.Eval(n.position(), (Expr) f.target());
                     return GallifreyExt.ext(n).gallifreyRewrite(this);
@@ -657,7 +656,7 @@ public class GallifreyRewriter extends GRewriter {
             if (r.expr() instanceof Field) {
                 Field f = (Field) r.expr();
                 if (f.target() instanceof Expr
-                        && GallifreyExprExt.ext(f.target()).gallifreyType.qualification() instanceof UniqueRef
+                        && GallifreyExprExt.ext(f.target()).gallifreyType.qualification().isUnique()
                         && f.name().equals(VALUE)) {
                     n = nf.Return(n.position(), (Expr) f.target());
                     return GallifreyExt.ext(n).gallifreyRewrite(this);

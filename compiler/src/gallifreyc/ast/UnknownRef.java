@@ -5,7 +5,7 @@ import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
 /* used for compiler-generated nodes where the qualification doesn't matter */
-public class UnknownRef extends Node_c implements RefQualification {
+public class UnknownRef extends RefQualification {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
     public UnknownRef(Position pos) {
@@ -25,5 +25,10 @@ public class UnknownRef extends Node_c implements RefQualification {
     @Override
     public RefQualification copy() {
         return new UnknownRef(this.position);
+    }
+    
+    
+    public boolean isUnknown() {
+        return true;
     }
 }

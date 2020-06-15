@@ -4,7 +4,7 @@ import polyglot.ast.Node_c;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
-public class AnyRef extends Node_c implements RefQualification {
+public class AnyRef extends RefQualification {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
     public AnyRef(Position pos) {
@@ -23,5 +23,9 @@ public class AnyRef extends Node_c implements RefQualification {
 
     public RefQualification copy() {
         return new AnyRef(this.position);
+    }
+    
+    public boolean isAny() {
+        return true;
     }
 }

@@ -4,7 +4,6 @@ import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.Move;
 import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RefQualification;
-import gallifreyc.ast.UniqueRef;
 import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyType;
 import polyglot.ast.Assign;
@@ -35,7 +34,7 @@ public class GallifreyMoveExt extends GallifreyExprExt {
         GallifreyExprExt ext = GallifreyExprExt.ext(node.expr());
         tc.nodeFactory();
         RefQualification q = ext.gallifreyType.qualification();
-        if (q instanceof UniqueRef) {
+        if (q.isUnique()) {
             ext.gallifreyType.qualification = new MoveRef(q.position());
             this.gallifreyType = new GallifreyType(new MoveRef(q.position()));
             return node;

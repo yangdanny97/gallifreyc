@@ -1,7 +1,6 @@
 package gallifreyc.translate;
 
 import gallifreyc.ast.GallifreyNodeFactory;
-import gallifreyc.ast.UnknownRef;
 import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyExt;
 import gallifreyc.extension.GallifreyFieldDeclExt;
@@ -73,7 +72,7 @@ public abstract class GRewriter extends ExtensionRewriter {
             if (extM.gallifreyType() == null) {
                 throw new IllegalArgumentException("no gallifrey type found");
             }
-            if (extM.gallifreyType().qualification() instanceof UnknownRef) {
+            if (extM.gallifreyType().qualification().isUnknown()) {
                 throw new IllegalArgumentException("invalid qualification: " + m);
             }
 
@@ -84,7 +83,7 @@ public abstract class GRewriter extends ExtensionRewriter {
             GallifreyFieldDeclExt extN = (GallifreyFieldDeclExt) GallifreyExt.ext(n);
             extM.qualification = extN.qualification();
 
-            if (extM.qualification == null || extM.qualification() instanceof UnknownRef) {
+            if (extM.qualification == null || extM.qualification().isUnknown()) {
                 throw new IllegalArgumentException("invalid qualification: " + m);
             }
         }
@@ -94,7 +93,7 @@ public abstract class GRewriter extends ExtensionRewriter {
             GallifreyLocalDeclExt extN = (GallifreyLocalDeclExt) GallifreyExt.ext(n);
             extM.qualification = extN.qualification();
 
-            if (extM.qualification == null || extM.qualification() instanceof UnknownRef) {
+            if (extM.qualification == null || extM.qualification().isUnknown()) {
                 throw new IllegalArgumentException("invalid qualification " + m);
             }
         }
@@ -104,7 +103,7 @@ public abstract class GRewriter extends ExtensionRewriter {
             GallifreyFormalExt extN = (GallifreyFormalExt) GallifreyExt.ext(n);
             extM.qualification = extN.qualification;
 
-            if (extM.qualification == null || extM.qualification instanceof UnknownRef) {
+            if (extM.qualification == null || extM.qualification.isUnknown()) {
                 throw new IllegalArgumentException("invalid qualification " + m);
             }
         }

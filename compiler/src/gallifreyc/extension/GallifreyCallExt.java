@@ -44,7 +44,7 @@ public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
 
         if (node.target() instanceof Expr) {
             GallifreyType receiverType = GallifreyExprExt.ext(node.target()).gallifreyType();
-            if (receiverType.qualification() instanceof SharedRef) {
+            if (receiverType.isShared()) {
                 RestrictionId restriction = ((SharedRef) receiverType.qualification()).restriction();
                 Set<String> allowedMethods = ((GallifreyTypeSystem) tc.typeSystem()).getAllowedMethods(restriction);
                 if (!allowedMethods.contains(node.name())) {
@@ -87,7 +87,7 @@ public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
         Call c = node();
         if (c.target() instanceof Expr) {
             GallifreyType t = GallifreyExprExt.ext(c.target()).gallifreyType();
-            if (t.qualification() instanceof SharedRef) {
+            if (t.isShared()) {
                 RestrictionId restriction = ((SharedRef) t.qualification()).restriction();
                 Expr newTarget;
                 if (restriction.rv() != null) { // RV::R

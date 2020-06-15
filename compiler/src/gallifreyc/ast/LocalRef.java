@@ -4,7 +4,7 @@ import polyglot.ast.Node_c;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
-public class LocalRef extends Node_c implements RefQualification {
+public class LocalRef extends RefQualification {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
     public static final String DEFAULT_OWNER = "DEFAULT";
@@ -34,11 +34,19 @@ public class LocalRef extends Node_c implements RefQualification {
 
     @Override
     public boolean equals(Object other) {
-        return other instanceof LocalRef;
+        if (other instanceof LocalRef) {
+            LocalRef l = (LocalRef) other;
+            return this.ownerAnnotation.equals(l.ownerAnnotation) && this.borrow == l.borrow;
+        }
+        return false;
     }
 
     @Override
     public RefQualification copy() {
         return new LocalRef(this.position);
+    }
+    
+    public boolean isLocal() {
+        return true;
     }
 }

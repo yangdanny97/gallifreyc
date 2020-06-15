@@ -1,10 +1,9 @@
 package gallifreyc.ast;
 
-import polyglot.ast.Node_c;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
-public class MoveRef extends Node_c implements RefQualification {
+public class MoveRef extends RefQualification {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
     public MoveRef(Position pos) {
@@ -24,5 +23,9 @@ public class MoveRef extends Node_c implements RefQualification {
     @Override
     public RefQualification copy() {
         return new MoveRef(this.position);
+    }
+    
+    public boolean isMove() {
+        return true;
     }
 }

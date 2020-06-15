@@ -124,7 +124,7 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
         GallifreyExprExt ext = GallifreyExprExt.ext(node.expr());
         RefQualification q = ext.gallifreyType.qualification();
 
-        if (!(q instanceof SharedRef)) {
+        if (!(q.isShared())) {
             throw new SemanticException("Can only match restrictions for Shared types", node.position());
         }
         String thisRV = ((SharedRef) q).restriction().restriction().id();
@@ -135,7 +135,7 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
             LocalDecl ld = b.pattern();
             GallifreyLocalDeclExt localExt = (GallifreyLocalDeclExt) GallifreyExt.ext(ld);
             RefQualification localQ = localExt.qualification;
-            if (!(q instanceof SharedRef)) {
+            if (!(q.isShared())) {
                 throw new SemanticException("Pattern in match branch must be Shared type", ld.position());
             }
             SharedRef sharedQ = (SharedRef) localQ;

@@ -9,7 +9,6 @@ import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.SharedRef;
-import gallifreyc.ast.UniqueRef;
 import gallifreyc.ast.UnknownRef;
 import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyLocalInstance;
@@ -90,7 +89,7 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
         Expr rhs = l.init();
         RefQualification q = this.qualification();
         // shared[R] C x = e ----> R x = new R(e);
-        if (q instanceof SharedRef) {
+        if (q.isShared()) {
             SharedRef s = (SharedRef) q;
             RestrictionId rid = s.restriction();
             l = l.type(rw.getFormalTypeNode(rid));
@@ -98,7 +97,7 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
                 l = l.init(nf.Cast(l.position(), l.type(), rw.rewriteRHS(rid, rhs)));
             }
             return l;
-        } else if (q instanceof UniqueRef) {
+        } else if (q.isUnique()) {
             l = l.type(nf.TypeNodeFromQualifiedName(l.position(), "Unique<" + l.type().type().toString() + ">"));
             if (rhs != null) {
                 l = l.init(nf.New(rhs.position(), nf.TypeNodeFromQualifiedName(l.position(), "Unique<>"),

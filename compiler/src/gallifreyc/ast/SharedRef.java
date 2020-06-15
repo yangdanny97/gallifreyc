@@ -4,7 +4,7 @@ import polyglot.ast.Node_c;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
-public class SharedRef extends Node_c implements RefQualification {
+public class SharedRef extends RefQualification {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
     public RestrictionId restriction;
@@ -35,4 +35,9 @@ public class SharedRef extends Node_c implements RefQualification {
     public RefQualification copy() {
         return new SharedRef(this.position, restriction.copy());
     }
+    
+    public boolean isShared() {
+        return true;
+    }
+    
 }

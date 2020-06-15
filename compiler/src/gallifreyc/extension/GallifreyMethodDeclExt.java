@@ -12,7 +12,6 @@ import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.SharedRef;
-import gallifreyc.ast.UniqueRef;
 import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyMethodInstance;
 import gallifreyc.types.GallifreyType;
@@ -107,11 +106,11 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
         GallifreyMethodInstance mi = (GallifreyMethodInstance) node().methodInstance();
         GallifreyNodeFactory nf = rw.nodeFactory();
         RefQualification q = mi.gallifreyReturnType().qualification;
-        if (q instanceof UniqueRef) {
+        if (q.isUnique()) {
             return node().returnType(nf.TypeNodeFromQualifiedName(node().position(),
                     "Unique<" + node().returnType().type().toString() + ">"));
         }
-        if (q instanceof SharedRef) {
+        if (q.isShared()) {
             SharedRef s = (SharedRef) q;
             RestrictionId rid = s.restriction();
             return node().returnType(rw.getFormalTypeNode(rid));

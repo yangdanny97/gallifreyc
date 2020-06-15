@@ -1,6 +1,5 @@
 package gallifreyc.extension;
 
-import polyglot.types.NullType;
 import polyglot.types.SemanticException;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
@@ -13,7 +12,6 @@ import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.SharedRef;
-import gallifreyc.ast.UniqueRef;
 import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
@@ -57,13 +55,13 @@ public class GallifreyAssignExt extends GallifreyExprExt {
         RefQualification q = GallifreyExprExt.ext(lhs).gallifreyType.qualification;
 
         // shared[R] C x = e ----> R x = new R(e);
-        if (q instanceof SharedRef) {
+        if (q.isShared()) {
             SharedRef s = (SharedRef) q;
             RestrictionId rid = s.restriction();
             a = a.right(nf.Cast(rhs.position(),
                     nf.TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, rid.getWrapperName()),
                     rw.rewriteRHS(rid, rhs)));
-        } else if (q instanceof UniqueRef) {
+        } else if (q.isUnique()) {
             Expr new_rhs = nf.New(rhs.position(), nf.TypeNodeFromQualifiedName(a.position(), "Unique<>"),
                     new ArrayList<Expr>(Arrays.asList(rhs)));
             a = a.right(new_rhs);
