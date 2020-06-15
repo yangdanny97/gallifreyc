@@ -1,6 +1,5 @@
 package gallifreyc.ast;
 
-import polyglot.ast.Node_c;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 

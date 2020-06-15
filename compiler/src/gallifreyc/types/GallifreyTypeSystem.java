@@ -80,4 +80,20 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
     public List<RefQualification> normalizeLocals(List<RefQualification> qualifications);
 
     public boolean canBeShared(String className);
+    
+    // regions
+    
+    public void regionMapEnter();
+    
+    public void regionMapLeave();
+    
+    public RegionMap currentMap();
+    
+    public boolean isValidRegion(String r);
+    
+    public String trueNew();
+    
+    public void regionAssign(Expr lhs, String lhsRegion, String rhsRegion);
+    
+    public String regionApply(GallifreyMethodInstance mi, String...inputRegions);
 }

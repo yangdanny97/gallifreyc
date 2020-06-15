@@ -24,6 +24,10 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 
     // restriction variant names -> governed restriction names
     public Map<String, List<String>> restrictionUnionMap = new HashMap<>();
+    
+    public RegionMap currentMap = null;
+    
+    public HeapContext heapctx = new HeapContext();
 
     public GallifreyTypeSystem_c() {
         super();
@@ -348,5 +352,39 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
             }
         }
         return result;
+    }
+    
+    // region maps TODO
+    
+    public void regionMapEnter() {
+        if (this.currentMap == null) {
+            this.currentMap = new RegionMap(this.currentMap);
+        } else {
+            this.currentMap = this.currentMap.addChild();
+        }
+    }
+    
+    public void regionMapLeave() {
+        this.currentMap = this.currentMap.parent;
+    }
+    
+    public RegionMap currentMap() {
+        return this.currentMap;
+    }
+    
+    public boolean isValidRegion(String r) {
+        return this.heapctx.isValidRegion(r);
+    }
+    
+    public String trueNew() {
+        return this.heapctx.trueNew();
+    }
+    
+    public void regionAssign(Expr lhs, String lhsRegion, String rhsRegion) {
+        this.heapctx.regionAssign(lhs, lhsRegion, rhsRegion);
+    }
+    
+    public String regionApply(GallifreyMethodInstance mi, String...inputRegions) {
+        return this.heapctx.regionApply(mi, inputRegions);
     }
 }

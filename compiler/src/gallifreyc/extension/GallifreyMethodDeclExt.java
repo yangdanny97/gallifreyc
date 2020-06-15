@@ -15,6 +15,7 @@ import gallifreyc.ast.SharedRef;
 import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyMethodInstance;
 import gallifreyc.types.GallifreyType;
+import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.Formal;
 import polyglot.ast.MethodDecl;
@@ -29,6 +30,7 @@ import polyglot.util.SerialVersionUID;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeBuilder;
+import polyglot.visit.TypeChecker;
 
 // extends method declarations to hold an optional pre/post condition, and a flag for whether it's a test method
 public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps, ProcedureDeclOps {
@@ -99,6 +101,20 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
         mi = mi.gallifreyInputTypes(inputTypes);
         mi = mi.gallifreyReturnType(gReturn);
         return md;
+    }
+    
+    
+
+    @Override
+    public NodeVisitor typeCheckEnter(TypeChecker tc) throws SemanticException {
+        ((GallifreyTypeChecker) tc).typeSystem().regionMapEnter();
+        return superLang().typeCheckEnter(node(), tc);
+    }
+
+    @Override
+    public Node typeCheck(TypeChecker tc) throws SemanticException {
+        ((GallifreyTypeChecker) tc).typeSystem().regionMapLeave();
+        return superLang().typeCheck(node(), tc);
     }
 
     @Override
