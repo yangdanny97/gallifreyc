@@ -3,6 +3,7 @@ package gallifreyc.extension;
 import java.util.List;
 
 import gallifreyc.types.GallifreyTypeSystem;
+import gallifreyc.types.RegionContext;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.Expr;
 import polyglot.ast.For;
@@ -32,9 +33,10 @@ public class GallifreyForExt extends GallifreyExt {
         List<ForInit> inits = visitList(node().inits(), gtc);
         Expr cond = visitChild(node().cond(), gtc);
         List<ForUpdate> iters = visitList(node().iters(), gtc);
-        ts.regionMapEnter();
+        RegionContext before_loop = ts.region_context();
+        ts.push_regionContext();
         Stmt body = visitChild(node().body(), gtc);
-        ts.regionMapLeave();
+        //no need to pop
         Node n = node().inits(inits).cond(cond).iters(iters).body(body);
 
         try {

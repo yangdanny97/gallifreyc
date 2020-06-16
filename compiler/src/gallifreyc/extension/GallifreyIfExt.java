@@ -1,6 +1,7 @@
 package gallifreyc.extension;
 
 import gallifreyc.types.GallifreyTypeSystem;
+import gallifreyc.types.RegionContext;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.Expr;
 import polyglot.ast.If;
@@ -26,12 +27,13 @@ public class GallifreyIfExt extends GallifreyExt {
         
         // visit children
         Expr cond = visitChild(node().cond(), gtc);
-        ts.regionMapEnter();
+        ts.push_regionContext();
         Stmt consequent = visitChild(node().consequent(), gtc);
-        ts.regionMapLeave();
-        ts.regionMapEnter();
+        RegionContext after_then = ts.pop_regionContext();
+        ts.push_regionContext();
         Stmt alternative = visitChild(node().alternative(), gtc);
-        ts.regionMapLeave();
+        RegionContext after_els = ts.region_context();
+        //no need to pop, wlog use els's context
         Node n = node().cond(cond).consequent(consequent).alternative(alternative);
 
         try {

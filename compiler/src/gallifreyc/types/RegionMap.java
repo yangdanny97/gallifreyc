@@ -3,30 +3,30 @@ package gallifreyc.types;
 import java.util.*;
 
 // map of variables to region
-public class RegionMap {
-    private List<RegionMap> children_maps;
-    private Map<Region, Region> m;
-    final RegionMap parent;
+public class RegionMap implements Cloneable {
+    
+    private TreeMap<String, Region_c> m;
+    
 
-    public RegionMap(RegionMap parent) {
-        this.parent = parent;
-        this.children_maps = new ArrayList<>();
-        this.m = new HashMap<>();
+    public RegionMap() {
+	m = new TreeMap<>();
     }
 
-    public Region lookup(Region var) {
-        if (!m.containsKey(var)) {
-            if (parent != null) {
-                return parent.lookup(var);
-            }
-            return null;
-        }
-        return m.get(var);
+    private RegionMap(TreeMap<String, Region_c> m){
+	this.m = m;
     }
 
-    public RegionMap addChild() {
-        RegionMap child = new RegionMap(this);
-        this.children_maps.add(child);
-        return child;
+    @Override
+    @SuppressWarnings("unchecked")
+    public RegionMap clone() {
+	return new RegionMap((TreeMap<String, Region_c>)m.clone());
+    }
+
+    public Region_c region_at(String s){
+	return m.get(s);
+    }
+
+    public void set_region(String s, Region_c r){
+    	m.put(s,r);
     }
 }

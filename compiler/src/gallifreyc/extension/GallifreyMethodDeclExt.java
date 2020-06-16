@@ -15,6 +15,7 @@ import gallifreyc.ast.SharedRef;
 import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyMethodInstance;
 import gallifreyc.types.GallifreyType;
+import gallifreyc.types.RegionContext;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.Formal;
@@ -107,13 +108,13 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
 
     @Override
     public NodeVisitor typeCheckEnter(TypeChecker tc) throws SemanticException {
-        ((GallifreyTypeChecker) tc).typeSystem().regionMapEnter();
+        assert(((GallifreyTypeChecker) tc).typeSystem().region_context().isEmpty());
         return superLang().typeCheckEnter(node(), tc);
     }
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        ((GallifreyTypeChecker) tc).typeSystem().regionMapLeave();
+        ((GallifreyTypeChecker) tc).typeSystem().region_context(new RegionContext());
         return superLang().typeCheck(node(), tc);
     }
 

@@ -7,6 +7,8 @@ import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeChecker;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
+import gallifreyc.types.RegionContext;
+import gallifreyc.types.RegionMap;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.Conditional;
 import polyglot.ast.Expr;
@@ -39,12 +41,14 @@ public class GallifreyConditionalExt extends GallifreyExprExt {
         
         // visit children
         Expr cond = visitChild(node().cond(), gtc);
-        ts.regionMapEnter();
+        //Store current region map for later use
+        ts.push_regionContext();
         Expr consequent = visitChild(node().consequent(), gtc);
-        ts.regionMapLeave();
-        ts.regionMapEnter();
+        RegionContext then_outcontext = ts.pop_regionContext();
+        ts.push_regionContext();
         Expr alternative = visitChild(node().alternative(), gtc);
-        ts.regionMapLeave();
+        RegionContext else_outcontext = ts.region_context();
+        //we just take the else outmap wlog.
         Node n = node().cond(cond).consequent(consequent).alternative(alternative);
 
         try {

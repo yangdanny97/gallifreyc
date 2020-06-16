@@ -1,6 +1,7 @@
 package gallifreyc.types;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import gallifreyc.ast.RefQualification;
@@ -15,7 +16,7 @@ import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.util.Position;
 
-public interface GallifreyTypeSystem extends JL7TypeSystem {
+public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c,RegionFunctionType_c> {
 
     // restriction name -> class name
 
@@ -80,20 +81,15 @@ public interface GallifreyTypeSystem extends JL7TypeSystem {
     public List<RefQualification> normalizeLocals(List<RefQualification> qualifications);
 
     public boolean canBeShared(String className);
+
+	void push_regionContext();
+
+	RegionContext pop_regionContext();
+
+	RegionContext region_context();
+
+	RegionContext region_context(RegionContext region_context);
+
+
     
-    // regions
-    
-    public void regionMapEnter();
-    
-    public void regionMapLeave();
-    
-    public RegionMap currentMap();
-    
-    public boolean isValidRegion(Region r);
-    
-    public Region trueNew();
-    
-    public void regionAssign(Expr lhs, Region lhsRegion, Region rhsRegion);
-    
-    public Region regionApply(GallifreyMethodInstance mi, Region...inputRegions);
 }

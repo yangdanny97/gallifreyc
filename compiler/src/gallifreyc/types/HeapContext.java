@@ -1,27 +1,36 @@
 package gallifreyc.types;
 
 import polyglot.ast.Expr;
+import java.util.Collection;
+import java.util.List;
 
-public class HeapContext {
+interface Region {
+    
+}
 
-    public HeapContext() {
-        // TODO Auto-generated constructor stub
-    }
+interface RegionFunctionType{
     
-    public boolean isValidRegion(Region r) {
-        return false; //TODO
+}
+
+class RegionFunctionReturns {
+    final Region return_result;
+    final Collection<Region> preserved_regions;
+    public RegionFunctionReturns(final Region return_result,
+				 final Collection<Region> preserved_regions){
+	this.return_result = return_result;
+	this.preserved_regions = preserved_regions;
     }
+}
+
+public interface HeapContext<Reg extends Region, Fun extends RegionFunctionType> {
     
-    public Region trueNew() {
-        return null; //TODO
-    }
+    public boolean isValidRegion(Reg r);
     
-    public void regionAssign(Expr lhs, Region lhsRegion, Region rhsRegion) {
-        //TODO
-    }
+    public Reg trueNew();
     
-    public Region regionApply(GallifreyMethodInstance mi, Region...inputRegions) {
-        return null; //TODO
-    }
+    public void regionAssign(Expr lhs, Reg lhsRegion, Reg rhsRegion);
+    
+    public RegionFunctionReturns regionApply(Fun mi, List<Reg> inputRegions);
+
 
 }

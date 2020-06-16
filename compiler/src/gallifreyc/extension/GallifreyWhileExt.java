@@ -1,6 +1,7 @@
 package gallifreyc.extension;
 
 import gallifreyc.types.GallifreyTypeSystem;
+import gallifreyc.types.RegionContext;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.Expr;
 import polyglot.ast.Node;
@@ -26,10 +27,11 @@ public class GallifreyWhileExt extends GallifreyExt {
         
         // visit children
         Expr cond = visitChild(node().cond(), gtc);
-        ts.regionMapEnter();
+        ts.push_regionContext();
         Stmt body = visitChild(node().body(), gtc);
-        ts.regionMapLeave();
         Node n = node().cond(cond).body(body);
+        RegionContext body_context = ts.pop_regionContext();
+        //Do something here to check variance
 
         try {
             Node result = (Node) gtc.leave(parent, node(), n, gtc);

@@ -13,378 +13,389 @@ import polyglot.util.*;
 
 public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyTypeSystem {
 
-    // restriction name -> class name
-    public Map<String, String> restrictionClassNameMap = new HashMap<>();
+	// restriction name -> class name
+	public Map<String, String> restrictionClassNameMap = new HashMap<>();
 
-    // restriction name -> class type
-    public Map<String, ClassType> restrictionClassTypeMap = new HashMap<>();
+	// restriction name -> class type
+	public Map<String, ClassType> restrictionClassTypeMap = new HashMap<>();
 
-    // restriction name -> allowed methods
-    public Map<String, Set<String>> allowedMethodsMap = new HashMap<>();
+	// restriction name -> allowed methods
+	public Map<String, Set<String>> allowedMethodsMap = new HashMap<>();
 
-    // restriction variant names -> governed restriction names
-    public Map<String, List<String>> restrictionUnionMap = new HashMap<>();
-    
-    public RegionMap currentMap = null;
-    
-    public HeapContext heapctx = new HeapContext();
+	// restriction variant names -> governed restriction names
+	public Map<String, List<String>> restrictionUnionMap = new HashMap<>();
 
-    public GallifreyTypeSystem_c() {
-        super();
-    }
+    public RegionContext region_context = new RegionContext();
 
-    // ARRAY TYPES
+	public GallifreyTypeSystem_c() {
+		super();
+	}
 
-    @Override
-    protected ArrayType createArrayType(Position pos, Type type, boolean isVarargs) {
-        return new GallifreyArrayType(this, pos, type, isVarargs);
-    }
+	// ARRAY TYPES
 
-    @Override
-    protected ArrayType createArrayType(Position pos, Type type) {
-        return new GallifreyArrayType(this, pos, type, false);
-    }
+	@Override
+	protected ArrayType createArrayType(Position pos, Type type, boolean isVarargs) {
+		return new GallifreyArrayType(this, pos, type, isVarargs);
+	}
 
-    // METHOD INSTANCE
+	@Override
+	protected ArrayType createArrayType(Position pos, Type type) {
+		return new GallifreyArrayType(this, pos, type, false);
+	}
 
-    @Override
-    public MethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
-            String name, List<? extends Type> argTypes, List<? extends Type> excTypes) {
-        return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes,
-                Collections.<TypeVariable>emptyList(), new ArrayList<RefQualification>(), null);
-    }
+	// METHOD INSTANCE
 
-    @Override
-    public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
-            String name, List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams) {
-        return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes, typeParams,
-                new ArrayList<RefQualification>(), null);
-    }
+	@Override
+	public MethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
+			String name, List<? extends Type> argTypes, List<? extends Type> excTypes) {
+		return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes,
+				Collections.<TypeVariable>emptyList(), new ArrayList<RefQualification>(), null);
+	}
 
-    @Override
-    public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
-            String name, List<? extends Type> argTypes, List<? extends Type> excTypes, List<RefQualification> inputQ,
-            RefQualification returnQ) {
-        return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes,
-                Collections.<TypeVariable>emptyList(), inputQ, returnQ);
-    }
+	@Override
+	public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
+			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams) {
+		return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes, typeParams,
+				new ArrayList<RefQualification>(), null);
+	}
 
-    @Override
-    public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
-            String name, List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams,
-            List<RefQualification> inputQ, RefQualification returnQ) {
-        return new GallifreyMethodInstance_c(this, pos, container, flags, returnType, name, argTypes, excTypes,
-                typeParams, inputQ, returnQ);
-    }
+	@Override
+	public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
+			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, List<RefQualification> inputQ,
+			RefQualification returnQ) {
+		return methodInstance(pos, container, flags, returnType, name, argTypes, excTypes,
+				Collections.<TypeVariable>emptyList(), inputQ, returnQ);
+	}
 
-    // CONSTRUCTOR INSTANCE
+	@Override
+	public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
+			String name, List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams,
+			List<RefQualification> inputQ, RefQualification returnQ) {
+		return new GallifreyMethodInstance_c(this, pos, container, flags, returnType, name, argTypes, excTypes,
+				typeParams, inputQ, returnQ);
+	}
 
-    @Override
-    public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
-            List<? extends Type> argTypes, List<? extends Type> excTypes) {
-        return constructorInstance(pos, container, flags, argTypes, excTypes, Collections.<TypeVariable>emptyList(),
-                new ArrayList<RefQualification>());
-    }
+	// CONSTRUCTOR INSTANCE
 
-    @Override
-    public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
-            List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams) {
-        return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, typeParams,
-                new ArrayList<RefQualification>());
-    }
+	@Override
+	public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
+			List<? extends Type> argTypes, List<? extends Type> excTypes) {
+		return constructorInstance(pos, container, flags, argTypes, excTypes, Collections.<TypeVariable>emptyList(),
+				new ArrayList<RefQualification>());
+	}
 
-    @Override
-    public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
-            List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams,
-            List<RefQualification> inputQ) {
-        return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, typeParams, inputQ);
-    }
+	@Override
+	public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
+			List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams) {
+		return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, typeParams,
+				new ArrayList<RefQualification>());
+	}
 
-    @Override
-    public ConstructorInstance defaultConstructor(Position pos, ClassType container) {
-        assert_(container);
+	@Override
+	public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
+			List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams,
+			List<RefQualification> inputQ) {
+		return new GallifreyConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, typeParams, inputQ);
+	}
 
-        // access for the default constructor is determined by the
-        // access of the containing class. See the JLS, 2nd Ed., 8.8.7.
-        Flags access = Flags.NONE;
-        if (container.flags().isPrivate()) {
-            access = access.Private();
-        }
-        if (container.flags().isProtected()) {
-            access = access.Protected();
-        }
-        if (container.flags().isPublic()) {
-            access = access.Public();
-        }
-        return constructorInstance(pos, container, access, Collections.<Type>emptyList(), Collections.<Type>emptyList(),
-                Collections.<TypeVariable>emptyList(), Collections.<RefQualification>emptyList());
-    }
+	@Override
+	public ConstructorInstance defaultConstructor(Position pos, ClassType container) {
+		assert_(container);
 
-    // LOCAL INSTANCE
+		// access for the default constructor is determined by the
+		// access of the containing class. See the JLS, 2nd Ed., 8.8.7.
+		Flags access = Flags.NONE;
+		if (container.flags().isPrivate()) {
+			access = access.Private();
+		}
+		if (container.flags().isProtected()) {
+			access = access.Protected();
+		}
+		if (container.flags().isPublic()) {
+			access = access.Public();
+		}
+		return constructorInstance(pos, container, access, Collections.<Type>emptyList(), Collections.<Type>emptyList(),
+				Collections.<TypeVariable>emptyList(), Collections.<RefQualification>emptyList());
+	}
 
-    @Override
-    public GallifreyLocalInstance localInstance(Position pos, Flags flags, Type type, String name) {
-        // null qualification for now, fill in later
-        return new GallifreyLocalInstance_c(this, pos, flags, type, name, null);
-    }
+	// LOCAL INSTANCE
 
-    @Override
-    public GallifreyLocalInstance localInstance(Position pos, Flags flags, Type type, String name, RefQualification q) {
-        return new GallifreyLocalInstance_c(this, pos, flags, type, name, q);
-    }
+	@Override
+	public GallifreyLocalInstance localInstance(Position pos, Flags flags, Type type, String name) {
+		// null qualification for now, fill in later
+		return new GallifreyLocalInstance_c(this, pos, flags, type, name, null);
+	}
 
-    // FIELD INSTANCE
+	@Override
+	public GallifreyLocalInstance localInstance(Position pos, Flags flags, Type type, String name, RefQualification q) {
+		return new GallifreyLocalInstance_c(this, pos, flags, type, name, q);
+	}
 
-    @Override
-    public GallifreyFieldInstance fieldInstance(Position pos, ReferenceType container, Flags flags, Type type,
-            String name) {
-        return new GallifreyFieldInstance_c(this, pos, container, flags, type, name, null);
-    }
+	// FIELD INSTANCE
 
-    @Override
-    public GallifreyFieldInstance fieldInstance(Position pos, ReferenceType container, Flags flags, Type type,
-            String name, RefQualification q) {
-        return new GallifreyFieldInstance_c(this, pos, container, flags, type, name, q);
-    }
+	@Override
+	public GallifreyFieldInstance fieldInstance(Position pos, ReferenceType container, Flags flags, Type type,
+			String name) {
+		return new GallifreyFieldInstance_c(this, pos, container, flags, type, name, null);
+	}
 
-    // RESTRICTIONS
+	@Override
+	public GallifreyFieldInstance fieldInstance(Position pos, ReferenceType container, Flags flags, Type type,
+			String name, RefQualification q) {
+		return new GallifreyFieldInstance_c(this, pos, container, flags, type, name, q);
+	}
 
-    @Override
-    public void addRestrictionMapping(String restriction, String cls) throws SemanticException {
-        if (restrictionClassNameMap.containsKey(restriction)) {
-            throw new SemanticException("restriction " + restriction + " already exists!");
-        }
-        restrictionClassNameMap.put(restriction, cls);
-        allowedMethodsMap.put(restriction, new HashSet<String>());
-    }
+	// RESTRICTIONS
 
-    @Override
-    public String getClassNameForRestriction(String restriction) {
-        if (!restrictionClassNameMap.containsKey(restriction)) {
-            return null;
-        }
-        return restrictionClassNameMap.get(restriction);
-    }
+	@Override
+	public void addRestrictionMapping(String restriction, String cls) throws SemanticException {
+		if (restrictionClassNameMap.containsKey(restriction)) {
+			throw new SemanticException("restriction " + restriction + " already exists!");
+		}
+		restrictionClassNameMap.put(restriction, cls);
+		allowedMethodsMap.put(restriction, new HashSet<String>());
+	}
 
-    @Override
-    public void addRV(String union, List<String> restrictions) {
-        restrictionUnionMap.put(union, restrictions);
-    }
+	@Override
+	public String getClassNameForRestriction(String restriction) {
+		if (!restrictionClassNameMap.containsKey(restriction)) {
+			return null;
+		}
+		return restrictionClassNameMap.get(restriction);
+	}
 
-    @Override
-    public Set<String> getRVsForRestriction(String restriction) {
-        Set<String> rvs = new HashSet<>();
-        for (Entry<String, List<String>> pair : restrictionUnionMap.entrySet()) {
-            if (pair.getValue().contains(restriction)) {
-                rvs.add(pair.getKey());
-            }
-        }
-        return rvs;
-    }
+	@Override
+	public void addRV(String union, List<String> restrictions) {
+		restrictionUnionMap.put(union, restrictions);
+	}
 
-    @Override
-    public List<String> getRestrictionsForRV(String rv) {
-        if (!restrictionUnionMap.containsKey(rv)) {
-            return null;
-        }
-        return restrictionUnionMap.get(rv);
-    }
+	@Override
+	public Set<String> getRVsForRestriction(String restriction) {
+		Set<String> rvs = new HashSet<>();
+		for (Entry<String, List<String>> pair : restrictionUnionMap.entrySet()) {
+			if (pair.getValue().contains(restriction)) {
+				rvs.add(pair.getKey());
+			}
+		}
+		return rvs;
+	}
 
-    @Override
-    public boolean isRV(String restriction) {
-        return restrictionUnionMap.containsKey(restriction);
-    }
+	@Override
+	public List<String> getRestrictionsForRV(String rv) {
+		if (!restrictionUnionMap.containsKey(rv)) {
+			return null;
+		}
+		return restrictionUnionMap.get(rv);
+	}
 
-    @Override
-    public void addAllowedMethod(String restriction, String method) {
-        allowedMethodsMap.get(restriction).add(method);
-    }
+	@Override
+	public boolean isRV(String restriction) {
+		return restrictionUnionMap.containsKey(restriction);
+	}
 
-    @Override
-    public Set<String> getAllowedMethods(RestrictionId restriction) {
-        String rName = restriction.restriction().id();
-        return getAllowedMethods(rName);
-    }
+	@Override
+	public void addAllowedMethod(String restriction, String method) {
+		allowedMethodsMap.get(restriction).add(method);
+	}
 
-    @Override
-    public Set<String> getAllowedMethods(String rName) {
-        if (restrictionUnionMap.containsKey(rName)) {
-            return new HashSet<String>();
-        }
-        return allowedMethodsMap.get(rName);
-    }
+	@Override
+	public Set<String> getAllowedMethods(RestrictionId restriction) {
+		String rName = restriction.restriction().id();
+		return getAllowedMethods(rName);
+	}
 
-    @Override
-    public boolean restrictionExists(String name) {
-        return restrictionClassNameMap.containsKey(name) || restrictionUnionMap.containsKey(name);
-    }
+	@Override
+	public Set<String> getAllowedMethods(String rName) {
+		if (restrictionUnionMap.containsKey(rName)) {
+			return new HashSet<String>();
+		}
+		return allowedMethodsMap.get(rName);
+	}
 
-    @Override
-    public void addRestrictionClassType(String restriction, ClassType cls) {
-        restrictionClassTypeMap.put(restriction, cls);
-    }
+	@Override
+	public boolean restrictionExists(String name) {
+		return restrictionClassNameMap.containsKey(name) || restrictionUnionMap.containsKey(name);
+	}
 
-    @Override
-    public ClassType getRestrictionClassType(String restriction) {
-        if (isRV(restriction)) {
-            return getRestrictionClassType(restrictionUnionMap.get(restriction).iterator().next());
-        }
-        return restrictionClassTypeMap.get(restriction);
-    }
+	@Override
+	public void addRestrictionClassType(String restriction, ClassType cls) {
+		restrictionClassTypeMap.put(restriction, cls);
+	}
 
-    @Override
-    public boolean canBeShared(String className) {
-        for (Entry<String, String> pair : restrictionClassNameMap.entrySet()) {
-            if (pair.getValue().equals(className)) {
-                return true;
-            }
-        }
-        return false;
-    }
+	@Override
+	public ClassType getRestrictionClassType(String restriction) {
+		if (isRV(restriction)) {
+			return getRestrictionClassType(restrictionUnionMap.get(restriction).iterator().next());
+		}
+		return restrictionClassTypeMap.get(restriction);
+	}
 
-    // checking qualifications
+	@Override
+	public boolean canBeShared(String className) {
+		for (Entry<String, String> pair : restrictionClassNameMap.entrySet()) {
+			if (pair.getValue().equals(className)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    public GallifreyType checkArgs(GallifreyProcedureInstance pi, List<Expr> args) throws SemanticException {
-        boolean allMoves = true;
-        List<GallifreyType> params = pi.gallifreyInputTypes();
-        List<GallifreyType> argTypes = new ArrayList<>();
-        int nParams = params.size();
+	// checking qualifications
 
-        // TODO check owners
+	public GallifreyType checkArgs(GallifreyProcedureInstance pi, List<Expr> args) throws SemanticException {
+		boolean allMoves = true;
+		List<GallifreyType> params = pi.gallifreyInputTypes();
+		List<GallifreyType> argTypes = new ArrayList<>();
+		int nParams = params.size();
 
-        for (Expr e : args) {
-            GallifreyType gt = GallifreyExprExt.ext(e).gallifreyType();
-            if (!(gt.isMove())) {
-                allMoves = false;
-            }
-            argTypes.add(gt);
-        }
+		// TODO check owners
 
-        // First check that the number of arguments is reasonable
-        if (argTypes.size() != pi.formalTypes().size()) {
-            // the actual args don't match the number of the formal args.
-            if (!(pi.isVariableArity() && argTypes.size() >= pi.formalTypes().size() - 1)) {
-                // the last (variable) argument can consume 0 or more of the actual arguments.
-                throw new SemanticException("invalid number of arguments");
-            }
-        }
+		for (Expr e : args) {
+			GallifreyType gt = GallifreyExprExt.ext(e).gallifreyType();
+			if (!(gt.isMove())) {
+				allMoves = false;
+			}
+			argTypes.add(gt);
+		}
 
-        // HACK: assume imported functions take in all-locals
-        if (nParams == 0) {
-            params.add(new GallifreyType(new LocalRef(Position.COMPILER_GENERATED)));
-        }
+		// First check that the number of arguments is reasonable
+		if (argTypes.size() != pi.formalTypes().size()) {
+			// the actual args don't match the number of the formal args.
+			if (!(pi.isVariableArity() && argTypes.size() >= pi.formalTypes().size() - 1)) {
+				// the last (variable) argument can consume 0 or more of the actual arguments.
+				throw new SemanticException("invalid number of arguments");
+			}
+		}
 
-        for (int i = 0; i < argTypes.size(); i++) {
-            GallifreyType argType = argTypes.get(i);
-            GallifreyType paramType = params.get(Math.min(i, params.size() - 1));
+		// HACK: assume imported functions take in all-locals
+		if (nParams == 0) {
+			params.add(new GallifreyType(new LocalRef(Position.COMPILER_GENERATED)));
+		}
 
-            if (!checkQualifications(argType, paramType)) {
-                throw new SemanticException("invalid argument qualification - expected: " + paramType.qualification
-                        + ", got: " + argType.qualification);
-            }
-        }
+		for (int i = 0; i < argTypes.size(); i++) {
+			GallifreyType argType = argTypes.get(i);
+			GallifreyType paramType = params.get(Math.min(i, params.size() - 1));
 
-        if (allMoves || (args.size() == 0 && nParams == 0)) {
-            return new GallifreyType(new MoveRef(Position.COMPILER_GENERATED));
-        } else {
-            return new GallifreyType(new LocalRef(Position.COMPILER_GENERATED));
-        }
-    }
+			if (!checkQualifications(argType, paramType)) {
+				throw new SemanticException("invalid argument qualification - expected: " + paramType.qualification
+						+ ", got: " + argType.qualification);
+			}
+		}
 
-    // checkQualifications(from,to) returns if b:to = a:from is legal
-    public boolean checkQualifications(GallifreyType fromType, GallifreyType toType) {
-        if (fromType == null || toType == null) {
-            throw new IllegalArgumentException("null GallifreyType");
-        }
-        if (fromType.isMove() || toType.qualification.isAny()) {
-            return true;
-        }
+		if (allMoves || (args.size() == 0 && nParams == 0)) {
+			return new GallifreyType(new MoveRef(Position.COMPILER_GENERATED));
+		} else {
+			return new GallifreyType(new LocalRef(Position.COMPILER_GENERATED));
+		}
+	}
 
-        if (fromType.isLocal() && toType.isLocal()) {
-            return true;
-        }
+	// checkQualifications(from,to) returns if b:to = a:from is legal
+	public boolean checkQualifications(GallifreyType fromType, GallifreyType toType) {
+		if (fromType == null || toType == null) {
+			throw new IllegalArgumentException("null GallifreyType");
+		}
+		if (fromType.isMove() || toType.qualification.isAny()) {
+			return true;
+		}
 
-        // is this correct?
-        if (fromType.isShared() && toType.isShared()) {
-            RestrictionId from = ((SharedRef) fromType.qualification).restriction();
-            RestrictionId to = ((SharedRef) toType.qualification).restriction();
-            // RV = RV::R is legal
-            if (to.rv() == null && from.rv() != null && to.restriction().id().equals(from.rv().id())) {
-                return true;
-            }
-            return fromType.qualification.equals(toType.qualification);
-        }
+		if (fromType.isLocal() && toType.isLocal()) {
+			return true;
+		}
 
-        return false;
-    }
+		// is this correct?
+		if (fromType.isShared() && toType.isShared()) {
+			RestrictionId from = ((SharedRef) fromType.qualification).restriction();
+			RestrictionId to = ((SharedRef) toType.qualification).restriction();
+			// RV = RV::R is legal
+			if (to.rv() == null && from.rv() != null && to.restriction().id().equals(from.rv().id())) {
+				return true;
+			}
+			return fromType.qualification.equals(toType.qualification);
+		}
 
-    // Casting
+		return false;
+	}
 
-    protected boolean isCastValidFromArray(ArrayType arrayType, Type toType) {
-        if (toType.isArray()) {
-            ArrayType toArrayType = toType.toArray();
-            if (arrayType.base().isPrimitive() && arrayType.base().equals(toArrayType.base())) {
-                return true;
-            }
-            if (arrayType.base().isReference() && toArrayType.base().isReference()) {
-                // modified from JL5TypeSystem
-                return typeEquals(arrayType.base(), toArrayType.base());
-            }
-        }
-        return super.isCastValidFromArray(arrayType, toType);
-    }
+	// Casting
 
-    public List<RefQualification> normalizeLocals(List<RefQualification> qualifications) {
-        int counter = 0;
-        Map<String, Integer> ownerMap = new HashMap<>();
-        List<RefQualification> result = new ArrayList<>();
-        for (RefQualification q : qualifications) {
-            if (q.isLocal()) {
-                LocalRef l = (LocalRef) q;
-                if (!ownerMap.containsKey(l.ownerAnnotation)) {
-                    counter++;
-                    ownerMap.put(l.ownerAnnotation, counter);
-                }
-                String ownerName = "OWNER_" + ownerMap.get(l.ownerAnnotation);
-                result.add(new LocalRef(l.position(), ownerName));
-            } else {
-                result.add(q);
-            }
-        }
-        return result;
-    }
-    
-    // region maps TODO
-    
-    public void regionMapEnter() {
-        if (this.currentMap == null) {
-            this.currentMap = new RegionMap(this.currentMap);
-        } else {
-            this.currentMap = this.currentMap.addChild();
-        }
-    }
-    
-    public void regionMapLeave() {
-        this.currentMap = this.currentMap.parent;
-    }
-    
-    public RegionMap currentMap() {
-        return this.currentMap;
-    }
-    
-    public boolean isValidRegion(Region r) {
-        return this.heapctx.isValidRegion(r);
-    }
-    
-    public Region trueNew() {
-        return this.heapctx.trueNew();
-    }
-    
-    public void regionAssign(Expr lhs, Region lhsRegion, Region rhsRegion) {
-        this.heapctx.regionAssign(lhs, lhsRegion, rhsRegion);
-    }
-    
-    public Region regionApply(GallifreyMethodInstance mi, Region...inputRegions) {
-        return this.heapctx.regionApply(mi, inputRegions);
-    }
+	protected boolean isCastValidFromArray(ArrayType arrayType, Type toType) {
+		if (toType.isArray()) {
+			ArrayType toArrayType = toType.toArray();
+			if (arrayType.base().isPrimitive() && arrayType.base().equals(toArrayType.base())) {
+				return true;
+			}
+			if (arrayType.base().isReference() && toArrayType.base().isReference()) {
+				// modified from JL5TypeSystem
+				return typeEquals(arrayType.base(), toArrayType.base());
+			}
+		}
+		return super.isCastValidFromArray(arrayType, toType);
+	}
+
+	public List<RefQualification> normalizeLocals(List<RefQualification> qualifications) {
+		int counter = 0;
+		Map<String, Integer> ownerMap = new HashMap<>();
+		List<RefQualification> result = new ArrayList<>();
+		for (RefQualification q : qualifications) {
+			if (q.isLocal()) {
+				LocalRef l = (LocalRef) q;
+				if (!ownerMap.containsKey(l.ownerAnnotation)) {
+					counter++;
+					ownerMap.put(l.ownerAnnotation, counter);
+				}
+				String ownerName = "OWNER_" + ownerMap.get(l.ownerAnnotation);
+				result.add(new LocalRef(l.position(), ownerName));
+			} else {
+				result.add(q);
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public boolean isValidRegion(Region_c r) {
+		return this.region_context.heapctx.isValidRegion(r);
+	}
+
+	@Override
+	public Region_c trueNew() {
+		return this.region_context.heapctx.trueNew();
+	}
+
+	@Override
+	public void regionAssign(Expr lhs, Region_c lhsRegion, Region_c rhsRegion) {
+		this.region_context.heapctx.regionAssign(lhs, lhsRegion, rhsRegion);
+	}
+
+	@Override
+	public RegionFunctionReturns regionApply(RegionFunctionType_c mi, List<Region_c> inputRegions) {
+		return this.region_context.heapctx.regionApply(mi, inputRegions);
+	}
+
+	@Override
+	public void push_regionContext(){
+		region_context= new RegionContext(region_context);
+	}
+
+	@Override
+	public RegionContext pop_regionContext(){
+		RegionContext ret = region_context;
+		assert(ret.prev != null);
+		region_context = ret.prev;
+		return ret;
+	}
+	
+	@Override
+	public RegionContext region_context() {
+		return this.region_context;
+	
+	}
+	
+	@Override
+	public RegionContext region_context(RegionContext region_context) {
+		this.region_context = region_context;
+		return region_context;
+	
+	}
+
 }

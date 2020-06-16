@@ -58,7 +58,7 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
 
     @Override
     public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
-        List<Term> t_branches = new ArrayList<>(branches);
+        List<Term> t_branches = new ArrayList<Term>(branches);
         for (MatchBranch b : branches()) {
             t_branches.add(b);
         }

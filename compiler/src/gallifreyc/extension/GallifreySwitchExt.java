@@ -28,7 +28,10 @@ public class GallifreySwitchExt extends GallifreyExt {
         
         // visit children
         Expr expr = visitChild(node().expr(), gtc);
+        throw new UnsupportedOperationException("no switch for now");
+        /*
         ts.regionMapEnter();
+        //Switch statements are actually pretty complicated here, because of fallthrough. I would prefer not to support them at all. 
         List<SwitchElement> elements = visitList(node().elements(), gtc);
         ts.regionMapLeave();
         Node n = node().expr(expr).elements(elements);
@@ -41,5 +44,6 @@ public class GallifreySwitchExt extends GallifreyExt {
             if (e.position() == null) e.setPosition(n.position());
             throw e;
         }
+        */
     }  
 }
