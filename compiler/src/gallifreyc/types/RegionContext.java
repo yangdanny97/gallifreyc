@@ -12,6 +12,7 @@ public class RegionContext{
     public RegionContext(RegionContext previous){
 	this.vars_to_regions = previous.vars_to_regions.clone();
 	this.heapctx = ((HeapContext_c)previous.heapctx).clone();
+	this.prev = previous;
     }
     
     public RegionContext(){}

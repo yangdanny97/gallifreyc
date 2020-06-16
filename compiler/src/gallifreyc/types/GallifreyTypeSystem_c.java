@@ -374,7 +374,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 
 	@Override
 	public void push_regionContext(){
-		region_context= new RegionContext(region_context);
+		region_context = new RegionContext(region_context);
 	}
 
 	@Override
