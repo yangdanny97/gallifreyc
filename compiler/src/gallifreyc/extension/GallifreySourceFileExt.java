@@ -1,14 +1,23 @@
 package gallifreyc.extension;
 
+import java.net.URI;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import javax.tools.FileObject;
+import javax.tools.JavaFileObject;
 
 import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.RestrictionDecl;
 import gallifreyc.ast.RestrictionUnionDecl;
+import gallifreyc.translate.GallifreyGeneratedSource;
 import gallifreyc.translate.GallifreyRewriter;
 import polyglot.ast.*;
 import polyglot.ast.Import.Kind;
 import polyglot.ext.jl5.ast.JL5Import;
+import polyglot.filemanager.ExtFileObject;
+import polyglot.frontend.Source;
+import polyglot.frontend.Source_c;
 import polyglot.types.*;
 import polyglot.util.*;
 import polyglot.visit.NodeVisitor;
@@ -28,6 +37,19 @@ public class GallifreySourceFileExt extends GallifreyExt {
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         return superLang().buildTypes(node(), tb);
     }
+    
+    private Source getSourceFromParent(Source parent, ClassDecl d) {
+        List<String> parentURI = Arrays.asList(parent.toString().split("/"));
+        List<String> baseURI = new ArrayList<>();
+        for (int i = 0; i < parentURI.size() - 1; i++) {
+            baseURI.add(parentURI.get(i));
+        }
+        baseURI.add(d.name() + ".gal");
+        String uristring = "file:" + String.join("/", baseURI);
+        FileObject fo = new ExtFileObject(URI.create(uristring), JavaFileObject.Kind.OTHER);
+        
+        return new GallifreyGeneratedSource(fo);
+    }
 
     @Override
     public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
@@ -43,10 +65,26 @@ public class GallifreySourceFileExt extends GallifreyExt {
         imports.add(nf.Import(p, Import.SINGLE_TYPE, "java.util.Arrays"));
         imports.add(nf.Import(p, Import.SINGLE_TYPE, "java.util.ArrayList"));
 
-        List<TopLevelDecl> decls = new ArrayList<TopLevelDecl>(rw.generatedClasses);
-        decls.addAll(sf.decls());
+        List<TopLevelDecl> decls = new ArrayList<TopLevelDecl>();
+        for (TopLevelDecl d : sf.decls()) {
+            if (d != null) {
+                decls.add(d);
+            }
+        }
+        sf = sf.imports(imports).decls(decls);
+        
+        List<SourceFile> sources = new ArrayList<SourceFile>();
+        sources.add(sf);
+        
+        for (ClassDecl d : rw.generatedClasses) {
+            List<TopLevelDecl> generatedDecl = new ArrayList<>();
+            generatedDecl.add(d);
+            SourceFile generatedSource = nf.SourceFile(p, new ArrayList<>(imports), generatedDecl)
+                    .source(getSourceFromParent(sf.source(), d));
+            sources.add(generatedSource);
+        }
 
-        return sf.imports(imports).decls(decls);
+        return nf.SourceCollection(p, sources);
     }
 
     @Override

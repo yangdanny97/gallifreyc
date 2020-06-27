@@ -21,7 +21,8 @@ public class GallifreyRestrictionDeclExt extends GallifreyExt {
     @Override
     public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
         rw.genRestrictionInterface(node());
-        return rw.genRestrictionImplClass(node());
+        rw.genRestrictionImplClass(node());
+        return null;
     }
 
 }

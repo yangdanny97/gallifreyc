@@ -59,7 +59,7 @@ non terminal RestrictionId restriction_id;
 non terminal MatchBranch match_branch;
 non terminal List<MatchBranch> match_branch_list;
 
-// missing: where, merge, match, collection/next, thread, when, branch, peek, abort, commit
+// missing: where, merge, collection/next, thread, when, branch, peek, abort, commit
 
 start with goal;
 

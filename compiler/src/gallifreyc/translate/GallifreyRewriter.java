@@ -295,9 +295,10 @@ public class GallifreyRewriter extends GRewriter {
         ClassBody sharedBody = nf.ClassBody(p, sharedMembers);
 
         // class R extends Shared implements Serializable (flags are same as C)
-        ClassDecl sharedDecl = nf.ClassDecl(p, Flags.NONE, nf.Id(p, rName + "_impl"), null, interfaces, sharedBody,
+        ClassDecl sharedDecl = nf.ClassDecl(p, Flags.PUBLIC, nf.Id(p, rName + "_impl"), null, interfaces, sharedBody,
                 nf.Javadoc(p, "// Concrete restriction class for " + rName));
 
+        this.generatedClasses.add(sharedDecl);
         return sharedDecl;
     }
 
@@ -409,7 +410,7 @@ public class GallifreyRewriter extends GRewriter {
 
         ClassBody body = nf.ClassBody(p, members);
 
-        ClassDecl RVImpl = nf.ClassDecl(p, Flags.NONE, nf.Id(p, rv + "_" + restriction + "_impl"), 
+        ClassDecl RVImpl = nf.ClassDecl(p, Flags.PUBLIC, nf.Id(p, rv + "_" + restriction + "_impl"), 
                 nf.TypeNodeFromQualifiedName(p, rv), interfaces,
                 body, nf.Javadoc(p, "// Restriction class for " + rv + "::" + restriction));
 
@@ -428,7 +429,7 @@ public class GallifreyRewriter extends GRewriter {
         interfaces.add(nf.TypeNodeFromQualifiedName(p, "Shared"));
 
         ClassBody body = nf.ClassBody(p, members);
-        ClassDecl rvHolder = nf.ClassDecl(p, Flags.INTERFACE, nf.Id(p, d.name() + "_holder"), null, interfaces, body,
+        ClassDecl rvHolder = nf.ClassDecl(p, Flags.PUBLIC.Interface(), nf.Id(p, d.name() + "_holder"), null, interfaces, body,
                 nf.Javadoc(p, "// RV holder interface class for " + d.name()));
 
         // add to generated classes
@@ -540,9 +541,10 @@ public class GallifreyRewriter extends GRewriter {
 
         ClassBody body = nf.ClassBody(p, members);
 
-        ClassDecl RInterface = nf.ClassDecl(p, Flags.NONE, nf.Id(p, name), null, interfaces, body,
+        ClassDecl RInterface = nf.ClassDecl(p, Flags.PUBLIC, nf.Id(p, name), null, interfaces, body,
                 nf.Javadoc(p, "// Restriction interface class for " + name));
 
+        this.generatedClasses.add(RInterface);
         return RInterface;
     }
 
@@ -579,7 +581,7 @@ public class GallifreyRewriter extends GRewriter {
 
         ClassBody body = nf.ClassBody(p, members);
 
-        ClassDecl RVInterface = nf.ClassDecl(p, Flags.INTERFACE, nf.Id(p, rv + "_" + restriction), null, interfaces,
+        ClassDecl RVInterface = nf.ClassDecl(p, Flags.PUBLIC.Interface(), nf.Id(p, rv + "_" + restriction), null, interfaces,
                 body, nf.Javadoc(p, "// Restriction interface class for " + rv + "::" + restriction));
 
         this.generatedClasses.add(RVInterface);

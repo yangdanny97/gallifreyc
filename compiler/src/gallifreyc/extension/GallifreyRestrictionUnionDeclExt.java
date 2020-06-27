@@ -27,7 +27,8 @@ public class GallifreyRestrictionUnionDeclExt extends GallifreyExt {
             rw.genRVSubrestrictionInterface(node().name(), subRestriction);
             rw.genRVSubrestrictionImpl(node().name(), subRestriction);
         }
-        return rw.genRVClass(node());
+        rw.genRVClass(node());
+        return null;
     }
 
 }
