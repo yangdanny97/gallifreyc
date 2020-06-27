@@ -2,7 +2,6 @@ package gallifreyc.extension;
 
 import java.net.URI;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
@@ -17,7 +16,6 @@ import polyglot.ast.Import.Kind;
 import polyglot.ext.jl5.ast.JL5Import;
 import polyglot.filemanager.ExtFileObject;
 import polyglot.frontend.Source;
-import polyglot.frontend.Source_c;
 import polyglot.types.*;
 import polyglot.util.*;
 import polyglot.visit.NodeVisitor;

@@ -1,15 +1,11 @@
 package gallifreyc.extension;
 
-import java.util.List;
-
 import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.Expr;
 import polyglot.ast.Node;
 import polyglot.ast.Switch;
-import polyglot.ast.SwitchElement;
 import polyglot.types.SemanticException;
-import polyglot.util.InternalCompilerError;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
 
