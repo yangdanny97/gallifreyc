@@ -138,6 +138,7 @@ import java.util.Set;
         keywords.put("where",             new Integer(sym.WHERE));
         keywords.put("with",              new Integer(sym.WITH));
         keywords.put("move",              new Integer(sym.MOVE));
+        keywords.put("as",              new Integer(sym.AS));
     }
 
     @Override

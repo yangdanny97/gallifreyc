@@ -109,14 +109,28 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
 
     @Override
     public AllowsStmt AllowsStmt(Position pos, Id id) {
-        AllowsStmt s = new AllowsStmt_c(pos, id, null);
+        AllowsStmt s = new AllowsStmt_c(pos, id, null, false);
         s = ext(s, extFactory().extAllowsStmt());
         return s;
     }
 
     @Override
     public AllowsStmt AllowsStmt(Position pos, Id id, Id contingent_id) {
-        AllowsStmt s = new AllowsStmt_c(pos, id, contingent_id);
+        AllowsStmt s = new AllowsStmt_c(pos, id, contingent_id, false);
+        s = ext(s, extFactory().extAllowsStmt());
+        return s;
+    }
+    
+    @Override
+    public AllowsStmt AllowsStmt(Position pos, Id id, Id contingent_id, boolean testOnly) {
+        AllowsStmt s = new AllowsStmt_c(pos, id, contingent_id, testOnly);
+        s = ext(s, extFactory().extAllowsStmt());
+        return s;
+    }
+    
+    @Override
+    public AllowsStmt AllowsStmt(Position pos, Id id, boolean testOnly) {
+        AllowsStmt s = new AllowsStmt_c(pos, id, null, testOnly);
         s = ext(s, extFactory().extAllowsStmt());
         return s;
     }

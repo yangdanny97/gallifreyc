@@ -22,8 +22,14 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 	// restriction name -> allowed methods
 	public Map<String, Set<String>> allowedMethodsMap = new HashMap<>();
 
+	   // restriction name -> allowed test methods (the ones only allowed as tests)
+    public Map<String, Set<String>> allowedTestMethodsMap = new HashMap<>();
+	
 	// restriction variant names -> governed restriction names
 	public Map<String, List<String>> restrictionUnionMap = new HashMap<>();
+	
+	// set of merge decls for each restriction
+	public Map<String, Set<MergeDecl>> mergeDecls = new HashMap<>();
 
     public RegionContext region_context = new RegionContext();
 
@@ -194,23 +200,57 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 	}
 
 	@Override
-	public void addAllowedMethod(String restriction, String method) {
-		allowedMethodsMap.get(restriction).add(method);
+	public void addAllowedTestMethod(String restriction, String method) {
+		allowedTestMethodsMap.get(restriction).add(method);
 	}
 
 	@Override
-	public Set<String> getAllowedMethods(RestrictionId restriction) {
+	public Set<String> getAllowedTestMethods(RestrictionId restriction) {
 		String rName = restriction.restriction().id();
-		return getAllowedMethods(rName);
+		return getAllowedTestMethods(rName);
 	}
 
 	@Override
-	public Set<String> getAllowedMethods(String rName) {
+	public Set<String> getAllowedTestMethods(String rName) {
 		if (restrictionUnionMap.containsKey(rName)) {
 			return new HashSet<String>();
 		}
-		return allowedMethodsMap.get(rName);
+		Set<String> set = new HashSet<>(allowedTestMethodsMap.get(rName));
+		set.addAll(allowedMethodsMap.get(rName));
+		return set;
 	}
+	
+   @Override
+    public void addAllowedMethod(String restriction, String method) {
+        allowedMethodsMap.get(restriction).add(method);
+    }
+
+    @Override
+    public Set<String> getAllowedMethods(RestrictionId restriction) {
+        String rName = restriction.restriction().id();
+        return getAllowedMethods(rName);
+    }
+
+    @Override
+    public Set<String> getAllowedMethods(String rName) {
+        if (restrictionUnionMap.containsKey(rName)) {
+            return new HashSet<String>();
+        }
+        return allowedMethodsMap.get(rName);
+    }
+    
+    @Override
+    public void addMergeDecl(String restriction, MergeDecl md) {
+        if (!mergeDecls.containsKey(restriction)) {
+            mergeDecls.put(restriction, new HashSet<MergeDecl>());
+        }
+        mergeDecls.get(restriction).add(md);
+    }
+    
+    @Override
+    public Set<MergeDecl> getMergeDecls(String restriction) {
+        return mergeDecls.get(restriction);
+    }
 
 	@Override
 	public boolean restrictionExists(String name) {

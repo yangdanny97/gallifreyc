@@ -40,6 +40,7 @@ terminal Token WHERE;
 terminal Token WITH;
 terminal Token ARROW;
 terminal Token MOVE;
+terminal Token AS;
 
 // Reference Qualifications (local, unique, shared)
 non terminal PreCondition pre_condition_opt;
@@ -284,6 +285,13 @@ allows_stmt ::=
 	{: RESULT = parser.nf.AllowsStmt(parser.pos(a, b),
 	                                 parser.nf.Id(parser.pos(b), b.getIdentifier()),
 	                                 parser.nf.Id(parser.pos(c), c.getIdentifier())); :}
+    | ALLOWS:a AS TEST IDENTIFIER:b
+    {: RESULT = parser.nf.AllowsStmt(parser.pos(a, b),
+                                     parser.nf.Id(parser.pos(b), b.getIdentifier()), true); :}
+    | ALLOWS:a AS TEST IDENTIFIER:b CONTINGENT IDENTIFIER:c
+    {: RESULT = parser.nf.AllowsStmt(parser.pos(a, b),
+                                     parser.nf.Id(parser.pos(b), b.getIdentifier()),
+                                     parser.nf.Id(parser.pos(c), c.getIdentifier()), true); :}
 ;
 
 // tests in restrictions

@@ -51,6 +51,10 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     AllowsStmt AllowsStmt(Position pos, Id id);
 
     AllowsStmt AllowsStmt(Position pos, Id id, Id contingent_id);
+    
+    AllowsStmt AllowsStmt(Position pos, Id id, Id contingent_id, boolean testOnly);
+    
+    AllowsStmt AllowsStmt(Position pos, Id id, boolean testOnly);
 
     MethodDecl MethodDecl(Position pos, FlagAnnotations flags, TypeNode returnType, Id name, List<Formal> formals,
             List<TypeNode> throwTypes, Block body, boolean isTest);

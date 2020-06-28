@@ -24,6 +24,8 @@ import polyglot.ast.MethodDecl;
 import polyglot.ast.Node;
 import polyglot.ast.ProcedureDeclOps;
 import polyglot.ast.TypeNode;
+import polyglot.types.ClassType;
+import polyglot.types.Context;
 import polyglot.types.Flags;
 import polyglot.types.SemanticException;
 import polyglot.util.CodeWriter;
@@ -42,6 +44,8 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
     public PostCondition post;
     // Is this MethodDecl a test method (inside a restriction)
     public boolean isTest;
+    
+    protected ClassType currentRestrictionClass = null; // non-null only for test methods
 
     PreCondition pre() {
         return pre;
@@ -109,7 +113,11 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
 
     @Override
     public NodeVisitor typeCheckEnter(TypeChecker tc) throws SemanticException {
-        assert(((GallifreyTypeChecker) tc).typeSystem().region_context().isEmpty());
+        GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
+        assert(gtc.typeSystem().region_context().isEmpty());
+        if (this.isTest) {
+            this.currentRestrictionClass = gtc.currentRestrictionClass;
+        }
         return superLang().typeCheckEnter(node(), tc);
     }
 
@@ -117,7 +125,7 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         GallifreyTypeSystem ts = ((GallifreyTypeChecker) tc).typeSystem();
         ts.region_context(new RegionContext());
-        if (this.isTest&& !ts.typeEquals(ts.Boolean(), node().returnType().type())) {
+        if (this.isTest && !ts.typeEquals(ts.Boolean(), node().returnType().type())) {
             throw new SemanticException("Test methods must return boolean", node().position());
         }
         return superLang().typeCheck(node(), tc);
@@ -143,5 +151,13 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
     @Override
     public void prettyPrintHeader(Flags flags, CodeWriter w, PrettyPrinter tr) {
         superLang().prettyPrintHeader(node(), flags, w, tr);
+    }
+    
+    @Override
+    public Context enterScope(Context c) {
+        if (this.isTest) {
+            return c.pushClass(null, this.currentRestrictionClass);
+        }
+        return superLang().enterScope(node(), c);
     }
 }

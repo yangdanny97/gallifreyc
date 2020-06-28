@@ -16,6 +16,7 @@ import polyglot.ast.Node;
 import polyglot.ast.NodeFactory;
 import polyglot.frontend.Job;
 import polyglot.frontend.goals.Goal;
+import polyglot.types.ClassType;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.types.TypeSystem;
@@ -24,7 +25,7 @@ import polyglot.visit.TypeChecker;
 
 // overwrite any typechecker operations
 public class GallifreyTypeChecker extends TypeChecker {
-    public Type currentRestrictionClass;
+    public ClassType currentRestrictionClass;
     public String currentRestriction;
 
     public GallifreyTypeChecker(Job job, TypeSystem ts, NodeFactory nf) {

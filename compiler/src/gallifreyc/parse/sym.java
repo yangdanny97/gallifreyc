@@ -35,6 +35,7 @@ public class sym {
   public static final int MATCH_RESTRICTION = 118;
   public static final int WHERE = 128;
   public static final int CASE = 46;
+  public static final int AS = 132;
   public static final int AT = 111;
   public static final int RSHIFTEQ = 89;
   public static final int ELLIPSIS = 109;
@@ -272,7 +273,8 @@ public class sym {
   "WHERE",
   "WITH",
   "ARROW",
-  "MOVE"
+  "MOVE",
+  "AS"
   };
 }
 

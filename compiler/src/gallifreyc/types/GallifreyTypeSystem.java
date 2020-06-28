@@ -1,8 +1,10 @@
 package gallifreyc.types;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import gallifreyc.ast.MergeDecl;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RestrictionId;
 import polyglot.ast.Expr;
@@ -19,52 +21,66 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
 
     // restriction name -> class name
 
-    public void addRestrictionMapping(String restriction, String cls) throws SemanticException;
+    void addRestrictionMapping(String restriction, String cls) throws SemanticException;
 
-    public String getClassNameForRestriction(String restriction);
+    String getClassNameForRestriction(String restriction);
 
     // RVs
 
-    public void addRV(String union, List<String> restrictions);
+    void addRV(String union, List<String> restrictions);
 
-    public List<String> getRestrictionsForRV(String rv);
+    List<String> getRestrictionsForRV(String rv);
 
-    public boolean isRV(String restriction);
+    boolean isRV(String restriction);
 
-    public Set<String> getRVsForRestriction(String restriction);
+    Set<String> getRVsForRestriction(String restriction);
 
     // restriction name -> allowed methods
 
-    public void addAllowedMethod(String restriction, String method);
+    void addAllowedMethod(String restriction, String method);
 
-    public Set<String> getAllowedMethods(RestrictionId restriction);
+    Set<String> getAllowedMethods(RestrictionId restriction);
 
-    public Set<String> getAllowedMethods(String name);
+    Set<String> getAllowedMethods(String name);
+    
+    // allowed test methods (includes allowed methods)
+    
+    void addAllowedTestMethod(String restriction, String method);
 
-    public boolean restrictionExists(String name);
+    Set<String> getAllowedTestMethods(RestrictionId restriction);
+
+    Set<String> getAllowedTestMethods(String name);
+
+    boolean restrictionExists(String name);
 
     // restriction name -> class type
 
-    public void addRestrictionClassType(String restriction, ClassType cls);
+    void addRestrictionClassType(String restriction, ClassType cls);
 
-    public ClassType getRestrictionClassType(String restriction);
+    ClassType getRestrictionClassType(String restriction);
 
+    // merge decls
+
+    public void addMergeDecl(String restriction, MergeDecl md);
+    
+    public Set<MergeDecl> getMergeDecls(String restriction);
+    
     // instances
 
-    public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
+    GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
             String name, List<? extends Type> argTypes, List<? extends Type> excTypes, List<RefQualification> inputQ,
             RefQualification returnQ);
 
-    public GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
+    GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
             String name, List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams,
             List<RefQualification> inputQ, RefQualification returnQ);
 
-    public GallifreyLocalInstance localInstance(Position pos, Flags flags, Type type, String name, RefQualification q);
+    GallifreyLocalInstance localInstance(Position pos, Flags flags, Type type, String name, RefQualification q);
 
-    public GallifreyFieldInstance fieldInstance(Position pos, ReferenceType container, Flags flags, Type type,
+    GallifreyFieldInstance fieldInstance(Position pos, ReferenceType container, Flags flags, Type type,
             String name, RefQualification q);
 
-    public GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
+    GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
             List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams,
             List<RefQualification> inputQ);
 
@@ -72,14 +88,14 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
 
     // check args of a function call, calculate the qualification of the returned
     // value
-    public GallifreyType checkArgs(GallifreyProcedureInstance pi, List<Expr> args) throws SemanticException;
+    GallifreyType checkArgs(GallifreyProcedureInstance pi, List<Expr> args) throws SemanticException;
 
     // check qualifications as if we were doing an assignment of toType = fromType
-    public boolean checkQualifications(GallifreyType fromType, GallifreyType toType);
+    boolean checkQualifications(GallifreyType fromType, GallifreyType toType);
 
-    public List<RefQualification> normalizeLocals(List<RefQualification> qualifications);
+    List<RefQualification> normalizeLocals(List<RefQualification> qualifications);
 
-    public boolean canBeShared(String className);
+    boolean canBeShared(String className);
 
 	void push_regionContext();
 
@@ -88,7 +104,5 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
 	RegionContext region_context();
 
 	RegionContext region_context(RegionContext region_context);
-
-
     
 }

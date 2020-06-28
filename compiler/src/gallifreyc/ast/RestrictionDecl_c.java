@@ -7,6 +7,7 @@ import gallifreyc.visit.GallifreyTypeBuilder;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.*;
 import polyglot.types.ClassType;
+import polyglot.types.Context;
 import polyglot.types.Flags;
 import polyglot.types.SemanticException;
 import polyglot.util.CodeWriter;
@@ -123,13 +124,14 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
         GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
 
         this.forClass = (TypeNode) lang().typeCheck(forClass, gtc);
-        gtc.currentRestriction = id.id();
-        gtc.currentRestrictionClass = forClass.type();
 
         if (!(forClass.type() != null && forClass.type() instanceof ClassType)) {
             throw new SemanticException(
                     "Restriction " + id.id() + " for " + forClass.type() + " must be for a valid class", this.position);
         }
+        
+        gtc.currentRestriction = id.id();
+        gtc.currentRestrictionClass = (ClassType) forClass.type();
 
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
         ts.addRestrictionClassType(id.id(), (ClassType) forClass.type());
