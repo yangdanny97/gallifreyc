@@ -172,4 +172,18 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
         m = ext(m, extFactory().extMove());
         return m;
     }
+    
+    @Override
+    public MergeDecl MergeDecl(Position pos, Id method1, List<Formal> method1Formals, Id method2, List<Formal> method2Formals, Block body) {
+        MergeDecl m = new MergeDecl_c(pos, method1, method1Formals, method2, method2Formals, body);
+        m = ext(m, extFactory().extMergeDecl());
+        return m;
+    }
+    
+    @Override
+    public WhenStmt WhenStmt(Position pos, Expr expr, Stmt body) {
+        WhenStmt w = new WhenStmt_c(pos, expr, body);
+        w = ext(w, extFactory().extWhenStmt());
+        return w;
+    }
 }

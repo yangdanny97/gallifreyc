@@ -15,6 +15,7 @@ import gallifreyc.ast.SharedRef;
 import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyMethodInstance;
 import gallifreyc.types.GallifreyType;
+import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.types.RegionContext;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.CanonicalTypeNode;
@@ -114,7 +115,11 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        ((GallifreyTypeChecker) tc).typeSystem().region_context(new RegionContext());
+        GallifreyTypeSystem ts = ((GallifreyTypeChecker) tc).typeSystem();
+        ts.region_context(new RegionContext());
+        if (this.isTest&& !ts.typeEquals(ts.Boolean(), node().returnType().type())) {
+            throw new SemanticException("Test methods must return boolean", node().position());
+        }
         return superLang().typeCheck(node(), tc);
     }
 

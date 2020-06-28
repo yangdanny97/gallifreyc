@@ -255,6 +255,36 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         e = composeExts(e, e2);
         return postExtMatchRestriction(e);
     }
+    
+    public final Ext extWhenStmt() {
+        Ext e = extWhenStmtImpl();
+
+        ExtFactory nextEF = nextExtFactory();
+        Ext e2;
+        if (nextEF instanceof GallifreyExtFactory) {
+            e2 = ((GallifreyExtFactory) nextEF).extWhenStmt();
+        } else {
+            e2 = nextEF.extStmt();
+        }
+
+        e = composeExts(e, e2);
+        return postExtWhenStmt(e);
+    }
+    
+    public final Ext extMergeDecl() {
+        Ext e = extMergeDeclImpl();
+
+        ExtFactory nextEF = nextExtFactory();
+        Ext e2;
+        if (nextEF instanceof GallifreyExtFactory) {
+            e2 = ((GallifreyExtFactory) nextEF).extMergeDecl();
+        } else {
+            e2 = nextEF.extNode();
+        }
+
+        e = composeExts(e, e2);
+        return postExtMergeDecl(e);
+    }
 
     // IMPL
 
@@ -321,6 +351,14 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     protected Ext extMatchRestrictionImpl() {
         return extStmt();
     }
+    
+    protected Ext extWhenStmtImpl() {
+        return extStmt();
+    }
+    
+    protected Ext extMergeDeclImpl() {
+        return extNode();
+    }
 
     // POST
 
@@ -386,5 +424,13 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
 
     protected Ext postExtMatchRestriction(Ext e) {
         return postExtStmt(e);
+    }
+    
+    protected Ext postExtWhenStmt(Ext e) {
+        return postExtStmt(e);
+    }
+    
+    protected Ext postExtMergeDecl(Ext e) {
+        return postExtNode(e);
     }
 }

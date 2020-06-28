@@ -58,12 +58,13 @@ non terminal MethodDecl test_header;
 non terminal RestrictionId restriction_id;
 non terminal MatchBranch match_branch;
 non terminal List<MatchBranch> match_branch_list;
+non terminal MergeDecl merge_decl;
 
-// missing: where, merge, collection/next, thread, when, branch, peek, abort, commit
+// Unimplemented keywords: where, collection/next, thread, branch, peek, abort, commit
 
 start with goal;
 
-// Reference Qualifications (local, unique, shared)
+// User-specified reference Qualifications (local, unique, shared)
 extend class_or_interface_type ::=
       LOCAL:a class_or_interface_type:t
         {: 
@@ -261,6 +262,17 @@ restriction_body_declaration ::=
 		 List<Node> l = new LinkedList<>();
 		 l.add(a);
 		 RESULT = l; :}
+    | merge_decl:a
+         {:
+         List<Node> l = new LinkedList<>();
+         l.add(a);
+         RESULT = l; :}
+;
+
+merge_decl ::=
+    MERGE:a LPAREN IDENTIFIER:b LPAREN formal_parameter_list_opt:c RPAREN COMMA IDENTIFIER:d LPAREN formal_parameter_list_opt:e RPAREN RPAREN block:f 
+    {: RESULT = parser.nf.MergeDecl(parser.pos(a,f), parser.nf.Id(parser.pos(b), b.getIdentifier()), c, 
+        parser.nf.Id(parser.pos(d), d.getIdentifier()), e, f); :}
 ;
 
 allows_stmt ::=
@@ -316,15 +328,17 @@ match_branch_list ::=
 ;
 
 extend statement ::=
-	TRANSITION LPAREN expression:a COMMA restriction_id:b RPAREN
-	{: RESULT = parser.nf.Transition(parser.pos(a), a, b); :}
-|   MATCH_RESTRICTION expression:a WITH match_branch_list:b 
-	{: RESULT = parser.nf.MatchRestriction(parser.pos(a,b), a, b);:}
+	TRANSITION:s LPAREN expression:a COMMA restriction_id:b RPAREN
+	{: RESULT = parser.nf.Transition(parser.pos(s,b), a, b); :}
+|   MATCH_RESTRICTION:s expression:a WITH match_branch_list:b 
+	{: RESULT = parser.nf.MatchRestriction(parser.pos(s,b), a, b); :}
+|   WHEN:s LPAREN expression:a RPAREN statement:b
+    {: RESULT = parser.nf.WhenStmt(parser.pos(s,b), a, b); :}
 ;
 
 extend primary_no_new_array ::= 
-	MOVE LPAREN expression:a RPAREN
-	{: RESULT = parser.nf.Move(parser.pos(a), a); :}
+	MOVE:a LPAREN expression:b RPAREN
+	{: RESULT = parser.nf.Move(parser.pos(a, b), b); :}
 ;
 
 

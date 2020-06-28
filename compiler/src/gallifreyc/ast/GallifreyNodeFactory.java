@@ -34,6 +34,8 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     RestrictionId RestrictionId(Position pos, Id rv, Id restriction, boolean wildcard);
 
     Transition Transition(Position pos, Expr expr, RestrictionId newRestriction);
+    
+    WhenStmt WhenStmt(Position pos, Expr expr, Stmt body);
 
     Move Move(Position pos, Expr expr);
 
@@ -54,4 +56,6 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
             List<TypeNode> throwTypes, Block body, boolean isTest);
 
     RestrictionUnionDecl RestrictionUnionDecl(Position pos, Id name, List<Id> restrictions);
+    
+    MergeDecl MergeDecl(Position pos, Id method1, List<Formal> method1Formals, Id method2, List<Formal> method2Formals, Block body);
 }

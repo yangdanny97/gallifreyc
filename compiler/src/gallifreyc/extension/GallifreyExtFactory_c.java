@@ -70,6 +70,16 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
     protected Ext extMatchRestrictionImpl() {
         return new GallifreyMatchRestrictionExt();
     }
+    
+    @Override
+    protected Ext extMergeDeclImpl() {
+        return new GallifreyMergeDeclExt();
+    }
+    
+    @Override
+    protected Ext extWhenStmtImpl() {
+        return new GallifreyWhenStmtExt();
+    }
 
     @Override
     protected Ext extMatchBranchImpl() {
