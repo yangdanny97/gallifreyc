@@ -215,9 +215,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 		if (restrictionUnionMap.containsKey(rName)) {
 			return new HashSet<String>();
 		}
-		Set<String> set = new HashSet<>(allowedTestMethodsMap.get(rName));
-		set.addAll(allowedMethodsMap.get(rName));
-		return set;
+		return allowedTestMethodsMap.get(rName);
 	}
 	
    @Override
