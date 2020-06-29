@@ -14,4 +14,10 @@ public class ClassC {
     public int f3() {
         return 0;
     }
+    
+    public int f4(local String x, local String y) {
+        return 1;
+    }
+    
+    public void f5(local String z) {}
 }

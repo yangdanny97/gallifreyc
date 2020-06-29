@@ -5,9 +5,9 @@ import java.util.List;
 import polyglot.ast.Block;
 import polyglot.ast.Formal;
 import polyglot.ast.Id;
-import polyglot.ast.Node;
+import polyglot.ast.Term;
 
-public interface MergeDecl extends Node {
+public interface MergeDecl extends Term {
     public Id method1();
 
     public MergeDecl method1(Id method1);

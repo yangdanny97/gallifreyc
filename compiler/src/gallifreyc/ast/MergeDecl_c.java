@@ -1,14 +1,15 @@
 package gallifreyc.ast;
 
 import polyglot.ast.*;
-import polyglot.main.Report;
 import polyglot.types.ClassType;
 import polyglot.types.Context;
+import polyglot.types.Flags;
 import polyglot.types.MethodInstance;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
+import polyglot.visit.CFGBuilder;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
@@ -19,7 +20,7 @@ import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.visit.GallifreyTypeBuilder;
 import gallifreyc.visit.GallifreyTypeChecker;
 
-public class MergeDecl_c extends Node_c implements MergeDecl {
+public class MergeDecl_c extends Term_c implements MergeDecl {
     private static final long serialVersionUID = SerialVersionUID.generate();
     
     Id method1;
@@ -95,16 +96,8 @@ public class MergeDecl_c extends Node_c implements MergeDecl {
     
     @Override
     public Node visitChildren(NodeVisitor v) {
-        List<Formal> f1 = new ArrayList<>();
-        for (Formal f : this.method1Formals) {
-            f1.add(visitChild(f, v));
-        }
-        List<Formal> f2 = new ArrayList<>();
-        for (Formal f : this.method2Formals) {
-            f2.add(visitChild(f, v));
-        }
-        this.method1Formals = f1;
-        this.method2Formals = f2;
+        this.method1Formals = visitList(this.method1Formals, v);
+        this.method2Formals = visitList(this.method2Formals, v);
         this.body = visitChild(this.body, v);
         return this;
     }
@@ -122,23 +115,30 @@ public class MergeDecl_c extends Node_c implements MergeDecl {
     }
     
     @Override
+    public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
+        return tb.pushCode();
+    }
+    
+    @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         GallifreyTypeBuilder gtb = (GallifreyTypeBuilder) tb;
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tb.typeSystem();
+        
         String restriction = gtb.currentRestriction;
         if (ts.getMergeDecls(restriction) != null && ts.getMergeDecls(restriction).contains(this)) {
             throw new SemanticException("Merge function for these 2 methods has already been defined", this.position);
         }
         ts.addMergeDecl(restriction, this);
+        List<Type> params = new ArrayList<Type>();
         
-        this.mi = ts.methodInstance(this.position, null, null, ts.Int(), name(), null, null);
+        this.mi = ts.methodInstance(this.position, null, Flags.NONE, ts.Int(), name(), params, new ArrayList<Type>());
         
         return this;
     }
     
     @Override
     public Context enterScope(Context c) {
-        return c.pushClass(null, this.currentRestrictionClass).pushCode(mi);
+        return c.pushCode(mi);
     }
     
     @Override
@@ -154,5 +154,20 @@ public class MergeDecl_c extends Node_c implements MergeDecl {
         }
         // TODO: check types
         return this;
+    }
+
+    @Override
+    public Term firstChild() {
+        return listChild(method1Formals, listChild(method2Formals, body));
+    }
+
+    @Override
+    public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
+        List<Formal> formals = new ArrayList<>();
+        formals.addAll(method1Formals);
+        formals.addAll(method2Formals);
+        v.visitCFGList(formals, body(), ENTRY);
+        v.visitCFG(body(), this, EXIT);
+        return succs;
     }
 }

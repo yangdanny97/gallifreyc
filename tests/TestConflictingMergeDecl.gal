@@ -1,0 +1,17 @@
+restriction RMerge for ClassC {
+    allows f4;
+    allows f5;
+    allows testFun;
+    
+    merge (f4(local String a, local String b), f5(local String c)){
+        return a.length() - b.length();
+    }
+    
+    merge (f4(local String a, local String b), f5(local String c)){
+        return 1;
+    }
+}
+
+class TestConflictingMergeDecl {
+    public TestConflictingMergeDecl() {}
+}

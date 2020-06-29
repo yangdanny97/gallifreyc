@@ -9,7 +9,10 @@ import polyglot.ast.*;
 import polyglot.types.ClassType;
 import polyglot.types.Context;
 import polyglot.types.Flags;
+import polyglot.types.ParsedClassType;
 import polyglot.types.SemanticException;
+import polyglot.types.TypeSystem;
+import polyglot.types.UnknownType;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
@@ -99,6 +102,7 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
     @Override
     public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tb.typeSystem();
+        tb = tb.pushClass(position(), Flags.NONE, id.id());
 
         if (ts.restrictionExists(id.id())) {
             throw new SemanticException("Restriction with name " + id.id() + " has already been declared",
@@ -157,5 +161,17 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
         this.forClass = (TypeNode) visitChild(this.forClass, v);
         this.body = (RestrictionBody) visitChild(this.body, v);
         return this;
+    }
+    
+    @Override
+    public Context enterChildScope(Node child, Context c) {
+        if (this.forClass.type() != null && !(this.forClass.type() instanceof UnknownType)) {
+            TypeSystem ts = c.typeSystem();
+            c = c.pushClass((ParsedClassType) this.forClass.type(), ts.staticTarget(this.forClass.type()).toClass());
+        }
+        else {
+            c = c.pushBlock();
+        }
+        return super.enterChildScope(child, c);
     }
 }
