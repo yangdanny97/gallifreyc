@@ -80,7 +80,6 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
             throw new SemanticException("RV sub-restriction classes do not match", this.position());
         }
 
-//        ts.addRestrictionMapping(id.id(), restrictionClasses.get(0));
         ts.addRV(id.id(), variants);
         return super.buildTypes(tb);
     }

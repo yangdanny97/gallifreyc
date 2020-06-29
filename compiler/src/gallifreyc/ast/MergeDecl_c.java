@@ -152,6 +152,7 @@ public class MergeDecl_c extends Node_c implements MergeDecl {
             throw new SemanticException(
                     "Unable to find method named " + method2.id() + " in " + this.currentRestrictionClass, this.position);
         }
+        // TODO: check types
         return this;
     }
 }

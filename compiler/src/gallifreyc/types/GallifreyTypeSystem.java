@@ -64,6 +64,8 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
     
     public Set<MergeDecl> getMergeDecls(String restriction);
     
+    public boolean hasComparator(String restriction);
+    
     // instances
 
     GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,

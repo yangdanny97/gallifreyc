@@ -5,6 +5,7 @@ import polyglot.ast.*;
 import gallifreyc.extension.*;
 import polyglot.ext.jl5.parse.FlagAnnotations;
 import polyglot.ext.jl7.ast.JL7NodeFactory_c;
+import polyglot.types.Flags;
 import polyglot.util.*;
 import java.util.*;
 
@@ -199,5 +200,33 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
         WhenStmt w = new WhenStmt_c(pos, expr, body);
         w = ext(w, extFactory().extWhenStmt());
         return w;
+    }
+    
+   // utils for compiler generated nodes to reduce verbosity
+    
+    @Override
+    public Local Local(String name) {
+        return this.Local(Position.COMPILER_GENERATED, this.Id(name));
+    }
+    
+    @Override
+    public Formal Formal(String type, String name) {
+        return this.Formal(Position.COMPILER_GENERATED, Flags.NONE,
+                this.TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, type), this.Id(name));
+    }
+    
+    @Override
+    public Field Field(Expr object, String name) {
+        return this.Field(Position.COMPILER_GENERATED, object, this.Id(name));
+    }
+    
+    @Override
+    public Id Id(String name) {
+        return this.Id(Position.COMPILER_GENERATED, name);
+    }
+    
+    @Override
+    public TypeNode TypeNode(String name) {
+        return this.TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, name);
     }
 }

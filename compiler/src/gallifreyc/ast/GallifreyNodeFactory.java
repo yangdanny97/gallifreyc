@@ -62,4 +62,15 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     RestrictionUnionDecl RestrictionUnionDecl(Position pos, Id name, List<Id> restrictions);
     
     MergeDecl MergeDecl(Position pos, Id method1, List<Formal> method1Formals, Id method2, List<Formal> method2Formals, Block body);
+    
+    // utils for compiler generated nodes to reduce verbosity
+    Local Local(String name);
+    
+    Formal Formal(String type, String name);
+    
+    Field Field(Expr object, String name);
+    
+    Id Id(String name);
+    
+    TypeNode TypeNode(String name);
 }

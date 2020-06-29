@@ -215,7 +215,10 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 		if (restrictionUnionMap.containsKey(rName)) {
 			return new HashSet<String>();
 		}
-		return allowedTestMethodsMap.get(rName);
+		
+		Set<String> r = allowedTestMethodsMap.get(rName);
+		if (r == null) return new HashSet<String>();
+		return r;
 	}
 	
    @Override
@@ -234,7 +237,10 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         if (restrictionUnionMap.containsKey(rName)) {
             return new HashSet<String>();
         }
-        return allowedMethodsMap.get(rName);
+        
+        Set<String> r = allowedMethodsMap.get(rName);
+        if (r == null) return new HashSet<String>();
+        return r;
     }
     
     @Override
@@ -247,7 +253,18 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     
     @Override
     public Set<MergeDecl> getMergeDecls(String restriction) {
+        if (!mergeDecls.containsKey(restriction)) {
+            return new HashSet<MergeDecl>();
+        }
         return mergeDecls.get(restriction);
+    }
+    
+    @Override
+    public boolean hasComparator(String restriction) {
+        if ((!mergeDecls.containsKey(restriction)) || mergeDecls.get(restriction).size() == 0) {
+            return false;
+        }
+        return true;
     }
 
 	@Override

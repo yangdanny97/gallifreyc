@@ -1,9 +1,6 @@
 package gallifreyc.extension;
 
-import polyglot.ast.Call;
-import polyglot.ast.Expr;
-import polyglot.ast.Node;
-import polyglot.ast.Receiver;
+import polyglot.ast.*;
 import polyglot.types.SemanticException;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
