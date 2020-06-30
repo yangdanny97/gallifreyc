@@ -46,7 +46,7 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     // Restrictions
     RestrictionDecl RestrictionDecl(Position pos, Id id, TypeNode for_id, RestrictionBody body);
 
-    RestrictionBody RestrictionBody(Position Pos, List<Node> members);
+    RestrictionBody RestrictionBody(Position Pos, List<ClassMember> members);
 
     AllowsStmt AllowsStmt(Position pos, Id id);
 

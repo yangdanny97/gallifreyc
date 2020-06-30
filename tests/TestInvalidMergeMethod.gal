@@ -1,0 +1,12 @@
+restriction RMerge for ClassC {
+
+    allows f5;
+    
+    merge (f4(local String a, local String b), f5(local String c)){
+        return 0;
+    }
+}
+
+class TestInvalidMergeMethod {
+    public TestInvalidMergeMethod() {}
+}

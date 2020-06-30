@@ -6,6 +6,7 @@ import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.visit.GallifreyTypeBuilder;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.*;
+import polyglot.ext.jl5.types.RawClass;
 import polyglot.types.ClassType;
 import polyglot.types.Context;
 import polyglot.types.Flags;
@@ -157,7 +158,6 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
 
     @Override
     public Node visitChildren(NodeVisitor v) {
-        // this breaks immutability, maybe revisit
         this.forClass = (TypeNode) visitChild(this.forClass, v);
         this.body = (RestrictionBody) visitChild(this.body, v);
         return this;
@@ -167,7 +167,13 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
     public Context enterChildScope(Node child, Context c) {
         if (this.forClass.type() != null && !(this.forClass.type() instanceof UnknownType)) {
             TypeSystem ts = c.typeSystem();
-            c = c.pushClass((ParsedClassType) this.forClass.type(), ts.staticTarget(this.forClass.type()).toClass());
+            ParsedClassType ct;
+            if (this.forClass.type() instanceof RawClass) {
+                ct = ((RawClass) this.forClass.type()).base();
+            } else {
+                ct = (ParsedClassType) this.forClass.type();
+            }
+            c = c.pushClass(ct, ts.staticTarget(this.forClass.type()).toClass());
         }
         else {
             c = c.pushBlock();

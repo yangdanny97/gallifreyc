@@ -3,11 +3,12 @@ package gallifreyc.ast;
 import java.util.List;
 
 import polyglot.ast.Block;
+import polyglot.ast.CodeDecl;
 import polyglot.ast.Formal;
 import polyglot.ast.Id;
 import polyglot.ast.Term;
 
-public interface MergeDecl extends Term {
+public interface MergeDecl extends Term, CodeDecl {
     public Id method1();
 
     public MergeDecl method1(Id method1);

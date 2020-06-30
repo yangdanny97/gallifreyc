@@ -11,11 +11,11 @@ public class ClassC {
     
     public void f2() {}
     
-    public int f3() {
+    public local Integer f3() {
         return 0;
     }
     
-    public int f4(local String x, local String y) {
+    public local Integer f4(local String x, local String y) {
         return 1;
     }
     

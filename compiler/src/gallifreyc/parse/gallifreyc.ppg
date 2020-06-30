@@ -50,9 +50,9 @@ non terminal PostCondition post_condition_opt;
 non terminal TopLevelDecl restriction_declaration;
 non terminal List<Id> restriction_variant;
 non terminal RestrictionBody restriction_body;
-non terminal List<Node> restriction_body_declarations_opt;
-non terminal List<Node> restriction_body_declarations;
-non terminal List<Node> restriction_body_declaration;
+non terminal List<ClassMember> restriction_body_declarations_opt;
+non terminal List<ClassMember> restriction_body_declarations;
+non terminal List<ClassMember> restriction_body_declaration;
 non terminal AllowsStmt allows_stmt;
 non terminal MethodDecl test_declaration;
 non terminal MethodDecl test_header;
@@ -233,7 +233,7 @@ restriction_body ::=
 ;
 
 restriction_body_declarations_opt ::=
-   	{: RESULT = new LinkedList<>(); :}
+   	{: RESULT = new LinkedList<ClassMember>(); :}
     | restriction_body_declarations:a
     {: RESULT = a; :}
 ;
@@ -251,21 +251,21 @@ restriction_body_declarations ::=
 restriction_body_declaration ::=
     SEMICOLON
 		{:
-		 List<Node> l = new LinkedList<>();
+		 List<ClassMember> l = new LinkedList<>();
 		 RESULT = l; :}
     | allows_stmt:a SEMICOLON
 	    {:
-	     List<Node> l = new LinkedList<>();
+	     List<ClassMember> l = new LinkedList<>();
 	     l.add(a);
 	     RESULT = l; :}
 	| test_declaration:a
 		{:
-		 List<Node> l = new LinkedList<>();
+		 List<ClassMember> l = new LinkedList<>();
 		 l.add(a);
 		 RESULT = l; :}
     | merge_decl:a
          {:
-         List<Node> l = new LinkedList<>();
+         List<ClassMember> l = new LinkedList<>();
          l.add(a);
          RESULT = l; :}
 ;

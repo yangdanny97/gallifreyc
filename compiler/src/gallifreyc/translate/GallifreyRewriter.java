@@ -65,7 +65,7 @@ public class GallifreyRewriter extends GRewriter {
             statements.add(nf.LocalDecl(p, Flags.NONE, f.type(), f.id(), rhs));
         }
         statements.add(d.body());
-        statements.add(nf.Break(p));
+        // merge bodies always return, so no need to break
         
         // use block inside switch block to avoid shadowing problems
         List<Stmt> switchBlockStmts = new ArrayList<>();

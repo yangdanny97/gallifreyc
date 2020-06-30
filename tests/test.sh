@@ -8,3 +8,5 @@ if [ ! -f "$pth" ]; then
 fi
 
 $pth -classpath ../compiler/classes ./pthScript
+
+# invoke pth with -h for other options

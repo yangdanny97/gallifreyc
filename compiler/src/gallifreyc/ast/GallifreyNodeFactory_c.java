@@ -102,7 +102,7 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     }
 
     @Override
-    public RestrictionBody RestrictionBody(Position pos, List<Node> members) {
+    public RestrictionBody RestrictionBody(Position pos, List<ClassMember> members) {
         RestrictionBody b = new RestrictionBody_c(pos, members);
         b = ext(b, extFactory().extRestrictionBody());
         return b;

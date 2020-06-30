@@ -5,11 +5,13 @@ import gallifreyc.visit.GallifreyTypeBuilder;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.*;
 import polyglot.types.ClassType;
+import polyglot.types.MemberInstance;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
+import polyglot.util.SubtypeSet;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeBuilder;
@@ -87,6 +89,33 @@ public class AllowsStmt_c extends Node_c implements AllowsStmt {
             throw new SemanticException(
                     "Unable to find method named " + id.id() + " in " + this.currentRestrictionClass, this.position);
         }
+        return this;
+    }
+
+    // classmember methods
+    
+    @Override
+    public MemberInstance memberInstance() {
+        return null;
+    }
+
+    @Override
+    public boolean reachable() {
+        return true;
+    }
+
+    @Override
+    public Term reachable(boolean reachable) {
+        return this;
+    }
+
+    @Override
+    public SubtypeSet exceptions() {
+        return null;
+    }
+
+    @Override
+    public Term exceptions(SubtypeSet exceptions) {
         return this;
     }
 }
