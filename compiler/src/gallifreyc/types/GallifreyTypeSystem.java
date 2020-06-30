@@ -1,5 +1,6 @@
 package gallifreyc.types;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -65,6 +66,20 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
     public Set<MergeDecl> getMergeDecls(String restriction);
 
     public boolean hasComparator(String restriction);
+    
+    // test methods
+    
+    public void addTestMethod(String restriction, GallifreyMethodInstance mi);
+    
+    public Set<GallifreyMethodInstance> getTestMethods(RestrictionId restriction);
+    
+    public Set<GallifreyMethodInstance> getTestMethods(String restriction);
+    
+    public GallifreyMethodInstance getTestMethod(RestrictionId restriction, String methodName);
+    
+    public GallifreyMethodInstance getTestMethod(String restriction, String methodName);
+    
+    public void testMethod(GallifreyMethodInstance mi);
 
     // instances
 

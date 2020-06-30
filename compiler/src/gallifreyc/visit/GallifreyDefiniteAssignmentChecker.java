@@ -36,7 +36,7 @@ public class GallifreyDefiniteAssignmentChecker extends JL5DefiniteAssignmentChe
                 ct = ((New) parent).anonType();
             } else if (parent instanceof EnumConstantDecl) {
                 ct = ((EnumConstantDecl) parent).type();
-            } else if (parent instanceof RestrictionDecl) {
+            } else if (parent instanceof RestrictionDecl) { // GALLIFREY
                 ct = (ClassType) ((RestrictionDecl) parent).forClass().type();
             }
             if (ct == null) {

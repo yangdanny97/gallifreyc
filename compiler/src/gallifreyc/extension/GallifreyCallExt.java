@@ -40,22 +40,32 @@ public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
 
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
-        Call node = (Call) superLang().typeCheck(this.node, tc);
-
+        Call node = node();
+        GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
+        
+        GallifreyMethodInstance testMi = null;
         if (node.target() instanceof Expr) {
             GallifreyType receiverType = GallifreyExprExt.ext(node.target()).gallifreyType();
             if (receiverType.isShared()) {
                 RestrictionId restriction = ((SharedRef) receiverType.qualification()).restriction();
-                Set<String> allowedMethods = ((GallifreyTypeSystem) tc.typeSystem()).getAllowedMethods(restriction);
-                if (!allowedMethods.contains(node.name())) {
-                    throw new SemanticException(
-                            "Cannot call method " + node.name() + " under restriction " + restriction, node.position());
+                testMi = ts.getTestMethod(restriction, node.name());
+                if (testMi == null) {
+                    Set<String> allowedMethods = ts.getAllowedMethods(restriction);
+                    Set<String> allowedTestMethods = ts.getAllowedTestMethods(restriction);
+                    if (!(allowedMethods.contains(node.name()) || allowedTestMethods.contains(node.name()))) {
+                        throw new SemanticException(
+                                "Cannot call method " + node.name() + " under restriction " + restriction, node.position());
+                    }
                 }
             }
         }
+        if (testMi != null) {
+            // HACK: pass test method signature to type system
+            ts.testMethod(testMi);
+        }
+        node = (Call) superLang().typeCheck(this.node, tc);
 
         GallifreyMethodInstance mi = (GallifreyMethodInstance) node.methodInstance();
-        GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
         GallifreyType returnType = ts.checkArgs(mi, node().arguments());
         if (mi.flags().contains(Flags.STATIC)) {
             this.gallifreyType = returnType;

@@ -17,6 +17,7 @@ import gallifreyc.types.GallifreyMethodInstance;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.types.RegionContext;
+import gallifreyc.visit.GallifreyTypeBuilder;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.Formal;
@@ -43,10 +44,11 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
 
     public PreCondition pre;
     public PostCondition post;
-    // Is this MethodDecl a test method (inside a restriction)
+    
+    // The following fields only apply for test methods declared inside restrictions
     public boolean isTest;
-
-    protected ClassType currentRestrictionClass = null; // non-null only for test methods
+    protected ClassType currentRestrictionClass = null;
+    protected String currentRestriction;
 
     PreCondition pre() {
         return pre;
@@ -68,21 +70,30 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
     @Override
     public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
         MethodDecl md = node();
-        // TODO add new method to restriction's "for" class
+        GallifreyTypeBuilder gtb = (GallifreyTypeBuilder) tb;
+        GallifreyTypeSystem ts = gtb.typeSystem();
+        if (this.isTest) {
+            this.currentRestriction = gtb.currentRestriction;
+            if (ts.getTestMethod(this.currentRestriction, node().name()) != null) {
+                // I don't want to deal with overloading for these
+                throw new SemanticException("Cannot declare 2 test methods with same name", node().position());
+            }
+        }
 
         TypeNode rt = md.returnType();
         if (rt instanceof RefQualifiedTypeNode
                 || (rt instanceof CanonicalTypeNode && ((CanonicalTypeNode) rt).type().isPrimitive())) {
-            //TODO potentially rewrite test method names to not conflict
             return superLang().buildTypesEnter(node(), tb);
         }
-        throw new SemanticException("cannot declare unqualified return type", rt.position());
+        throw new SemanticException("Cannot declare unqualified return type", rt.position());
     }
 
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         MethodDecl md = (MethodDecl) superLang().buildTypes(node(), tb);
-
+        GallifreyTypeBuilder gtb = (GallifreyTypeBuilder) tb;
+        GallifreyTypeSystem ts = gtb.typeSystem();
+        
         List<GallifreyType> inputTypes = new ArrayList<>();
 
         TypeNode rt = md.returnType();
@@ -109,6 +120,10 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
         GallifreyMethodInstance mi = (GallifreyMethodInstance) md.methodInstance();
         mi = mi.gallifreyInputTypes(inputTypes);
         mi = mi.gallifreyReturnType(gReturn);
+        
+        if (isTest) {
+            ts.addTestMethod(this.currentRestriction, mi);
+        }
         return md;
     }
 
@@ -116,7 +131,7 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
     public NodeVisitor typeCheckEnter(TypeChecker tc) throws SemanticException {
         GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
         assert (gtc.typeSystem().region_context().isEmpty());
-        if (this.isTest) {
+        if (isTest) {
             this.currentRestrictionClass = gtc.currentRestrictionClass;
         }
         return superLang().typeCheckEnter(node(), tc);
@@ -126,8 +141,15 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         GallifreyTypeSystem ts = ((GallifreyTypeChecker) tc).typeSystem();
         ts.region_context(new RegionContext());
+        MethodDecl node = node();
         // no need to ensure test methods return booleans; test method headers have no place to declare return type
-        return superLang().typeCheck(node(), tc);
+        if (isTest) {
+            if (this.currentRestrictionClass.methodsNamed(node().name()).size() > 0) {
+                throw new SemanticException("Cannot declare test method with same name as existing method", node().position());
+            }
+            node = node.methodInstance(node.methodInstance().container(this.currentRestrictionClass));
+        }
+        return superLang().typeCheck(node, tc);
     }
 
     @Override

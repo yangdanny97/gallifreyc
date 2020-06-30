@@ -8,6 +8,7 @@ import gallifreyc.extension.GallifreyExprExt;
 import polyglot.ast.Expr;
 import polyglot.ext.jl5.types.*;
 import polyglot.ext.jl7.types.*;
+import polyglot.main.Report;
 import polyglot.types.*;
 import polyglot.util.*;
 
@@ -25,16 +26,25 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     // restriction name -> allowed test methods (the ones only allowed as tests)
     public Map<String, Set<String>> allowedTestMethodsMap = new HashMap<>();
 
-    // restriction variant names -> governed restriction names
+    // RV names -> governed restriction names
     public Map<String, List<String>> restrictionUnionMap = new HashMap<>();
 
-    // set of merge decls for each restriction
+    // restriction name -> set of merge decls in restriction
     public Map<String, Set<MergeDecl>> mergeDecls = new HashMap<>();
+    
+    // restriction name -> set of test methods declared in restriction
+    public Map<String, Set<GallifreyMethodInstance>> testMethods = new HashMap<>();
 
     public RegionContext region_context = new RegionContext();
+    
+    public GallifreyMethodInstance testMethodInstance = null;
 
     public GallifreyTypeSystem_c() {
         super();
+    }
+    
+    public void testMethod(GallifreyMethodInstance mi) {
+        this.testMethodInstance = mi;
     }
 
     // ARRAY TYPES
@@ -241,10 +251,6 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 
     @Override
     public Set<String> getAllowedMethods(String rName) {
-        if (restrictionUnionMap.containsKey(rName)) {
-            return new HashSet<String>();
-        }
-
         Set<String> r = allowedMethodsMap.get(rName);
         if (r == null)
             return new HashSet<String>();
@@ -298,6 +304,45 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
             }
         }
         return false;
+    }
+    
+    @Override
+    public void addTestMethod(String restriction, GallifreyMethodInstance mi) {
+        if (!testMethods.containsKey(restriction)) {
+            testMethods.put(restriction, new HashSet<GallifreyMethodInstance>());
+        }
+        testMethods.get(restriction).add(mi);
+    }
+    
+    @Override
+    public Set<GallifreyMethodInstance> getTestMethods(RestrictionId restriction) {
+        return getTestMethods(restriction.restriction().id());
+    }
+    
+    @Override
+    public Set<GallifreyMethodInstance> getTestMethods(String restriction) {
+        Set<GallifreyMethodInstance> r = testMethods.get(restriction);
+        if (r == null)
+            return new HashSet<GallifreyMethodInstance>();
+        return r;
+    }
+    
+    @Override
+    public GallifreyMethodInstance getTestMethod(RestrictionId restriction, String methodName) {
+        return getTestMethod(restriction.restriction().id(), methodName);
+    }
+    
+    @Override
+    public GallifreyMethodInstance getTestMethod(String restriction, String methodName) {
+        Set<GallifreyMethodInstance> r = testMethods.get(restriction);
+        if (r == null)
+            return null;
+        for (GallifreyMethodInstance mi : r) {
+            if (mi.name().equals(methodName)) {
+                return mi;
+            }
+        }
+        return null;
     }
 
     // checking qualifications
@@ -385,7 +430,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
                 return true;
             }
             if (arrayType.base().isReference() && toArrayType.base().isReference()) {
-                // modified from JL5TypeSystem
+                // GALLIFREY: modified from JL5TypeSystem
                 return typeEquals(arrayType.base(), toArrayType.base());
             }
         }
@@ -458,4 +503,36 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 
     }
 
+    // modified from JL5TypeSystem to handle test methods
+    @Override
+    protected List<? extends MethodInstance> findAcceptableMethods(
+            ReferenceType container, String name, List<? extends Type> argTypes,
+            List<? extends ReferenceType> actualTypeArgs, ClassType currClass,
+            Type expectedReturnType, boolean fromClient)
+                    throws SemanticException {
+        // GALLIFREY: handle test method here
+        
+        if (testMethodInstance != null) {
+            JL5MethodInstance mi =
+                    methodCallValid(testMethodInstance,
+                                    name,
+                                    argTypes,
+                                    actualTypeArgs,
+                                    expectedReturnType);
+            if (mi == null) {
+                throw new NoMemberException(NoMemberException.METHOD,
+                        "No valid test method found for "
+                                + name + "("
+                                + listToString(argTypes) + ")"
+                                + " in " + container + ".");
+            }
+            testMethodInstance = null;
+            List<MethodInstance> r = new ArrayList<>();
+            r.add(mi);
+            return r;
+        }
+        return super.findAcceptableMethods(container, name, argTypes, 
+                actualTypeArgs, currClass, expectedReturnType, fromClient);
+    }
+    
 }

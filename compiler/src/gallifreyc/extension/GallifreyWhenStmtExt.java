@@ -44,8 +44,8 @@ public class GallifreyWhenStmtExt extends GallifreyExt {
             throw new SemanticException("Expected shared object", r.position());
         }
         RestrictionId restriction = ((SharedRef) ext.gallifreyType().qualification).restriction();
-        Set<String> allowedMethods = ((GallifreyTypeSystem) tc.typeSystem()).getAllowedTestMethods(restriction);
-        if (!allowedMethods.contains(c.name())) {
+        Set<String> allowedMethods = ts.getAllowedTestMethods(restriction);
+        if (!(allowedMethods.contains(c.name()) || ts.getTestMethod(restriction, c.name()) != null)) {
             throw new SemanticException("Cannot use " + c.name() + " under restriction " + restriction,
                     node.expr().position());
         }

@@ -63,6 +63,11 @@ public class RestrictionUnionDecl_c extends Node_c implements RestrictionUnionDe
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tb.typeSystem();
         Set<String> restrictionClasses = new HashSet<>();
         List<String> variants = new ArrayList<>();
+        
+        if (ts.restrictionExists(id.id())) {
+            throw new SemanticException("Restriction with name " + id.id() + " has already been declared",
+                    this.position());
+        }
 
         for (Id r : restrictions) {
             String forClass = ts.getClassNameForRestriction(r.id());
