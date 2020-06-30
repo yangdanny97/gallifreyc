@@ -39,8 +39,8 @@ public interface GallifreyExtFactory extends JL7ExtFactory {
     Ext extAllowsStmt();
 
     Ext extRestrictionUnionDecl();
-    
+
     Ext extWhenStmt();
-    
+
     Ext extMergeDecl();
 }

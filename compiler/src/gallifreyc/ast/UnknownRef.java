@@ -25,8 +25,7 @@ public class UnknownRef extends RefQualification {
     public RefQualification copy() {
         return new UnknownRef(this.position);
     }
-    
-    
+
     public boolean isUnknown() {
         return true;
     }

@@ -65,7 +65,7 @@ public class MatchRestriction_c extends Stmt_c implements MatchRestriction {
         v.visitCFG(expr, FlowGraph.EDGE_KEY_OTHER, t_branches, ENTRY);
         v = v.push(this);
         for (MatchBranch b : branches()) {
-           v.visitCFG(b, this, EXIT); 
+            v.visitCFG(b, this, EXIT);
         }
         return succs;
     }

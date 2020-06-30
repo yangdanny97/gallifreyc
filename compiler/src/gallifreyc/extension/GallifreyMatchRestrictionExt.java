@@ -97,10 +97,10 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
             args.add(e);
             blockStmts.add(d.init(nf.New(p, nf.TypeNodeFromQualifiedName(p, rv + "_" + restriction + "_impl"), args)));
             blockStmts.addAll(b.body().statements());
-            
+
             // d.holder = null;
-            blockStmts.add(nf.Eval(p, nf.Assign(p, nf.Field(p, nf.Local(p, (Id) d.id().copy()), 
-                    nf.Id(p, rw.HOLDER)), Assign.ASSIGN, nf.NullLit(p))));
+            blockStmts.add(nf.Eval(p, nf.Assign(p, nf.Field(p, nf.Local(p, (Id) d.id().copy()), nf.Id(p, rw.HOLDER)),
+                    Assign.ASSIGN, nf.NullLit(p))));
             Block block = nf.Block(p, blockStmts);
 
             if (currentif != null) {

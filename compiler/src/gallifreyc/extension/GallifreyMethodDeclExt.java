@@ -44,7 +44,7 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
     public PostCondition post;
     // Is this MethodDecl a test method (inside a restriction)
     public boolean isTest;
-    
+
     protected ClassType currentRestrictionClass = null; // non-null only for test methods
 
     PreCondition pre() {
@@ -108,13 +108,11 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
         mi = mi.gallifreyReturnType(gReturn);
         return md;
     }
-    
-    
 
     @Override
     public NodeVisitor typeCheckEnter(TypeChecker tc) throws SemanticException {
         GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
-        assert(gtc.typeSystem().region_context().isEmpty());
+        assert (gtc.typeSystem().region_context().isEmpty());
         if (this.isTest) {
             this.currentRestrictionClass = gtc.currentRestrictionClass;
         }
@@ -152,7 +150,7 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
     public void prettyPrintHeader(Flags flags, CodeWriter w, PrettyPrinter tr) {
         superLang().prettyPrintHeader(node(), flags, w, tr);
     }
-    
+
     @Override
     public Context enterScope(Context c) {
         if (this.isTest) {

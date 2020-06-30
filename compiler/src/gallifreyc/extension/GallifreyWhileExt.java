@@ -19,27 +19,27 @@ public class GallifreyWhileExt extends GallifreyExt {
     public While node() {
         return (While) super.node();
     }
-    
+
     @Override
     public Node typeCheckOverride(Node parent, TypeChecker tc) throws SemanticException {
         GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc.enter(parent, node());
         GallifreyTypeSystem ts = gtc.typeSystem();
-        
+
         // visit children
         Expr cond = visitChild(node().cond(), gtc);
         ts.push_regionContext();
         Stmt body = visitChild(node().body(), gtc);
         Node n = node().cond(cond).body(body);
         RegionContext body_context = ts.pop_regionContext();
-        //Do something here to check variance
+        // Do something here to check variance
 
         try {
             Node result = (Node) gtc.leave(parent, node(), n, gtc);
             return result;
-        }
-        catch (InternalCompilerError e) {
-            if (e.position() == null) e.setPosition(n.position());
+        } catch (InternalCompilerError e) {
+            if (e.position() == null)
+                e.setPosition(n.position());
             throw e;
         }
-    }  
+    }
 }

@@ -24,7 +24,7 @@ public class UniqueRef extends RefQualification {
     public RefQualification copy() {
         return new UniqueRef(this.position);
     }
-    
+
     public boolean isUnique() {
         return true;
     }

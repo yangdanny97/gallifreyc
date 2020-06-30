@@ -10,7 +10,7 @@ import polyglot.visit.NodeVisitor;
 
 public class WhenStmt_c extends Stmt_c implements WhenStmt {
     private static final long serialVersionUID = SerialVersionUID.generate();
-    
+
     Expr expr;
     Stmt body;
 
@@ -31,24 +31,24 @@ public class WhenStmt_c extends Stmt_c implements WhenStmt {
     public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
         v.visitCFG(expr, FlowGraph.EDGE_KEY_OTHER, body, ENTRY);
         v = v.push(this);
-        v.visitCFG(body, this, EXIT); 
+        v.visitCFG(body, this, EXIT);
         return succs;
     }
-    
+
     public WhenStmt body(Stmt b) {
         this.body = b;
         return this;
     }
-    
+
     public WhenStmt expr(Expr e) {
         this.expr = e;
         return this;
     }
-    
+
     public Expr expr() {
         return expr;
     }
-    
+
     public Stmt body() {
         return body;
     }

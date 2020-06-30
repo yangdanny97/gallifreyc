@@ -59,7 +59,7 @@ public class RestrictionBody_c extends Term_c implements RestrictionBody {
 //                return (Term) member;
 //            }
 //        }
-        
+
         /* intentionally, I believe - same as ClassBody */
         return null;
     }
@@ -81,10 +81,9 @@ public class RestrictionBody_c extends Term_c implements RestrictionBody {
         this.members = visitList(this.members, v);
         return this;
     }
-    
+
     @Override
-    public NodeVisitor buildTypesEnter(TypeBuilder tb)
-            throws SemanticException {
+    public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
         return tb.enterAnonClass();
     }
 

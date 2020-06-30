@@ -33,22 +33,22 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
     protected Ext extSourceFileImpl() {
         return new GallifreySourceFileExt();
     }
-    
+
     @Override
     protected Ext extIfImpl() {
         return new GallifreyIfExt();
     }
-    
+
     @Override
     protected Ext extWhileImpl() {
         return new GallifreyWhileExt();
     }
-    
+
     @Override
     protected Ext extForImpl() {
         return new GallifreyForExt();
     }
-    
+
     @Override
     protected Ext extSwitchImpl() {
         return new GallifreySwitchExt();
@@ -70,12 +70,12 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
     protected Ext extMatchRestrictionImpl() {
         return new GallifreyMatchRestrictionExt();
     }
-    
+
     @Override
     protected Ext extMergeDeclImpl() {
         return new GallifreyMergeDeclExt();
     }
-    
+
     @Override
     protected Ext extWhenStmtImpl() {
         return new GallifreyWhenStmtExt();

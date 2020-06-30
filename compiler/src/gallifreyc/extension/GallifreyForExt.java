@@ -23,12 +23,12 @@ public class GallifreyForExt extends GallifreyExt {
     public For node() {
         return (For) super.node();
     }
-    
+
     @Override
     public Node typeCheckOverride(Node parent, TypeChecker tc) throws SemanticException {
         GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc.enter(parent, node());
         GallifreyTypeSystem ts = gtc.typeSystem();
-        
+
         // visit children
         List<ForInit> inits = visitList(node().inits(), gtc);
         Expr cond = visitChild(node().cond(), gtc);
@@ -36,16 +36,16 @@ public class GallifreyForExt extends GallifreyExt {
         RegionContext before_loop = ts.region_context();
         ts.push_regionContext();
         Stmt body = visitChild(node().body(), gtc);
-        //no need to pop
+        // no need to pop
         Node n = node().inits(inits).cond(cond).iters(iters).body(body);
 
         try {
             Node result = (Node) gtc.leave(parent, node(), n, gtc);
             return result;
-        }
-        catch (InternalCompilerError e) {
-            if (e.position() == null) e.setPosition(n.position());
+        } catch (InternalCompilerError e) {
+            if (e.position() == null)
+                e.setPosition(n.position());
             throw e;
         }
-    }  
+    }
 }

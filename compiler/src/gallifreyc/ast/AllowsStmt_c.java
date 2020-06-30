@@ -23,8 +23,8 @@ public class AllowsStmt_c extends Node_c implements AllowsStmt {
     protected Id id;
     protected Id contingent_id;
     protected ClassType currentRestrictionClass;
-    protected boolean testOnly = false;  // whether the allow is an "allow as test"
-    
+    protected boolean testOnly = false; // whether the allow is an "allow as test"
+
     public AllowsStmt_c(Position pos, Id id, Id contingent_id, boolean testOnly) {
         super(pos);
         this.id = id;
@@ -48,7 +48,7 @@ public class AllowsStmt_c extends Node_c implements AllowsStmt {
     public Id contingent_id() {
         return contingent_id;
     }
-    
+
     public boolean testOnly() {
         return testOnly;
     }
@@ -93,7 +93,7 @@ public class AllowsStmt_c extends Node_c implements AllowsStmt {
     }
 
     // classmember methods
-    
+
     @Override
     public MemberInstance memberInstance() {
         return null;

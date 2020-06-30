@@ -16,7 +16,7 @@ import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.util.Position;
 
-public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c,RegionFunctionType_c> {
+public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c, RegionFunctionType_c> {
 
     // restriction name -> class name
 
@@ -41,9 +41,9 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
     Set<String> getAllowedMethods(RestrictionId restriction);
 
     Set<String> getAllowedMethods(String name);
-    
+
     // allowed test methods (includes allowed methods)
-    
+
     void addAllowedTestMethod(String restriction, String method);
 
     Set<String> getAllowedTestMethods(RestrictionId restriction);
@@ -61,11 +61,11 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
     // merge decls
 
     public void addMergeDecl(String restriction, MergeDecl md);
-    
+
     public Set<MergeDecl> getMergeDecls(String restriction);
-    
+
     public boolean hasComparator(String restriction);
-    
+
     // instances
 
     GallifreyMethodInstance methodInstance(Position pos, ReferenceType container, Flags flags, Type returnType,
@@ -78,8 +78,8 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
 
     GallifreyLocalInstance localInstance(Position pos, Flags flags, Type type, String name, RefQualification q);
 
-    GallifreyFieldInstance fieldInstance(Position pos, ReferenceType container, Flags flags, Type type,
-            String name, RefQualification q);
+    GallifreyFieldInstance fieldInstance(Position pos, ReferenceType container, Flags flags, Type type, String name,
+            RefQualification q);
 
     GallifreyConstructorInstance constructorInstance(Position pos, ClassType container, Flags flags,
             List<? extends Type> argTypes, List<? extends Type> excTypes, List<TypeVariable> typeParams,
@@ -98,12 +98,12 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
 
     boolean canBeShared(String className);
 
-	void push_regionContext();
+    void push_regionContext();
 
-	RegionContext pop_regionContext();
+    RegionContext pop_regionContext();
 
-	RegionContext region_context();
+    RegionContext region_context();
 
-	RegionContext region_context(RegionContext region_context);
-    
+    RegionContext region_context(RegionContext region_context);
+
 }

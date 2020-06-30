@@ -44,7 +44,7 @@ public class LocalRef extends RefQualification {
     public RefQualification copy() {
         return new LocalRef(this.position);
     }
-    
+
     public boolean isLocal() {
         return true;
     }

@@ -117,17 +117,15 @@ public class GallifreyScheduler extends JL7Scheduler {
         Goal g = new EmptyGoal(job, "Serialized");
         return internGoal(g);
     }
-    
+
     @Override
     public Goal InitializationsChecked(Job job) {
         TypeSystem ts = extInfo.typeSystem();
         NodeFactory nf = extInfo.nodeFactory();
-        Goal g = new VisitorGoal(job,
-             new GallifreyDefiniteAssignmentChecker(job, ts, nf));
+        Goal g = new VisitorGoal(job, new GallifreyDefiniteAssignmentChecker(job, ts, nf));
         try {
             g.addPrerequisiteGoal(ReachabilityChecked(job), this);
-        }
-        catch (CyclicDependencyException e) {
+        } catch (CyclicDependencyException e) {
             throw new InternalCompilerError(e);
         }
         return internGoal(g);

@@ -255,7 +255,7 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         e = composeExts(e, e2);
         return postExtMatchRestriction(e);
     }
-    
+
     public final Ext extWhenStmt() {
         Ext e = extWhenStmtImpl();
 
@@ -270,7 +270,7 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         e = composeExts(e, e2);
         return postExtWhenStmt(e);
     }
-    
+
     public final Ext extMergeDecl() {
         Ext e = extMergeDeclImpl();
 
@@ -351,11 +351,11 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     protected Ext extMatchRestrictionImpl() {
         return extStmt();
     }
-    
+
     protected Ext extWhenStmtImpl() {
         return extStmt();
     }
-    
+
     protected Ext extMergeDeclImpl() {
         return extTerm();
     }
@@ -425,11 +425,11 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
     protected Ext postExtMatchRestriction(Ext e) {
         return postExtStmt(e);
     }
-    
+
     protected Ext postExtWhenStmt(Ext e) {
         return postExtStmt(e);
     }
-    
+
     protected Ext postExtMergeDecl(Ext e) {
         return postExtTerm(e);
     }

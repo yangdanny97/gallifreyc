@@ -121,14 +121,14 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
         s = ext(s, extFactory().extAllowsStmt());
         return s;
     }
-    
+
     @Override
     public AllowsStmt AllowsStmt(Position pos, Id id, Id contingent_id, boolean testOnly) {
         AllowsStmt s = new AllowsStmt_c(pos, id, contingent_id, testOnly);
         s = ext(s, extFactory().extAllowsStmt());
         return s;
     }
-    
+
     @Override
     public AllowsStmt AllowsStmt(Position pos, Id id, boolean testOnly) {
         AllowsStmt s = new AllowsStmt_c(pos, id, null, testOnly);
@@ -187,44 +187,45 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
         m = ext(m, extFactory().extMove());
         return m;
     }
-    
+
     @Override
-    public MergeDecl MergeDecl(Position pos, Id method1, List<Formal> method1Formals, Id method2, List<Formal> method2Formals, Block body) {
+    public MergeDecl MergeDecl(Position pos, Id method1, List<Formal> method1Formals, Id method2,
+            List<Formal> method2Formals, Block body) {
         MergeDecl m = new MergeDecl_c(pos, method1, method1Formals, method2, method2Formals, body);
         m = ext(m, extFactory().extMergeDecl());
         return m;
     }
-    
+
     @Override
     public WhenStmt WhenStmt(Position pos, Expr expr, Stmt body) {
         WhenStmt w = new WhenStmt_c(pos, expr, body);
         w = ext(w, extFactory().extWhenStmt());
         return w;
     }
-    
-   // utils for compiler generated nodes to reduce verbosity
-    
+
+    // utils for compiler generated nodes to reduce verbosity
+
     @Override
     public Local Local(String name) {
         return this.Local(Position.COMPILER_GENERATED, this.Id(name));
     }
-    
+
     @Override
     public Formal Formal(String type, String name) {
         return this.Formal(Position.COMPILER_GENERATED, Flags.NONE,
                 this.TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, type), this.Id(name));
     }
-    
+
     @Override
     public Field Field(Expr object, String name) {
         return this.Field(Position.COMPILER_GENERATED, object, this.Id(name));
     }
-    
+
     @Override
     public Id Id(String name) {
         return this.Id(Position.COMPILER_GENERATED, name);
     }
-    
+
     @Override
     public TypeNode TypeNode(String name) {
         return this.TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, name);

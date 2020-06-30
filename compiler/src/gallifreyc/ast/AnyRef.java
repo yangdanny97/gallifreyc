@@ -23,7 +23,7 @@ public class AnyRef extends RefQualification {
     public RefQualification copy() {
         return new AnyRef(this.position);
     }
-    
+
     public boolean isAny() {
         return true;
     }

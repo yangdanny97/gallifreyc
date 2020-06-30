@@ -34,9 +34,9 @@ public class SharedRef extends RefQualification {
     public RefQualification copy() {
         return new SharedRef(this.position, restriction.copy());
     }
-    
+
     public boolean isShared() {
         return true;
     }
-    
+
 }

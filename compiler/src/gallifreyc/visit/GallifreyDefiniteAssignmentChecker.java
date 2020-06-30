@@ -22,8 +22,7 @@ public class GallifreyDefiniteAssignmentChecker extends JL5DefiniteAssignmentChe
     }
 
     @Override
-    protected NodeVisitor enterCall(Node parent, Node n)
-            throws SemanticException {
+    protected NodeVisitor enterCall(Node parent, Node n) throws SemanticException {
         if (n instanceof ClassBody) {
             // we are starting to process a class declaration, but have yet
             // to do any of the dataflow analysis.
@@ -33,19 +32,15 @@ public class GallifreyDefiniteAssignmentChecker extends JL5DefiniteAssignmentChe
             ClassType ct = null;
             if (parent instanceof ClassDecl) {
                 ct = ((ClassDecl) parent).type();
-            }
-            else if (parent instanceof New) {
+            } else if (parent instanceof New) {
                 ct = ((New) parent).anonType();
-            }
-            else if (parent instanceof EnumConstantDecl) {
+            } else if (parent instanceof EnumConstantDecl) {
                 ct = ((EnumConstantDecl) parent).type();
-            }
-            else if (parent instanceof RestrictionDecl) {
+            } else if (parent instanceof RestrictionDecl) {
                 ct = (ClassType) ((RestrictionDecl) parent).forClass().type();
             }
             if (ct == null) {
-                throw new InternalCompilerError("ClassBody found but cannot find the class.",
-                                                n.position());
+                throw new InternalCompilerError("ClassBody found but cannot find the class.", n.position());
             }
             setupClassBody(ct, (ClassBody) n);
         }

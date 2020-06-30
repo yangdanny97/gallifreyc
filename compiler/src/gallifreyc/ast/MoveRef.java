@@ -24,7 +24,7 @@ public class MoveRef extends RefQualification {
     public RefQualification copy() {
         return new MoveRef(this.position);
     }
-    
+
     public boolean isMove() {
         return true;
     }

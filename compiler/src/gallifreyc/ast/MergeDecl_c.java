@@ -24,22 +24,22 @@ import gallifreyc.visit.GallifreyTypeChecker;
 
 public class MergeDecl_c extends Term_c implements MergeDecl {
     private static final long serialVersionUID = SerialVersionUID.generate();
-    
+
     Id method1;
     List<Formal> method1Formals;
-    
+
     Id method2;
     List<Formal> method2Formals;
-    
+
     Block body;
-    
+
     MethodInstance mi; // just to hold the return type
-    
+
     protected ClassType currentRestrictionClass;
     String currentRestriction;
-    
-    public MergeDecl_c(Position pos, Id method1, List<Formal> method1Formals, 
-            Id method2, List<Formal> method2Formals, Block body) {
+
+    public MergeDecl_c(Position pos, Id method1, List<Formal> method1Formals, Id method2, List<Formal> method2Formals,
+            Block body) {
         super(pos);
         this.method1 = method1;
         this.method2 = method2;
@@ -92,11 +92,11 @@ public class MergeDecl_c extends Term_c implements MergeDecl {
         this.body = body;
         return this;
     }
-    
+
     public String name() {
         return method1.id() + " " + method2.id();
     }
-    
+
     @Override
     public Node visitChildren(NodeVisitor v) {
         this.method1Formals = visitList(this.method1Formals, v);
@@ -104,53 +104,53 @@ public class MergeDecl_c extends Term_c implements MergeDecl {
         this.body = visitChild(this.body, v);
         return this;
     }
-    
+
     @Override
     public int hashCode() {
         return name().hashCode();
     }
-    
+
     @Override
     public boolean equals(Object other) {
         return other.hashCode() == this.hashCode();
     }
-    
+
     @Override
     public NodeVisitor typeCheckEnter(TypeChecker tc) throws SemanticException {
         GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc;
         this.currentRestrictionClass = gtc.currentRestrictionClass;
         return super.typeCheckEnter(tc);
     }
-    
+
     @Override
     public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
         return tb.pushCode();
     }
-    
+
     @Override
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         GallifreyTypeBuilder gtb = (GallifreyTypeBuilder) tb;
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tb.typeSystem();
-        
+
         String restriction = gtb.currentRestriction;
         this.currentRestriction = restriction;
-        
+
         if (ts.getMergeDecls(restriction).contains(this)) {
             throw new SemanticException("Merge function for these 2 methods has already been defined", this.position);
         }
         ts.addMergeDecl(restriction, this);
         List<Type> params = new ArrayList<Type>();
-        
+
         this.mi = ts.methodInstance(this.position, null, Flags.NONE, ts.Int(), name(), params, new ArrayList<Type>());
-        
+
         return this;
     }
-    
+
     @Override
     public Context enterScope(Context c) {
         return c.pushCode(mi);
     }
-    
+
     @Override
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         ClassType ct = this.currentRestrictionClass;
@@ -161,19 +161,19 @@ public class MergeDecl_c extends Term_c implements MergeDecl {
         mi2.addAll(ct.methodsNamed(method2.id()));
         if (mi1.size() == 0) {
             throw new SemanticException(
-                    "Unable to find method named " + method1.id() + " in " + this.currentRestrictionClass, this.position);
+                    "Unable to find method named " + method1.id() + " in " + this.currentRestrictionClass,
+                    this.position);
         }
         if (mi2.size() == 0) {
             throw new SemanticException(
-                    "Unable to find method named " + method2.id() + " in " + this.currentRestrictionClass, this.position);
+                    "Unable to find method named " + method2.id() + " in " + this.currentRestrictionClass,
+                    this.position);
         }
         if (!ts.getAllowedMethods(this.currentRestriction).contains(method1.id())) {
-            throw new SemanticException(
-                    method1.id() + " not allowed in " + this.currentRestriction, this.position);
+            throw new SemanticException(method1.id() + " not allowed in " + this.currentRestriction, this.position);
         }
         if (!ts.getAllowedMethods(this.currentRestriction).contains(method2.id())) {
-            throw new SemanticException(
-                    method2.id() + " not allowed in " + this.currentRestriction, this.position);
+            throw new SemanticException(method2.id() + " not allowed in " + this.currentRestriction, this.position);
         }
         // TODO: check types
         return this;
@@ -193,7 +193,7 @@ public class MergeDecl_c extends Term_c implements MergeDecl {
         v.visitCFG(body(), this, EXIT);
         return succs;
     }
-    
+
     // for dataflow analysis
 
     @Override

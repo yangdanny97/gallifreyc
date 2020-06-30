@@ -35,7 +35,7 @@ public class GallifreySourceFileExt extends GallifreyExt {
     public Node buildTypes(TypeBuilder tb) throws SemanticException {
         return superLang().buildTypes(node(), tb);
     }
-    
+
     private Source getSourceFromParent(Source parent, ClassDecl d) {
         List<String> parentURI = Arrays.asList(parent.toString().split("/"));
         List<String> baseURI = new ArrayList<>();
@@ -45,7 +45,7 @@ public class GallifreySourceFileExt extends GallifreyExt {
         baseURI.add(d.name() + ".gal");
         String uristring = "file:" + String.join("/", baseURI);
         FileObject fo = new ExtFileObject(URI.create(uristring), JavaFileObject.Kind.OTHER);
-        
+
         return new GallifreyGeneratedSource(fo);
     }
 
@@ -73,10 +73,10 @@ public class GallifreySourceFileExt extends GallifreyExt {
             }
         }
         sf = sf.imports(imports).decls(decls);
-        
+
         List<SourceFile> sources = new ArrayList<SourceFile>();
         sources.add(sf);
-        
+
         for (ClassDecl d : rw.generatedClasses) {
             List<TopLevelDecl> generatedDecl = new ArrayList<>();
             generatedDecl.add(d);

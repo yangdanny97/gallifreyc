@@ -134,7 +134,7 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
             throw new SemanticException(
                     "Restriction " + id.id() + " for " + forClass.type() + " must be for a valid class", this.position);
         }
-        
+
         gtc.currentRestriction = id.id();
         gtc.currentRestrictionClass = (ClassType) forClass.type();
 
@@ -162,7 +162,7 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
         this.body = (RestrictionBody) visitChild(this.body, v);
         return this;
     }
-    
+
     @Override
     public Context enterChildScope(Node child, Context c) {
         if (this.forClass.type() != null && !(this.forClass.type() instanceof UnknownType)) {
@@ -174,8 +174,7 @@ public class RestrictionDecl_c extends Term_c implements RestrictionDecl {
                 ct = (ParsedClassType) this.forClass.type();
             }
             c = c.pushClass(ct, ts.staticTarget(this.forClass.type()).toClass());
-        }
-        else {
+        } else {
             c = c.pushBlock();
         }
         return super.enterChildScope(child, c);

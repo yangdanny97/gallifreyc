@@ -34,7 +34,7 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     RestrictionId RestrictionId(Position pos, Id rv, Id restriction, boolean wildcard);
 
     Transition Transition(Position pos, Expr expr, RestrictionId newRestriction);
-    
+
     WhenStmt WhenStmt(Position pos, Expr expr, Stmt body);
 
     Move Move(Position pos, Expr expr);
@@ -51,26 +51,27 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     AllowsStmt AllowsStmt(Position pos, Id id);
 
     AllowsStmt AllowsStmt(Position pos, Id id, Id contingent_id);
-    
+
     AllowsStmt AllowsStmt(Position pos, Id id, Id contingent_id, boolean testOnly);
-    
+
     AllowsStmt AllowsStmt(Position pos, Id id, boolean testOnly);
 
     MethodDecl MethodDecl(Position pos, FlagAnnotations flags, TypeNode returnType, Id name, List<Formal> formals,
             List<TypeNode> throwTypes, Block body, boolean isTest);
 
     RestrictionUnionDecl RestrictionUnionDecl(Position pos, Id name, List<Id> restrictions);
-    
-    MergeDecl MergeDecl(Position pos, Id method1, List<Formal> method1Formals, Id method2, List<Formal> method2Formals, Block body);
-    
+
+    MergeDecl MergeDecl(Position pos, Id method1, List<Formal> method1Formals, Id method2, List<Formal> method2Formals,
+            Block body);
+
     // utils for compiler generated nodes to reduce verbosity
     Local Local(String name);
-    
+
     Formal Formal(String type, String name);
-    
+
     Field Field(Expr object, String name);
-    
+
     Id Id(String name);
-    
+
     TypeNode TypeNode(String name);
 }
