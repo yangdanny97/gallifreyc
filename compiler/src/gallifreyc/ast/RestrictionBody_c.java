@@ -10,8 +10,6 @@ import polyglot.visit.CFGBuilder;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeBuilder;
-import polyglot.visit.TypeChecker;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

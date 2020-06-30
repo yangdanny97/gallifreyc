@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import gallifreyc.ast.*;
 import gallifreyc.extension.GallifreyExprExt;
 import polyglot.ast.Expr;
+import polyglot.ast.MethodDecl;
 import polyglot.ext.jl5.types.*;
 import polyglot.ext.jl7.types.*;
 import polyglot.main.Report;
@@ -34,6 +35,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     
     // restriction name -> set of test methods declared in restriction
     public Map<String, Set<GallifreyMethodInstance>> testMethods = new HashMap<>();
+    public Map<String, Set<MethodDecl>> testMethodDecls = new HashMap<>();
 
     public RegionContext region_context = new RegionContext();
     
@@ -307,11 +309,15 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     }
     
     @Override
-    public void addTestMethod(String restriction, GallifreyMethodInstance mi) {
+    public void addTestMethod(String restriction, GallifreyMethodInstance mi, MethodDecl md) {
         if (!testMethods.containsKey(restriction)) {
             testMethods.put(restriction, new HashSet<GallifreyMethodInstance>());
         }
         testMethods.get(restriction).add(mi);
+        if (!testMethodDecls.containsKey(restriction)) {
+            testMethodDecls.put(restriction, new HashSet<MethodDecl>());
+        }
+        testMethodDecls.get(restriction).add(md);
     }
     
     @Override

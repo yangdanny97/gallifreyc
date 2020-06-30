@@ -1,13 +1,17 @@
 package gallifreyc.extension;
 
 import polyglot.ast.*;
+import polyglot.types.Flags;
 import polyglot.types.SemanticException;
-import polyglot.util.InternalCompilerError;
+import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.SharedRef;
 import gallifreyc.ast.WhenStmt;
@@ -54,7 +58,31 @@ public class GallifreyWhenStmtExt extends GallifreyExt {
 
     @Override
     public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
-        throw new InternalCompilerError("unimplemented");
-        // TODO
+        GallifreyNodeFactory nf = rw.nodeFactory();
+        GallifreyTypeSystem ts = rw.typeSystem();
+        WhenStmt node = node();
+        Call c = (Call) node.expr();
+        Position p = Position.COMPILER_GENERATED;
+        
+        String testName = "__test__" + c.name();
+        List<Expr> args = new ArrayList<>(c.arguments());
+        
+        // add new RunAfterTest{...} argument
+        List<ClassMember> members = new ArrayList<>();
+        Block body;
+        if (node.body() instanceof Block) {
+            body = (Block) node.body();
+        } else {
+            List<Stmt> blockBody = new ArrayList<>();
+            blockBody.add(node.body());
+            body = nf.Block(p, blockBody);
+        }
+        members.add(nf.MethodDecl(p, Flags.NONE, nf.CanonicalTypeNode(p, ts.Void()), nf.Id("run"), 
+                new ArrayList<Formal>(), new ArrayList<TypeNode>(), body, nf.Javadoc(p, "")));
+        Expr rat = nf.New(p, nf.TypeNode("RunAfterTest"), new ArrayList<Expr>(), nf.ClassBody(p, members));
+        
+        args.add(rat);
+        return nf.Eval(node.position(), nf.Call(c.position(), c.target(), 
+                nf.Id(c.id().position(), testName), args));
     }
 }

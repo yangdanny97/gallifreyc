@@ -7,7 +7,6 @@ import polyglot.ast.*;
 import polyglot.types.ClassType;
 import polyglot.types.MemberInstance;
 import polyglot.types.SemanticException;
-import polyglot.types.Type;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;

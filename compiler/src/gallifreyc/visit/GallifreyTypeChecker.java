@@ -18,7 +18,6 @@ import polyglot.frontend.Job;
 import polyglot.frontend.goals.Goal;
 import polyglot.types.ClassType;
 import polyglot.types.SemanticException;
-import polyglot.types.Type;
 import polyglot.types.TypeSystem;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeChecker;

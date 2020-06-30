@@ -8,6 +8,7 @@ import gallifreyc.ast.MergeDecl;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RestrictionId;
 import polyglot.ast.Expr;
+import polyglot.ast.MethodDecl;
 import polyglot.ext.jl5.types.TypeVariable;
 import polyglot.ext.jl7.types.JL7TypeSystem;
 import polyglot.types.ClassType;
@@ -69,7 +70,7 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
     
     // test methods
     
-    public void addTestMethod(String restriction, GallifreyMethodInstance mi);
+    public void addTestMethod(String restriction, GallifreyMethodInstance mi, MethodDecl md);
     
     public Set<GallifreyMethodInstance> getTestMethods(RestrictionId restriction);
     

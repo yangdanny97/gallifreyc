@@ -48,6 +48,8 @@ TODOs:
 - default qualifications for stdlib (field and method instances)
 - check transition runtime behavior matches TS
 - ownership typechecking
+- restrictions should only be written for classes in the same compilation unit, due to the source file for each class requiring modification
+- unknown scoping/behavior of restriction-defined test methods
 
 
 
