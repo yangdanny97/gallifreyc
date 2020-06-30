@@ -201,6 +201,9 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 
     @Override
     public void addAllowedTestMethod(String restriction, String method) {
+        if (!allowedTestMethodsMap.containsKey(restriction)) {
+            allowedTestMethodsMap.put(restriction, new HashSet<String>());
+        }
         allowedTestMethodsMap.get(restriction).add(method);
     }
 
@@ -224,6 +227,9 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
 
     @Override
     public void addAllowedMethod(String restriction, String method) {
+        if (!allowedMethodsMap.containsKey(restriction)) {
+            allowedMethodsMap.put(restriction, new HashSet<String>());
+        }
         allowedMethodsMap.get(restriction).add(method);
     }
 

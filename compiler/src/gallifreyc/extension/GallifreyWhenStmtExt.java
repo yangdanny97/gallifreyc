@@ -2,6 +2,7 @@ package gallifreyc.extension;
 
 import polyglot.ast.*;
 import polyglot.types.SemanticException;
+import polyglot.util.InternalCompilerError;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
 
@@ -53,7 +54,7 @@ public class GallifreyWhenStmtExt extends GallifreyExt {
 
     @Override
     public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
-        // TODO Auto-generated method stub
-        return super.gallifreyRewrite(rw);
+        throw new InternalCompilerError("unimplemented");
+        // TODO
     }
 }

@@ -1,0 +1,14 @@
+restriction RWhen for ClassC {    
+    test testMethod() {
+        return true;
+    }
+}
+
+class TestTestMethod {
+    public TestTestMethod() {
+        shared[RWhen] ClassC x = new ClassC();
+        when (x.testMethod()) {
+            System.out.println("...");
+        }
+    }
+}

@@ -1,0 +1,13 @@
+restriction RWhen for ClassC {
+    allows as test f6;
+}
+
+class TestInvalidWhen3 {
+    public TestInvalidWhen3() {
+        shared[RWhen] ClassC x = new ClassC();
+        // not a method call
+        when (true) {
+            System.out.println("...");
+        }
+    }
+}

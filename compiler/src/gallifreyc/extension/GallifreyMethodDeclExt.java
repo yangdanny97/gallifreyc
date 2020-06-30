@@ -29,6 +29,7 @@ import polyglot.types.Context;
 import polyglot.types.Flags;
 import polyglot.types.SemanticException;
 import polyglot.util.CodeWriter;
+import polyglot.util.InternalCompilerError;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.NodeVisitor;
@@ -67,10 +68,12 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
     @Override
     public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
         MethodDecl md = node();
+        // TODO add new method to restriction's "for" class
 
         TypeNode rt = md.returnType();
         if (rt instanceof RefQualifiedTypeNode
                 || (rt instanceof CanonicalTypeNode && ((CanonicalTypeNode) rt).type().isPrimitive())) {
+            //TODO potentially rewrite test method names to not conflict
             return superLang().buildTypesEnter(node(), tb);
         }
         throw new SemanticException("cannot declare unqualified return type", rt.position());
@@ -123,14 +126,16 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         GallifreyTypeSystem ts = ((GallifreyTypeChecker) tc).typeSystem();
         ts.region_context(new RegionContext());
-        if (this.isTest && !ts.typeEquals(ts.Boolean(), node().returnType().type())) {
-            throw new SemanticException("Test methods must return boolean", node().position());
-        }
+        // no need to ensure test methods return booleans; test method headers have no place to declare return type
         return superLang().typeCheck(node(), tc);
     }
 
     @Override
     public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+        if (isTest) {
+            throw new InternalCompilerError("unimplemented");
+            // TODO
+        }
         GallifreyMethodInstance mi = (GallifreyMethodInstance) node().methodInstance();
         GallifreyNodeFactory nf = rw.nodeFactory();
         RefQualification q = mi.gallifreyReturnType().qualification;

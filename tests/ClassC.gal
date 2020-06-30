@@ -20,4 +20,8 @@ public class ClassC {
     }
     
     public void f5(local String z) {}
+    
+    public boolean f6() {
+        return true;
+    }
 }
