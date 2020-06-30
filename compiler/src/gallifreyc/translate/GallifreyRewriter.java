@@ -80,8 +80,8 @@ public class GallifreyRewriter extends GRewriter {
         GallifreyTypeSystem ts = this.typeSystem();
         GallifreyNodeFactory nf = this.nodeFactory();
         
-        if (!ts.hasComparator(name)) return null;
         Set<MergeDecl> merges = ts.getMergeDecls(name);
+        if (merges.size() == 0) return null;
         Position p = Position.COMPILER_GENERATED;
         List<ClassMember> members = new ArrayList<>();
         
@@ -332,7 +332,7 @@ public class GallifreyRewriter extends GRewriter {
                 nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(this.SHARED)), Assign.ASSIGN, constructorRHS)));
         
         // add MergeComparator: this.SHARED.merge_strategy = new RComparator()
-        if (ts.hasComparator(rName)) {
+        if (ts.getMergeDecls(rName).size() > 0) {
             constructorStmts.add(nf.Eval(p,
                     nf.FieldAssign(p, 
                             nf.Field(p, nf.Field(p, nf.This(p), nf.Id(this.SHARED)), nf.Id(this.MERGE_STRATEGY)), 
@@ -355,7 +355,7 @@ public class GallifreyRewriter extends GRewriter {
         constructorStmts2.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(p, nf.This(p), nf.Id(this.SHARED)),
                 Assign.ASSIGN, nf.AmbExpr(p, nf.Id("obj")))));
         // add MergeComparator: this.SHARED.merge_strategy = new RComparator()
-        if (ts.hasComparator(rName)) {
+        if (ts.getMergeDecls(rName).size() > 0) {
             constructorStmts2.add(nf.Eval(p,
                     nf.FieldAssign(p, 
                             nf.Field(p, nf.Field(p, nf.This(p), nf.Id(this.SHARED)), nf.Id(this.MERGE_STRATEGY)), 

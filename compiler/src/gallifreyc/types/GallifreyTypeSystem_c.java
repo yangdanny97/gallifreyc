@@ -261,10 +261,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
     
     @Override
     public boolean hasComparator(String restriction) {
-        if ((!mergeDecls.containsKey(restriction)) || mergeDecls.get(restriction).size() == 0) {
-            return false;
-        }
-        return true;
+        return this.getMergeDecls(restriction).size() > 0;
     }
 
 	@Override
