@@ -74,6 +74,6 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     Id Id(String name);
 
     TypeNode TypeNode(String name);
-    
+
     TypeNode TypeNode(Position pos, String qualifiedName);
 }

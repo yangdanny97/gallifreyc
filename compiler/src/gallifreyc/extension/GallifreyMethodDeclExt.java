@@ -44,7 +44,7 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
 
     public PreCondition pre;
     public PostCondition post;
-    
+
     // The following fields only apply for test methods declared inside restrictions
     public boolean isTest;
     protected ClassType currentRestrictionClass = null;
@@ -93,7 +93,7 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
         MethodDecl md = (MethodDecl) superLang().buildTypes(node(), tb);
         GallifreyTypeBuilder gtb = (GallifreyTypeBuilder) tb;
         GallifreyTypeSystem ts = gtb.typeSystem();
-        
+
         List<GallifreyType> inputTypes = new ArrayList<>();
 
         TypeNode rt = md.returnType();
@@ -120,9 +120,11 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
         GallifreyMethodInstance mi = (GallifreyMethodInstance) md.methodInstance();
         mi = mi.gallifreyInputTypes(inputTypes);
         mi = mi.gallifreyReturnType(gReturn);
-        
+        mi = (GallifreyMethodInstance) mi.name(node().name());
+        md = md.methodInstance(mi);
+
         if (isTest) {
-            ts.addTestMethod(this.currentRestriction, mi, node());
+            ts.addTestMethod(this.currentRestriction, mi, md);
         }
         return md;
     }
@@ -142,10 +144,12 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
         GallifreyTypeSystem ts = ((GallifreyTypeChecker) tc).typeSystem();
         ts.region_context(new RegionContext());
         MethodDecl node = node();
-        // no need to ensure test methods return booleans; test method headers have no place to declare return type
+        // no need to ensure test methods return booleans; test method headers have no
+        // place to declare return type
         if (isTest) {
             if (this.currentRestrictionClass.methodsNamed(node().name()).size() > 0) {
-                throw new SemanticException("Cannot declare test method with same name as existing method", node().position());
+                throw new SemanticException("Cannot declare test method with same name as existing method",
+                        node().position());
             }
             node = node.methodInstance(node.methodInstance().container(this.currentRestrictionClass));
         }
@@ -154,15 +158,12 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
 
     @Override
     public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
-        if (isTest) {
-            return node();
-        }
         GallifreyMethodInstance mi = (GallifreyMethodInstance) node().methodInstance();
         GallifreyNodeFactory nf = rw.nodeFactory();
         RefQualification q = mi.gallifreyReturnType().qualification;
         if (q.isUnique()) {
-            return node().returnType(nf.TypeNode(node().position(),
-                    "Unique<" + node().returnType().type().toString() + ">"));
+            return node().returnType(
+                    nf.TypeNode(node().position(), "Unique<" + node().returnType().type().toString() + ">"));
         }
         if (q.isShared()) {
             SharedRef s = (SharedRef) q;

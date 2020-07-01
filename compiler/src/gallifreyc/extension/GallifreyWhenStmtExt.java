@@ -63,10 +63,10 @@ public class GallifreyWhenStmtExt extends GallifreyExt {
         WhenStmt node = node();
         Call c = (Call) node.expr();
         Position p = Position.COMPILER_GENERATED;
-        
+
         String testName = "__test__" + c.name();
         List<Expr> args = new ArrayList<>(c.arguments());
-        
+
         // add new RunAfterTest{...} argument
         List<ClassMember> members = new ArrayList<>();
         Block body;
@@ -77,12 +77,11 @@ public class GallifreyWhenStmtExt extends GallifreyExt {
             blockBody.add(node.body());
             body = nf.Block(p, blockBody);
         }
-        members.add(nf.MethodDecl(p, Flags.NONE, nf.CanonicalTypeNode(p, ts.Void()), nf.Id("run"), 
+        members.add(nf.MethodDecl(p, Flags.PUBLIC, nf.CanonicalTypeNode(p, ts.Void()), nf.Id("run"),
                 new ArrayList<Formal>(), new ArrayList<TypeNode>(), body, nf.Javadoc(p, "")));
         Expr rat = nf.New(p, nf.TypeNode("RunAfterTest"), new ArrayList<Expr>(), nf.ClassBody(p, members));
-        
+
         args.add(rat);
-        return nf.Eval(node.position(), nf.Call(c.position(), c.target(), 
-                nf.Id(c.id().position(), testName), args));
+        return nf.Eval(node.position(), nf.Call(c.position(), c.target(), nf.Id(c.id().position(), testName), args));
     }
 }

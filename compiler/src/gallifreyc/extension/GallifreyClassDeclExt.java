@@ -18,6 +18,7 @@ import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.types.TypeSystem;
 import polyglot.util.CodeWriter;
+import polyglot.util.InternalCompilerError;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.PrettyPrinter;
@@ -149,35 +150,33 @@ public class GallifreyClassDeclExt extends GallifreyExt implements ClassDeclOps 
                     }
                 }
                 Expr rhs = nf.NewArray(p, nf.TypeNode("Class"), 1, nf.ArrayInit(p, elements));
-                members.add(nf.FieldDecl(p, Flags.PUBLIC.Final(), nf.TypeNode("Class<?>[]"),
-                        nf.Id(md.name()), rhs));
+                members.add(nf.FieldDecl(p, Flags.PUBLIC.Final(), nf.TypeNode("Class<?>[]"), nf.Id(md.name()), rhs));
             }
         }
-        
+
         // add restriction-defined test methods
         List<MethodDecl> testDecls = ts.getRestrictionTestMethodsForClassName(cd.name());
         Set<String> names = new HashSet<>();
         for (MethodDecl d : testDecls) {
             if (names.contains(d.name()) || cd.type().methodsNamed(d.name()).size() > 0) {
-                throw new SemanticException("Conflicting restriction-defined test method name: " + d.name(), d.position());
+                throw new SemanticException("Conflicting restriction-defined test method name: " + d.name(),
+                        d.position());
             }
             names.add(d.name());
             members.add(d);
         }
-        
+
         // add compiler-generated test wrapper methods
         List<GallifreyMethodInstance> testInstances = new ArrayList<>();
         for (String mName : ts.getAllowedTestMethodsForClassName(cd.name())) {
-            List<MethodInstance> mInstances = new ArrayList<>();
-            mInstances.addAll(cd.type().methodsNamed(mName));
-            for (MethodInstance m : mInstances) {
-                testInstances.add((GallifreyMethodInstance) m);
+            for (MethodInstance m : cd.type().methodsNamed(mName)) {
+                testInstances.add((GallifreyMethodInstance) m.name(mName));
             }
         }
         for (MethodDecl d : testDecls) {
-            testInstances.add((GallifreyMethodInstance) d.methodInstance());
+            testInstances.add((GallifreyMethodInstance) d.methodInstance().name(d.name()));
         }
-        
+
         for (GallifreyMethodInstance mi : testInstances) {
             members.add(rw.genTestMethodWrapper(mi));
         }

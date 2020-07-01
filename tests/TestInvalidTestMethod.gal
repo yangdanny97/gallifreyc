@@ -1,4 +1,4 @@
-restriction RWhen for ClassC {    
+restriction RTestMethod for ClassC {    
     test testMethod() {
         return 1;
     }
@@ -6,7 +6,7 @@ restriction RWhen for ClassC {
 
 class TestInvalidTestMethod {
     public TestInvalidTestMethod() {
-        shared[RWhen] ClassC x = new ClassC();
+        shared[RTestMethod] ClassC x = new ClassC();
         when (x.testMethod()) {
             System.out.println("...");
         }

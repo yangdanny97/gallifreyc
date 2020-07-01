@@ -42,7 +42,7 @@ public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
     public Node typeCheck(TypeChecker tc) throws SemanticException {
         Call node = node();
         GallifreyTypeSystem ts = (GallifreyTypeSystem) tc.typeSystem();
-        
+
         GallifreyMethodInstance testMi = null;
         if (node.target() instanceof Expr) {
             GallifreyType receiverType = GallifreyExprExt.ext(node.target()).gallifreyType();
@@ -54,7 +54,8 @@ public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
                     Set<String> allowedTestMethods = ts.getAllowedTestMethods(restriction);
                     if (!(allowedMethods.contains(node.name()) || allowedTestMethods.contains(node.name()))) {
                         throw new SemanticException(
-                                "Cannot call method " + node.name() + " under restriction " + restriction, node.position());
+                                "Cannot call method " + node.name() + " under restriction " + restriction,
+                                node.position());
                     }
                 }
             }
@@ -101,13 +102,11 @@ public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
                 RestrictionId restriction = ((SharedRef) t.qualification()).restriction();
                 Expr newTarget;
                 if (restriction.rv() != null) { // RV::R
-                    newTarget = nf.Cast(node().position(),
-                            nf.TypeNode(node().position(), restriction.getWrapperName()),
+                    newTarget = nf.Cast(node().position(), nf.TypeNode(node().position(), restriction.getWrapperName()),
                             (Expr) c.target());
                 } else { // R
                     newTarget = nf.Cast(node().position(),
-                            nf.TypeNode(node().position(), restriction.getInterfaceName()),
-                            (Expr) c.target());
+                            nf.TypeNode(node().position(), restriction.getInterfaceName()), (Expr) c.target());
                 }
                 return c.target(newTarget);
             }

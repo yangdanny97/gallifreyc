@@ -25,7 +25,7 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
     void addRestrictionMapping(String restriction, String cls) throws SemanticException;
 
     String getClassNameForRestriction(String restriction);
-    
+
     List<String> getRestrictionsForClassName(String cls);
 
     // RVs
@@ -44,7 +44,7 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
 
     Set<String> getAllowedMethods(RestrictionId restriction);
 
-    Set<String> getAllowedMethods(String name);
+    Set<String> getAllowedMethods(String restriction);
 
     // allowed test methods (includes allowed methods)
 
@@ -55,7 +55,7 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
     Set<String> getAllowedTestMethods(String name);
 
     boolean restrictionExists(String name);
-    
+
     List<String> getAllowedTestMethodsForClassName(String cls);
 
     // restriction name -> class type
@@ -71,22 +71,26 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
     public Set<MergeDecl> getMergeDecls(String restriction);
 
     public boolean hasComparator(String restriction);
-    
+
     // test methods (declared within restrictions)
-    
+
     public void addTestMethod(String restriction, GallifreyMethodInstance mi, MethodDecl md);
-    
+
     public Set<GallifreyMethodInstance> getTestMethods(RestrictionId restriction);
-    
+
     public Set<GallifreyMethodInstance> getTestMethods(String restriction);
-    
+
+    public Set<String> getTestMethodNames(String restriction);
+
     public GallifreyMethodInstance getTestMethod(RestrictionId restriction, String methodName);
-    
+
     public GallifreyMethodInstance getTestMethod(String restriction, String methodName);
-    
+
     public void testMethod(GallifreyMethodInstance mi);
-    
+
     List<MethodDecl> getRestrictionTestMethodsForClassName(String cls);
+
+    List<GallifreyMethodInstance> getAllTestMethodInstances(String restriction, ClassType ct);
 
     // instances
 

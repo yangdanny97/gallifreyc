@@ -58,8 +58,7 @@ public class GallifreyAssignExt extends GallifreyExprExt {
         if (q.isShared()) {
             SharedRef s = (SharedRef) q;
             RestrictionId rid = s.restriction();
-            a = a.right(nf.Cast(rhs.position(),
-                    nf.TypeNode(Position.COMPILER_GENERATED, rid.getWrapperName()),
+            a = a.right(nf.Cast(rhs.position(), nf.TypeNode(Position.COMPILER_GENERATED, rid.getWrapperName()),
                     rw.rewriteRHS(rid, rhs)));
         } else if (q.isUnique()) {
             Expr new_rhs = nf.New(rhs.position(), nf.TypeNode(a.position(), "Unique<>"),
