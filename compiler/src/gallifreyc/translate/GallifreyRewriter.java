@@ -52,8 +52,27 @@ public class GallifreyRewriter extends GRewriter {
         
         String name = "__test__" + mi.name();
         List<Formal> formals = new ArrayList<>();
-        List<String> formalNames = new ArrayList<>();
-        // TODO get formals from methodInstance types + gallifrey types, & fresh variables
+        List<Expr> args = new ArrayList<>();
+        
+        // get formals from method instance types/gallifreyTypes + fresh temps
+        for (int i = 0; i < mi.formalTypes().size(); i++) {
+            Type t = mi.formalTypes().get(i);
+            RefQualification q = mi.gallifreyInputTypes().get(i).qualification;
+            String fresh = lang().freshVar();
+            // wrappers for shared and unique
+            if (q.isUnique()) {
+                formals.add(nf.Formal("Unique<" + t.toString() + ">", fresh));
+            } else if (q.isShared()) {
+                SharedRef s = (SharedRef) q;
+                RestrictionId rid = s.restriction();
+                formals.add(nf.Formal(rid.getWrapperName(), fresh));
+            } else {
+                formals.add(nf.Formal(p, Flags.NONE, nf.CanonicalTypeNode(p, t), nf.Id(fresh)));
+            }
+            // TODO varargs
+            args.add(nf.Local(fresh));
+        }
+        
         formals.add(nf.Formal("RunAfterTest", "rat"));
         
         List<Stmt> methodBody = new ArrayList<>();
@@ -65,11 +84,6 @@ public class GallifreyRewriter extends GRewriter {
         catchBlocks.add(nf.Catch(p, nf.Formal("InterruptedException", "e"), nf.Block(p, new ArrayList<Stmt>())));
         
         Try trycatch = nf.Try(p, nf.Block(p, tryBlock), catchBlocks);
-        
-        List<Expr> args = new ArrayList<>();
-        for (String s : formalNames) {
-            args.add(nf.Local(s));
-        }
         While whileStmt = nf.While(p, nf.Unary(p, Unary.NOT, nf.Call(p, nf.Id(mi.name()), args)), trycatch);
         
         methodBody.add(whileStmt);
@@ -190,19 +204,18 @@ public class GallifreyRewriter extends GRewriter {
             Type t = mi.formalTypes().get(i);
             RefQualification q = mi.gallifreyInputTypes().get(i).qualification;
             String fresh = lang().freshVar();
-            Id name = nf.Id(fresh);
             // wrappers for shared and unique
             if (q.isUnique()) {
-                formals.add(nf.Formal("Unique<" + t.toString() + ">", name.id()));
+                formals.add(nf.Formal("Unique<" + t.toString() + ">", fresh));
             } else if (q.isShared()) {
                 SharedRef s = (SharedRef) q;
                 RestrictionId rid = s.restriction();
-                formals.add(nf.Formal(rid.getWrapperName(), name.id()));
+                formals.add(nf.Formal(rid.getWrapperName(), fresh));
             } else {
-                formals.add(nf.Formal(p, Flags.NONE, nf.CanonicalTypeNode(p, t), (Id) name.copy()));
+                formals.add(nf.Formal(p, Flags.NONE, nf.CanonicalTypeNode(p, t), nf.Id(fresh)));
             }
             // TODO varargs
-            args.add(nf.Local(p, (Id) name.copy()));
+            args.add(nf.Local(p, nf.Id(fresh)));
         }
 
         List<Stmt> methodStmts = new ArrayList<>();
