@@ -56,7 +56,7 @@ This extension follows a similar structure as other Polyglot extensions except f
 ### Some more caveats:
 - restrictions should only be written for classes in the same compilation unit, due to the source code for each shared class requiring modifications to be compatible with the Gallifrey runtime
 - restriction-defined test methods cannot be overloaded, cannot overload/shadow methods of the base class, and no two restrictions may define test methods that have the same name
-- restriction-defined test methods should not access members of the class in their bodies (pending further testing)
+- restriction-defined test methods should not access members of the class in their bodies for now (pending further testing)
 - should use wrapper classes of primitives for type annotations whenever possible; the behavior of primitives _should_ default to `local`, but there may be bugs so explicitly specifying `local Integer` is probably safer than using `int`
 
 
