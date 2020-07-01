@@ -43,18 +43,21 @@ This extension follows a similar structure as other Polyglot extensions except f
 - output `.java` and `.class` files are in `tests/out`
 - antidote tests need to be manually run (make sure to `make clean` in `gallifrey-antidote` and `antidote`
 - to set up antidote tests: `make shell` in `antidote`; edit the makefile in `gallifrey-antidote` to include the directory where your `.class` files are (for test cases, `tests/out`), and `make backend`; then run the appropriate `.class` file
+- because the tests use the same output directory, avoid conflicting restriction/class names for test cases which successfully compile (for example, by making the restriction contain the name of the test case)
+- `ClassC` is a dummy class that has several dummy methods, it is used in several test cases and can be modified to add methods for new test cases if necessary (don't change any existing methods otherwise tests will break)
 
-TODOs:
+### TODOs:
 - default qualifications for stdlib (field and method instances)
 - check transition runtime behavior matches TS
 - check scoping of restriction-defined test methods
 - ownership typechecking
+- add validation for signatures of merge definitions (currently only the names of the functions are checked)
 
-Caveats:
-- restrictions should only be written for classes in the same compilation unit, due to the source file for each class requiring modification
-- restriction defined test methods cannot be overloaded, and cannot overload methods of the base class
-- restriction defined test methods should not access members of the class in their bodies (pending further testing)
-- should use wrapper classes of primitives for type annotations whenever possible; the behavior of primitives _should_ default to local, but there may be bugs so explicitly specifying `local Integer` is probably safer than using `int`
+### Some more caveats:
+- restrictions should only be written for classes in the same compilation unit, due to the source code for each shared class requiring modifications to be compatible with the Gallifrey runtime
+- restriction-defined test methods cannot be overloaded, cannot overload/shadow methods of the base class, and no two restrictions may define test methods that have the same name
+- restriction-defined test methods should not access members of the class in their bodies (pending further testing)
+- should use wrapper classes of primitives for type annotations whenever possible; the behavior of primitives _should_ default to `local`, but there may be bugs so explicitly specifying `local Integer` is probably safer than using `int`
 
 
 

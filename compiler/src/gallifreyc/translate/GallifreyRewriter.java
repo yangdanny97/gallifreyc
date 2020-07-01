@@ -364,7 +364,7 @@ public class GallifreyRewriter extends GRewriter {
         Position p = Position.COMPILER_GENERATED;
         TypeNode sharedT = nf.TypeNode("SharedObject");
 
-        List<ClassMember> sharedMembers = new ArrayList<>();
+        List<ClassMember> members = new ArrayList<>();
         // public SharedObject SHARED;
         FieldDecl f = nf.FieldDecl(p, Flags.PUBLIC, sharedT, nf.Id(this.SHARED));
 
@@ -415,10 +415,10 @@ public class GallifreyRewriter extends GRewriter {
         ConstructorDecl c2 = nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(restriction + "_impl"), constructorFormals2,
                 new ArrayList<TypeNode>(), nf.Block(p, constructorStmts2), nf.Javadoc(p, ""));
 
-        sharedMembers.add(f2);
-        sharedMembers.add(f);
-        sharedMembers.add(c);
-        sharedMembers.add(c2);
+        members.add(f2);
+        members.add(f);
+        members.add(c);
+        members.add(c2);
 
         // generate overrides for all the allowed methods
         Set<String> allowedMethods = ts.getAllowedMethods(restriction);
@@ -427,12 +427,15 @@ public class GallifreyRewriter extends GRewriter {
         ClassType ct = (ClassType) ctNode.type();
         for (String name : allowedMethods) {
             for (MethodInstance method : ct.methodsNamed(name)) {
-                sharedMembers.add(this.genRestrictionMethod(method, true));
+                members.add(this.genRestrictionMethod(method, true));
             }
+        }
+        for (MethodInstance method : ts.getTestMethods(restriction)) {
+            members.add(this.genRestrictionMethod(method, true));
         }
 
         for (GallifreyMethodInstance mi : ts.getAllTestMethodInstances(restriction, ct)) {
-            sharedMembers.add(this.genTestMethodWrapper(mi));
+            members.add(this.genTestMethodWrapper(mi));
         }
 
         // getter for sharedObj field
@@ -442,7 +445,7 @@ public class GallifreyRewriter extends GRewriter {
         List<Stmt> methodStmts = new ArrayList<>();
         methodStmts.add(nf.Return(p, nf.Field(nf.This(p), this.SHARED)));
 
-        sharedMembers.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(), nf.TypeNode("SharedObject"),
+        members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(), nf.TypeNode("SharedObject"),
                 nf.Id(this.SHARED), formals, throwTypes, nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, "")));
 
         List<TypeNode> interfaces = new ArrayList<>();
@@ -451,14 +454,14 @@ public class GallifreyRewriter extends GRewriter {
             interfaces.add(nf.TypeNode(rv + "_" + restriction));
         }
 
-        ClassBody sharedBody = nf.ClassBody(p, sharedMembers);
+        ClassBody body = nf.ClassBody(p, members);
 
         // class R extends Shared implements Serializable (flags are same as C)
-        ClassDecl sharedDecl = nf.ClassDecl(p, Flags.PUBLIC, nf.Id(restriction + "_impl"), null, interfaces, sharedBody,
+        ClassDecl decl = nf.ClassDecl(p, Flags.PUBLIC, nf.Id(restriction + "_impl"), null, interfaces, body,
                 nf.Javadoc(p, "// Concrete restriction class for " + restriction));
 
-        this.generatedClasses.add(sharedDecl);
-        return sharedDecl;
+        this.generatedClasses.add(decl);
+        return decl;
     }
 
     // interface R extends Shared {...}
@@ -476,7 +479,6 @@ public class GallifreyRewriter extends GRewriter {
         // signatures for allowed methods
         Set<String> allowedMethods = ts.getAllowedMethods(restriction);
         allowedMethods.addAll(ts.getAllowedTestMethods(restriction));
-        allowedMethods.addAll(ts.getTestMethodNames(restriction));
 
         ClassType ct = (ClassType) ctNode.type();
 
@@ -484,6 +486,9 @@ public class GallifreyRewriter extends GRewriter {
             for (MethodInstance method : ct.methodsNamed(name)) {
                 members.add(this.genRestrictionMethodSignature(method));
             }
+        }
+        for (MethodInstance method : ts.getTestMethods(restriction)) {
+            members.add(this.genRestrictionMethodSignature(method));
         }
 
         for (GallifreyMethodInstance mi : ts.getAllTestMethodInstances(restriction, ct)) {
@@ -549,6 +554,7 @@ public class GallifreyRewriter extends GRewriter {
         // forward for allowed methods
         Set<String> allowedMethods = ts.getAllowedMethods(restriction);
         allowedMethods.addAll(ts.getAllowedTestMethods(restriction));
+        allowedMethods.addAll(ts.getTestMethodNames(restriction));
 
         ClassType ct = (ClassType) ts.getRestrictionClassType(restriction);
         for (String name : allowedMethods) {
@@ -720,11 +726,15 @@ public class GallifreyRewriter extends GRewriter {
         // signatures for allowed methods
         Set<String> allowedMethods = ts.getAllowedMethods(restriction);
         allowedMethods.addAll(ts.getAllowedTestMethods(restriction));
+        
         ClassType ct = (ClassType) ts.getRestrictionClassType(restriction);
         for (String name : allowedMethods) {
             for (MethodInstance method : ct.methodsNamed(name)) {
                 members.add(this.genRestrictionMethodSignature(method));
             }
+        }
+        for (MethodInstance method : ts.getTestMethods(restriction)) {
+            members.add(this.genRestrictionMethodSignature(method));
         }
 
         // getter for sharedObj field
