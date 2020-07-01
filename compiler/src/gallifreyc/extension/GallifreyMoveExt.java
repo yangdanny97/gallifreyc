@@ -59,11 +59,11 @@ public class GallifreyMoveExt extends GallifreyExprExt {
             }
         }
 
-        Field tempField = nf.Field(p, e, nf.Id(p, rw.TEMP));
-        Field tempField2 = nf.Field(p, e, nf.Id(p, rw.TEMP));
-        Field tempField3 = nf.Field(p, e, nf.Id(p, rw.TEMP));
-        Field valueField = nf.Field(p, e, nf.Id(p, rw.VALUE));
-        Field valueField2 = nf.Field(p, e, nf.Id(p, rw.VALUE));
+        Field tempField = nf.Field(e, rw.TEMP);
+        Field tempField2 = nf.Field(e, rw.TEMP);
+        Field tempField3 = nf.Field(e, rw.TEMP);
+        Field valueField = nf.Field(e, rw.VALUE);
+        Field valueField2 = nf.Field(e, rw.VALUE);
 
         FieldAssign fa1 = nf.FieldAssign(p, tempField, Assign.ASSIGN, valueField);
         FieldAssign fa2 = nf.FieldAssign(p, valueField2, Assign.ASSIGN, nf.NullLit(p));

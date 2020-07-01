@@ -84,22 +84,22 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
             String rv = rid.rv().id();
             String restriction = rid.restriction().id();
             // local decl is RV_R_impl type
-            d = d.type(nf.TypeNodeFromQualifiedName(p, rv + "_" + restriction + "_impl"));
+            d = d.type(nf.TypeNode(rv + "_" + restriction + "_impl"));
             // add final flag
             d = d.flags(d.flags().Final());
 
             // x.holder instanceof RV_restriction
-            Expr cond = nf.Instanceof(p, nf.Field(p, (Expr) e.copy(), nf.Id(p, rw.HOLDER)),
-                    nf.TypeNodeFromQualifiedName(p, rv + "_" + restriction));
+            Expr cond = nf.Instanceof(p, nf.Field(p, (Expr) e.copy(), nf.Id(rw.HOLDER)),
+                    nf.TypeNode(rv + "_" + restriction));
 
             List<Stmt> blockStmts = new ArrayList<>();
             List<Expr> args = new ArrayList<>();
             args.add(e);
-            blockStmts.add(d.init(nf.New(p, nf.TypeNodeFromQualifiedName(p, rv + "_" + restriction + "_impl"), args)));
+            blockStmts.add(d.init(nf.New(p, nf.TypeNode(rv + "_" + restriction + "_impl"), args)));
             blockStmts.addAll(b.body().statements());
 
             // d.holder = null;
-            blockStmts.add(nf.Eval(p, nf.Assign(p, nf.Field(p, nf.Local(p, (Id) d.id().copy()), nf.Id(p, rw.HOLDER)),
+            blockStmts.add(nf.Eval(p, nf.Assign(p, nf.Field(p, nf.Local(p, (Id) d.id().copy()), nf.Id(rw.HOLDER)),
                     Assign.ASSIGN, nf.NullLit(p))));
             Block block = nf.Block(p, blockStmts);
 

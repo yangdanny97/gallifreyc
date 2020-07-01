@@ -541,4 +541,35 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
                 actualTypeArgs, currClass, expectedReturnType, fromClient);
     }
     
+    @Override
+    public List<String> getRestrictionsForClassName(String cls) {
+        List<String> restrictions = new ArrayList<>();
+        for (Entry<String,String> entry : restrictionClassNameMap.entrySet()) {
+            if (entry.getValue().equals(cls)) {
+                restrictions.add(entry.getKey());
+            }
+        }
+        return restrictions;
+    }
+    
+    @Override
+    public List<MethodDecl> getRestrictionTestMethodsForClassName(String cls) {
+        List<String> restrictions = getRestrictionsForClassName(cls);
+        List<MethodDecl> methods = new ArrayList<>();
+        for (String r : restrictions) {
+            methods.addAll(testMethodDecls.getOrDefault(r, new HashSet<MethodDecl>()));
+        }
+        return methods;
+    }
+    
+    @Override
+    public List<String> getAllowedTestMethodsForClassName(String cls) {
+        List<String> restrictions = getRestrictionsForClassName(cls);
+        List<String> methods = new ArrayList<>();
+        for (String r : restrictions) {
+            methods.addAll(this.getAllowedTestMethods(r));
+        }
+        return methods;
+    }
+    
 }

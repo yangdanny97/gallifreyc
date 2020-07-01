@@ -55,7 +55,7 @@ public class ANormalizer extends GRewriter {
         String fresh = lang().freshVar();
 
         // hoisted local decl
-        LocalDecl l = nf.LocalDecl(p, Flags.NONE, nf.CanonicalTypeNode(p, e.type()), nf.Id(p, fresh), e);
+        LocalDecl l = nf.LocalDecl(p, Flags.NONE, nf.CanonicalTypeNode(p, e.type()), nf.Id(fresh), e);
 
         // transfer qualification
         GallifreyExprExt ext = GallifreyExprExt.ext(e);
@@ -70,7 +70,7 @@ public class ANormalizer extends GRewriter {
         hoisted.add(l);
 
         // new local variable to replace original expr
-        Local newLocal = nf.Local(p, nf.Id(p, fresh));
+        Local newLocal = nf.Local(fresh);
         newLocal = newLocal.localInstance(li);
         GallifreyExprExt localExt = GallifreyExprExt.ext(newLocal);
         localExt.gallifreyType = ext.gallifreyType();

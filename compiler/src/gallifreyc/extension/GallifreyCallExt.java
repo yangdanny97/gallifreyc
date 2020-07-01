@@ -102,11 +102,11 @@ public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
                 Expr newTarget;
                 if (restriction.rv() != null) { // RV::R
                     newTarget = nf.Cast(node().position(),
-                            nf.TypeNodeFromQualifiedName(node().position(), restriction.getWrapperName()),
+                            nf.TypeNode(node().position(), restriction.getWrapperName()),
                             (Expr) c.target());
                 } else { // R
                     newTarget = nf.Cast(node().position(),
-                            nf.TypeNodeFromQualifiedName(node().position(), restriction.getInterfaceName()),
+                            nf.TypeNode(node().position(), restriction.getInterfaceName()),
                             (Expr) c.target());
                 }
                 return c.target(newTarget);

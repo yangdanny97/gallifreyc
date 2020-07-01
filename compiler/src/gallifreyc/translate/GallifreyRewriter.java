@@ -40,6 +40,50 @@ public class GallifreyRewriter extends GRewriter {
     public TypeNode typeToJava(Type t, Position pos) {
         return super.typeToJava(t, pos);
     }
+    
+    public MethodDecl genTestMethodSignature(GallifreyMethodInstance mi) {
+        return (MethodDecl) this.genTestMethodWrapper(mi).body(null);
+    }
+    
+    public MethodDecl genTestMethodWrapper(GallifreyMethodInstance mi) {
+        Position p = Position.COMPILER_GENERATED;
+        GallifreyTypeSystem ts = typeSystem();
+        GallifreyNodeFactory nf = nodeFactory();
+        
+        String name = "__test__" + mi.name();
+        List<Formal> formals = new ArrayList<>();
+        List<String> formalNames = new ArrayList<>();
+        // TODO get formals from methodInstance types + gallifrey types, & fresh variables
+        formals.add(nf.Formal("RunAfterTest", "rat"));
+        
+        List<Stmt> methodBody = new ArrayList<>();
+        
+        List<Stmt> tryBlock = new ArrayList<>();
+        tryBlock.add(nf.Eval(p, this.qq.parseExpr("Thread.sleep(1000")));
+        
+        List<Catch> catchBlocks = new ArrayList<>();
+        catchBlocks.add(nf.Catch(p, nf.Formal("InterruptedException", "e"), nf.Block(p, new ArrayList<Stmt>())));
+        
+        Try trycatch = nf.Try(p, nf.Block(p, tryBlock), catchBlocks);
+        
+        List<Expr> args = new ArrayList<>();
+        for (String s : formalNames) {
+            args.add(nf.Local(s));
+        }
+        While whileStmt = nf.While(p, nf.Unary(p, Unary.NOT, nf.Call(p, nf.Id(mi.name()), args)), trycatch);
+        
+        methodBody.add(whileStmt);
+        methodBody.add(nf.Eval(p, nf.Call(p, nf.Local("rat"), nf.Id("run"), new ArrayList<Expr>())));
+        
+        Block bodyBlock = nf.Block(p, methodBody);
+        List<TypeNode> throwTypes = new ArrayList<>();
+        for (Type t : mi.throwTypes()) {
+            throwTypes.add(nf.CanonicalTypeNode(p, t));
+        }
+        TypeNode returns = nf.CanonicalTypeNode(p, ts.Void());
+        Javadoc jd = nf.Javadoc(p, "restriction-defined test method");
+        return nf.MethodDecl(p, Flags.PUBLIC, returns, nf.Id(name), formals, throwTypes, bodyBlock, jd);
+    }
 
     public List<SwitchElement> genMergeComparatorBranch(MergeDecl d) {
         Position p = Position.COMPILER_GENERATED;
@@ -99,8 +143,8 @@ public class GallifreyRewriter extends GRewriter {
         List<AnnotationElem> annotations = new ArrayList<AnnotationElem>();
         List<Formal> formals = new ArrayList<>();
         List<TypeNode> throwTypes = new ArrayList<>();
-        formals.add(nf.Formal(p, Flags.NONE, nf.TypeNode("GenericFunction"), nf.Id("__f1")));
-        formals.add(nf.Formal(p, Flags.NONE, nf.TypeNode("GenericFunction"), nf.Id("__f2")));
+        formals.add(nf.Formal("GenericFunction", "__f1"));
+        formals.add(nf.Formal("GenericFunction", "__f2"));
         // String __fname = __f1.getFunctionName() + " " + __f2.getFunctionName();
         methodStmts.add(nf.LocalDecl(p, Flags.NONE, nf.CanonicalTypeNode(p, ts.String()), nf.Id("__fname"),
                 nf.Binary(p, nf.Call(p, nf.Local("__f1"), nf.Id("getFunctionName"), new ArrayList<Expr>()), Binary.ADD,
@@ -149,13 +193,11 @@ public class GallifreyRewriter extends GRewriter {
             Id name = nf.Id(fresh);
             // wrappers for shared and unique
             if (q.isUnique()) {
-                TypeNode tn = nf.TypeNode("Unique<" + t.toString() + ">");
-                formals.add(nf.Formal(p, Flags.NONE, tn, (Id) name.copy()));
+                formals.add(nf.Formal("Unique<" + t.toString() + ">", name.id()));
             } else if (q.isShared()) {
                 SharedRef s = (SharedRef) q;
                 RestrictionId rid = s.restriction();
-                TypeNode tn = nf.TypeNode(rid.getWrapperName());
-                formals.add(nf.Formal(p, Flags.NONE, tn, (Id) name.copy()));
+                formals.add(nf.Formal(rid.getWrapperName(), name.id()));
             } else {
                 formals.add(nf.Formal(p, Flags.NONE, nf.CanonicalTypeNode(p, t), (Id) name.copy()));
             }
@@ -225,13 +267,11 @@ public class GallifreyRewriter extends GRewriter {
             Id name = nf.Id(fresh);
             // wrappers for shared and unique
             if (q.isUnique()) {
-                TypeNode tn = nf.TypeNode("Unique<" + t.toString() + ">");
-                formals.add(nf.Formal(p, Flags.NONE, tn, (Id) name.copy()));
+                formals.add(nf.Formal("Unique<" + t.toString() + ">", name.id()));
             } else if (q.isShared()) {
                 SharedRef s = (SharedRef) q;
                 RestrictionId rid = s.restriction();
-                TypeNode tn = nf.TypeNode(rid.getWrapperName());
-                formals.add(nf.Formal(p, Flags.NONE, tn, (Id) name.copy()));
+                formals.add(nf.Formal(rid.getWrapperName(), name.id()));
             } else {
                 formals.add(nf.Formal(p, Flags.NONE, nf.CanonicalTypeNode(p, t), (Id) name.copy()));
             }
@@ -346,7 +386,7 @@ public class GallifreyRewriter extends GRewriter {
 
         List<Formal> constructorFormals2 = new ArrayList<>();
         // public R(SharedObject obj)
-        constructorFormals2.add(nf.Formal(p, Flags.NONE, nf.TypeNode("SharedObject"), nf.Id("obj")));
+        constructorFormals2.add(nf.Formal("SharedObject", "obj"));
 
         List<Stmt> constructorStmts2 = new ArrayList<>();
         // this.SHARED = obj;
@@ -458,7 +498,7 @@ public class GallifreyRewriter extends GRewriter {
         // FIRST CONSTRUCTOR
         List<Formal> constructorFormals = new ArrayList<>();
         // public RV_R_impl(C obj)
-        constructorFormals.add(nf.Formal(p, Flags.NONE, nf.TypeNode(forclass), nf.Id("obj")));
+        constructorFormals.add(nf.Formal(forclass, "obj"));
 
         List<Stmt> constructorStmts = new ArrayList<>();
         List<Expr> args = new ArrayList<>();
@@ -472,7 +512,7 @@ public class GallifreyRewriter extends GRewriter {
         // SECOND CONSTRUCTOR
         constructorFormals = new ArrayList<>();
         // public RV_R_impl(RV rv)
-        constructorFormals.add(nf.Formal(p, Flags.NONE, nf.TypeNode(rv), nf.Id("rv")));
+        constructorFormals.add(nf.Formal(rv, "rv"));
         args = new ArrayList<>();
         args.add(nf.Local("rv"));
         // super(rv);
@@ -571,7 +611,7 @@ public class GallifreyRewriter extends GRewriter {
         // SECOND CONSTRUCTOR (FOR ASSIGNMENTS)
         constructorFormals = new ArrayList<>();
         // public RV(RV rv)
-        constructorFormals.add(nf.Formal(p, Flags.NONE, nf.TypeNode(name), nf.Id("rv")));
+        constructorFormals.add(nf.Formal(name, "rv"));
 
         constructorStmts = new ArrayList<>();
         // this.holder = rv.holder;
@@ -585,7 +625,7 @@ public class GallifreyRewriter extends GRewriter {
 
         // transition void transition(Class<?> cls) {...}
         List<Formal> formals = new ArrayList<>();
-        formals.add(nf.Formal(p, Flags.NONE, nf.TypeNode("Class<?>"), nf.Id("cls")));
+        formals.add(nf.Formal("Class<?>", "cls"));
         List<TypeNode> throwTypes = new ArrayList<>();
         List<ParamTypeNode> paramTypes = new ArrayList<>();
         List<Stmt> methodStmts = new ArrayList<>();
@@ -602,7 +642,7 @@ public class GallifreyRewriter extends GRewriter {
                 nf.Return(p));
         List<Catch> catches = new ArrayList<>();
         // currently transitions fail silently
-        catches.add(nf.Catch(p, nf.Formal(p, Flags.NONE, nf.TypeNode("Exception"), nf.Id("e")), nf.Block(p)));
+        catches.add(nf.Catch(p, nf.Formal("Exception", "e"), nf.Block(p)));
         methodStmts.add(nf.Try(p, nf.Block(p, lockcheck, assign), catches));
         members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(),
                 nf.CanonicalTypeNode(p, typeSystem().Void()), nf.Id("transition"), formals, throwTypes,

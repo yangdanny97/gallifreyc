@@ -69,9 +69,11 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
 
     Formal Formal(String type, String name);
 
-    Field Field(Expr object, String name);
+    Field Field(Receiver object, String name);
 
     Id Id(String name);
 
     TypeNode TypeNode(String name);
+    
+    TypeNode TypeNode(Position pos, String qualifiedName);
 }

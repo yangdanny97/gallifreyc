@@ -47,9 +47,14 @@ This extension follows a similar structure as other Polyglot extensions except f
 TODOs:
 - default qualifications for stdlib (field and method instances)
 - check transition runtime behavior matches TS
+- check scoping of restriction-defined test methods
 - ownership typechecking
+
+Caveats:
 - restrictions should only be written for classes in the same compilation unit, due to the source file for each class requiring modification
-- unknown scoping/behavior of restriction-defined test methods
+- restriction defined test methods cannot be overloaded, and cannot overload methods of the base class
+- restriction defined test methods should not access members of the class in their bodies (pending further testing)
+- should use wrapper classes of primitives for type annotations whenever possible; the behavior of primitives _should_ default to local, but there may be bugs so explicitly specifying `local Integer` is probably safer than using `int`
 
 
 

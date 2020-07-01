@@ -65,7 +65,7 @@ public class GallifreyFormalExt extends GallifreyExt {
         GallifreyNodeFactory nf = rw.nodeFactory();
         RefQualification q = qualification;
         if (q.isUnique()) {
-            return f.type(nf.TypeNodeFromQualifiedName(f.position(), "Unique<" + f.type().type().toString() + ">"));
+            return f.type(nf.TypeNode(f.position(), "Unique<" + f.type().type().toString() + ">"));
         }
         if (q.isShared()) {
             SharedRef s = (SharedRef) q;

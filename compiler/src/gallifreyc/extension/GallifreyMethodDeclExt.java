@@ -122,7 +122,7 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
         mi = mi.gallifreyReturnType(gReturn);
         
         if (isTest) {
-            ts.addTestMethod(this.currentRestriction, mi);
+            ts.addTestMethod(this.currentRestriction, mi, node());
         }
         return md;
     }
@@ -155,14 +155,13 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
     @Override
     public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
         if (isTest) {
-            throw new InternalCompilerError("unimplemented");
-            // TODO
+            return node();
         }
         GallifreyMethodInstance mi = (GallifreyMethodInstance) node().methodInstance();
         GallifreyNodeFactory nf = rw.nodeFactory();
         RefQualification q = mi.gallifreyReturnType().qualification;
         if (q.isUnique()) {
-            return node().returnType(nf.TypeNodeFromQualifiedName(node().position(),
+            return node().returnType(nf.TypeNode(node().position(),
                     "Unique<" + node().returnType().type().toString() + ">"));
         }
         if (q.isShared()) {

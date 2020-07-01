@@ -25,6 +25,8 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
     void addRestrictionMapping(String restriction, String cls) throws SemanticException;
 
     String getClassNameForRestriction(String restriction);
+    
+    List<String> getRestrictionsForClassName(String cls);
 
     // RVs
 
@@ -53,6 +55,8 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
     Set<String> getAllowedTestMethods(String name);
 
     boolean restrictionExists(String name);
+    
+    List<String> getAllowedTestMethodsForClassName(String cls);
 
     // restriction name -> class type
 
@@ -68,7 +72,7 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
 
     public boolean hasComparator(String restriction);
     
-    // test methods
+    // test methods (declared within restrictions)
     
     public void addTestMethod(String restriction, GallifreyMethodInstance mi, MethodDecl md);
     
@@ -81,6 +85,8 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
     public GallifreyMethodInstance getTestMethod(String restriction, String methodName);
     
     public void testMethod(GallifreyMethodInstance mi);
+    
+    List<MethodDecl> getRestrictionTestMethodsForClassName(String cls);
 
     // instances
 

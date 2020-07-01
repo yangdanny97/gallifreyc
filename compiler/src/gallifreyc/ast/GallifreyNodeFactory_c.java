@@ -217,7 +217,7 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     }
 
     @Override
-    public Field Field(Expr object, String name) {
+    public Field Field(Receiver object, String name) {
         return this.Field(Position.COMPILER_GENERATED, object, this.Id(name));
     }
 
@@ -229,5 +229,10 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     @Override
     public TypeNode TypeNode(String name) {
         return this.TypeNodeFromQualifiedName(Position.COMPILER_GENERATED, name);
+    }
+    
+    @Override
+    public TypeNode TypeNode(Position pos, String qualifiedName) {
+        return this.TypeNodeFromQualifiedName(pos, qualifiedName);
     }
 }

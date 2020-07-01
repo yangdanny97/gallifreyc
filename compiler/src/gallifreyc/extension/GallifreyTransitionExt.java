@@ -46,7 +46,7 @@ public class GallifreyTransitionExt extends GallifreyExt {
         // transition(c, R) ------> c.transition(R_impl.class)
         ArrayList<Expr> args = new ArrayList<>();
         args.add(rw.qq().parseExpr(t.restriction().restriction().id() + "_impl.class"));
-        return nf.Eval(p, nf.Call(p, (Local) t.expr().copy(), nf.Id(p, "transition"), args));
+        return nf.Eval(p, nf.Call(p, (Local) t.expr().copy(), nf.Id("transition"), args));
     }
 
     @Override

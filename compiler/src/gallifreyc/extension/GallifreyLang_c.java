@@ -81,6 +81,6 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
 
     @Override
     public String freshVar() {
-        return "generatedVar" + fresh();
+        return "_temp" + fresh();
     }
 }
