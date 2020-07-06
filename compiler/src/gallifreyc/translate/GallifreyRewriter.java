@@ -668,7 +668,7 @@ public class GallifreyRewriter extends GRewriter {
         Expr constructor = nf.Call(p, nf.Local("cls"), nf.Id("getConstructor"),
                 this.qq().parseExpr("SharedObject.class"));
         Expr newInstance = nf.Call(p, constructor, nf.Id("newInstance"),
-                this.qq().parseExpr("new Object[] {%E.sharedObj()}", nf.Field(nf.This(p), this.HOLDER)));
+                this.qq().parseExpr("new Object[] {%E.sharedObj().transition(cls.getName())}", nf.Field(nf.This(p), this.HOLDER)));
         Stmt assign = nf.Eval(p, nf.Assign(p, nf.Field(nf.This(p), this.HOLDER), Assign.ASSIGN,
                 nf.Cast(p, nf.TypeNode(name + "_holder"), newInstance)));
         // if (this.lock > 0) return;
