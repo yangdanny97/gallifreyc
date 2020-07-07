@@ -105,5 +105,6 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -classpath ../lib/full-runtime
     ClassC.gal TestInvalidWhen3.gal (Semantic);
     ClassC.gal TestInvalidWhen4.gal (Semantic);
     ClassC.gal TestTestMethod.gal;
+    ClassC.gal TestTestMethod2.gal;
     ClassC.gal TestInvalidTestMethod.gal (Semantic);
 } 

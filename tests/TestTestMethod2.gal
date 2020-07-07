@@ -1,0 +1,15 @@
+restriction RTestMethod2 for ClassC {    
+    test testMethod() {
+        this.f1();
+        return true;
+    }
+}
+
+class TestTestMethod2 {
+    public TestTestMethod2() {
+        shared[RTestMethod2] ClassC x = new ClassC();
+        when (x.testMethod()) {
+            System.out.println("...");
+        }
+    }
+}
