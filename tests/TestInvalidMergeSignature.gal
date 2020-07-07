@@ -1,0 +1,13 @@
+restriction RInvalidMergeSignature for ClassC {
+    allows f4;
+    allows f5;
+    allows testFun;
+    
+    merge (f4(local String a, local Integer b), f5(local String c)){
+        return a.length();
+    }
+}
+
+public class TestInvalidMergeSignature {
+    public TestInvalidMergeSignature() {}
+}

@@ -139,8 +139,8 @@ public class MergeDecl_c extends Term_c implements MergeDecl {
             throw new SemanticException("Merge function for these 2 methods has already been defined", this.position);
         }
         ts.addMergeDecl(restriction, this);
+        
         List<Type> params = new ArrayList<Type>();
-
         this.mi = ts.methodInstance(this.position, null, Flags.NONE, ts.Int(), name(), params, new ArrayList<Type>());
 
         return this;
@@ -175,7 +175,33 @@ public class MergeDecl_c extends Term_c implements MergeDecl {
         if (!ts.getAllowedMethods(this.currentRestriction).contains(method2.id())) {
             throw new SemanticException(method2.id() + " not allowed in " + this.currentRestriction, this.position);
         }
-        // TODO: check types
+        
+        List<Type> method1FormalTypes = new ArrayList<>();
+        for (Formal f : this.method1Formals) {
+            method1FormalTypes.add(f.declType());
+        }
+        List<Type> method2FormalTypes = new ArrayList<>();
+        for (Formal f : this.method2Formals) {
+            method2FormalTypes.add(f.declType());
+        }
+        boolean m1Match = false;
+        boolean m2Match = false;
+        for (MethodInstance mi : mi1) {
+            if (mi.hasFormals(method1FormalTypes)) {
+                m1Match = true;
+            }
+        }
+        for (MethodInstance mi : mi2) {
+            if (mi.hasFormals(method2FormalTypes)) {
+                m2Match = true;
+            }
+        }
+        if (!m1Match) {
+            throw new SemanticException("Parameter types for " + method1.id() + " do not match declaration", this.position);
+        }
+        if (!m2Match) {
+            throw new SemanticException("Parameter types for " + method2.id() + " do not match declaration", this.position);
+        }
         return this;
     }
 

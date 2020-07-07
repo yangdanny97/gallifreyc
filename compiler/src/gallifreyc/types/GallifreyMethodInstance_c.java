@@ -2,6 +2,7 @@ package gallifreyc.types;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -69,6 +70,9 @@ public class GallifreyMethodInstance_c extends JL5MethodInstance_c implements Ga
             if (!this.gallifreyInputs.get(i).equals(gallifreyInputTypes.get(i))) {
                 return false;
             }
+        }
+        if (!this.gallifreyReturnType.equals(((GallifreyMethodInstance) mi).gallifreyReturnType())) {
+            return false;
         }
         return super.isSameMethodImpl(mi);
     }

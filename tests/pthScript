@@ -98,6 +98,7 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -classpath ../lib/full-runtime
     ClassC.gal TestInvalidMergeMethod2.gal (Semantic);
     ClassC.gal TestConflictingMergeDecl.gal (Semantic);
     ClassC.gal TestMerge.gal;
+    ClassC.gal TestInvalidMergeSignature.gal (Semantic);
     ClassC.gal TestWhen.gal;
     ClassC.gal TestInvalidWhen.gal (Semantic);
     ClassC.gal TestInvalidWhen2.gal (Semantic);
