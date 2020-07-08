@@ -49,9 +49,7 @@ This extension follows a similar structure as other Polyglot extensions except f
 ### TODOs:
 - Default qualifications for stdlib (field and method instances)
 - Check transition runtime behavior matches TS
-- Check scoping of restriction-defined test methods
 - Ownership typechecking
-- Add validation for signatures of merge definitions (currently only the names of the functions are checked)
 
 
 
