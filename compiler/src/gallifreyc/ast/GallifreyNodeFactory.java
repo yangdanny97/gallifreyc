@@ -76,4 +76,24 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     TypeNode TypeNode(String name);
 
     TypeNode TypeNode(Position pos, String qualifiedName);
+
+    Block Block(List<Stmt> statements);
+
+    Block Block(Stmt... statements);
+
+    Call Call(Receiver target, String name, List<Expr> args);
+
+    Call Call(Receiver target, String name, Expr... args);
+
+    Call Call(String name, List<Expr> args);
+
+    Call Call(String name, Expr... args);
+
+    Cast Cast(TypeNode typenode, Expr expr);
+
+    Special This();
+
+    Assign Assign(Expr left, Assign.Operator op, Expr right);
+
+    Eval Eval(Expr expr);
 }

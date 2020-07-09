@@ -235,4 +235,54 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     public TypeNode TypeNode(Position pos, String qualifiedName) {
         return this.TypeNodeFromQualifiedName(pos, qualifiedName);
     }
+
+    @Override
+    public Block Block(List<Stmt> statements) {
+        return this.Block(Position.COMPILER_GENERATED, statements);
+    }
+
+    @Override
+    public Block Block(Stmt... statements) {
+        return this.Block(Position.COMPILER_GENERATED, statements);
+    }
+
+    @Override
+    public Call Call(Receiver target, String name, List<Expr> args) {
+        return this.Call(Position.COMPILER_GENERATED, target, this.Id(name), args);
+    }
+
+    @Override
+    public Call Call(Receiver target, String name, Expr... args) {
+        return this.Call(Position.COMPILER_GENERATED, target, this.Id(name), args);
+    }
+
+    @Override
+    public Call Call(String name, List<Expr> args) {
+        return this.Call(Position.COMPILER_GENERATED, this.Id(name), args);
+    }
+
+    @Override
+    public Call Call(String name, Expr... args) {
+        return this.Call(Position.COMPILER_GENERATED, this.Id(name), args);
+    }
+
+    @Override
+    public Cast Cast(TypeNode typenode, Expr expr) {
+        return this.Cast(Position.COMPILER_GENERATED, typenode, expr);
+    }
+
+    @Override
+    public Special This() {
+        return this.This(Position.COMPILER_GENERATED);
+    }
+
+    @Override
+    public Assign Assign(Expr left, Assign.Operator op, Expr right) {
+        return this.Assign(Position.COMPILER_GENERATED, left, op, right);
+    }
+
+    @Override
+    public Eval Eval(Expr expr) {
+        return this.Eval(Position.COMPILER_GENERATED, expr);
+    }
 }

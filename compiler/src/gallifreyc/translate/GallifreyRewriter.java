@@ -79,18 +79,18 @@ public class GallifreyRewriter extends GRewriter {
 
         List<Stmt> tryBlock = new ArrayList<>();
         // sleep for 1 ms
-        tryBlock.add(nf.Eval(p, nf.Call(p, nf.TypeNode("Thread"), nf.Id("sleep"), nf.IntLit(p, IntLit.INT, 1))));
+        tryBlock.add(nf.Eval(nf.Call(nf.TypeNode("Thread"), "sleep", nf.IntLit(p, IntLit.INT, 1))));
 
         List<Catch> catchBlocks = new ArrayList<>();
-        catchBlocks.add(nf.Catch(p, nf.Formal("InterruptedException", "e"), nf.Block(p, new ArrayList<Stmt>())));
+        catchBlocks.add(nf.Catch(p, nf.Formal("InterruptedException", "e"), nf.Block(new ArrayList<Stmt>())));
 
-        Try trycatch = nf.Try(p, nf.Block(p, tryBlock), catchBlocks);
-        While whileStmt = nf.While(p, nf.Unary(p, Unary.NOT, nf.Call(p, nf.Id(mi.name()), args)), trycatch);
+        Try trycatch = nf.Try(p, nf.Block(tryBlock), catchBlocks);
+        While whileStmt = nf.While(p, nf.Unary(p, Unary.NOT, nf.Call(mi.name(), args)), trycatch);
 
         methodBody.add(whileStmt);
-        methodBody.add(nf.Eval(p, nf.Call(p, nf.Local("rat"), nf.Id("run"), new ArrayList<Expr>())));
+        methodBody.add(nf.Eval(nf.Call(nf.Local("rat"), "run", new ArrayList<Expr>())));
 
-        Block bodyBlock = nf.Block(p, methodBody);
+        Block bodyBlock = nf.Block(methodBody);
         List<TypeNode> throwTypes = new ArrayList<>();
         for (Type t : mi.throwTypes()) {
             throwTypes.add(nf.CanonicalTypeNode(p, t));
@@ -110,17 +110,15 @@ public class GallifreyRewriter extends GRewriter {
         for (int i = 0; i < d.method1Formals().size(); i++) {
             // T x = (T) __f1.getArguments().get(0)
             Formal f = d.method1Formals().get(i);
-            Expr rhs = nf.Cast(p, f.type(),
-                    nf.Call(p, nf.Call(p, nf.Local("__f1"), nf.Id("getArguments"), new ArrayList<Expr>()), nf.Id("get"),
-                            nf.IntLit(p, IntLit.INT, i)));
+            Expr rhs = nf.Cast(f.type(),
+                    nf.Call(nf.Call(nf.Local("__f1"), "getArguments"), "get", nf.IntLit(p, IntLit.INT, i)));
             statements.add(nf.LocalDecl(p, Flags.NONE, f.type(), f.id(), rhs));
         }
         for (int i = 0; i < d.method2Formals().size(); i++) {
             // T x = (T) __f2.getArguments().get(0)
             Formal f = d.method2Formals().get(i);
-            Expr rhs = nf.Cast(p, f.type(),
-                    nf.Call(p, nf.Call(p, nf.Local("__f2"), nf.Id("getArguments"), new ArrayList<Expr>()), nf.Id("get"),
-                            nf.IntLit(p, IntLit.INT, i)));
+            Expr rhs = nf.Cast(f.type(),
+                    nf.Call(nf.Call(nf.Local("__f2"), "getArguments"), "get", nf.IntLit(p, IntLit.INT, i)));
             statements.add(nf.LocalDecl(p, Flags.NONE, f.type(), f.id(), rhs));
         }
         statements.add(d.body());
@@ -128,7 +126,7 @@ public class GallifreyRewriter extends GRewriter {
 
         // use block inside switch block to avoid shadowing problems
         List<Stmt> switchBlockStmts = new ArrayList<>();
-        switchBlockStmts.add(nf.Block(p, statements));
+        switchBlockStmts.add(nf.Block(statements));
         elements.add(nf.SwitchBlock(p, switchBlockStmts));
         return elements;
     }
@@ -149,7 +147,7 @@ public class GallifreyRewriter extends GRewriter {
         List<Formal> constructorFormals = new ArrayList<>();
         List<Stmt> constructorStmts = new ArrayList<>();
         ConstructorDecl c = nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(name + "Comparator"), constructorFormals,
-                new ArrayList<TypeNode>(), nf.Block(p, constructorStmts), nf.Javadoc(p, ""));
+                new ArrayList<TypeNode>(), nf.Block(constructorStmts), nf.Javadoc(p, ""));
         members.add(c);
 
         // merge method
@@ -162,9 +160,8 @@ public class GallifreyRewriter extends GRewriter {
         formals.add(nf.Formal("GenericFunction", "__f2"));
         // String __fname = __f1.getFunctionName() + " " + __f2.getFunctionName();
         methodStmts.add(nf.LocalDecl(p, Flags.NONE, nf.CanonicalTypeNode(p, ts.String()), nf.Id("__fname"),
-                nf.Binary(p, nf.Call(p, nf.Local("__f1"), nf.Id("getFunctionName"), new ArrayList<Expr>()), Binary.ADD,
-                        nf.Binary(p, nf.StringLit(p, " "), Binary.ADD,
-                                nf.Call(p, nf.Local("__f2"), nf.Id("getFunctionName"), new ArrayList<Expr>())))));
+                nf.Binary(p, nf.Call(nf.Local("__f1"), "getFunctionName"), Binary.ADD,
+                        nf.Binary(p, nf.StringLit(p, " "), Binary.ADD, nf.Call(nf.Local("__f2"), "getFunctionName")))));
         List<SwitchElement> elements = new ArrayList<>();
         for (MergeDecl d : merges) {
             elements.addAll(this.genMergeComparatorBranch(d));
@@ -173,7 +170,7 @@ public class GallifreyRewriter extends GRewriter {
         methodStmts.add(nf.Return(p, nf.IntLit(p, IntLit.INT, 0)));
 
         MethodDecl merge = nf.MethodDecl(p, Flags.PUBLIC, annotations, nf.CanonicalTypeNode(p, ts.Int()),
-                nf.Id("compare"), formals, throwTypes, nf.Block(p, methodStmts), paramTypes,
+                nf.Id("compare"), formals, throwTypes, nf.Block(methodStmts), paramTypes,
                 nf.Javadoc(p, "// Merge comparator method for " + name));
         members.add(merge);
 
@@ -239,11 +236,11 @@ public class GallifreyRewriter extends GRewriter {
         }
 
         // return ((RV_R) this.holder).method();
-        Expr call = nf.Call(p, nf.Cast(p, nf.TypeNode(rv + "_" + restriction), nf.Field(nf.This(p), HOLDER)),
-                nf.Id(inst.name()), args);
+        Expr call = nf.Call(nf.Cast(nf.TypeNode(rv + "_" + restriction), nf.Field(nf.This(), HOLDER)), inst.name(),
+                args);
 
         if (returnType.isVoid()) {
-            methodStmts.add(nf.Eval(p, call));
+            methodStmts.add(nf.Eval(call));
         } else {
             methodStmts.add(nf.Return(p, call));
         }
@@ -261,7 +258,7 @@ public class GallifreyRewriter extends GRewriter {
                     nf.SingleElementAnnotationElem(p, nf.TypeNode("SuppressWarnings"), nf.StringLit(p, "unchecked")));
         }
         return nf.MethodDecl(p, Flags.PUBLIC, annotations, genReturnType, nf.Id(mi.name()), formals, throwTypes,
-                nf.Block(p, methodStmts), paramTypes,
+                nf.Block(methodStmts), paramTypes,
                 nf.Javadoc(p, "// Wrapper method for " + mi.container().toString() + "." + mi.name()));
     }
 
@@ -317,21 +314,21 @@ public class GallifreyRewriter extends GRewriter {
 
         // T f(T1 x, T2 y) -----> return (T) this.sharedObject.const_call("f", new
         // ArrayList<Object>(Arrays.asList(x))
-        Id fname = nf.Id(returnType.isVoid() ? "void_call" : "const_call");
+        String fname = returnType.isVoid() ? "void_call" : "const_call";
         List<Expr> callArgs = new ArrayList<>();
         // function name
         callArgs.add(nf.StringLit(p, mi.name()));
         // array shenanigans
         callArgs.add(nf.New(p, nf.TypeNode("ArrayList<Object>"),
-                new ArrayList<Expr>(Arrays.asList(nf.Call(p, nf.TypeNode("Arrays"), nf.Id("asList"), args)))));
+                new ArrayList<Expr>(Arrays.asList(nf.Call(nf.TypeNode("Arrays"), "asList", args)))));
 
-        Expr call = nf.Call(p, nf.Field(nf.This(p), SHARED), fname, callArgs);
+        Expr call = nf.Call(nf.Field(nf.This(), SHARED), fname, callArgs);
         if (returnType.isVoid()) {
-            methodStmts.add(nf.Eval(p, call));
+            methodStmts.add(nf.Eval(call));
             methodStmts.add(nf.Return(p));
         } else {
             // cast return bc const_call returns Object
-            methodStmts.add(nf.Return(p, nf.Cast(p, genReturnType, call)));
+            methodStmts.add(nf.Return(p, nf.Cast(genReturnType, call)));
         }
 
         List<TypeNode> throwTypes = new ArrayList<>();
@@ -347,7 +344,7 @@ public class GallifreyRewriter extends GRewriter {
                     nf.SingleElementAnnotationElem(p, nf.TypeNode("SuppressWarnings"), nf.StringLit(p, "unchecked")));
         }
         return nf.MethodDecl(p, Flags.PUBLIC, annotations, genReturnType, nf.Id(mi.name()), formals, throwTypes,
-                nf.Block(p, methodStmts), paramTypes,
+                nf.Block(methodStmts), paramTypes,
                 nf.Javadoc(p, "// Wrapper method for " + mi.container().toString() + "." + mi.name()));
     }
 
@@ -383,17 +380,17 @@ public class GallifreyRewriter extends GRewriter {
         Expr constructorRHS = nf.New(p, (TypeNode) sharedT.copy(),
                 new ArrayList<Expr>(Arrays.asList(nf.AmbExpr(p, nf.Id("obj")))));
         constructorStmts
-                .add(nf.Eval(p, nf.FieldAssign(p, nf.Field(nf.This(p), this.SHARED), Assign.ASSIGN, constructorRHS)));
+                .add(nf.Eval(nf.FieldAssign(p, nf.Field(nf.This(), this.SHARED), Assign.ASSIGN, constructorRHS)));
 
         // add MergeComparator: this.SHARED.merge_strategy = new RComparator()
         if (ts.getMergeDecls(restriction).size() > 0) {
             constructorStmts.add(nf.Eval(p,
-                    nf.FieldAssign(p, nf.Field(p, nf.Field(nf.This(p), this.SHARED), nf.Id(this.MERGE_STRATEGY)),
+                    nf.FieldAssign(p, nf.Field(p, nf.Field(nf.This(), this.SHARED), nf.Id(this.MERGE_STRATEGY)),
                             Assign.ASSIGN, nf.New(p, nf.TypeNode(restriction + "Comparator"), new ArrayList<Expr>()))));
         }
 
         ConstructorDecl c = nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(restriction + "_impl"), constructorFormals,
-                new ArrayList<TypeNode>(), nf.Block(p, constructorStmts), nf.Javadoc(p, ""));
+                new ArrayList<TypeNode>(), nf.Block(constructorStmts), nf.Javadoc(p, ""));
 
         // SECOND CONSTRUCTOR (FOR TRANSITIONS)
 
@@ -404,16 +401,16 @@ public class GallifreyRewriter extends GRewriter {
         List<Stmt> constructorStmts2 = new ArrayList<>();
         // this.SHARED = obj;
         constructorStmts2.add(nf.Eval(p,
-                nf.FieldAssign(p, nf.Field(nf.This(p), this.SHARED), Assign.ASSIGN, nf.AmbExpr(p, nf.Id("obj")))));
+                nf.FieldAssign(p, nf.Field(nf.This(), this.SHARED), Assign.ASSIGN, nf.AmbExpr(p, nf.Id("obj")))));
         // add MergeComparator: this.SHARED.merge_strategy = new RComparator()
         if (ts.getMergeDecls(restriction).size() > 0) {
             constructorStmts2.add(nf.Eval(p,
-                    nf.FieldAssign(p, nf.Field(p, nf.Field(nf.This(p), this.SHARED), nf.Id(this.MERGE_STRATEGY)),
+                    nf.FieldAssign(p, nf.Field(p, nf.Field(nf.This(), this.SHARED), nf.Id(this.MERGE_STRATEGY)),
                             Assign.ASSIGN, nf.New(p, nf.TypeNode(restriction + "Comparator"), new ArrayList<Expr>()))));
         }
 
         ConstructorDecl c2 = nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(restriction + "_impl"), constructorFormals2,
-                new ArrayList<TypeNode>(), nf.Block(p, constructorStmts2), nf.Javadoc(p, ""));
+                new ArrayList<TypeNode>(), nf.Block(constructorStmts2), nf.Javadoc(p, ""));
 
         members.add(f2);
         members.add(f);
@@ -443,10 +440,10 @@ public class GallifreyRewriter extends GRewriter {
         List<TypeNode> throwTypes = new ArrayList<>();
         List<ParamTypeNode> paramTypes = new ArrayList<>();
         List<Stmt> methodStmts = new ArrayList<>();
-        methodStmts.add(nf.Return(p, nf.Field(nf.This(p), this.SHARED)));
+        methodStmts.add(nf.Return(p, nf.Field(nf.This(), this.SHARED)));
 
         members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(), nf.TypeNode("SharedObject"),
-                nf.Id(this.SHARED), formals, throwTypes, nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, "")));
+                nf.Id(this.SHARED), formals, throwTypes, nf.Block(methodStmts), paramTypes, nf.Javadoc(p, "")));
 
         List<TypeNode> interfaces = new ArrayList<>();
         interfaces.add(nf.TypeNode(restriction));
@@ -537,7 +534,7 @@ public class GallifreyRewriter extends GRewriter {
         constructorStmts.add(nf.ConstructorCall(p, ConstructorCall.SUPER, args));
 
         members.add(nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(rv + "_" + restriction + "_impl"), constructorFormals,
-                new ArrayList<TypeNode>(), nf.Block(p, constructorStmts), nf.Javadoc(p, "")));
+                new ArrayList<TypeNode>(), nf.Block(constructorStmts), nf.Javadoc(p, "")));
 
         // SECOND CONSTRUCTOR
         constructorFormals = new ArrayList<>();
@@ -549,7 +546,7 @@ public class GallifreyRewriter extends GRewriter {
         constructorStmts = new ArrayList<>();
         constructorStmts.add(nf.ConstructorCall(p, ConstructorCall.SUPER, args));
         members.add(nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(rv + "_" + restriction + "_impl"), constructorFormals,
-                new ArrayList<TypeNode>(), nf.Block(p, constructorStmts), nf.Javadoc(p, "")));
+                new ArrayList<TypeNode>(), nf.Block(constructorStmts), nf.Javadoc(p, "")));
 
         // forward for allowed methods
         Set<String> allowedMethods = ts.getAllowedMethods(restriction);
@@ -572,9 +569,9 @@ public class GallifreyRewriter extends GRewriter {
         List<TypeNode> throwTypes = new ArrayList<>();
         List<ParamTypeNode> paramTypes = new ArrayList<>();
         List<Stmt> methodStmts = new ArrayList<>();
-        methodStmts.add(nf.Return(p, nf.Call(p, nf.Field(nf.This(p), this.HOLDER), nf.Id(this.SHARED))));
+        methodStmts.add(nf.Return(p, nf.Call(nf.Field(nf.This(), this.HOLDER), this.SHARED)));
         members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(), nf.TypeNode("SharedObject"),
-                nf.Id(this.SHARED), formals, throwTypes, nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, "")));
+                nf.Id(this.SHARED), formals, throwTypes, nf.Block(methodStmts), paramTypes, nf.Javadoc(p, "")));
 
         List<TypeNode> interfaces = new ArrayList<>();
         interfaces.add(nf.TypeNode("Serializable"));
@@ -637,11 +634,11 @@ public class GallifreyRewriter extends GRewriter {
 
         List<Stmt> constructorStmts = new ArrayList<>();
         // this.holder = defaultR(obj)
-        constructorStmts.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(nf.This(p), this.HOLDER), Assign.ASSIGN,
+        constructorStmts.add(nf.Eval(nf.FieldAssign(p, nf.Field(nf.This(), this.HOLDER), Assign.ASSIGN,
                 nf.New(p, nf.TypeNode(defaultRimpl), Arrays.<Expr>asList(nf.AmbExpr(p, nf.Id("obj")))))));
 
         members.add(nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(name), constructorFormals, new ArrayList<TypeNode>(),
-                nf.Block(p, constructorStmts), nf.Javadoc(p, "")));
+                nf.Block(constructorStmts), nf.Javadoc(p, "")));
 
         // SECOND CONSTRUCTOR (FOR ASSIGNMENTS)
         constructorFormals = new ArrayList<>();
@@ -650,13 +647,13 @@ public class GallifreyRewriter extends GRewriter {
 
         constructorStmts = new ArrayList<>();
         // this.holder = rv.holder;
-        constructorStmts.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(nf.This(p), this.HOLDER), Assign.ASSIGN,
+        constructorStmts.add(nf.Eval(nf.FieldAssign(p, nf.Field(nf.This(), this.HOLDER), Assign.ASSIGN,
                 nf.Field(p, nf.AmbExpr(p, nf.Id("rv")), nf.Id(this.HOLDER)))));
         // this.lock = rv.lock;
-        constructorStmts.add(nf.Eval(p, nf.FieldAssign(p, nf.Field(nf.This(p), this.LOCK), Assign.ASSIGN,
+        constructorStmts.add(nf.Eval(nf.FieldAssign(p, nf.Field(nf.This(), this.LOCK), Assign.ASSIGN,
                 nf.Field(p, nf.AmbExpr(p, nf.Id("rv")), nf.Id(this.LOCK)))));
         members.add(nf.ConstructorDecl(p, Flags.PUBLIC, nf.Id(name), constructorFormals, new ArrayList<TypeNode>(),
-                nf.Block(p, constructorStmts), nf.Javadoc(p, "")));
+                nf.Block(constructorStmts), nf.Javadoc(p, "")));
 
         // transition void transition(Class<?> cls) {...}
         List<Formal> formals = new ArrayList<>();
@@ -665,31 +662,31 @@ public class GallifreyRewriter extends GRewriter {
         List<ParamTypeNode> paramTypes = new ArrayList<>();
         List<Stmt> methodStmts = new ArrayList<>();
 
-        Expr constructor = nf.Call(p, nf.Local("cls"), nf.Id("getConstructor"),
-                this.qq().parseExpr("SharedObject.class"));
-        Expr newInstance = nf.Call(p, constructor, nf.Id("newInstance"),
-                this.qq().parseExpr("new Object[] {%E.sharedObj().transition(%E.getName())}", nf.Field(nf.This(p), this.HOLDER),nf.Local("cls") ));
-        Stmt assign = nf.Eval(p, nf.Assign(p, nf.Field(nf.This(p), this.HOLDER), Assign.ASSIGN,
-                nf.Cast(p, nf.TypeNode(name + "_holder"), newInstance)));
+        Expr constructor = nf.Call(nf.Local("cls"), "getConstructor", this.qq().parseExpr("SharedObject.class"));
+        Expr newInstance = nf.Call(constructor, "newInstance",
+                this.qq().parseExpr("new Object[] {%E.sharedObj().transition(%E.getName())}",
+                        nf.Field(nf.This(), this.HOLDER), nf.Local("cls")));
+        Stmt assign = nf.Eval(nf.Assign(nf.Field(nf.This(), this.HOLDER), Assign.ASSIGN,
+                nf.Cast(nf.TypeNode(name + "_holder"), newInstance)));
         // if (this.lock > 0) return;
-        Stmt lockcheck = nf.If(p, nf.Binary(p, nf.Field(nf.This(p), this.LOCK), Binary.GT, nf.IntLit(p, IntLit.INT, 0)),
+        Stmt lockcheck = nf.If(p, nf.Binary(p, nf.Field(nf.This(), this.LOCK), Binary.GT, nf.IntLit(p, IntLit.INT, 0)),
                 nf.Return(p));
         List<Catch> catches = new ArrayList<>();
         // currently transitions fail silently
         catches.add(nf.Catch(p, nf.Formal("Exception", "e"), nf.Block(p)));
-        methodStmts.add(nf.Try(p, nf.Block(p, lockcheck, assign), catches));
+        methodStmts.add(nf.Try(p, nf.Block(lockcheck, assign), catches));
         members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(),
                 nf.CanonicalTypeNode(p, typeSystem().Void()), nf.Id("transition"), formals, throwTypes,
-                nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, "")));
+                nf.Block(methodStmts), paramTypes, nf.Javadoc(p, "")));
 
         // getter for holder field
         formals = new ArrayList<>();
         throwTypes = new ArrayList<>();
         paramTypes = new ArrayList<>();
         methodStmts = new ArrayList<>();
-        methodStmts.add(nf.Return(p, nf.Field(nf.This(p), this.HOLDER)));
+        methodStmts.add(nf.Return(p, nf.Field(nf.This(), this.HOLDER)));
         members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(), holderT, nf.Id(this.HOLDER),
-                formals, throwTypes, nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, "")));
+                formals, throwTypes, nf.Block(methodStmts), paramTypes, nf.Javadoc(p, "")));
 
         List<TypeNode> interfaces = new ArrayList<>();
         interfaces.add(nf.TypeNode("Serializable"));
@@ -700,10 +697,10 @@ public class GallifreyRewriter extends GRewriter {
         formals = new ArrayList<>();
         throwTypes = new ArrayList<>();
         paramTypes = new ArrayList<>();
-        methodStmts.add(nf.Return(p, nf.Call(p, nf.Field(nf.This(p), this.HOLDER), nf.Id(this.SHARED))));
+        methodStmts.add(nf.Return(p, nf.Call(nf.Field(nf.This(), this.HOLDER), this.SHARED)));
 
         members.add(nf.MethodDecl(p, Flags.PUBLIC, new ArrayList<AnnotationElem>(), nf.TypeNode("SharedObject"),
-                nf.Id(this.SHARED), formals, throwTypes, nf.Block(p, methodStmts), paramTypes, nf.Javadoc(p, "")));
+                nf.Id(this.SHARED), formals, throwTypes, nf.Block(methodStmts), paramTypes, nf.Javadoc(p, "")));
 
         ClassBody body = nf.ClassBody(p, members);
 
@@ -726,7 +723,7 @@ public class GallifreyRewriter extends GRewriter {
         // signatures for allowed methods
         Set<String> allowedMethods = ts.getAllowedMethods(restriction);
         allowedMethods.addAll(ts.getAllowedTestMethods(restriction));
-        
+
         ClassType ct = (ClassType) ts.getRestrictionClassType(restriction);
         for (String name : allowedMethods) {
             for (MethodInstance method : ct.methodsNamed(name)) {

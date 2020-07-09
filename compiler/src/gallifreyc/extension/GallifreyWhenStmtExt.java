@@ -75,7 +75,7 @@ public class GallifreyWhenStmtExt extends GallifreyExt {
         } else {
             List<Stmt> blockBody = new ArrayList<>();
             blockBody.add(node.body());
-            body = nf.Block(p, blockBody);
+            body = nf.Block(blockBody);
         }
         members.add(nf.MethodDecl(p, Flags.PUBLIC, nf.CanonicalTypeNode(p, ts.Void()), nf.Id("run"),
                 new ArrayList<Formal>(), new ArrayList<TypeNode>(), body, nf.Javadoc(p, "")));
