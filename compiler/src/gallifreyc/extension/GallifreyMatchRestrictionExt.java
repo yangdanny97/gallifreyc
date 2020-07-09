@@ -55,12 +55,13 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
         Position p = Position.COMPILER_GENERATED;
         List<Stmt> stmts = new ArrayList<>();
         // increment lock
-        stmts.add(nf.Eval(nf.Assign(nf.Field((Expr) e.copy(), rw.LOCK), Assign.ADD_ASSIGN,
-                nf.IntLit(p, IntLit.INT, 1))));
-        
+        stmts.add(
+                nf.Eval(nf.Assign(nf.Field((Expr) e.copy(), rw.LOCK), Assign.ADD_ASSIGN, nf.IntLit(p, IntLit.INT, 1))));
+
         // make temp to hold ptr for lock decrementing
         String temp = rw.lang().freshVar();
-        LocalDecl tempDecl = nf.LocalDecl(p, Flags.NONE, nf.CanonicalTypeNode(p, e.type()), nf.Id(temp), (Expr) e.copy());
+        LocalDecl tempDecl = nf.LocalDecl(p, Flags.NONE, nf.CanonicalTypeNode(p, e.type()), nf.Id(temp),
+                (Expr) e.copy());
         tempDecl = tempDecl.localInstance(((Local) e).localInstance());
         GallifreyLocalDeclExt tempExt = (GallifreyLocalDeclExt) GallifreyExt.ext(tempDecl);
         tempExt.qualification = ext.gallifreyType.qualification;
@@ -75,6 +76,7 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
                 "%E.sharedObj().get_current_restriction_lock(%E.holder.getClass().getName())", e.copy(), e.copy())));
 
         // reconstruct the holder based on the match lock restriction
+        List<Stmt> innerTryStmts = new ArrayList<>();
         Expr restriction_name = nf.Call(nf.Local("ml"), "get_restriction_name", new ArrayList<Expr>());
         matchStmts.add(nf.LocalDecl(p, Flags.NONE, nf.TypeNode("String"), nf.Id("rname"), restriction_name));
         Expr classLoader = nf.Call(nf.Call((Expr) e.copy(), "getClass", new ArrayList<Expr>()), "getClassLoader",
@@ -84,7 +86,7 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
         forNameArgs.add(nf.BooleanLit(p, true));
         forNameArgs.add(classLoader);
         Expr getClass = nf.Call(nf.TypeNode("Class"), "forName", forNameArgs);
-        matchStmts.add(nf.LocalDecl(p, Flags.NONE, nf.TypeNode("Class<?>"), nf.Id("cls"), getClass));
+        innerTryStmts.add(nf.LocalDecl(p, Flags.NONE, nf.TypeNode("Class<?>"), nf.Id("cls"), getClass));
 
         Expr constructor = nf.Call(nf.Local("cls"), "getConstructor", rw.qq().parseExpr("SharedObject.class"));
         Expr newInstance = nf.Call(constructor, "newInstance",
@@ -93,7 +95,20 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
                 .qualification()).restriction().rv().id();
         Stmt assign = nf.Eval(nf.Assign(nf.Field((Expr) e.copy(), rw.HOLDER), Assign.ASSIGN,
                 nf.Cast(nf.TypeNode(rvName + "_holder"), newInstance)));
-        matchStmts.add(assign);
+        innerTryStmts.add(assign);
+
+        List<Catch> catches = new ArrayList<>();
+        String[] exnNames = new String[]{"InstantiationException", "IllegalAccessException", 
+                "ClassNotFoundException", "NoSuchMethodException", "InvocationTargetException"};
+        for (int i = 0; i < exnNames.length; i++) {
+            List<Expr> args = new ArrayList<>();
+            args.add(nf.Local("e"));
+            catches.add(nf.Catch(p, nf.Formal(exnNames[i], "e"),
+                    nf.Block(nf.Throw(p, nf.New(p, nf.TypeNode("InternalGallifreyException"), args)))
+                    ));
+        }
+
+        matchStmts.add(nf.Try(p, nf.Block(innerTryStmts), catches));
 
         If currentif = null;
         List<MatchBranch> branches = new ArrayList<>(m.branches());
@@ -139,17 +154,11 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
 
         List<Stmt> finallyBlock = new ArrayList<>();
         // decrement lock
-        finallyBlock.add(nf.Eval(nf.Assign(nf.Field(nf.Local(temp), rw.LOCK), Assign.SUB_ASSIGN,
-                nf.IntLit(p, IntLit.INT, 1))));
+        finallyBlock.add(
+                nf.Eval(nf.Assign(nf.Field(nf.Local(temp), rw.LOCK), Assign.SUB_ASSIGN, nf.IntLit(p, IntLit.INT, 1))));
 
-        List<Catch> catches = new ArrayList<>();
-        catches.add(nf.Catch(p, nf.Formal("InstantiationException", "e"), nf.Block(new ArrayList<Stmt>())));
-        catches.add(nf.Catch(p, nf.Formal("IllegalAccessException", "e"), nf.Block(new ArrayList<Stmt>())));
-        catches.add(nf.Catch(p, nf.Formal("ClassNotFoundException", "e"), nf.Block(new ArrayList<Stmt>())));
-        catches.add(nf.Catch(p, nf.Formal("NoSuchMethodException", "e"), nf.Block(new ArrayList<Stmt>())));
-        catches.add(nf.Catch(p, nf.Formal("InvocationTargetException", "e"), nf.Block(new ArrayList<Stmt>())));
-
-        stmts.add(nf.TryWithResources(p, resources, nf.Block(matchStmts), catches, nf.Block(finallyBlock)));
+        stmts.add(nf.TryWithResources(p, resources, nf.Block(matchStmts), new ArrayList<Catch>(),
+                nf.Block(finallyBlock)));
 
         return nf.Block(stmts);
     }

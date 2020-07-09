@@ -26,7 +26,7 @@ This extension follows a similar structure as other Polyglot extensions except f
 - To set up `gallifrey-antidote`: build the project, run `fatjar.sh`, and verify that `full-runtime.jar` was generated in that directory. There is an alias of `full-runtime.jar` inside `gallifreyc/lib`
 - Build `gallifreyc` using `ant`
 - To execute gallifreyc from the command line:
-`java -jar lib/gallifreyc.jar -postopts -Xlint:unchecked -classpath tests/out:lib/full-runtime.jar <FILE_NAME>` (the sample classpath assumes the test suite has been run already; it may be adjusted but must include `full-runtime.jar`, and compiled versions of `Shared.java`, `Unique.java`, & `RunAfterTest.java` from `tests/`.
+`java -jar lib/gallifreyc.jar -postopts -Xlint:unchecked -classpath tests/out:lib/full-runtime.jar <FILE_NAME>` (the sample classpath assumes the test suite has been run already; it may be adjusted but must include `full-runtime.jar`, and compiled versions of `Shared.java`, `Unique.java`, `InternalGallifreyException`, & `RunAfterTest.java` from `tests/`.
 - Useful flags: -d (set output directory), -c (don't run javac; emit .java instead of .class), -stdout (dump java AST to stdout)
 
 ### Test Suite Notes:

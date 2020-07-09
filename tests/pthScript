@@ -30,6 +30,7 @@ javac "-d out -cp ../lib/full-runtime.jar:out:." {
     Unique.java;
     Shared.java;
     RunAfterTest.java;
+    InternalGallifreyException.java;
 }
 
 // old tests
