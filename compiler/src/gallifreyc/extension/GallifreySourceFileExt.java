@@ -62,6 +62,7 @@ public class GallifreySourceFileExt extends GallifreyExt {
         imports.add(0, nf.Import(p, Import.SINGLE_TYPE, "gallifrey.core.SharedObject"));
         imports.add(0, nf.Import(p, Import.SINGLE_TYPE, "gallifrey.core.MergeComparator"));
         imports.add(0, nf.Import(p, Import.SINGLE_TYPE, "gallifrey.core.GenericFunction"));
+        imports.add(0, nf.Import(p, Import.SINGLE_TYPE, "gallifrey.core.MatchLocked"));
         imports.add(nf.Import(p, Import.SINGLE_TYPE, "java.io.Serializable"));
         imports.add(nf.Import(p, Import.SINGLE_TYPE, "java.util.Arrays"));
         imports.add(nf.Import(p, Import.SINGLE_TYPE, "java.util.ArrayList"));

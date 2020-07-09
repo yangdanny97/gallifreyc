@@ -15,6 +15,7 @@ import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.Assign;
 import polyglot.ast.Block;
+import polyglot.ast.Catch;
 import polyglot.ast.Expr;
 import polyglot.ast.Id;
 import polyglot.ast.If;
@@ -22,6 +23,8 @@ import polyglot.ast.IntLit;
 import polyglot.ast.LocalDecl;
 import polyglot.ast.Node;
 import polyglot.ast.Stmt;
+import polyglot.ast.Try;
+import polyglot.types.Flags;
 import polyglot.types.SemanticException;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
@@ -61,11 +64,42 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
     public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
         MatchRestriction m = node();
         GallifreyNodeFactory nf = rw.nodeFactory();
+        
         // e is guaranteed to be a variable
         Expr e = m.expr();
         Position p_ = Position.COMPILER_GENERATED;
-
         List<Stmt> matchStmts = new ArrayList<>();
+        
+        // match lock resource
+        List<LocalDecl> resources  = new ArrayList<>();
+        resources.add(nf.LocalDecl(p_, Flags.NONE, nf.TypeNode("MatchLocked"), nf.Id("ml"), 
+                rw.qq().parseExpr("%E.sharedObj().get_current_restriction_lock(%E.holder.getClass().getName())", 
+                        e.copy(), e.copy())
+                ));
+
+        // reconstruct the holder based on the match lock restriction
+        Expr restriction_name = nf.Call(p_, nf.Local("ml"), nf.Id("get_restriction_name"), new ArrayList<Expr>());
+        matchStmts.add(nf.LocalDecl(p_, Flags.NONE, nf.TypeNode("String"), nf.Id("rname"), restriction_name));
+        Expr classLoader = nf.Call(p_, nf.Call(p_, (Expr) e.copy(), nf.Id("getClass"), new ArrayList<Expr>()), 
+                nf.Id("getClassLoader"), new ArrayList<Expr>());
+        List<Expr> forNameArgs = new ArrayList<Expr>();
+        forNameArgs.add(nf.Local("rname"));
+        forNameArgs.add(nf.BooleanLit(p_, true));
+        forNameArgs.add(classLoader);
+        Expr getClass = nf.Call(p_, nf.TypeNode("Class"), nf.Id("forName"), forNameArgs);
+        matchStmts.add(nf.LocalDecl(p_, Flags.NONE, nf.TypeNode("Class"), nf.Id("cls"), getClass));
+
+        Expr constructor = nf.Call(p_, nf.Local("cls"), nf.Id("getConstructor"),
+                rw.qq().parseExpr("SharedObject.class"));
+        Expr newInstance = nf.Call(p_, constructor, nf.Id("newInstance"),
+                rw.qq().parseExpr("new Object[] {%E.sharedObj()}", 
+                        nf.Field((Expr) e.copy(), rw.HOLDER)));
+        String rvName = ((SharedRef) ((GallifreyLocalDeclExt) GallifreyExt.ext(m.branches().get(0).pattern()))
+                .qualification()).restriction().rv().id();
+        Stmt assign = nf.Eval(p_, nf.Assign(p_, nf.Field((Expr) e.copy(), rw.HOLDER), Assign.ASSIGN,
+                nf.Cast(p_, nf.TypeNode(rvName + "_holder"), newInstance)));
+        matchStmts.add(assign);
+        
         // increment lock
         matchStmts.add(nf.Eval(p_, nf.Assign(p_, nf.Field(p_, (Expr) e.copy(), nf.Id(p_, rw.LOCK)), Assign.ADD_ASSIGN,
                 nf.IntLit(p_, IntLit.INT, 1))));
@@ -113,7 +147,12 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
         // decrement lock
         matchStmts.add(nf.Eval(p_, nf.Assign(p_, nf.Field(p_, (Expr) e.copy(), nf.Id(p_, rw.LOCK)), Assign.SUB_ASSIGN,
                 nf.IntLit(p_, IntLit.INT, 1))));
-        return nf.Block(node().position(), matchStmts);
+        
+        List<Catch> catchBlocks = new ArrayList<>();
+        catchBlocks.add(nf.Catch(p_, nf.Formal("Exception", "e"), nf.Block(p_, new ArrayList<Stmt>())));
+         
+        return nf.TryWithResources(p_, resources, nf.Block(p_, matchStmts), 
+                catchBlocks, nf.Block(p_, new ArrayList<Stmt>()));
     }
 
     @Override
