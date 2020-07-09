@@ -87,7 +87,7 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
         forNameArgs.add(nf.BooleanLit(p_, true));
         forNameArgs.add(classLoader);
         Expr getClass = nf.Call(p_, nf.TypeNode("Class"), nf.Id("forName"), forNameArgs);
-        matchStmts.add(nf.LocalDecl(p_, Flags.NONE, nf.TypeNode("Class"), nf.Id("cls"), getClass));
+        matchStmts.add(nf.LocalDecl(p_, Flags.NONE, nf.TypeNode("Class<?>"), nf.Id("cls"), getClass));
 
         Expr constructor = nf.Call(p_, nf.Local("cls"), nf.Id("getConstructor"),
                 rw.qq().parseExpr("SharedObject.class"));
@@ -151,8 +151,7 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
         List<Catch> catchBlocks = new ArrayList<>();
         catchBlocks.add(nf.Catch(p_, nf.Formal("Exception", "e"), nf.Block(p_, new ArrayList<Stmt>())));
          
-        return nf.TryWithResources(p_, resources, nf.Block(p_, matchStmts), 
-                catchBlocks, nf.Block(p_, new ArrayList<Stmt>()));
+        return nf.TryWithResources(p_, resources, nf.Block(p_, matchStmts), catchBlocks, null);
     }
 
     @Override
