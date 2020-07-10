@@ -9,7 +9,6 @@ import polyglot.ast.Expr;
 import polyglot.ast.MethodDecl;
 import polyglot.ext.jl5.types.*;
 import polyglot.ext.jl7.types.*;
-import polyglot.main.Report;
 import polyglot.types.*;
 import polyglot.util.*;
 

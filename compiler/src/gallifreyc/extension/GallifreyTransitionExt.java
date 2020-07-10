@@ -1,6 +1,5 @@
 package gallifreyc.extension;
 
-import java.util.ArrayList;
 import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RestrictionId;
@@ -9,13 +8,11 @@ import gallifreyc.ast.Transition;
 import gallifreyc.translate.ANormalizer;
 import gallifreyc.translate.GallifreyRewriter;
 import gallifreyc.types.GallifreyTypeSystem;
-import polyglot.ast.Expr;
 import polyglot.ast.Local;
 import polyglot.ast.Node;
 import polyglot.ast.Stmt;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
-import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
@@ -42,11 +39,9 @@ public class GallifreyTransitionExt extends GallifreyExt {
     public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
         Transition t = node();
         GallifreyNodeFactory nf = rw.nodeFactory();
-        Position p = t.position();
-        // transition(c, R) ------> c.transition(R_impl.class)
-        ArrayList<Expr> args = new ArrayList<>();
-        args.add(rw.qq().parseExpr(t.restriction().restriction().id() + "_impl.class"));
-        return nf.Eval(nf.Call((Local) t.expr().copy(), "transition", args));
+        // transition(c, R) ------> c.transition(R.class)
+        return nf.Eval(rw.qq().parseExpr("%E.transition("  + t.restriction().restriction().id() 
+                + "_impl.class)", (Local) t.expr().copy()));
     }
 
     @Override

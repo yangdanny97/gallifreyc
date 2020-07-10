@@ -96,4 +96,6 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     Assign Assign(Expr left, Assign.Operator op, Expr right);
 
     Eval Eval(Expr expr);
+    
+    LocalDecl LocalDecl(String type, String name, Expr init);
 }

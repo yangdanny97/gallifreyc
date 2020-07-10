@@ -1,6 +1,5 @@
 package gallifreyc.extension;
 
-import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.Expr;
 import polyglot.ast.Node;

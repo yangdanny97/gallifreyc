@@ -49,8 +49,8 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
         MatchRestriction m = node();
         GallifreyNodeFactory nf = rw.nodeFactory();
 
-        // e is guaranteed to be a variable
-        Expr e = m.expr();
+        // e is guaranteed to be a variable b/c of a-normalization pass
+        Local e = (Local) m.expr();
         GallifreyExprExt ext = GallifreyExprExt.ext(e);
         Position p = Position.COMPILER_GENERATED;
         List<Stmt> stmts = new ArrayList<>();
@@ -72,15 +72,14 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
 
         // match lock resource
         List<LocalDecl> resources = new ArrayList<>();
-        resources.add(nf.LocalDecl(p, Flags.NONE, nf.TypeNode("MatchLocked"), nf.Id("ml"), rw.qq().parseExpr(
+        resources.add(nf.LocalDecl("MatchLocked", "ml", rw.qq().parseExpr(
                 "%E.sharedObj().get_current_restriction_lock(%E.holder.getClass().getName())", e.copy(), e.copy())));
 
         // reconstruct the holder based on the match lock restriction
         List<Stmt> innerTryStmts = new ArrayList<>();
-        Expr restriction_name = nf.Call(nf.Local("ml"), "get_restriction_name", new ArrayList<Expr>());
-        matchStmts.add(nf.LocalDecl(p, Flags.NONE, nf.TypeNode("String"), nf.Id("rname"), restriction_name));
-        Expr classLoader = nf.Call(nf.Call((Expr) e.copy(), "getClass", new ArrayList<Expr>()), "getClassLoader",
-                new ArrayList<Expr>());
+        Expr restriction_name = rw.qq().parseExpr("ml.get_restriction_name()");
+        matchStmts.add(nf.LocalDecl("String", "rname", restriction_name));
+        Expr classLoader = rw.qq().parseExpr("%E.getClass().getClassLoader()", (Expr) e.copy());
         List<Expr> forNameArgs = new ArrayList<Expr>();
         forNameArgs.add(nf.Local("rname"));
         forNameArgs.add(nf.BooleanLit(p, true));
@@ -88,7 +87,7 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
         Expr getClass = nf.Call(nf.TypeNode("Class"), "forName", forNameArgs);
         innerTryStmts.add(nf.LocalDecl(p, Flags.NONE, nf.TypeNode("Class<?>"), nf.Id("cls"), getClass));
 
-        Expr constructor = nf.Call(nf.Local("cls"), "getConstructor", rw.qq().parseExpr("SharedObject.class"));
+        Expr constructor = rw.qq().parseExpr("cls.getConstructor(SharedObject.class)");
         Expr newInstance = nf.Call(constructor, "newInstance",
                 rw.qq().parseExpr("new Object[] {%E.sharedObj()}", nf.Field((Expr) e.copy(), rw.HOLDER)));
         String rvName = ((SharedRef) ((GallifreyLocalDeclExt) GallifreyExt.ext(m.branches().get(0).pattern()))

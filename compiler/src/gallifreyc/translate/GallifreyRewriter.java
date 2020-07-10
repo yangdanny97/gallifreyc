@@ -79,7 +79,7 @@ public class GallifreyRewriter extends GRewriter {
 
         List<Stmt> tryBlock = new ArrayList<>();
         // sleep for 1 ms
-        tryBlock.add(nf.Eval(nf.Call(nf.TypeNode("Thread"), "sleep", nf.IntLit(p, IntLit.INT, 1))));
+        tryBlock.add(nf.Eval(qq().parseExpr("Thread.sleep(1)")));
 
         List<Catch> catchBlocks = new ArrayList<>();
         catchBlocks.add(nf.Catch(p, nf.Formal("InterruptedException", "e"), nf.Block(new ArrayList<Stmt>())));
@@ -88,7 +88,7 @@ public class GallifreyRewriter extends GRewriter {
         While whileStmt = nf.While(p, nf.Unary(p, Unary.NOT, nf.Call(mi.name(), args)), trycatch);
 
         methodBody.add(whileStmt);
-        methodBody.add(nf.Eval(nf.Call(nf.Local("rat"), "run", new ArrayList<Expr>())));
+        methodBody.add(nf.Eval(qq().parseExpr("rat.run()")));
 
         Block bodyBlock = nf.Block(methodBody);
         List<TypeNode> throwTypes = new ArrayList<>();
@@ -110,15 +110,13 @@ public class GallifreyRewriter extends GRewriter {
         for (int i = 0; i < d.method1Formals().size(); i++) {
             // T x = (T) __f1.getArguments().get(0)
             Formal f = d.method1Formals().get(i);
-            Expr rhs = nf.Cast(f.type(),
-                    nf.Call(nf.Call(nf.Local("__f1"), "getArguments"), "get", nf.IntLit(p, IntLit.INT, i)));
+            Expr rhs = qq().parseExpr("(%T) __f1.getArguments().get("+ i +")", f.type());
             statements.add(nf.LocalDecl(p, Flags.NONE, f.type(), f.id(), rhs));
         }
         for (int i = 0; i < d.method2Formals().size(); i++) {
             // T x = (T) __f2.getArguments().get(0)
             Formal f = d.method2Formals().get(i);
-            Expr rhs = nf.Cast(f.type(),
-                    nf.Call(nf.Call(nf.Local("__f2"), "getArguments"), "get", nf.IntLit(p, IntLit.INT, i)));
+            Expr rhs = qq().parseExpr("(%T) __f2.getArguments().get("+ i +")", f.type());
             statements.add(nf.LocalDecl(p, Flags.NONE, f.type(), f.id(), rhs));
         }
         statements.add(d.body());
@@ -158,10 +156,9 @@ public class GallifreyRewriter extends GRewriter {
         List<TypeNode> throwTypes = new ArrayList<>();
         formals.add(nf.Formal("GenericFunction", "__f1"));
         formals.add(nf.Formal("GenericFunction", "__f2"));
-        // String __fname = __f1.getFunctionName() + " " + __f2.getFunctionName();
+        // String __fname = ;
         methodStmts.add(nf.LocalDecl(p, Flags.NONE, nf.CanonicalTypeNode(p, ts.String()), nf.Id("__fname"),
-                nf.Binary(p, nf.Call(nf.Local("__f1"), "getFunctionName"), Binary.ADD,
-                        nf.Binary(p, nf.StringLit(p, " "), Binary.ADD, nf.Call(nf.Local("__f2"), "getFunctionName")))));
+                qq().parseExpr("__f1.getFunctionName() + %E + __f2.getFunctionName()", nf.StringLit(p, " "))));
         List<SwitchElement> elements = new ArrayList<>();
         for (MergeDecl d : merges) {
             elements.addAll(this.genMergeComparatorBranch(d));
@@ -662,7 +659,7 @@ public class GallifreyRewriter extends GRewriter {
         List<ParamTypeNode> paramTypes = new ArrayList<>();
         List<Stmt> methodStmts = new ArrayList<>();
 
-        Expr constructor = nf.Call(nf.Local("cls"), "getConstructor", this.qq().parseExpr("SharedObject.class"));
+        Expr constructor = qq().parseExpr("cls.getConstructor(SharedObject.class)");
         Expr newInstance = nf.Call(constructor, "newInstance",
                 this.qq().parseExpr("new Object[] {%E.sharedObj().transition(%E.getName())}",
                         nf.Field(nf.This(), this.HOLDER), nf.Local("cls")));
