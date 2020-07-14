@@ -64,7 +64,8 @@ public class GallifreyAssignExt extends GallifreyExprExt {
             Expr new_rhs = nf.New(rhs.position(), nf.TypeNode(a.position(), "Unique<>"),
                     new ArrayList<Expr>(Arrays.asList(rhs)));
             a = a.right(new_rhs);
-        } else if (rhs != null && rhs.type() != null && lhs.type() != null && ts.isCastValid(rhs.type(), lhs.type())) {
+        } else if (rhs != null && rhs.type() != null && lhs.type() != null && (!ts.typeEquals(rhs.type(), lhs.type())) 
+                && ts.isCastValid(rhs.type(), lhs.type())) {
             a = a.right(nf.Cast(rhs.position(), nf.CanonicalTypeNode(Position.COMPILER_GENERATED, lhs.type()), rhs));
         }
         return a;

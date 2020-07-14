@@ -349,4 +349,19 @@ extend primary_no_new_array ::=
 	{: RESULT = parser.nf.Move(parser.pos(a, b), b); :}
 ;
 
-
+override catch_clause ::=
+    CATCH:n LPAREN modifiers_or_annotations_opt:a catch_type:b IDENTIFIER:c RPAREN block:d {:
+                                                                                          
+        Formal f = parser.nf.Formal(parser.pos(b, c, c), a.flags(), a.annotations(),
+            parser.nf.RefQualifiedTypeNode(
+                parser.pos(b), 
+                parser.nf.LocalRef(parser.pos(b)), 
+                parser.nf.AmbUnionType(parser.pos(b), b)
+            ),
+            parser.nf.Id(parser.pos(c), c.getIdentifier()));
+        if (b.size() > 1)
+            RESULT = parser.nf.MultiCatch(parser.pos(n, d), f, b, d); 
+        else
+            RESULT = parser.nf.Catch(parser.pos(n, d), f, d); 
+    :}
+;

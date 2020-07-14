@@ -1,4 +1,13 @@
-class TestHoist {
+class TestHoist1 {
+    public TestHoist1() {}
+}
+
+class TestHoist2 {
+
+    public TestHoist2(local TestHoist1 t) {}
+}
+
+public class TestHoist {
 	
 	public TestHoist() {}
 	
@@ -17,6 +26,8 @@ class TestHoist {
 		local Integer y = x[f()];
 		local Integer z = x[f2(f())];
 		f3(f2(1), 2);
+		
+		local TestHoist2 t = new TestHoist2(new TestHoist1());
 	}
 	
 }

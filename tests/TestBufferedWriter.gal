@@ -1,0 +1,15 @@
+import java.io.*;  
+
+public class BufferedWriterExample {  
+    public static void main(local String[] args) {   
+        try {  
+            local BufferedWriter buffer = new BufferedWriter(new FileWriter("D:\\testout.txt"));  
+            buffer.write("OEOEOEOEOEOEOOEEOOEOEOEOEOEOEO");  
+            buffer.close();  
+            System.out.println("Success"); 
+        } catch (Exception e) {
+            System.out.println("Failure");
+            local Exception f = e;
+        }
+    }  
+}  

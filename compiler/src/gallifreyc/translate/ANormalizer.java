@@ -83,7 +83,8 @@ public class ANormalizer extends GRewriter {
             List<Stmt> blockBody = new ArrayList<>(hoisted);
             blockBody.add(s);
             hoisted = new ArrayList<>();
-            return nf.Block(s.position(), blockBody);
+            // use SwitchBlock to make sure LocalDecls aren't lost to a nested scope
+            return nf.SwitchBlock(s.position(), blockBody);
         }
         return s;
     }

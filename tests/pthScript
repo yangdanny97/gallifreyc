@@ -57,6 +57,7 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -postopts -Xlint:unchecked -cl
     Shared1.gal;
     TestFieldAssign.gal ClassC.gal;
     TestHoist.gal;
+    TestBufferedWriter.gal;
     TestInitializer.gal;
     TestInvalidAllows.gal (Semantic);
     TestInvalidFieldAssign.gal (Semantic);
