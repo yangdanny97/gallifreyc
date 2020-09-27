@@ -11,4 +11,6 @@ tests/*.results
 */.DS_Store
 lib/gallifreyc.jar
 lib/gallifrey-antidote-all.jar
+compiler/src/gallifreyc/parse/Lexer_c.java
+compiler/src/gallifreyc/parse/Grm.java
 
