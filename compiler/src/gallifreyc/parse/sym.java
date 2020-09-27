@@ -34,7 +34,7 @@ public class sym {
   public static final int MATCH_RESTRICTION = 117;
   public static final int WHERE = 126;
   public static final int CASE = 46;
-  public static final int AS = 131;
+  public static final int AS = 132;
   public static final int AT = 111;
   public static final int RSHIFTEQ = 89;
   public static final int ELLIPSIS = 109;
@@ -130,6 +130,7 @@ public class sym {
   public static final int RESTRICTION = 120;
   public static final int GT = 71;
   public static final int WITH = 127;
+  public static final int ISOLATED = 131;
   public static final int SHORT = 4;
   public static final int NOTEQ = 76;
   public static final int RSHIFT = 68;
@@ -272,6 +273,7 @@ public class sym {
   "ARROW",
   "PRESERVES",
   "CONSUMES",
+  "ISOLATED",
   "AS"
   };
 }

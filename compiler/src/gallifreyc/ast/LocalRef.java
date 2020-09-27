@@ -9,7 +9,6 @@ public class LocalRef extends RefQualification {
     public static final String DEFAULT_OWNER = "DEFAULT";
 
     public String ownerAnnotation = DEFAULT_OWNER;
-    public boolean borrow = false;
 
     public LocalRef(Position pos) {
         super(pos);
@@ -18,12 +17,6 @@ public class LocalRef extends RefQualification {
     public LocalRef(Position pos, String owner) {
         super(pos);
         ownerAnnotation = owner;
-    }
-
-    public LocalRef(Position pos, String owner, boolean borrow) {
-        super(pos);
-        ownerAnnotation = owner;
-        this.borrow = borrow;
     }
 
     @Override
@@ -35,7 +28,7 @@ public class LocalRef extends RefQualification {
     public boolean equals(Object other) {
         if (other instanceof LocalRef) {
             LocalRef l = (LocalRef) other;
-            return this.ownerAnnotation.equals(l.ownerAnnotation) && this.borrow == l.borrow;
+            return this.ownerAnnotation.equals(l.ownerAnnotation);
         }
         return false;
     }

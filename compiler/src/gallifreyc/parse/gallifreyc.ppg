@@ -39,6 +39,7 @@ terminal Token WITH;
 terminal Token ARROW;
 terminal Token PRESERVES;
 terminal Token CONSUMES;
+terminal Token ISOLATED;
 terminal Token AS;
 
 non terminal PreCondition pre_condition_opt;
@@ -88,19 +89,8 @@ override formal_parameter ::=
             tn, parser.nf.Id(parser.pos(d), d.getIdentifier()), true);
         
     :}
-  |  modifiers_or_annotations_opt:a PRESERVES:l LT AND IDENTIFIER:b GT type:t ELLIPSIS IDENTIFIER:d {:                                                      
-        RefQualification r = parser.nf.LocalRef(parser.pos(l), b.getIdentifier(), true); 
-        TypeNode tn = parser.nf.ArrayTypeNode(parser.pos(l, t), parser.nf.RefQualifiedTypeNode(parser.pos(l, t), r, t));                                                   
-        RESULT = parser.nf.Formal(parser.pos(l, d, d), a.flags(), a.annotations(), 
-            tn, parser.nf.Id(parser.pos(d), d.getIdentifier()), true);
-    :}
  |  modifiers_or_annotations_opt:a PRESERVES:l LT IDENTIFIER:b GT type:t variable_declarator_id:c {:
         RefQualification r = parser.nf.LocalRef(parser.pos(l), b.getIdentifier()); 
-        RefQualifiedTypeNode tn = parser.nf.RefQualifiedTypeNode(parser.pos(l, t), r, t);
-        RESULT = parser.nf.Formal(parser.pos(l, c), a.flags(), a.annotations(), parser.array(tn, c.dims), c.name); 
-    :}
- |  modifiers_or_annotations_opt:a PRESERVES:l LT AND IDENTIFIER:b GT type:t variable_declarator_id:c {:
-        RefQualification r = parser.nf.LocalRef(parser.pos(l), b.getIdentifier(), true); 
         RefQualifiedTypeNode tn = parser.nf.RefQualifiedTypeNode(parser.pos(l, t), r, t);
         RESULT = parser.nf.Formal(parser.pos(l, c), a.flags(), a.annotations(), parser.array(tn, c.dims), c.name); 
     :}
@@ -111,19 +101,8 @@ override formal_parameter ::=
             tn, parser.nf.Id(parser.pos(d), d.getIdentifier()), true);
         
     :}
-  |  modifiers_or_annotations_opt:a CONSUMES:l LT AND IDENTIFIER:b GT type:t ELLIPSIS IDENTIFIER:d {:                                                      
-        RefQualification r = parser.nf.LocalRef(parser.pos(l), b.getIdentifier(), true); 
-        TypeNode tn = parser.nf.ArrayTypeNode(parser.pos(l, t), parser.nf.RefQualifiedTypeNode(parser.pos(l, t), r, t));                                                   
-        RESULT = parser.nf.Formal(parser.pos(l, d, d), a.flags(), a.annotations(), 
-            tn, parser.nf.Id(parser.pos(d), d.getIdentifier()), true);
-    :}
  |  modifiers_or_annotations_opt:a CONSUMES:l LT IDENTIFIER:b GT type:t variable_declarator_id:c {:
         RefQualification r = parser.nf.LocalRef(parser.pos(l), b.getIdentifier()); 
-        RefQualifiedTypeNode tn = parser.nf.RefQualifiedTypeNode(parser.pos(l, t), r, t);
-        RESULT = parser.nf.Formal(parser.pos(l, c), a.flags(), a.annotations(), parser.array(tn, c.dims), c.name); 
-    :}
- |  modifiers_or_annotations_opt:a CONSUMES:l LT AND IDENTIFIER:b GT type:t variable_declarator_id:c {:
-        RefQualification r = parser.nf.LocalRef(parser.pos(l), b.getIdentifier(), true); 
         RefQualifiedTypeNode tn = parser.nf.RefQualifiedTypeNode(parser.pos(l, t), r, t);
         RESULT = parser.nf.Formal(parser.pos(l, c), a.flags(), a.annotations(), parser.array(tn, c.dims), c.name); 
     :}
@@ -343,19 +322,30 @@ extend statement ::=
     {: RESULT = parser.nf.WhenStmt(parser.pos(s,b), a, b); :}
 ;
 
-override catch_clause ::=
-    CATCH:n LPAREN modifiers_or_annotations_opt:a catch_type:b IDENTIFIER:c RPAREN block:d {:
-                                                                                          
-        Formal f = parser.nf.Formal(parser.pos(b, c, c), a.flags(), a.annotations(),
-            parser.nf.RefQualifiedTypeNode(
-                parser.pos(b), 
-                parser.nf.LocalRef(parser.pos(b)), 
-                parser.nf.AmbUnionType(parser.pos(b), b)
-            ),
-            parser.nf.Id(parser.pos(c), c.getIdentifier()));
-        if (b.size() > 1)
-            RESULT = parser.nf.MultiCatch(parser.pos(n, d), f, b, d); 
-        else
-            RESULT = parser.nf.Catch(parser.pos(n, d), f, d); 
+override catch_clause ::= CATCH:n LPAREN modifiers_or_annotations_opt:a catch_type:b IDENTIFIER:c RPAREN block:d {:                                              
+    Formal f = parser.nf.Formal(parser.pos(b, c, c), a.flags(), a.annotations(),
+        parser.nf.RefQualifiedTypeNode(
+            parser.pos(b), 
+            parser.nf.LocalRef(parser.pos(b)), 
+            parser.nf.AmbUnionType(parser.pos(b), b)
+        ),
+        parser.nf.Id(parser.pos(c), c.getIdentifier()));
+    if (b.size() > 1)
+        RESULT = parser.nf.MultiCatch(parser.pos(n, d), f, b, d); 
+    else
+        RESULT = parser.nf.Catch(parser.pos(n, d), f, d); 
+:}
+;
+
+extend method_header ::=
+    modifiers_or_annotations_opt:a ISOLATED:q type:b IDENTIFIER:d LPAREN formal_parameter_list_opt:e RPAREN dims_opt:g throws_opt:h {:
+      RefQualification r = parser.nf.IsolatedRef(parser.pos(q)); 
+      TypeNode tn = parser.nf.RefQualifiedTypeNode(parser.pos(q, b), r, b);
+      RESULT = parser.nf.MethodDecl(parser.pos(q, g, d), a.flags(), a.annotations(), parser.array(tn, g.intValue()), parser.nf.Id(parser.pos(d), d.getIdentifier()), e, h, null, new LinkedList<ParamTypeNode>(), parser.javadoc(a.position(), parser.pos(b))); 
+    :}
+ |  modifiers_or_annotations_opt:a LT:b type_parameter_list_1:c ISOLATED:q type:d IDENTIFIER:i LPAREN formal_parameter_list_opt:e RPAREN dims_opt:g throws_opt:h {:
+      RefQualification r = parser.nf.IsolatedRef(parser.pos(q)); 
+      TypeNode tn = parser.nf.RefQualifiedTypeNode(parser.pos(q, d), r, d);
+      RESULT = parser.nf.MethodDecl(parser.pos(q, g, i), a.flags(), a.annotations(), parser.array(tn, g.intValue()), parser.nf.Id(parser.pos(i), i.getIdentifier()), e, h, null, c, parser.javadoc(a.position(), parser.pos(b))); 
     :}
 ;

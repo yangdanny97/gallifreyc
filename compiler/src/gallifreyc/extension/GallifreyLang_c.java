@@ -3,7 +3,7 @@ package gallifreyc.extension;
 import polyglot.ast.*;
 import polyglot.ext.jl7.ast.J7Lang_c;
 import polyglot.util.InternalCompilerError;
-import polyglot.util.IsolatedID;
+import polyglot.util.UniqueID;
 
 // language dispatcher, singleton class
 public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
@@ -76,7 +76,7 @@ public class GallifreyLang_c extends J7Lang_c implements GallifreyLang {
 
     @Override
     public int fresh() {
-        return IsolatedID.newIntID();
+        return UniqueID.newIntID();
     }
 
     @Override
