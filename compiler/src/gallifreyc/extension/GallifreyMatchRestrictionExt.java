@@ -97,14 +97,13 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
         innerTryStmts.add(assign);
 
         List<Catch> catches = new ArrayList<>();
-        String[] exnNames = new String[]{"InstantiationException", "IllegalAccessException", 
-                "ClassNotFoundException", "NoSuchMethodException", "InvocationTargetException"};
+        String[] exnNames = new String[] { "InstantiationException", "IllegalAccessException", "ClassNotFoundException",
+                "NoSuchMethodException", "InvocationTargetException" };
         for (int i = 0; i < exnNames.length; i++) {
             List<Expr> args = new ArrayList<>();
             args.add(nf.Local("e"));
             catches.add(nf.Catch(p, nf.Formal(exnNames[i], "e"),
-                    nf.Block(nf.Throw(p, nf.New(p, nf.TypeNode("InternalGallifreyException"), args)))
-                    ));
+                    nf.Block(nf.Throw(p, nf.New(p, nf.TypeNode("InternalGallifreyException"), args)))));
         }
 
         matchStmts.add(nf.Try(p, nf.Block(innerTryStmts), catches));

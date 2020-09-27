@@ -107,13 +107,13 @@ public class GallifreyRewriter extends GRewriter {
         for (int i = 0; i < d.method1Formals().size(); i++) {
             // T x = (T) __f1.getArguments().get(0)
             Formal f = d.method1Formals().get(i);
-            Expr rhs = qq().parseExpr("(%T) __f1.getArguments().get("+ i +")", f.type());
+            Expr rhs = qq().parseExpr("(%T) __f1.getArguments().get(" + i + ")", f.type());
             statements.add(nf.LocalDecl(p, Flags.NONE, f.type(), f.id(), rhs));
         }
         for (int i = 0; i < d.method2Formals().size(); i++) {
             // T x = (T) __f2.getArguments().get(0)
             Formal f = d.method2Formals().get(i);
-            Expr rhs = qq().parseExpr("(%T) __f2.getArguments().get("+ i +")", f.type());
+            Expr rhs = qq().parseExpr("(%T) __f2.getArguments().get(" + i + ")", f.type());
             statements.add(nf.LocalDecl(p, Flags.NONE, f.type(), f.id(), rhs));
         }
         statements.add(d.body());

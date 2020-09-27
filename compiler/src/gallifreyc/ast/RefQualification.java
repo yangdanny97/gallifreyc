@@ -27,7 +27,7 @@ public class RefQualification extends Node_c {
         return false;
     }
 
-    public boolean isUnique() {
+    public boolean isIsolated() {
         return false;
     }
 

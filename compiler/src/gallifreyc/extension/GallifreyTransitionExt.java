@@ -40,8 +40,8 @@ public class GallifreyTransitionExt extends GallifreyExt {
         Transition t = node();
         GallifreyNodeFactory nf = rw.nodeFactory();
         // transition(c, R) ------> c.transition(R.class)
-        return nf.Eval(rw.qq().parseExpr("%E.transition("  + t.restriction().restriction().id() 
-                + "_impl.class)", (Local) t.expr().copy()));
+        return nf.Eval(rw.qq().parseExpr("%E.transition(" + t.restriction().restriction().id() + "_impl.class)",
+                (Local) t.expr().copy()));
     }
 
     @Override

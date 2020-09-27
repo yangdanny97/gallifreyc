@@ -17,7 +17,7 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
 
     MethodDecl MethodDecl(Position pos, MethodDecl method, PreCondition pre, PostCondition post);
 
-    UniqueRef UniqueRef(Position pos);
+    IsolatedRef IsolatedRef(Position pos);
 
     MoveRef MoveRef(Position pos);
 
@@ -94,6 +94,6 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
     Assign Assign(Expr left, Assign.Operator op, Expr right);
 
     Eval Eval(Expr expr);
-    
+
     LocalDecl LocalDecl(String type, String name, Expr init);
 }

@@ -89,7 +89,7 @@ public class GallifreyScheduler extends JL7Scheduler {
         return internGoal(g);
     }
 
-    // autoboxing for Shared/Unique, nulling out moves
+    // autoboxing for Shared/Isolated, nulling out moves
     public Goal FinalRewritePass(Job job) {
         GallifreyRewriter rw = new GallifreyRewriter(job, extInfo, extInfo);
         Goal g = new VisitorGoal(job, rw);

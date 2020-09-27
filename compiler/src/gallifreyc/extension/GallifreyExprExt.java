@@ -52,8 +52,8 @@ public class GallifreyExprExt extends GallifreyExt implements GallifreyExprOps {
         return gallifreyType.isMove();
     }
 
-    public boolean isUnique() {
-        return gallifreyType.isUnique();
+    public boolean isIsolated() {
+        return gallifreyType.isIsolated();
     }
 
     public boolean isShared() {

@@ -11,7 +11,7 @@ public interface GallifreyExtFactory extends JL7ExtFactory {
 
     Ext extPostCondition();
 
-    Ext extUniqueRef();
+    Ext extIsolatedRef();
 
     Ext extMoveRef();
 

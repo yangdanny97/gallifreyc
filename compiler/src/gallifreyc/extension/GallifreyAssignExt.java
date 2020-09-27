@@ -60,7 +60,7 @@ public class GallifreyAssignExt extends GallifreyExprExt {
             RestrictionId rid = s.restriction();
             a = a.right(nf.Cast(rhs.position(), nf.TypeNode(Position.COMPILER_GENERATED, rid.getWrapperName()),
                     rw.rewriteRHS(rid, rhs)));
-        } else if (rhs != null && rhs.type() != null && lhs.type() != null && (!ts.typeEquals(rhs.type(), lhs.type())) 
+        } else if (rhs != null && rhs.type() != null && lhs.type() != null && (!ts.typeEquals(rhs.type(), lhs.type()))
                 && ts.isCastValid(rhs.type(), lhs.type())) {
             a = a.right(nf.Cast(rhs.position(), nf.CanonicalTypeNode(Position.COMPILER_GENERATED, lhs.type()), rhs));
         }

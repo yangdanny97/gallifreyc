@@ -10,7 +10,7 @@ public interface GallifreyExprOps extends ExprOps {
 
     public boolean isMove();
 
-    public boolean isUnique();
+    public boolean isIsolated();
 
     public boolean isShared();
 

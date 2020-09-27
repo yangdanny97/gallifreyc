@@ -46,9 +46,9 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     }
 
     @Override
-    public UniqueRef UniqueRef(Position pos) {
-        UniqueRef u = new UniqueRef(pos);
-        u = ext(u, extFactory().extUniqueRef());
+    public IsolatedRef IsolatedRef(Position pos) {
+        IsolatedRef u = new IsolatedRef(pos);
+        u = ext(u, extFactory().extIsolatedRef());
         return u;
     }
 
@@ -278,7 +278,7 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     public Eval Eval(Expr expr) {
         return this.Eval(Position.COMPILER_GENERATED, expr);
     }
-    
+
     @Override
     public LocalDecl LocalDecl(String type, String name, Expr init) {
         return this.LocalDecl(Position.COMPILER_GENERATED, Flags.NONE, this.TypeNode(type), this.Id(name), init);

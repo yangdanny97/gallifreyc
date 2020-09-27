@@ -39,8 +39,8 @@ public class GallifreyType implements Serializable {
         return qualification instanceof MoveRef;
     }
 
-    public boolean isUnique() {
-        return qualification.isUnique();
+    public boolean isIsolated() {
+        return qualification.isIsolated();
     }
 
     public boolean isShared() {

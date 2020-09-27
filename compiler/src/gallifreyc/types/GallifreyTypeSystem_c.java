@@ -437,7 +437,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         if (fromType.isLocal() && toType.isLocal()) {
             return true;
         }
-        
+
         // TEMPORARY - allow local to assign to shared for test - TODO remove this
         if (fromType.isLocal() && toType.isShared()) {
             return true;
@@ -465,7 +465,8 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
                 return true;
             }
             if (arrayType.base().isReference() && toArrayType.base().isReference()) {
-                // GALLIFREY: changed from JL5TypeSystem; arrays are no longer covariant w/ content type
+                // GALLIFREY: changed from JL5TypeSystem; arrays are no longer covariant w/
+                // content type
                 return typeEquals(arrayType.base(), toArrayType.base());
             }
         }

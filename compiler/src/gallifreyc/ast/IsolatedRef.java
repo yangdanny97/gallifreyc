@@ -3,29 +3,29 @@ package gallifreyc.ast;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
-public class UniqueRef extends RefQualification {
+public class IsolatedRef extends RefQualification {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
-    public UniqueRef(Position pos) {
+    public IsolatedRef(Position pos) {
         super(pos);
     }
 
     @Override
     public String toString() {
-        return "unique";
+        return "isolated";
     }
 
     @Override
     public boolean equals(Object other) {
-        return other instanceof UniqueRef;
+        return other instanceof IsolatedRef;
     }
 
     @Override
     public RefQualification copy() {
-        return new UniqueRef(this.position);
+        return new IsolatedRef(this.position);
     }
 
-    public boolean isUnique() {
+    public boolean isIsolated() {
         return true;
     }
 }
