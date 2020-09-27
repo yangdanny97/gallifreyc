@@ -56,7 +56,6 @@ public class GallifreySourceFileExt extends GallifreyExt {
         Position p = Position.COMPILER_GENERATED;
 
         List<Import> imports = new ArrayList<>(sf.imports());
-        imports.add(0, nf.Import(p, Import.SINGLE_TYPE, "gallifrey.Unique"));
         imports.add(0, nf.Import(p, Import.SINGLE_TYPE, "gallifrey.Shared"));
         imports.add(0, nf.Import(p, Import.SINGLE_TYPE, "gallifrey.RunAfterTest"));
         imports.add(0, nf.Import(p, Import.SINGLE_TYPE, "gallifrey.InternalGallifreyException"));

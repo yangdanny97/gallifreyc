@@ -1,5 +1,7 @@
+// TODO - removed unique, no error now
+
 class TestInvalidFieldAssign {
-    unique Integer y;
+    Integer y;
     
     public TestInvalidFieldAssign(Integer x){
         this.y = x;

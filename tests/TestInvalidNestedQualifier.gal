@@ -1,5 +1,7 @@
+// TODO - removed unique, no error now
+
 class TestInvalidNestedQualifier {
     public TestInvalidNestedQualifier(){
-        unique unique Integer x = 5;
+        Integer x = 5;
     }
 }

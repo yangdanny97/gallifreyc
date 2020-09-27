@@ -92,13 +92,6 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
                 l = l.init(nf.Cast(l.position(), l.type(), rw.rewriteRHS(rid, rhs)));
             }
             return l;
-        } else if (q.isUnique()) {
-            l = l.type(nf.TypeNode(l.position(), "Unique<" + l.type().type().toString() + ">"));
-            if (rhs != null) {
-                l = l.init(nf.New(rhs.position(), nf.TypeNode(l.position(), "Unique<>"),
-                        new ArrayList<Expr>(Arrays.asList(rhs))));
-            }
-            return l;
         } else if (rhs != null && rhs.type() != null && l.type().type() != null
                 && ts.isCastValid(rhs.type(), l.type().type())) {
             l = l.init(nf.Cast(l.position(), l.type(), rhs));

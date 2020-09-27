@@ -63,7 +63,6 @@ public class GallifreyArrayType extends JL5ArrayType_c implements ArrayType {
     @Override
     protected MethodInstance createCloneMethodInstance() {
         GallifreyTypeSystem ts = (GallifreyTypeSystem) this.ts;
-        // TODO
         return ts.methodInstance(position(), this, ts.Public(), this, // clone returns this type
                 "clone", Collections.<Type>emptyList(), Collections.<Type>emptyList());
     }

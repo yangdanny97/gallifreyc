@@ -37,9 +37,6 @@ public class GallifreyFieldDeclExt extends GallifreyExt implements GallifreyOps 
         FieldDecl f = node();
         GallifreyNodeFactory nf = rw.nodeFactory();
         RefQualification q = this.qualification;
-        if (q.isUnique()) {
-            return f.type(nf.TypeNode(f.position(), "Unique<" + f.type().type().toString() + ">"));
-        }
         if (q.isShared()) {
             SharedRef s = (SharedRef) q;
             RestrictionId rid = s.restriction();

@@ -3,6 +3,6 @@ import java.util.Set;
 interface Library {
 	int numItems ();
 
-	unique Set getItems ( unique String col )
+	Set getItems ( String col )
 	requires collection ( col );
 }

@@ -27,7 +27,6 @@
 #                       compiler; is always enclosed in quotes.
 
 javac "-d out -cp ../lib/full-runtime.jar:out:." {
-    Unique.java;
     Shared.java;
     RunAfterTest.java;
     InternalGallifreyException.java;
@@ -41,7 +40,6 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -postopts -Xlint:unchecked -cl
     RefQualification3.gal;
     RefQualification4.gal (Semantic);
     RefQualification5.gal;
-    RefQualification6.gal (Semantic);
     RefQualification8.gal;
     Interface1.gal;
     Interface2.gal;
@@ -59,8 +57,8 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -postopts -Xlint:unchecked -cl
     TestBufferedWriter.gal;
     TestInitializer.gal;
     TestInvalidAllows.gal (Semantic);
-    TestInvalidFieldAssign.gal (Semantic);
-    TestInvalidNestedQualifier.gal (Semantic);
+//    TestInvalidFieldAssign.gal (Semantic);
+//    TestInvalidNestedQualifier.gal (Semantic);
     TestInvalidRestrictionClass.gal (Semantic);
     TestInvalidRestrictionUnion.gal (Semantic);
     TestInvariantSubtyping.gal (Semantic);

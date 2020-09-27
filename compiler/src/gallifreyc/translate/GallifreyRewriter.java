@@ -22,7 +22,6 @@ import gallifreyc.types.GallifreyTypeSystem;
 import java.util.*;
 
 public class GallifreyRewriter extends GRewriter {
-    public final String VALUE = "VALUE";
     public final String RES = "RESTRICTION";
     public final String TEMP = "TEMP";
     public final String SHARED = "sharedObj";
@@ -59,10 +58,8 @@ public class GallifreyRewriter extends GRewriter {
             Type t = mi.formalTypes().get(i);
             RefQualification q = mi.gallifreyInputTypes().get(i).qualification;
             String fresh = lang().freshVar();
-            // wrappers for shared and unique
-            if (q.isUnique()) {
-                formals.add(nf.Formal("Unique<" + t.toString() + ">", fresh));
-            } else if (q.isShared()) {
+            // wrappers for shared
+            if (q.isShared()) {
                 SharedRef s = (SharedRef) q;
                 RestrictionId rid = s.restriction();
                 formals.add(nf.Formal(rid.getWrapperName(), fresh));
@@ -199,10 +196,8 @@ public class GallifreyRewriter extends GRewriter {
             Type t = mi.formalTypes().get(i);
             RefQualification q = mi.gallifreyInputTypes().get(i).qualification;
             String fresh = lang().freshVar();
-            // wrappers for shared and unique
-            if (q.isUnique()) {
-                formals.add(nf.Formal("Unique<" + t.toString() + ">", fresh));
-            } else if (q.isShared()) {
+            // wrappers for unique
+            if (q.isShared()) {
                 SharedRef s = (SharedRef) q;
                 RestrictionId rid = s.restriction();
                 formals.add(nf.Formal(rid.getWrapperName(), fresh));
@@ -223,9 +218,6 @@ public class GallifreyRewriter extends GRewriter {
         }
         // wrappers for shared and unique
         RefQualification q = mi.gallifreyReturnType().qualification;
-        if (q.isUnique()) {
-            genReturnType = nf.TypeNode("Unique<" + genReturnType.toString() + ">");
-        }
         if (q.isShared()) {
             SharedRef s = (SharedRef) q;
             RestrictionId rid = s.restriction();
@@ -273,10 +265,8 @@ public class GallifreyRewriter extends GRewriter {
             RefQualification q = mi.gallifreyInputTypes().get(i).qualification;
             String fresh = lang().freshVar();
             Id name = nf.Id(fresh);
-            // wrappers for shared and unique
-            if (q.isUnique()) {
-                formals.add(nf.Formal("Unique<" + t.toString() + ">", name.id()));
-            } else if (q.isShared()) {
+            // wrappers for shared
+            if (q.isShared()) {
                 SharedRef s = (SharedRef) q;
                 RestrictionId rid = s.restriction();
                 formals.add(nf.Formal(rid.getWrapperName(), name.id()));
@@ -297,9 +287,6 @@ public class GallifreyRewriter extends GRewriter {
         }
         // wrappers for shared and unique
         RefQualification q = mi.gallifreyReturnType().qualification;
-        if (q.isUnique()) {
-            genReturnType = nf.TypeNode("Unique<" + genReturnType.toString() + ">");
-        }
         if (q.isShared()) {
             SharedRef s = (SharedRef) q;
             RestrictionId rid = s.restriction();
@@ -786,50 +773,8 @@ public class GallifreyRewriter extends GRewriter {
         return nodeFactory().TypeNode(rid.getWrapperName());
     }
 
-    // wrap unique refs with .value, AFTER rewriting
-    public Node wrapExpr(Expr e) {
-        GallifreyNodeFactory nf = this.nodeFactory();
-        GallifreyExprExt ext = GallifreyExprExt.ext(e);
-        RefQualification q = ext.gallifreyType.qualification();
-        if (q.isUnique()) {
-            Expr new_e = nf.Field(e, VALUE);
-            return new_e;
-        }
-        return e;
-    }
-
     @Override
     public Node extRewrite(Node n) throws SemanticException {
-        if (n instanceof Expr) {
-            return wrapExpr((Expr) GallifreyExt.ext(n).gallifreyRewrite(this));
-        }
-        // no need to wrap Eval-ed expressions w/ .VALUE
-        if (n instanceof Eval) {
-            Eval e = (Eval) n;
-            if (e.expr() instanceof Field) {
-                Field f = (Field) e.expr();
-                if (f.target() instanceof Expr
-                        && GallifreyExprExt.ext(f.target()).gallifreyType.qualification().isUnique()
-                        && f.name().equals(VALUE)) {
-                    n = nf.Eval(n.position(), (Expr) f.target());
-                    return GallifreyExt.ext(n).gallifreyRewrite(this);
-                }
-            }
-
-        }
-        if (n instanceof Return) {
-            Return r = (Return) n;
-            if (r.expr() instanceof Field) {
-                Field f = (Field) r.expr();
-                if (f.target() instanceof Expr
-                        && GallifreyExprExt.ext(f.target()).gallifreyType.qualification().isUnique()
-                        && f.name().equals(VALUE)) {
-                    n = nf.Return(n.position(), (Expr) f.target());
-                    return GallifreyExt.ext(n).gallifreyRewrite(this);
-                }
-            }
-
-        }
         return GallifreyExt.ext(n).gallifreyRewrite(this);
     }
 }

@@ -33,7 +33,6 @@ terminal Token SHARED;
 terminal Token TEST;
 terminal Token THREAD;
 terminal Token TRANSITION;
-terminal Token UNIQUE;
 terminal Token WHEN;
 terminal Token WHERE;
 terminal Token WITH;
@@ -64,13 +63,8 @@ non terminal MergeDecl merge_decl;
 
 start with goal;
 
-// User-specified reference Qualifications (local, unique, shared)
-extend class_or_interface_type ::= UNIQUE:a class_or_interface_type:t
-        {: 
-            RefQualification r = parser.nf.UniqueRef(parser.pos(a)); 
-            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
-        :}
-    | SHARED:a LBRACK restriction_id:b RBRACK:c class_or_interface_type:t
+extend class_or_interface_type ::= 
+    SHARED:a LBRACK restriction_id:b RBRACK:c class_or_interface_type:t
         {: 
             RefQualification r = parser.nf.SharedRef(parser.pos(a, c), b); 
             RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
@@ -135,12 +129,7 @@ override formal_parameter ::=
     :}
 ;
 
-extend array_type ::= UNIQUE:a array_type:t
-        {: 
-            RefQualification r = parser.nf.UniqueRef(parser.pos(a)); 
-            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
-        :}
-    | SHARED:a LBRACK restriction_id:b RBRACK:c array_type:t
+extend array_type ::= SHARED:a LBRACK restriction_id:b RBRACK:c array_type:t
         {: 
             RefQualification r = parser.nf.SharedRef(parser.pos(a, c), b); 
             RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);

@@ -5,13 +5,13 @@ interface Item {};
 interface Library {
 	int numItems ();
 
-	unique Set getItems ( unique String col )
+	Set getItems ( String col )
 	requires collection ( col );
 
-	void addCollection ( unique String col )
+	void addCollection ( String col )
 	ensures collection ( col );
 
-	void addItem ( unique Item i , String col )
+	void addItem ( Item i , String col )
 	requires collection ( col )
 	ensures next ( numItems ()) >= numItems ();
 

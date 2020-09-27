@@ -132,7 +132,6 @@ import java.util.Set;
         keywords.put("test",              new Integer(sym.TEST));
         keywords.put("thread",            new Integer(sym.THREAD));
         keywords.put("transition",        new Integer(sym.TRANSITION));
-        keywords.put("unique",            new Integer(sym.UNIQUE));
         keywords.put("when",              new Integer(sym.WHEN));
         keywords.put("where",             new Integer(sym.WHERE));
         keywords.put("with",              new Integer(sym.WITH));

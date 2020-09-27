@@ -1,5 +1,5 @@
 /**
- * Register // TODO - converted unique to local
+ * Register // TODO - converted to local
  */
 public class Register<T> {
     private T val;
