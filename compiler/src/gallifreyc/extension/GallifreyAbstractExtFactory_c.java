@@ -211,21 +211,6 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         return postExtTransition(e);
     }
 
-    public final Ext extMove() {
-        Ext e = extMoveImpl();
-
-        ExtFactory nextEF = nextExtFactory();
-        Ext e2;
-        if (nextEF instanceof GallifreyExtFactory) {
-            e2 = ((GallifreyExtFactory) nextEF).extMove();
-        } else {
-            e2 = nextEF.extExpr();
-        }
-
-        e = composeExts(e, e2);
-        return postExtMove(e);
-    }
-
     public final Ext extMatchBranch() {
         Ext e = extMatchBranchImpl();
 
@@ -340,10 +325,6 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
         return extStmt();
     }
 
-    protected Ext extMoveImpl() {
-        return extExpr();
-    }
-
     protected Ext extMatchBranchImpl() {
         return extStmt();
     }
@@ -412,10 +393,6 @@ public abstract class GallifreyAbstractExtFactory_c extends JL7AbstractExtFactor
 
     protected Ext postExtTransition(Ext e) {
         return postExtStmt(e);
-    }
-
-    protected Ext postExtMove(Ext e) {
-        return postExtExpr(e);
     }
 
     protected Ext postExtMatchBranch(Ext e) {

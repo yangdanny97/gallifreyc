@@ -35,7 +35,7 @@ public class sym {
   public static final int MATCH_RESTRICTION = 118;
   public static final int WHERE = 128;
   public static final int CASE = 46;
-  public static final int AS = 132;
+  public static final int AS = 133;
   public static final int AT = 111;
   public static final int RSHIFTEQ = 89;
   public static final int ELLIPSIS = 109;
@@ -43,6 +43,7 @@ public class sym {
   public static final int LBRACK = 10;
   public static final int PUBLIC = 25;
   public static final int THROWS = 39;
+  public static final int CONSUMES = 132;
   public static final int XOR = 78;
   public static final int DIVEQ = 84;
   public static final int LBRACE = 17;
@@ -82,6 +83,7 @@ public class sym {
   public static final int REQUIRES = 120;
   public static final int TRY = 55;
   public static final int SYNCHRONIZED = 32;
+  public static final int PRESERVES = 131;
   public static final int CHARACTER_LITERAL = 101;
   public static final int FOR = 50;
   public static final int UNIQUE = 126;
@@ -135,7 +137,6 @@ public class sym {
   public static final int RSHIFT = 68;
   public static final int LSHIFT = 67;
   public static final int FLOAT_LITERAL = 99;
-  public static final int MOVE = 131;
   public static final int ANDAND = 80;
   public static final int URSHIFT = 69;
   public static final int WHILE = 49;
@@ -273,7 +274,8 @@ public class sym {
   "WHERE",
   "WITH",
   "ARROW",
-  "MOVE",
+  "PRESERVES",
+  "CONSUMES",
   "AS"
   };
 }

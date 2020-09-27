@@ -7,7 +7,7 @@ public class BufferedWriterExample {
             buffer.write("OEOEOEOEOEOEOOEEOOEOEOEOEOEOEO");  
             buffer.close();  
             System.out.println("Success"); 
-        } catch (Exception e) {
+        } catch (IllegalArgumentException | IOException e) {
             System.out.println("Failure");
             local Exception f = e;
         }

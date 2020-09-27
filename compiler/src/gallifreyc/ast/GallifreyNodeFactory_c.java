@@ -182,13 +182,6 @@ public class GallifreyNodeFactory_c extends JL7NodeFactory_c implements Gallifre
     }
 
     @Override
-    public Move Move(Position pos, Expr expr) {
-        Move m = new Move_c(pos, expr);
-        m = ext(m, extFactory().extMove());
-        return m;
-    }
-
-    @Override
     public MergeDecl MergeDecl(Position pos, Id method1, List<Formal> method1Formals, Id method2,
             List<Formal> method2Formals, Block body) {
         MergeDecl m = new MergeDecl_c(pos, method1, method1Formals, method2, method2Formals, body);

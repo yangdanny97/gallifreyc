@@ -39,7 +39,8 @@ terminal Token WHEN;
 terminal Token WHERE;
 terminal Token WITH;
 terminal Token ARROW;
-terminal Token MOVE;
+terminal Token PRESERVES;
+terminal Token CONSUMES;
 terminal Token AS;
 
 // Reference Qualifications (local, unique, shared)
@@ -342,11 +343,6 @@ extend statement ::=
 	{: RESULT = parser.nf.MatchRestriction(parser.pos(s,b), a, b); :}
 |   WHEN:s LPAREN expression:a RPAREN statement:b
     {: RESULT = parser.nf.WhenStmt(parser.pos(s,b), a, b); :}
-;
-
-extend primary_no_new_array ::= 
-	MOVE:a LPAREN expression:b RPAREN
-	{: RESULT = parser.nf.Move(parser.pos(a, b), b); :}
 ;
 
 override catch_clause ::=

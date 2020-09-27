@@ -37,8 +37,6 @@ public interface GallifreyNodeFactory extends JL7NodeFactory {
 
     WhenStmt WhenStmt(Position pos, Expr expr, Stmt body);
 
-    Move Move(Position pos, Expr expr);
-
     MatchRestriction MatchRestriction(Position pos, Expr expr, List<MatchBranch> branches);
 
     MatchBranch MatchBranch(Position pos, LocalDecl pattern, Block body);

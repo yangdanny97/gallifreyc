@@ -137,7 +137,8 @@ import java.util.Set;
         keywords.put("when",              new Integer(sym.WHEN));
         keywords.put("where",             new Integer(sym.WHERE));
         keywords.put("with",              new Integer(sym.WITH));
-        keywords.put("move",              new Integer(sym.MOVE));
+        keywords.put("preserves",              new Integer(sym.PRESERVES));
+        keywords.put("consumes",              new Integer(sym.CONSUMES));
         keywords.put("as",              new Integer(sym.AS));
     }
 

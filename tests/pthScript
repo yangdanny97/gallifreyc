@@ -42,7 +42,6 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -postopts -Xlint:unchecked -cl
     RefQualification4.gal (Semantic);
     RefQualification5.gal;
     RefQualification6.gal (Semantic);
-    RefQualification7.gal;
     RefQualification8.gal;
     Interface1.gal;
     Interface2.gal;
@@ -67,7 +66,6 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -postopts -Xlint:unchecked -cl
     TestInvalidRestrictionClass.gal (Semantic);
     TestInvalidRestrictionUnion.gal (Semantic);
     TestInvariantSubtyping.gal (Semantic);
-    TestRewrite.gal;
     TestShared.gal ClassC.gal;
     ClassC.gal TestInvalidRestrictedMethod.gal (Semantic);
     ClassC.gal TestInvalidSharedFieldAccess.gal (Semantic);
