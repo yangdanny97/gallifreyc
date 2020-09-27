@@ -1,7 +1,7 @@
 class TestFieldAssign {
-    local ClassC y;
+    ClassC y;
     
-    public TestFieldAssign(local ClassC x){
+    public TestFieldAssign(ClassC x){
         this.y = x;
     }
 }

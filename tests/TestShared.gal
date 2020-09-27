@@ -16,7 +16,7 @@ public class TestShared {
     
     public void f2(shared[R3] ClassC x){}
     
-    public void main(local String[] args) {
+    public void main(String[] args) {
         shared[R1] ClassC c = new ClassC();
         shared[R1] ClassC c2 = c;
         

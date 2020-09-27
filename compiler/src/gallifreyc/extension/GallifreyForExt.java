@@ -33,7 +33,7 @@ public class GallifreyForExt extends GallifreyExt {
         List<ForInit> inits = visitList(node().inits(), gtc);
         Expr cond = visitChild(node().cond(), gtc);
         List<ForUpdate> iters = visitList(node().iters(), gtc);
-        RegionContext before_loop = ts.region_context();
+        ts.region_context();
         ts.push_regionContext();
         Stmt body = visitChild(node().body(), gtc);
         // no need to pop

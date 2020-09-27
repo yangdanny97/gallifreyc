@@ -50,12 +50,7 @@ public class GallifreyFieldDeclExt extends GallifreyExt implements GallifreyOps 
 
     @Override
     public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
-        TypeNode t = node().type();
-        if (t instanceof RefQualifiedTypeNode
-                || (t instanceof CanonicalTypeNode && ((CanonicalTypeNode) t).type().isPrimitive())) {
-            return superLang().buildTypesEnter(node(), tb);
-        }
-        throw new SemanticException("cannot declare unqualified field", node().position());
+        return superLang().buildTypesEnter(node(), tb);
     }
 
     @Override
@@ -66,7 +61,7 @@ public class GallifreyFieldDeclExt extends GallifreyExt implements GallifreyOps 
         if (t instanceof RefQualifiedTypeNode) {
             q = ((RefQualifiedTypeNode) t).qualification();
         } else {
-            // for primitives
+            // default to local for unqualified (incl primitives)
             q = new LocalRef(Position.COMPILER_GENERATED);
         }
         this.qualification = q;

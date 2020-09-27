@@ -30,8 +30,7 @@ public class GallifreyWhileExt extends GallifreyExt {
         ts.push_regionContext();
         Stmt body = visitChild(node().body(), gtc);
         Node n = node().cond(cond).body(body);
-        RegionContext body_context = ts.pop_regionContext();
-        // Do something here to check variance
+        ts.pop_regionContext();
 
         try {
             Node result = (Node) gtc.leave(parent, node(), n, gtc);

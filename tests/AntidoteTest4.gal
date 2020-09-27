@@ -30,9 +30,9 @@ public class AntidoteTest4 {
         }
     }
     
-    public static void main(local String[] args) {
+    public static void main(String[] args) {
         shared[RCounterC] Counter counter = new Counter(0);
-        local Integer count;
+        Integer count;
         for (int i = 1; i <= 10; i++) {
             AntidoteTest4.increment(counter);
             match_restriction counter with

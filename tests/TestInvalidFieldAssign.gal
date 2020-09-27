@@ -1,7 +1,7 @@
 class TestInvalidFieldAssign {
     unique Integer y;
     
-    public TestInvalidFieldAssign(local Integer x){
+    public TestInvalidFieldAssign(Integer x){
         this.y = x;
     }
 }

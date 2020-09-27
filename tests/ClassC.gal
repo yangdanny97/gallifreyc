@@ -1,7 +1,7 @@
 // utility class for other test cases
 
 public class ClassC {
-    public local String s;
+    public String s;
 
     public ClassC() {}
     
@@ -11,15 +11,15 @@ public class ClassC {
     
     public void f2() {}
     
-    public local Integer f3() {
+    public Integer f3() {
         return 0;
     }
     
-    public local Integer f4(local String x, local String y) {
+    public Integer f4(String x, String y) {
         return 1;
     }
     
-    public void f5(local String z) {}
+    public void f5(String z) {}
     
     public boolean f6() {
         return true;

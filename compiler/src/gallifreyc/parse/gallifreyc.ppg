@@ -25,7 +25,6 @@ terminal Token BRANCH;
 terminal Token CONTINGENT;
 terminal Token DELETE;
 terminal Token ENSURES;
-terminal Token LOCAL;
 terminal Token MATCH_RESTRICTION;
 terminal Token MERGE;
 terminal Token REQUIRES;
@@ -43,7 +42,6 @@ terminal Token PRESERVES;
 terminal Token CONSUMES;
 terminal Token AS;
 
-// Reference Qualifications (local, unique, shared)
 non terminal PreCondition pre_condition_opt;
 non terminal PostCondition post_condition_opt;
 
@@ -67,13 +65,7 @@ non terminal MergeDecl merge_decl;
 start with goal;
 
 // User-specified reference Qualifications (local, unique, shared)
-extend class_or_interface_type ::=
-      LOCAL:a class_or_interface_type:t
-        {: 
-            RefQualification r = parser.nf.LocalRef(parser.pos(a)); 
-            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
-        :}
-    | UNIQUE:a class_or_interface_type:t
+extend class_or_interface_type ::= UNIQUE:a class_or_interface_type:t
         {: 
             RefQualification r = parser.nf.UniqueRef(parser.pos(a)); 
             RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
@@ -95,38 +87,55 @@ override formal_parameter ::=
             parser.nf.ArrayTypeNode(parser.pos(b), b), parser.nf.Id(parser.pos(d), d.getIdentifier()), true);
         
     :}
- |  modifiers_or_annotations_opt:a LOCAL:l LT IDENTIFIER:b GT type:t ELLIPSIS IDENTIFIER:d {:    
+ |  modifiers_or_annotations_opt:a PRESERVES:l LT IDENTIFIER:b GT type:t ELLIPSIS IDENTIFIER:d {:    
         RefQualification r = parser.nf.LocalRef(parser.pos(l), b.getIdentifier()); 
         TypeNode tn = parser.nf.ArrayTypeNode(parser.pos(l, t), parser.nf.RefQualifiedTypeNode(parser.pos(l, t), r, t));                                                  
         RESULT = parser.nf.Formal(parser.pos(l, d, d), a.flags(), a.annotations(), 
             tn, parser.nf.Id(parser.pos(d), d.getIdentifier()), true);
         
     :}
-  |  modifiers_or_annotations_opt:a LOCAL:l LT AND IDENTIFIER:b GT type:t ELLIPSIS IDENTIFIER:d {:                                                      
+  |  modifiers_or_annotations_opt:a PRESERVES:l LT AND IDENTIFIER:b GT type:t ELLIPSIS IDENTIFIER:d {:                                                      
         RefQualification r = parser.nf.LocalRef(parser.pos(l), b.getIdentifier(), true); 
         TypeNode tn = parser.nf.ArrayTypeNode(parser.pos(l, t), parser.nf.RefQualifiedTypeNode(parser.pos(l, t), r, t));                                                   
         RESULT = parser.nf.Formal(parser.pos(l, d, d), a.flags(), a.annotations(), 
             tn, parser.nf.Id(parser.pos(d), d.getIdentifier()), true);
     :}
- |  modifiers_or_annotations_opt:a LOCAL:l LT IDENTIFIER:b GT type:t variable_declarator_id:c {:
+ |  modifiers_or_annotations_opt:a PRESERVES:l LT IDENTIFIER:b GT type:t variable_declarator_id:c {:
         RefQualification r = parser.nf.LocalRef(parser.pos(l), b.getIdentifier()); 
         RefQualifiedTypeNode tn = parser.nf.RefQualifiedTypeNode(parser.pos(l, t), r, t);
         RESULT = parser.nf.Formal(parser.pos(l, c), a.flags(), a.annotations(), parser.array(tn, c.dims), c.name); 
     :}
- |  modifiers_or_annotations_opt:a LOCAL:l LT AND IDENTIFIER:b GT type:t variable_declarator_id:c {:
+ |  modifiers_or_annotations_opt:a PRESERVES:l LT AND IDENTIFIER:b GT type:t variable_declarator_id:c {:
+        RefQualification r = parser.nf.LocalRef(parser.pos(l), b.getIdentifier(), true); 
+        RefQualifiedTypeNode tn = parser.nf.RefQualifiedTypeNode(parser.pos(l, t), r, t);
+        RESULT = parser.nf.Formal(parser.pos(l, c), a.flags(), a.annotations(), parser.array(tn, c.dims), c.name); 
+    :}
+ |  modifiers_or_annotations_opt:a CONSUMES:l LT IDENTIFIER:b GT type:t ELLIPSIS IDENTIFIER:d {:    
+        RefQualification r = parser.nf.LocalRef(parser.pos(l), b.getIdentifier()); 
+        TypeNode tn = parser.nf.ArrayTypeNode(parser.pos(l, t), parser.nf.RefQualifiedTypeNode(parser.pos(l, t), r, t));                                                  
+        RESULT = parser.nf.Formal(parser.pos(l, d, d), a.flags(), a.annotations(), 
+            tn, parser.nf.Id(parser.pos(d), d.getIdentifier()), true);
+        
+    :}
+  |  modifiers_or_annotations_opt:a CONSUMES:l LT AND IDENTIFIER:b GT type:t ELLIPSIS IDENTIFIER:d {:                                                      
+        RefQualification r = parser.nf.LocalRef(parser.pos(l), b.getIdentifier(), true); 
+        TypeNode tn = parser.nf.ArrayTypeNode(parser.pos(l, t), parser.nf.RefQualifiedTypeNode(parser.pos(l, t), r, t));                                                   
+        RESULT = parser.nf.Formal(parser.pos(l, d, d), a.flags(), a.annotations(), 
+            tn, parser.nf.Id(parser.pos(d), d.getIdentifier()), true);
+    :}
+ |  modifiers_or_annotations_opt:a CONSUMES:l LT IDENTIFIER:b GT type:t variable_declarator_id:c {:
+        RefQualification r = parser.nf.LocalRef(parser.pos(l), b.getIdentifier()); 
+        RefQualifiedTypeNode tn = parser.nf.RefQualifiedTypeNode(parser.pos(l, t), r, t);
+        RESULT = parser.nf.Formal(parser.pos(l, c), a.flags(), a.annotations(), parser.array(tn, c.dims), c.name); 
+    :}
+ |  modifiers_or_annotations_opt:a CONSUMES:l LT AND IDENTIFIER:b GT type:t variable_declarator_id:c {:
         RefQualification r = parser.nf.LocalRef(parser.pos(l), b.getIdentifier(), true); 
         RefQualifiedTypeNode tn = parser.nf.RefQualifiedTypeNode(parser.pos(l, t), r, t);
         RESULT = parser.nf.Formal(parser.pos(l, c), a.flags(), a.annotations(), parser.array(tn, c.dims), c.name); 
     :}
 ;
 
-extend array_type ::=
-      LOCAL:a array_type:t
-        {: 
-            RefQualification r = parser.nf.LocalRef(parser.pos(a)); 
-            RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);
-        :}
-    | UNIQUE:a array_type:t
+extend array_type ::= UNIQUE:a array_type:t
         {: 
             RefQualification r = parser.nf.UniqueRef(parser.pos(a)); 
             RESULT = parser.nf.RefQualifiedTypeNode(parser.pos(a, t), r, t);

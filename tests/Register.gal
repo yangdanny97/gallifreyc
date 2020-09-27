@@ -2,17 +2,17 @@
  * Register // TODO - converted unique to local
  */
 public class Register<T> {
-    private local T val;
+    private T val;
 
-    public Register(local T val) {
+    public Register(T val) {
         this.val = val;
     }
 
-    public local T value() {
+    public T value() {
         return val;
     }
 
-    public void assign(local T val) {
+    public void assign(T val) {
         this.val = val;
     }
 }

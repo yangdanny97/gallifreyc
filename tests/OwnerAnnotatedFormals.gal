@@ -1,0 +1,6 @@
+public class C {
+    public void test1(String w, preserves<a> String x, preserves<&b> String y, preserves<c> String z, 
+        preserves<d> String[] a, preserves<d> String ...b) {
+        System.out.println(w + x + y + z);
+    }
+}

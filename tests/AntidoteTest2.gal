@@ -9,7 +9,7 @@ restriction RMap2 for SharedMap {
 }
 
 public class AntidoteTest2 {
-    public static void main(local String[] args) {
+    public static void main(String[] args) {
         shared[RMap2] SharedMap<String, Integer> map = new SharedMap<String, Integer>(10);
         map.put("key1", 1);
         assert (map.containsKey("key1"));

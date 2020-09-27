@@ -6,7 +6,7 @@ restriction RList1 for SharedLinkedList {
 }
 
 public class AntidoteTest3 {
-    public static void main(local String[] args) {
+    public static void main(String[] args) {
         shared[RList1] SharedLinkedList<String> node1 = new SharedLinkedList<String>("node1");
 
         // Check node 1

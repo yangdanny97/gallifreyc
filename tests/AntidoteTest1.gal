@@ -5,7 +5,7 @@ restriction RCounter2 for Counter {
 }
 
 public class AntidoteTest1 {
-    public static void main(local String[] args) {
+    public static void main(String[] args) {
         shared[RCounter2] Counter counter = new Counter(0);
         for (int i = 1; i <= 10; i++) {
             counter.increment(2);

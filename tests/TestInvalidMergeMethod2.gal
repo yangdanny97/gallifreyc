@@ -2,7 +2,7 @@ restriction RMerge for ClassC {
     allows f4;
     allows f5;
     
-    merge (f99(local String a, local String b), f5(local String c)){
+    merge (f99(String a, String b), f5(String c)){
         return 0;
     }
 }

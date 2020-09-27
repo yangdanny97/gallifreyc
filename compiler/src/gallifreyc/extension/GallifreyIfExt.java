@@ -29,10 +29,10 @@ public class GallifreyIfExt extends GallifreyExt {
         Expr cond = visitChild(node().cond(), gtc);
         ts.push_regionContext();
         Stmt consequent = visitChild(node().consequent(), gtc);
-        RegionContext after_then = ts.pop_regionContext();
+        ts.pop_regionContext();
         ts.push_regionContext();
         Stmt alternative = visitChild(node().alternative(), gtc);
-        RegionContext after_els = ts.region_context();
+        ts.region_context();
         // no need to pop, wlog use els's context
         Node n = node().cond(cond).consequent(consequent).alternative(alternative);
 

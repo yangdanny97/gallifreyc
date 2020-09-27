@@ -3,12 +3,12 @@ restriction RMerge for ClassC {
     allows f5;
     allows testFun;
     
-    merge (f4(local String a, local String b), f5(local String c)){
-        local String x  = "aaa";
+    merge (f4(String a, String b), f5(String c)){
+        String x  = "aaa";
         return a.length() - b.length();
     }
     
-    merge (f4(local String a, local String b), testFun()){
+    merge (f4(String a, String b), testFun()){
         return 0;
     }
 }

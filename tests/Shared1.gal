@@ -21,7 +21,7 @@ restriction MyRestriction for Foo {
 }
 
 public class Hello {
-    public static void main(local String[] args) {
+    public static void main(String[] args) {
         shared[MyRestriction] Foo foo = new Foo();
         foo.setX(5);
         System.out.println(foo.getX());

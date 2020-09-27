@@ -1,16 +1,16 @@
 public class SharedLinkedList<T> {
-    public local T data;
+    public T data;
     public shared[RList1] SharedLinkedList<T> next;
 
-    public SharedLinkedList(local T data) {
+    public SharedLinkedList(T data) {
         this.data = data;
     }
 
-    public local T getData() {
+    public T getData() {
         return this.data;
     }
 
-    public local T setData(local T data) {
+    public T setData(T data) {
         return this.data = data;
     }
 

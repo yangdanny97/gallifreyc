@@ -1,15 +1,15 @@
 import java.io.*;  
 
 public class BufferedWriterExample {  
-    public static void main(local String[] args) {   
+    public static void main(String[] args) {   
         try {  
-            local BufferedWriter buffer = new BufferedWriter(new FileWriter("D:\\testout.txt"));  
+            BufferedWriter buffer = new BufferedWriter(new FileWriter("D:\\testout.txt"));  
             buffer.write("OEOEOEOEOEOEOOEEOOEOEOEOEOEOEO");  
             buffer.close();  
             System.out.println("Success"); 
         } catch (IllegalArgumentException | IOException e) {
             System.out.println("Failure");
-            local Exception f = e;
+            Exception f = e;
         }
     }  
 }  

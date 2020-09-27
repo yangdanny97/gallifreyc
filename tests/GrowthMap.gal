@@ -6,30 +6,30 @@ import java.util.HashMap;
  * This is mainly to show objects with methods that take more than one argument
  */
 public class GrowthMap<T, S> {
-    private local Map<T, S> growthMap;
+    private Map<T, S> growthMap;
 
     public GrowthMap() {
         growthMap = new HashMap<T, S>();
     }
 
-    public local Map<T, S> value() {
+    public Map<T, S> value() {
         return growthMap;
     }
 
-    public void add(local T key, local S value) {
+    public void add(T key, S value) {
         // We would need to add time stamps so that replics converge
         growthMap.put(key, value);
     }
 
-    public void addMap(local Map<T, S> otherMap) {
+    public void addMap(Map<T, S> otherMap) {
         growthMap.putAll(otherMap);
     }
 
-    public local Object get(local T key) {
+    public Object get(T key) {
         return growthMap.get(key);
     }
 
-    public boolean containsKey(local T key) {
+    public boolean containsKey(T key) {
         return growthMap.containsKey(key);
     }
 }

@@ -1,5 +1,5 @@
 class TestInvalidNestedQualifier {
     public TestInvalidNestedQualifier(){
-        local local Integer x = 5;
+        unique unique Integer x = 5;
     }
 }

@@ -25,5 +25,5 @@ public class TestNullAssign {
         h = x;
     }
     
-    public void main(local String[] args) {}
+    public void main(String[] args) {}
 }

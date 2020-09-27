@@ -11,11 +11,11 @@ interface Library {
 	void addCollection ( unique String col )
 	ensures collection ( col );
 
-	void addItem ( unique Item i , local String col )
+	void addItem ( unique Item i , String col )
 	requires collection ( col )
 	ensures next ( numItems()) >= numItems ();
 
 	// also moves items in col to a default collection
-	void removeCollection ( local String col )
+	void removeCollection ( String col )
 	ensures ! collection ( col ) && ( next ( numItems()) == numItems ());
 }

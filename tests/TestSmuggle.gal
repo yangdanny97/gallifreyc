@@ -13,7 +13,7 @@ restriction R3 = R1 | R2
 public class TestSmuggle {
     public TestSmuggle(){}
     
-    public static void main(local String[] args) {
+    public static void main(String[] args) {
         shared[R3] ClassC init = new ClassC();
         shared[R3::R1] ClassC smuggle = null;
         

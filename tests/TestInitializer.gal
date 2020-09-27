@@ -1,7 +1,7 @@
 class TestInitializer {
-	public final local Integer a = 5;
-	public local Integer b = 6;
-	public local Integer c;
+	public final Integer a = 5;
+	public Integer b = 6;
+	public Integer c;
 	
 	public TestInitializer() {
 		this.c = 3;

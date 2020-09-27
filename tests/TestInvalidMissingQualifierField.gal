@@ -1,7 +1,0 @@
-class TestInvalidMissingQualifierField {
-    public C y;
-    
-    public TestInvalidMissingQualifierField(local C x){
-        y = x;
-    }
-}

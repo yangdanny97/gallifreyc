@@ -42,10 +42,10 @@ public class GallifreyConditionalExt extends GallifreyExprExt {
         // Store current region map for later use
         ts.push_regionContext();
         Expr consequent = visitChild(node().consequent(), gtc);
-        RegionContext then_outcontext = ts.pop_regionContext();
+        ts.pop_regionContext();
         ts.push_regionContext();
         Expr alternative = visitChild(node().alternative(), gtc);
-        RegionContext else_outcontext = ts.region_context();
+        ts.region_context();
         // we just take the else outmap wlog.
         Node n = node().cond(cond).consequent(consequent).alternative(alternative);
 

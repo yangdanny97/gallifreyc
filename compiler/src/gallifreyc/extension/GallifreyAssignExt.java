@@ -51,7 +51,7 @@ public class GallifreyAssignExt extends GallifreyExprExt {
         Assign a = node();
         Expr lhs = a.left();
         Expr rhs = a.right();
-        GallifreyType gt = GallifreyExprExt.ext(a).gallifreyType;
+        GallifreyExprExt.ext(a);
         RefQualification q = GallifreyExprExt.ext(lhs).gallifreyType.qualification;
 
         // shared[R] C x = e ----> R x = new R(e);

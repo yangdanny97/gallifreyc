@@ -68,7 +68,6 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
 
     @Override
     public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
-        MethodDecl md = node();
         GallifreyTypeBuilder gtb = (GallifreyTypeBuilder) tb;
         GallifreyTypeSystem ts = gtb.typeSystem();
         if (this.isTest) {
@@ -78,13 +77,7 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
                 throw new SemanticException("Cannot declare 2 test methods with same name", node().position());
             }
         }
-
-        TypeNode rt = md.returnType();
-        if (rt instanceof RefQualifiedTypeNode
-                || (rt instanceof CanonicalTypeNode && ((CanonicalTypeNode) rt).type().isPrimitive())) {
-            return superLang().buildTypesEnter(node(), tb);
-        }
-        throw new SemanticException("Cannot declare unqualified return type", rt.position());
+        return superLang().buildTypesEnter(node(), tb);
     }
 
     @Override

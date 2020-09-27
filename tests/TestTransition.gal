@@ -29,9 +29,9 @@ public class TestTransition {
         this.f3(x);
     }
     
-    public void main(local String[] args) {
+    public void main(String[] args) {
         shared[R1] ClassC c = new ClassC();
-        local Integer x = c.f3();
+        Integer x = c.f3();
         
         this.f1(c);
         

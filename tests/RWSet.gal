@@ -6,17 +6,17 @@ import java.util.HashSet;
  * Remove Wins Set
  */
 public class RWSet<T> {
-    private local Set<T> addset;
-    private local Set<T> removeset;
+    private Set<T> addset;
+    private Set<T> removeset;
 
-    public RWSet(local Class<T> cls) {
+    public RWSet(Class<T> cls) {
         addset = new HashSet<T>();
         removeset = new HashSet<T>();
     }
 
-    public local Set<T> value() {
-        local Set<T> currentset = new HashSet<T>();
-        for (local T elem : new ArrayList<T>(addset)) {
+    public Set<T> value() {
+        Set<T> currentset = new HashSet<T>();
+        for (T elem : new ArrayList<T>(addset)) {
             if (!removeset.contains(elem)) {
                 currentset.add(elem);
             }
@@ -24,24 +24,24 @@ public class RWSet<T> {
         return currentset;
     }
 
-    public void add(local T elem) {
+    public void add(T elem) {
         addset.add(elem);
         System.out.println("did add");
     }
 
-    public void addSet(local Set<T> elems) {
-        for (local T elem : new ArrayList<T>(elems)) {
+    public void addSet(Set<T> elems) {
+        for (T elem : new ArrayList<T>(elems)) {
             addset.add(elem);
         }
     }
 
-    public void remove(local T elem) {
+    public void remove(T elem) {
         removeset.add(elem);
         System.out.println("did remove");
     }
 
-    public void removeSet(local Set<T> elems) {
-        for (local T elem : new ArrayList<T>(elems)) {
+    public void removeSet(Set<T> elems) {
+        for (T elem : new ArrayList<T>(elems)) {
             addset.add(elem);
         }
     }

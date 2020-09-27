@@ -1,7 +1,7 @@
 restriction MyRestriction for String {}
 
 public class Hello {
-    public static void main(local String[] args) {
+    public static void main(String[] args) {
         shared[MyRestriction] String phrase = "Hello world!";
         System.out.println(phrase);
     }

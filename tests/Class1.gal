@@ -1,7 +1,7 @@
 class RemoveCollectionLost {
-	local String collection;
+	String collection;
 	
-	RemoveCollectionLost(local String col) { 
+	RemoveCollectionLost(String col) { 
 	   collection = col; 
     }
 }

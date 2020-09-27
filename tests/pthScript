@@ -60,8 +60,6 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -postopts -Xlint:unchecked -cl
     TestInitializer.gal;
     TestInvalidAllows.gal (Semantic);
     TestInvalidFieldAssign.gal (Semantic);
-    ClassC.gal TestInvalidMissingQualifierArg.gal (Semantic);
-    ClassC.gal TestInvalidMissingQualifierField.gal (Semantic);
     TestInvalidNestedQualifier.gal (Semantic);
     TestInvalidRestrictionClass.gal (Semantic);
     TestInvalidRestrictionUnion.gal (Semantic);
@@ -78,7 +76,7 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -postopts -Xlint:unchecked -cl
     Counter.gal AntidoteTest1.gal;
     SharedMap.gal AntidoteTest2.gal;
     SharedLinkedList.gal AntidoteTest3.gal;
-    OwnerAnnotatedLocals.gal;
+    OwnerAnnotatedFormals.gal;
     ClassC.gal TestTransition.gal;
     ClassC.gal TestMatch.gal;
     ClassC.gal TestRV.gal;

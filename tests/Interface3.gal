@@ -11,7 +11,7 @@ interface Library {
 	void addCollection ( unique String col )
 	ensures collection ( col );
 
-	void addItem ( unique Item i , local String col )
+	void addItem ( unique Item i , String col )
 	requires collection ( col )
 	ensures next ( numItems ()) >= numItems ();
 }

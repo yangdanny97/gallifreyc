@@ -3,7 +3,7 @@ restriction RInvalidMergeSignature for ClassC {
     allows f5;
     allows testFun;
     
-    merge (f4(local String a, local Integer b), f5(local String c)){
+    merge (f4(String a, Integer b), f5(String c)){
         return a.length();
     }
 }

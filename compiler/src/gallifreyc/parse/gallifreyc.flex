@@ -124,7 +124,6 @@ import java.util.Set;
         keywords.put("contingent",        new Integer(sym.CONTINGENT));
         keywords.put("delete",            new Integer(sym.DELETE));
         keywords.put("ensures",           new Integer(sym.ENSURES));
-        keywords.put("local",             new Integer(sym.LOCAL));
         keywords.put("match_restriction", new Integer(sym.MATCH_RESTRICTION));
         keywords.put("merge",             new Integer(sym.MERGE));
         keywords.put("requires",          new Integer(sym.REQUIRES));

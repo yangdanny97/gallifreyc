@@ -5,33 +5,33 @@ import java.util.Map;
  * Shared Map
  */
 public class SharedMap<K, V> {
-    private local HashMap<K, V> map;
+    private HashMap<K, V> map;
 
     public SharedMap() {
         this.map = new HashMap<K, V>();
     }
 
-    public SharedMap(local Integer init_capacity) {
+    public SharedMap(Integer init_capacity) {
         this.map = new HashMap<K, V>(init_capacity);
     }
 
-    public SharedMap(local Map<K, V> map) {
+    public SharedMap(Map<K, V> map) {
         this.map = new HashMap<K, V>(map);
     }
 
-    public local HashMap<K, V> value() {
+    public HashMap<K, V> value() {
         return map;
     }
 
-    public void put(local K key, local V value) {
+    public void put(K key, V value) {
         map.put(key, value);
     }
 
-    public local V get(local K key) {
+    public V get(K key) {
         return map.get(key);
     }
 
-    public boolean containsKey(local K key) {
+    public boolean containsKey(K key) {
         return map.containsKey(key);
     }
 }

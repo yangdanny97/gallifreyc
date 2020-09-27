@@ -1,7 +1,0 @@
-class TestInvalidMissingQualifierArg {
-    public local ClassC y;
-    
-    public TestInvalidMissingQualifierArg(ClassC x){
-        y = x;
-    }
-}

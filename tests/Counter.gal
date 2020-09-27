@@ -3,21 +3,21 @@
  */
 public class Counter {
 
-    local Integer count;
+    Integer count;
 
-    public Counter(local Integer val) {
+    public Counter(Integer val) {
         count = val;
     }
 
-    public local Integer value() {
+    public Integer value() {
         return count;
     }
 
-    public void increment(local Integer val) {
+    public void increment(Integer val) {
         count += val;
     }
 
-    public void decrement(local Integer val) {
+    public void decrement(Integer val) {
         count -= val;
     }
 }

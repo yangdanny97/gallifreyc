@@ -17,7 +17,7 @@ public class TestFailedTransition {
         transition(x, R3::R2);
     }
     
-    public static void main(local String[] args) {
+    public static void main(String[] args) {
         shared[R3] ClassC init = new ClassC();
         
         match_restriction init with

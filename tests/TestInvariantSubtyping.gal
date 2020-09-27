@@ -10,8 +10,8 @@ class TestInvariantSubTyping {
     public TestInvariantSubTyping() {}
     
     public void testFun() {
-        local E[] e = new local E[]{new E(), new E()};
-        local D[] d = e;
+        E[] e = new E[]{new E(), new E()};
+        D[] d = e;
     }
     
 }

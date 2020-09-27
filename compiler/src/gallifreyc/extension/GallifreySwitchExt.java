@@ -19,8 +19,7 @@ public class GallifreySwitchExt extends GallifreyExt {
     @Override
     public Node typeCheckOverride(Node parent, TypeChecker tc) throws SemanticException {
         GallifreyTypeChecker gtc = (GallifreyTypeChecker) tc.enter(parent, node());
-        // visit children
-        Expr expr = visitChild(node().expr(), gtc);
+        visitChild(node().expr(), gtc);
         throw new UnsupportedOperationException("no switch for now");
         /*
          * ts.regionMapEnter(); //Switch statements are actually pretty complicated
