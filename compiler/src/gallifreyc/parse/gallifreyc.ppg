@@ -349,3 +349,26 @@ extend method_header ::=
       RESULT = parser.nf.MethodDecl(parser.pos(q, g, i), a.flags(), a.annotations(), parser.array(tn, g.intValue()), parser.nf.Id(parser.pos(i), i.getIdentifier()), e, h, null, c, parser.javadoc(a.position(), parser.pos(b))); 
     :}
 ;
+
+override field_declaration ::=
+    modifiers_or_annotations_opt:a type:b variable_declarators:c SEMICOLON:e {:
+       List<ClassMember> l = new LinkedList<>();
+       for (VarDeclarator d : c) {
+         l.add(parser.nf.FieldDecl(parser.pos(b, e),
+               a.flags(), a.annotations(), parser.array(b, d.dims),
+               d.name, d.init, parser.javadoc(a.position(), parser.pos(b))));
+        }
+        RESULT = l; 
+    :}
+    | modifiers_or_annotations_opt:a ISOLATED:q type:b variable_declarators:c SEMICOLON:e {:
+       List<ClassMember> l = new LinkedList<>();
+       for (VarDeclarator d : c) {
+         RefQualification r = parser.nf.IsolatedRef(parser.pos(q)); 
+         TypeNode tn = parser.nf.RefQualifiedTypeNode(parser.pos(q, b), r, b);
+         l.add(parser.nf.FieldDecl(parser.pos(q, e),
+               a.flags(), a.annotations(), parser.array(tn, d.dims),
+               d.name, d.init, parser.javadoc(a.position(), parser.pos(q))));
+        }
+        RESULT = l; 
+    :}
+ ;
