@@ -62,11 +62,6 @@ public final class GallifreyExtFactory_c extends GallifreyAbstractExtFactory_c {
     }
 
     @Override
-    protected Ext extMoveImpl() {
-        return new GallifreyMoveExt();
-    }
-
-    @Override
     protected Ext extMatchRestrictionImpl() {
         return new GallifreyMatchRestrictionExt();
     }

@@ -29,8 +29,6 @@ public interface GallifreyExtFactory extends JL7ExtFactory {
 
     Ext extTransition();
 
-    Ext extMove();
-
     // Restrictions
     Ext extRestrictionDecl();
 
