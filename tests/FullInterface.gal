@@ -5,7 +5,7 @@ interface Item {};
 interface Library {
 	int numItems ();
 
-	Set<Item> getItems ( String col )
+	isolated Set<Item> getItems ( String col )
 	requires collection ( col );
 
 	void addCollection ( String col )

@@ -117,10 +117,13 @@ public interface GallifreyTypeSystem extends JL7TypeSystem, HeapContext<Region_c
     GallifreyType checkArgs(GallifreyProcedureInstance pi, List<Expr> args) throws SemanticException;
 
     // check qualifications as if we were doing an assignment of toType = fromType
+    // checkQualifications(from,to) returns if b:to = a:from is legal
     boolean checkQualifications(GallifreyType fromType, GallifreyType toType);
 
+    // normalize local owner annotations s.t. the Nth unique annotation encountered maps to the name OWNER_N
     List<RefQualification> normalizeLocals(List<RefQualification> qualifications);
 
+    // returns if a class has restrictions that are declared for it, does not consider parent classes
     boolean canBeShared(String className);
 
     void push_regionContext();

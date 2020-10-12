@@ -3,7 +3,7 @@ import java.util.Set;
 interface Library {
 	int numItems ();
 
-	Set getItems ( String col )
+	isolated Set getItems ( String col )
 	requires collection ( col );
 
 	void addCollection ( String col )

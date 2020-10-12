@@ -1,8 +1,8 @@
 /**
- * Register // TODO - converted to local
+ * Register
  */
 public class Register<T> {
-    private T val;
+    private isolated T val;
 
     public Register(T val) {
         this.val = val;

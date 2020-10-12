@@ -1,5 +1,6 @@
 restriction MyRestriction for String {}
 
+// TODO - allow printing shared objects for now, until TS is implemented
 public class Hello {
     public static void main(String[] args) {
         shared[MyRestriction] String phrase = "Hello world!";

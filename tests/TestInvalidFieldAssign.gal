@@ -1,7 +1,7 @@
-// TODO - removed unique, no error now
+// TODO - temporary TS change, no error now
 
 class TestInvalidFieldAssign {
-    Integer y;
+    isolated Integer y;
     
     public TestInvalidFieldAssign(Integer x){
         this.y = x;

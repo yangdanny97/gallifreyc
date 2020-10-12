@@ -311,6 +311,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         return restrictionClassTypeMap.get(restriction);
     }
 
+    // returns if a class has restrictions that are declared for it, does not consider parent classes
     @Override
     public boolean canBeShared(String className) {
         for (Entry<String, String> pair : restrictionClassNameMap.entrySet()) {
@@ -430,18 +431,13 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         if (fromType == null || toType == null) {
             throw new IllegalArgumentException("null GallifreyType");
         }
-        if (fromType.isMove() || toType.qualification.isAny()) {
-            return true;
-        }
-
-        if (fromType.isLocal() && toType.isLocal()) {
-            return true;
-        }
-
-        // TEMPORARY - allow local to assign to shared for test - TODO remove this
-        if (fromType.isLocal() && toType.isShared()) {
-            return true;
-        }
+//        if (fromType.isMove() || toType.qualification.isAny()) {
+//            return true;
+//        }
+//
+//        if (fromType.isLocal() && toType.isLocal()) {
+//            return true;
+//        }
 
         if (fromType.isShared() && toType.isShared()) {
             RestrictionId from = ((SharedRef) fromType.qualification).restriction();
@@ -453,7 +449,9 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
             return fromType.qualification.equals(toType.qualification);
         }
 
-        return false;
+        // TODO: temporary - until TS is fully implemented, 
+        // all assignments are legal for isolated/local/move/any
+        return true;
     }
 
     // Casting
@@ -473,6 +471,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         return super.isCastValidFromArray(arrayType, toType);
     }
 
+    // normalize local owner annotations s.t. the Nth unique annotation encountered maps to the name OWNER_N
     public List<RefQualification> normalizeLocals(List<RefQualification> qualifications) {
         int counter = 0;
         Map<String, Integer> ownerMap = new HashMap<>();
