@@ -3,6 +3,7 @@ package gallifreyc.ast;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
+// ref qualification for shared objects under a certain restriction
 public class SharedRef extends RefQualification {
     private static final long serialVersionUID = SerialVersionUID.generate();
 

@@ -8,6 +8,7 @@ import polyglot.ast.Formal;
 import polyglot.ast.Id;
 import polyglot.ast.Term;
 
+//merge function declaration inside restriction bodies
 public interface MergeDecl extends Term, CodeDecl {
     public Id method1();
 

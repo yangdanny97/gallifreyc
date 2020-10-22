@@ -3,6 +3,7 @@ package gallifreyc.ast;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
+// default qualification for variables, may be freely assigned to other locals
 public class LocalRef extends RefQualification {
     private static final long serialVersionUID = SerialVersionUID.generate();
 

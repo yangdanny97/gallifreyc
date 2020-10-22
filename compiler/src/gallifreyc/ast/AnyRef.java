@@ -3,6 +3,7 @@ package gallifreyc.ast;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
+// currently unused
 public class AnyRef extends RefQualification {
     private static final long serialVersionUID = SerialVersionUID.generate();
 

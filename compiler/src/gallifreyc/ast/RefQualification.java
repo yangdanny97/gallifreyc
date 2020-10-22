@@ -4,7 +4,8 @@ import polyglot.ast.Node_c;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
-public class RefQualification extends Node_c {
+// parent class of the _Ref classes
+public abstract class RefQualification extends Node_c {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
     public RefQualification(Position pos) {
