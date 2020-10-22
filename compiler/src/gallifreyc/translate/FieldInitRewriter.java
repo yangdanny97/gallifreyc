@@ -6,7 +6,14 @@ import polyglot.frontend.Job;
 import polyglot.types.SemanticException;
 import gallifreyc.extension.GallifreyExt;
 
-//move field initializers into an initializer block
+/**
+ * 
+ * pass for moving field initializers to separate block:
+ * 
+ * original: private int field1 = 1;
+ * 
+ * new: private int field1; { this.field1 = 1; }
+ */
 public class FieldInitRewriter extends GRewriter {
 
     public FieldInitRewriter(Job job, ExtensionInfo from_ext, ExtensionInfo to_ext) {

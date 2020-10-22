@@ -311,7 +311,8 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         return restrictionClassTypeMap.get(restriction);
     }
 
-    // returns if a class has restrictions that are declared for it, does not consider parent classes
+    // returns if a class has restrictions that are declared for it, does not
+    // consider parent classes
     @Override
     public boolean canBeShared(String className) {
         for (Entry<String, String> pair : restrictionClassNameMap.entrySet()) {
@@ -449,7 +450,7 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
             return fromType.qualification.equals(toType.qualification);
         }
 
-        // TODO: temporary - until TS is fully implemented, 
+        // TODO: temporary - until TS is fully implemented,
         // all assignments are legal for isolated/local/move/any
         return true;
     }
@@ -471,7 +472,8 @@ public class GallifreyTypeSystem_c extends JL7TypeSystem_c implements GallifreyT
         return super.isCastValidFromArray(arrayType, toType);
     }
 
-    // normalize local owner annotations s.t. the Nth unique annotation encountered maps to the name OWNER_N
+    // normalize local owner annotations s.t. the Nth unique annotation encountered
+    // maps to the name OWNER_N
     public List<RefQualification> normalizeLocals(List<RefQualification> qualifications) {
         int counter = 0;
         Map<String, Integer> ownerMap = new HashMap<>();

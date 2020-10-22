@@ -20,8 +20,8 @@ public class GallifreyScheduler extends JL7Scheduler {
     }
 
     /*
-     * PASS ORDERING: Validated <<RewriteFieldInitPass>> <<ANormalizePass>>
-     * <<FinalRewritePass>> CodeGenerated
+     * PASS ORDERING: Validated new: <<RewriteFieldInitPass>> new:
+     * <<ANormalizePass>> new: <<FinalRewritePass>> CodeGenerated
      */
 
     @Override
@@ -89,7 +89,7 @@ public class GallifreyScheduler extends JL7Scheduler {
         return internGoal(g);
     }
 
-    // autoboxing for Shared/Isolated, nulling out moves
+    // autoboxing for Shared, generate boilerplate classes for restrictions, etc.
     public Goal FinalRewritePass(Job job) {
         GallifreyRewriter rw = new GallifreyRewriter(job, extInfo, extInfo);
         Goal g = new VisitorGoal(job, rw);

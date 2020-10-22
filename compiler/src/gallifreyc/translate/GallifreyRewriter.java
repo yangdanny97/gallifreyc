@@ -21,6 +21,19 @@ import gallifreyc.types.GallifreyTypeSystem;
 
 import java.util.*;
 
+/**
+ * final rewriting pass: generate boilerplate classes in separate source files
+ * for restrictions, restriction variants, merge comparators translate custom
+ * AST nodes like match_restriction to Java
+ * 
+ * type hierarchy for generated classes (restriction R for class C belongs to
+ * restriction variant RV): interface Shared extends Serializable (actual source
+ * is in gallifrey-antidote, example in ./tests for testing only) interface R
+ * extends Shared interface RV_holder extends Shared interface MergeComparator
+ * (source in gallifrey-antidote) interface RV_R extends RV_holder class RV
+ * implements Shared class RV_R_impl extends RV implements RV_R class R_impl
+ * implements RV_R, R class RComparator implements MergeComparator
+ */
 public class GallifreyRewriter extends GRewriter {
     public final String RES = "RESTRICTION";
     public final String TEMP = "TEMP";
@@ -44,6 +57,8 @@ public class GallifreyRewriter extends GRewriter {
         return (MethodDecl) this.genTestMethodWrapper(mi).body(null);
     }
 
+    // codegen for test methods, uses anonymous classes because lambdas are not
+    // supported
     public MethodDecl genTestMethodWrapper(GallifreyMethodInstance mi) {
         Position p = Position.COMPILER_GENERATED;
         GallifreyTypeSystem ts = typeSystem();
@@ -97,6 +112,7 @@ public class GallifreyRewriter extends GRewriter {
         return nf.MethodDecl(p, Flags.PUBLIC, returns, nf.Id(name), formals, throwTypes, bodyBlock, jd);
     }
 
+    // codegen for branch of match_restriction
     public List<SwitchElement> genMergeComparatorBranch(MergeDecl d) {
         Position p = Position.COMPILER_GENERATED;
         GallifreyNodeFactory nf = this.nodeFactory();
@@ -126,8 +142,8 @@ public class GallifreyRewriter extends GRewriter {
         return elements;
     }
 
+    // codegen for merge comparator class
     public ClassDecl genMergeClass(RestrictionDecl restriction) {
-        // generate RComparator class for restriction R
         String name = restriction.name();
         GallifreyTypeSystem ts = this.typeSystem();
         GallifreyNodeFactory nf = this.nodeFactory();
@@ -182,6 +198,8 @@ public class GallifreyRewriter extends GRewriter {
         return (MethodDecl) this.genRestrictionMethod(i, false).body(null);
     }
 
+    // codegen method for restriction variants to forward method calls to the
+    // restriction holder
     public MethodDecl genRVForwardMethod(MethodInstance inst, String rv, String restriction,
             boolean suppressUnchecked) {
         GallifreyNodeFactory nf = (GallifreyNodeFactory) nodeFactory();
@@ -196,7 +214,6 @@ public class GallifreyRewriter extends GRewriter {
             Type t = mi.formalTypes().get(i);
             RefQualification q = mi.gallifreyInputTypes().get(i).qualification;
             String fresh = lang().freshVar();
-            // wrappers for unique
             if (q.isShared()) {
                 SharedRef s = (SharedRef) q;
                 RestrictionId rid = s.restriction();
@@ -251,6 +268,7 @@ public class GallifreyRewriter extends GRewriter {
                 nf.Javadoc(p, "// Wrapper method for " + mi.container().toString() + "." + mi.name()));
     }
 
+    // codegen method for restrictions to forward method calls to SharedObjects
     public MethodDecl genRestrictionMethod(MethodInstance inst, boolean suppressUnchecked) {
         GallifreyNodeFactory nf = (GallifreyNodeFactory) nodeFactory();
         typeSystem();
@@ -332,7 +350,8 @@ public class GallifreyRewriter extends GRewriter {
                 nf.Javadoc(p, "// Wrapper method for " + mi.container().toString() + "." + mi.name()));
     }
 
-    // class R_impl extends ... {...}
+    // codegen concrete class for restrictions
+    // class R_impl implements R, RV_R
     public ClassDecl genRestrictionImplClass(RestrictionDecl d) {
         // generate a classDecl for each restrictionDecl
         // restriction R for C
@@ -437,7 +456,7 @@ public class GallifreyRewriter extends GRewriter {
 
         ClassBody body = nf.ClassBody(p, members);
 
-        // class R extends Shared implements Serializable (flags are same as C)
+        // class R_impl extends Shared implements RV_R (flags are same as C)
         ClassDecl decl = nf.ClassDecl(p, Flags.PUBLIC, nf.Id(restriction + "_impl"), null, interfaces, body,
                 nf.Javadoc(p, "// Concrete restriction class for " + restriction));
 
@@ -445,6 +464,7 @@ public class GallifreyRewriter extends GRewriter {
         return decl;
     }
 
+    // codegen interface for restriction
     // interface R extends Shared {...}
     public ClassDecl genRestrictionInterface(RestrictionDecl d) {
         GallifreyNodeFactory nf = this.nodeFactory();
@@ -484,7 +504,7 @@ public class GallifreyRewriter extends GRewriter {
                 nf.Id(this.SHARED), formals, throwTypes, null, paramTypes, nf.Javadoc(p, "")));
 
         List<TypeNode> interfaces = new ArrayList<>();
-        interfaces.add(nf.TypeNode("Serializable"));
+
         interfaces.add(nf.TypeNode("Shared"));
 
         ClassBody body = nf.ClassBody(p, members);
@@ -496,6 +516,7 @@ public class GallifreyRewriter extends GRewriter {
         return RInterface;
     }
 
+    // codegen concrete restriction class for restriction in restriction variant
     // class RV_R_impl extends RV implements RV_R {...}
     public ClassDecl genRVSubrestrictionImpl(String rv, String restriction) {
         GallifreyNodeFactory nf = this.nodeFactory();
@@ -558,8 +579,6 @@ public class GallifreyRewriter extends GRewriter {
                 nf.Id(this.SHARED), formals, throwTypes, nf.Block(methodStmts), paramTypes, nf.Javadoc(p, "")));
 
         List<TypeNode> interfaces = new ArrayList<>();
-        interfaces.add(nf.TypeNode("Serializable"));
-        interfaces.add(nf.TypeNode("Shared"));
         interfaces.add(nf.TypeNode(rv + "_" + restriction));
 
         ClassBody body = nf.ClassBody(p, members);
@@ -571,6 +590,7 @@ public class GallifreyRewriter extends GRewriter {
         return RVImpl;
     }
 
+    // codegen interface for the holder of a restriction variant
     // interface RV_holder extends Shared {...}
     public ClassDecl genRVHolderInterface(RestrictionUnionDecl d) {
         GallifreyNodeFactory nf = this.nodeFactory();
@@ -578,7 +598,7 @@ public class GallifreyRewriter extends GRewriter {
         List<ClassMember> members = new ArrayList<>();
 
         List<TypeNode> interfaces = new ArrayList<>();
-        interfaces.add(nf.TypeNode("Serializable"));
+
         interfaces.add(nf.TypeNode("Shared"));
 
         ClassBody body = nf.ClassBody(p, members);
@@ -590,7 +610,7 @@ public class GallifreyRewriter extends GRewriter {
         return rvHolder;
     }
 
-    // class RV {...}
+    // class RV implements Shared {...}
     public ClassDecl genRVClass(RestrictionUnionDecl d) {
         GallifreyNodeFactory nf = this.nodeFactory();
         GallifreyTypeSystem ts = this.typeSystem();
@@ -673,7 +693,6 @@ public class GallifreyRewriter extends GRewriter {
                 formals, throwTypes, nf.Block(methodStmts), paramTypes, nf.Javadoc(p, "")));
 
         List<TypeNode> interfaces = new ArrayList<>();
-        interfaces.add(nf.TypeNode("Serializable"));
         interfaces.add(nf.TypeNode("Shared"));
 
         // getter for sharedObj field
@@ -695,7 +714,7 @@ public class GallifreyRewriter extends GRewriter {
         return RInterface;
     }
 
-    // class RV_R extends RV_holder, Shared {...}
+    // class RV_R implements RV_holder {...}
     public ClassDecl genRVSubrestrictionInterface(String rv, String restriction) {
         GallifreyNodeFactory nf = this.nodeFactory();
         GallifreyTypeSystem ts = this.typeSystem();
@@ -726,8 +745,6 @@ public class GallifreyRewriter extends GRewriter {
                 nf.Id(this.SHARED), formals, throwTypes, null, paramTypes, nf.Javadoc(p, "")));
 
         List<TypeNode> interfaces = new ArrayList<>();
-        interfaces.add(nf.TypeNode("Serializable"));
-        interfaces.add(nf.TypeNode("Shared"));
         interfaces.add(nf.TypeNode(rv + "_holder"));
 
         ClassBody body = nf.ClassBody(p, members);

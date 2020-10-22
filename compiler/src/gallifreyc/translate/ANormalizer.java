@@ -23,6 +23,12 @@ import polyglot.types.SemanticException;
 import polyglot.util.Position;
 import polyglot.visit.NodeVisitor;
 
+/**
+ * 
+ * A-normalize field/array accesses & function calls by hoisting the
+ * array/object/arguments s.t. the nodes can be copied without worrying about
+ * side effects
+ */
 public class ANormalizer extends GRewriter {
     public List<Stmt> hoisted;
 

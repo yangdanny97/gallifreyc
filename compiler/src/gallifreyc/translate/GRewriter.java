@@ -21,6 +21,8 @@ import polyglot.util.ErrorInfo;
 import polyglot.util.Position;
 import polyglot.visit.NodeVisitor;
 
+// parent class for Gallifrey AST rewriters, which contains some sanity checks to make sure
+// the additional typing info is not lost
 public abstract class GRewriter extends ExtensionRewriter {
 
     public GRewriter(Job job, ExtensionInfo from_ext, ExtensionInfo to_ext) {
