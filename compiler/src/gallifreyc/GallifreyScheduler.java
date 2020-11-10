@@ -78,7 +78,7 @@ public class GallifreyScheduler extends JL7Scheduler {
     }
 
     // A-Normalize Field/ArrayAccess/Function Calls
-    public Goal ANormalizePass(Job job) {
+    /*    public Goal ANormalizePass(Job job) {
         ANormalizer rw = new ANormalizer(job, extInfo, extInfo);
         Goal g = new VisitorGoal(job, rw);
         try {
@@ -87,14 +87,14 @@ public class GallifreyScheduler extends JL7Scheduler {
             throw new InternalCompilerError(e);
         }
         return internGoal(g);
-    }
+	}*/
 
     // autoboxing for Shared, generate boilerplate classes for restrictions, etc.
     public Goal FinalRewritePass(Job job) {
         GallifreyRewriter rw = new GallifreyRewriter(job, extInfo, extInfo);
         Goal g = new VisitorGoal(job, rw);
         try {
-            g.addPrerequisiteGoal(ANormalizePass(job), this);
+            g.addPrerequisiteGoal(/*ANormalizePass(job)*/RewriteFieldInitPass(job), this);
         } catch (CyclicDependencyException e) {
             throw new InternalCompilerError(e);
         }

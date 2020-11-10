@@ -148,7 +148,7 @@ public class GallifreyClassDeclExt extends GallifreyExt implements ClassDeclOps 
                         elements.add(nf.Field(nf.TypeNode("Object"), "class"));
                     }
                 }
-                Expr rhs = nf.NewArray(p, nf.TypeNode("Class"), 1, nf.ArrayInit(p, elements));
+                Expr rhs = nf.NewArray(p, nf.TypeNode("Class<?>"), 1, nf.ArrayInit(p, elements));
                 members.add(nf.FieldDecl(p, Flags.PUBLIC.Final(), nf.TypeNode("Class<?>[]"), nf.Id(md.name()), rhs));
             }
         }
