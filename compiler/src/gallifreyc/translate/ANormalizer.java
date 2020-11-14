@@ -8,6 +8,7 @@ import gallifreyc.extension.GallifreyExprExt;
 import gallifreyc.extension.GallifreyExt;
 import gallifreyc.extension.GallifreyLocalDeclExt;
 import gallifreyc.types.GallifreyLocalInstance;
+import polyglot.ast.Block;
 import polyglot.ast.Expr;
 import polyglot.ast.Lit;
 import polyglot.ast.Local;
@@ -29,18 +30,20 @@ import polyglot.visit.NodeVisitor;
  * array/object/arguments s.t. the nodes can be copied without worrying about
  * side effects
  */
-public class ANormalizer extends GRewriter {
-    public List<Stmt> hoisted;
+public class ANormalizer extends GallifreyRewriter {
+    private List<Stmt> hoisted;
 
     public ANormalizer(Job job, ExtensionInfo from_ext, ExtensionInfo to_ext) {
         super(job, from_ext, to_ext);
         hoisted = new ArrayList<>();
     }
-
+    
     @Override
     public NodeVisitor enterCall(Node n) throws SemanticException {
         ANormalizer v = (ANormalizer) super.enterCall(n);
-        v.hoisted = new ArrayList<>();
+        if (n instanceof Stmt && !(n instanceof Block)) {
+            v.hoisted = new ArrayList<>();
+        }
         return v;
     }
 

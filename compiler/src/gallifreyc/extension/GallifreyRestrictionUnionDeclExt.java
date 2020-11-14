@@ -1,7 +1,7 @@
 package gallifreyc.extension;
 
 import gallifreyc.ast.RestrictionUnionDecl;
-import gallifreyc.translate.GallifreyRewriter;
+import gallifreyc.translate.GallifreyCodegenRewriter;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.Node;
 import polyglot.types.SemanticException;
@@ -20,7 +20,7 @@ public class GallifreyRestrictionUnionDeclExt extends GallifreyExt {
     }
 
     @Override
-    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+    public Node gallifreyRewrite(GallifreyCodegenRewriter rw) throws SemanticException {
         rw.genRVHolderInterface(node());
         GallifreyTypeSystem ts = (GallifreyTypeSystem) rw.typeSystem();
         for (String subRestriction : ts.getRestrictionsForRV(node().name())) {

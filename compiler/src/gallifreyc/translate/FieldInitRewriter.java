@@ -14,7 +14,7 @@ import gallifreyc.extension.GallifreyExt;
  * 
  * new: private int field1; { this.field1 = 1; }
  */
-public class FieldInitRewriter extends GRewriter {
+public class FieldInitRewriter extends GallifreyRewriter {
 
     public FieldInitRewriter(Job job, ExtensionInfo from_ext, ExtensionInfo to_ext) {
         super(job, from_ext, to_ext);

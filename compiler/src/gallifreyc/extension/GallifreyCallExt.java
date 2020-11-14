@@ -21,7 +21,7 @@ import gallifreyc.ast.MoveRef;
 import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.SharedRef;
 import gallifreyc.translate.ANormalizer;
-import gallifreyc.translate.GallifreyRewriter;
+import gallifreyc.translate.GallifreyCodegenRewriter;
 import gallifreyc.types.GallifreyMethodInstance;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
@@ -93,7 +93,7 @@ public class GallifreyCallExt extends GallifreyExprExt implements CallOps {
     }
 
     @Override
-    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+    public Node gallifreyRewrite(GallifreyCodegenRewriter rw) throws SemanticException {
         GallifreyNodeFactory nf = rw.nodeFactory();
         Call c = node();
         if (c.target() instanceof Expr) {

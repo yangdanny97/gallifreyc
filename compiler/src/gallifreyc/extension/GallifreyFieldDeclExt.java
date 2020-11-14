@@ -13,11 +13,10 @@ import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.SharedRef;
 import gallifreyc.ast.UnknownRef;
-import gallifreyc.translate.GallifreyRewriter;
+import gallifreyc.translate.GallifreyCodegenRewriter;
 import gallifreyc.types.GallifreyFieldInstance;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
-import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.FieldDecl;
 import polyglot.ast.Node;
 import polyglot.ast.TypeNode;
@@ -33,7 +32,7 @@ public class GallifreyFieldDeclExt extends GallifreyExt implements GallifreyOps 
     }
 
     @Override
-    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+    public Node gallifreyRewrite(GallifreyCodegenRewriter rw) throws SemanticException {
         FieldDecl f = node();
         GallifreyNodeFactory nf = rw.nodeFactory();
         RefQualification q = this.qualification;

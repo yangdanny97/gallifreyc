@@ -10,7 +10,7 @@ import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.RestrictionDecl;
 import gallifreyc.ast.RestrictionUnionDecl;
 import gallifreyc.translate.GallifreyGeneratedSource;
-import gallifreyc.translate.GallifreyRewriter;
+import gallifreyc.translate.GallifreyCodegenRewriter;
 import polyglot.ast.*;
 import polyglot.ast.Import.Kind;
 import polyglot.ext.jl5.ast.JL5Import;
@@ -50,7 +50,7 @@ public class GallifreySourceFileExt extends GallifreyExt {
     }
 
     @Override
-    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+    public Node gallifreyRewrite(GallifreyCodegenRewriter rw) throws SemanticException {
         GallifreyNodeFactory nf = rw.nodeFactory();
         SourceFile sf = node();
         Position p = Position.COMPILER_GENERATED;

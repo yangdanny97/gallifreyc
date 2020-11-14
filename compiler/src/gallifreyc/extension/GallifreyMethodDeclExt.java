@@ -12,14 +12,13 @@ import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.SharedRef;
-import gallifreyc.translate.GallifreyRewriter;
+import gallifreyc.translate.GallifreyCodegenRewriter;
 import gallifreyc.types.GallifreyMethodInstance;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
 import gallifreyc.types.RegionContext;
 import gallifreyc.visit.GallifreyTypeBuilder;
 import gallifreyc.visit.GallifreyTypeChecker;
-import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.Formal;
 import polyglot.ast.MethodDecl;
 import polyglot.ast.Node;
@@ -149,7 +148,7 @@ public class GallifreyMethodDeclExt extends GallifreyExt implements GallifreyOps
     }
 
     @Override
-    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+    public Node gallifreyRewrite(GallifreyCodegenRewriter rw) throws SemanticException {
         GallifreyMethodInstance mi = (GallifreyMethodInstance) node().methodInstance();
         GallifreyNodeFactory nf = rw.nodeFactory();
         RefQualification q = mi.gallifreyReturnType().qualification;

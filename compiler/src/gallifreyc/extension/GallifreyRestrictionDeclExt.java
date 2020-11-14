@@ -1,7 +1,7 @@
 package gallifreyc.extension;
 
 import gallifreyc.ast.RestrictionDecl;
-import gallifreyc.translate.GallifreyRewriter;
+import gallifreyc.translate.GallifreyCodegenRewriter;
 import polyglot.ast.Node;
 import polyglot.types.SemanticException;
 import polyglot.util.SerialVersionUID;
@@ -19,7 +19,7 @@ public class GallifreyRestrictionDeclExt extends GallifreyExt {
     }
 
     @Override
-    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+    public Node gallifreyRewrite(GallifreyCodegenRewriter rw) throws SemanticException {
         rw.genRestrictionInterface(node());
         rw.genRestrictionImplClass(node());
         rw.genMergeClass(node());

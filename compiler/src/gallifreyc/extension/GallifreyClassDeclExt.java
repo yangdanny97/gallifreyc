@@ -5,7 +5,7 @@ import java.util.*;
 
 import gallifreyc.ast.*;
 import gallifreyc.translate.FieldInitRewriter;
-import gallifreyc.translate.GallifreyRewriter;
+import gallifreyc.translate.GallifreyCodegenRewriter;
 import gallifreyc.types.*;
 import polyglot.ext.jl5.ast.ParamTypeNode;
 import polyglot.ext.jl5.types.TypeVariable;
@@ -99,7 +99,7 @@ public class GallifreyClassDeclExt extends GallifreyExt implements ClassDeclOps 
     }
 
     @Override
-    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+    public Node gallifreyRewrite(GallifreyCodegenRewriter rw) throws SemanticException {
         // add CRDT fields and serialVersionUID to class decls
         ClassDecl cd = node();
         GallifreyTypeSystem ts = rw.typeSystem();

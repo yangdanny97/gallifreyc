@@ -1,8 +1,5 @@
 package gallifreyc.extension;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.LocalRef;
 import gallifreyc.ast.RefQualification;
@@ -10,16 +7,17 @@ import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.SharedRef;
 import gallifreyc.ast.UnknownRef;
-import gallifreyc.translate.GallifreyRewriter;
+import gallifreyc.translate.GallifreyCodegenRewriter;
 import gallifreyc.types.GallifreyLocalInstance;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
-import polyglot.ast.CanonicalTypeNode;
+import polyglot.ast.Cast;
 import polyglot.ast.Expr;
 import polyglot.ast.LocalDecl;
 import polyglot.ast.Node;
 import polyglot.ast.TypeNode;
 import polyglot.types.SemanticException;
+import polyglot.types.Type;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.NodeVisitor;
@@ -75,7 +73,7 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
     }
 
     @Override
-    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+    public Node gallifreyRewrite(GallifreyCodegenRewriter rw) throws SemanticException {
         // rewrite RHS of decls
         GallifreyNodeFactory nf = rw.nodeFactory();
         GallifreyTypeSystem ts = rw.typeSystem();
@@ -89,14 +87,25 @@ public class GallifreyLocalDeclExt extends GallifreyExt implements GallifreyOps 
             RestrictionId rid = s.restriction();
             l = l.type(rw.getFormalTypeNode(rid));
             if (rhs != null) {
-                l = l.init(nf.Cast(l.position(), l.type(), rw.rewriteRHS(rid, rhs)));
+                l = l.init(this.maybeCast(nf, l.position(), l.type(), rw.rewriteRHS(rid, rhs)));
             }
             return l;
         } else if (rhs != null && rhs.type() != null && l.type().type() != null
                 && ts.isCastValid(rhs.type(), l.type().type())) {
-            l = l.init(nf.Cast(l.position(), l.type(), rhs));
+            l = l.init(this.maybeCast(nf, l.position(), l.type(), rhs));
         }
         return l;
+    }
+    
+    // avoid double casting on RHS if there is already a cast with the exact type we want to cast to
+    private Expr maybeCast(GallifreyNodeFactory nf, Position pos, TypeNode t, Expr rhs) {
+        if (rhs instanceof Cast) {
+            Cast c = (Cast) rhs;
+            if (t.type() != null && c.type().typeEquals(t.type())) {
+                return rhs;
+            }
+        }
+        return nf.Cast(pos, t, rhs);
     }
 
     public RefQualification qualification() {

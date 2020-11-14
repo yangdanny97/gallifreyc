@@ -11,10 +11,9 @@ import gallifreyc.ast.RefQualifiedTypeNode;
 import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.SharedRef;
 import gallifreyc.ast.UnknownRef;
-import gallifreyc.translate.GallifreyRewriter;
+import gallifreyc.translate.GallifreyCodegenRewriter;
 import gallifreyc.types.GallifreyLocalInstance;
 import polyglot.ast.ArrayTypeNode;
-import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.Formal;
 import polyglot.ast.Node;
 import polyglot.ast.TypeNode;
@@ -55,7 +54,7 @@ public class GallifreyFormalExt extends GallifreyExt {
     }
 
     @Override
-    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+    public Node gallifreyRewrite(GallifreyCodegenRewriter rw) throws SemanticException {
         Formal f = node();
         GallifreyNodeFactory nf = rw.nodeFactory();
         RefQualification q = qualification;

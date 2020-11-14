@@ -3,7 +3,6 @@ package gallifreyc.extension;
 import java.util.List;
 
 import gallifreyc.types.GallifreyTypeSystem;
-import gallifreyc.types.RegionContext;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.Expr;
 import polyglot.ast.For;

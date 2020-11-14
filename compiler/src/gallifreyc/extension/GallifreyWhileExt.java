@@ -1,7 +1,6 @@
 package gallifreyc.extension;
 
 import gallifreyc.types.GallifreyTypeSystem;
-import gallifreyc.types.RegionContext;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.Expr;
 import polyglot.ast.Node;

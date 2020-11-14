@@ -1,7 +1,6 @@
 package gallifreyc.extension;
 
 import gallifreyc.visit.GallifreyTypeChecker;
-import polyglot.ast.Expr;
 import polyglot.ast.Node;
 import polyglot.ast.Switch;
 import polyglot.types.SemanticException;

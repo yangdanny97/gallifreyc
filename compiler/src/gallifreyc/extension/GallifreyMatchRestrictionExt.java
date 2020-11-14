@@ -45,7 +45,7 @@ public class GallifreyMatchRestrictionExt extends GallifreyExt {
     }
 
     @Override
-    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+    public Node gallifreyRewrite(GallifreyCodegenRewriter rw) throws SemanticException {
         MatchRestriction m = node();
         GallifreyNodeFactory nf = rw.nodeFactory();
 

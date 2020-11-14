@@ -15,7 +15,7 @@ import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.SharedRef;
 import gallifreyc.ast.WhenStmt;
-import gallifreyc.translate.GallifreyRewriter;
+import gallifreyc.translate.GallifreyCodegenRewriter;
 import gallifreyc.types.GallifreyTypeSystem;
 
 public class GallifreyWhenStmtExt extends GallifreyExt {
@@ -57,7 +57,7 @@ public class GallifreyWhenStmtExt extends GallifreyExt {
     }
 
     @Override
-    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+    public Node gallifreyRewrite(GallifreyCodegenRewriter rw) throws SemanticException {
         GallifreyNodeFactory nf = rw.nodeFactory();
         GallifreyTypeSystem ts = rw.typeSystem();
         WhenStmt node = node();

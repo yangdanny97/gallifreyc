@@ -6,7 +6,7 @@ import polyglot.util.SerialVersionUID;
 import polyglot.types.SemanticException;
 import gallifreyc.translate.ANormalizer;
 import gallifreyc.translate.FieldInitRewriter;
-import gallifreyc.translate.GallifreyRewriter;
+import gallifreyc.translate.GallifreyCodegenRewriter;
 
 public class GallifreyExt extends Ext_c implements GallifreyOps {
     private static final long serialVersionUID = SerialVersionUID.generate();
@@ -42,7 +42,7 @@ public class GallifreyExt extends Ext_c implements GallifreyOps {
     }
 
     @Override
-    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+    public Node gallifreyRewrite(GallifreyCodegenRewriter rw) throws SemanticException {
         return node();
     }
 }

@@ -1,0 +1,37 @@
+class A {
+    public F fieldF;
+    public A(F f){
+        this.fieldF = f;
+    }
+}
+
+class B {
+    private A fieldA;
+    
+    public B(A a) {
+        this.fieldA = a;
+    }
+    
+    public A readObject() {
+        return this.fieldA;
+    }
+}
+
+class F {
+    public F(){}
+    
+    public boolean canRead(){return true;}
+    public boolean exists(){return true;}
+}
+
+class SharedCounterFile {
+    private F c;
+    
+    public SharedCounterFile() { 
+        F f = new F(); 
+        if (f.exists()){ 
+            boolean b = f.canRead(); 
+            this.c = ((A)(new B(new A(f))).readObject()).fieldF; 
+        }
+    }
+}

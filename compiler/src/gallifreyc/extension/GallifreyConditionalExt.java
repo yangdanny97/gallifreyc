@@ -6,7 +6,6 @@ import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
-import gallifreyc.types.RegionContext;
 import gallifreyc.visit.GallifreyTypeChecker;
 import polyglot.ast.Conditional;
 import polyglot.ast.Expr;

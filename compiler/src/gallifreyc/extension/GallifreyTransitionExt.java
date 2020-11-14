@@ -6,7 +6,7 @@ import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.SharedRef;
 import gallifreyc.ast.Transition;
 import gallifreyc.translate.ANormalizer;
-import gallifreyc.translate.GallifreyRewriter;
+import gallifreyc.translate.GallifreyCodegenRewriter;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.Local;
 import polyglot.ast.Node;
@@ -36,7 +36,7 @@ public class GallifreyTransitionExt extends GallifreyExt {
     }
 
     @Override
-    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+    public Node gallifreyRewrite(GallifreyCodegenRewriter rw) throws SemanticException {
         Transition t = node();
         GallifreyNodeFactory nf = rw.nodeFactory();
         // transition(c, R) ------> c.transition(R.class)

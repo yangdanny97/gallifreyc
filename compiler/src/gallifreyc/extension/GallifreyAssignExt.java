@@ -5,14 +5,11 @@ import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.TypeChecker;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import gallifreyc.ast.GallifreyNodeFactory;
 import gallifreyc.ast.RefQualification;
 import gallifreyc.ast.RestrictionId;
 import gallifreyc.ast.SharedRef;
-import gallifreyc.translate.GallifreyRewriter;
+import gallifreyc.translate.GallifreyCodegenRewriter;
 import gallifreyc.types.GallifreyType;
 import gallifreyc.types.GallifreyTypeSystem;
 import polyglot.ast.Assign;
@@ -44,7 +41,7 @@ public class GallifreyAssignExt extends GallifreyExprExt {
     }
 
     @Override
-    public Node gallifreyRewrite(GallifreyRewriter rw) throws SemanticException {
+    public Node gallifreyRewrite(GallifreyCodegenRewriter rw) throws SemanticException {
         // rewrite RHS of assignments
         GallifreyNodeFactory nf = rw.nodeFactory();
         GallifreyTypeSystem ts = rw.typeSystem();

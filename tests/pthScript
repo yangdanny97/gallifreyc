@@ -99,4 +99,5 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -postopts -Xlint:unchecked -cl
     ClassC.gal TestTestMethod.gal;
     ClassC.gal TestTestMethod2.gal;
     ClassC.gal TestInvalidTestMethod.gal (Semantic);
+    AnormTest.gal;
 } 
