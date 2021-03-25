@@ -85,12 +85,14 @@ gallifreyc.GallifreyExtensionInfo "-assert -d out -postopts -Xlint:unchecked -cl
     ClassC.gal TestInvalidTransitionRes.gal (Semantic);
     Counter.gal AntidoteTest4.gal;
     ClassC.gal TestInvalidPostTransition.gal (Semantic);
-    ClassC.gal TestInvalidMergeReturn.gal (Semantic);
+    
+    /*ClassC.gal TestInvalidMergeReturn.gal (Semantic);
     ClassC.gal TestInvalidMergeMethod.gal (Semantic);
     ClassC.gal TestInvalidMergeMethod2.gal (Semantic);
     ClassC.gal TestConflictingMergeDecl.gal (Semantic);
     ClassC.gal TestMerge.gal;
-    ClassC.gal TestInvalidMergeSignature.gal (Semantic);
+    ClassC.gal TestInvalidMergeSignature.gal (Semantic);//*/
+    
     ClassC.gal TestWhen.gal;
     ClassC.gal TestInvalidWhen.gal (Semantic);
     ClassC.gal TestInvalidWhen2.gal (Semantic);

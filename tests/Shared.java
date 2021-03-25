@@ -1,7 +1,7 @@
 package gallifrey;
 
 import java.io.Serializable;
-import gallifrey.core.SharedObject;
+import gallifrey.client.SharedObject;
 
 public interface Shared extends Serializable {
     public SharedObject sharedObj();
