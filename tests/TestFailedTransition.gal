@@ -35,5 +35,6 @@ public class TestFailedTransition {
         match_restriction init with
         |shared[R3::R1] ClassC x1 -> { System.out.println("Success #2 of 2"); }
         |shared[R3::R2] ClassC x2 -> { System.out.println("Failed #2 of 2"); }
+	System.exit(0);
     }
 }

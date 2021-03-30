@@ -12,19 +12,20 @@ restriction R3 = R1 | R2
 public class TestShared {
     public TestShared(){}
     
-    public void f1(shared[R1] ClassC x){}
+    public static void f1(shared[R1] ClassC x){}
     
-    public void f2(shared[R3] ClassC x){}
+    public static void f2(shared[R3] ClassC x){}
     
-    public void main(String[] args) {
+    public static void main(String[] args) {
         shared[R1] ClassC c = new ClassC();
         shared[R1] ClassC c2 = c;
         
         c.f3();
-        this.f1(c);
+        f1(c);
         
         shared[R3] ClassC c3 = new ClassC();
         shared[R3] ClassC c4 = c3;
-        this.f2(c3);
+        f2(c3);
+	System.exit(0);
     }
 }

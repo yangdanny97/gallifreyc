@@ -58,5 +58,6 @@ public class AntidoteTest4 {
             }
         }
         System.out.println("Success!");
+	System.exit(0);
     }
 }

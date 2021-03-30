@@ -11,44 +11,45 @@ restriction R3 = R1 | R2
 public class TestTransition {
     public TestTransition(){}
     
-    public void f1(shared[R1] ClassC x) {}
+    public static void f1(shared[R1] ClassC x) {}
     
-    public void f2(shared[R3::R1] ClassC x){}
+    public static void f2(shared[R3::R1] ClassC x){}
     
-    public void f3(shared[R3] ClassC x){}
+    public static void f3(shared[R3] ClassC x){}
     
-    public void f4(shared[R3] ClassC x) {
+    public static void f4(shared[R3] ClassC x) {
         transition(x, R3::R2);
         match_restriction x with
         |shared[R3::R1] ClassC x1 -> {}
         |shared[R3::R2] ClassC x2 -> { x2.testFun(); }
     }
     
-    public void f5(shared[R3::R2] ClassC x) {
+    public static void f5(shared[R3::R2] ClassC x) {
         x.testFun();
-        this.f3(x);
+        f3(x);
     }
     
-    public void main(String[] args) {
+    public static void main(String[] args) {
         shared[R1] ClassC c = new ClassC();
         Integer x = c.f3();
         
-        this.f1(c);
+        f1(c);
         
         shared[R3] ClassC c2 = new ClassC();
-        this.f3(c2);
+        f3(c2);
         
         //test RV = RV::R
         match_restriction c2 with
-        |shared[R3::R1] ClassC x1 -> { this.f3(x1); }
+        |shared[R3::R1] ClassC x1 -> { f3(x1); }
         |shared[R3::R2] ClassC x2 -> {}
         
-        this.f4(c2); 
+        f4(c2); 
         
         transition(c2, R3::R2);
         
         match_restriction c2 with
         |shared[R3::R1] ClassC x1 -> {}
-        |shared[R3::R2] ClassC x2 -> { this.f5(x2); }
+        |shared[R3::R2] ClassC x2 -> { f5(x2); }
+	System.exit(0);
     }
 }

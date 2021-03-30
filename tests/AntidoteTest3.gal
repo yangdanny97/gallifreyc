@@ -33,5 +33,6 @@ public class AntidoteTest3 {
         assert (node1.getNext().getData().equals("CHANGED"));
         
         System.out.println("Success!");
+	System.exit(0);
     }
 }

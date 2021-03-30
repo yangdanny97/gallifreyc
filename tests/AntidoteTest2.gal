@@ -16,5 +16,6 @@ public class AntidoteTest2 {
         assert ((Integer) map.get("key1") == 1);
         assert ((Integer) map.get("key2") == null);
         System.out.println("Success!");
+	System.exit(0);
     }
 }

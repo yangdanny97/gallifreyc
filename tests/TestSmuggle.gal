@@ -24,5 +24,6 @@ public class TestSmuggle {
         
         transition(init, R3::R2);
         smuggle.f3();
+	System.exit(0);
     }
 }

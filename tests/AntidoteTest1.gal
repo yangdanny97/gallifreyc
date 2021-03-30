@@ -14,5 +14,6 @@ public class AntidoteTest1 {
             assert (i == counter.value());
         }
         System.out.println("Success!");
+	System.exit(0);
     }
 }
